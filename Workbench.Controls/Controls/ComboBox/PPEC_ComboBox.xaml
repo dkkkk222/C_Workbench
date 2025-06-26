@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Workbench.Controls.PPEC_ComboBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             x:Name="ccb"
+             d:DesignHeight="125" d:DesignWidth="400">
+    <Border>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Width="{Binding ElementName=ccb, Path=TitleWidth}" Padding="0,0,10,0" Background="Transparent">
+                <TextBlock Text="{Binding ElementName=ccb, Path=Title}"
+                           HorizontalAlignment="{Binding ElementName=ccb, Path=TitleHorizontalAlignment}"
+                           VerticalAlignment="Center"/>
+            </Border>
+            <Border Grid.Column="1" Background="Transparent">
+                <ComboBox ItemsSource="{Binding ElementName=ccb, Path=ItemsSource}"
+                          DisplayMemberPath="{Binding ElementName=ccb, Path=DisplayMemberPath}"
+                          SelectedValuePath="{Binding ElementName=ccb, Path=SelectedValuePath}"
+                          SelectedItem="{Binding ElementName=ccb, Path=SelectedItem}"
+                          SelectionChanged="ccb_SelectionChanged"
+                          HorizontalAlignment="Left"
+                          SelectedValue="{Binding ElementName=ccb, Path=SelectedValue}"
+                          Width="{Binding ElementName=ccb, Path=Width}"
+                          Height="{Binding ElementName=ccb, Path=Height}"/>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

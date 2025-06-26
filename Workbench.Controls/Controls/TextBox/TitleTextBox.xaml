@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="Workbench.Controls.TitleTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Workbench.Controls.TextBox"
+             mc:Ignorable="d" 
+             x:Name="unitTextBox"
+             d:DesignHeight="35" d:DesignWidth="225">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0"
+               VerticalAlignment="Center"
+               Width="{Binding ElementName=unitTextBox, Path=BlockWidth}"
+               Text="{Binding ElementName=unitTextBox, Path=BlockText}"/>
+        <Border Grid.Column="1" Padding="0" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBox Width="{Binding ElementName=unitTextBox, Path=TextWidth}"
+                     local:TextBoxProperties.IsNumericOnly="True"
+                     local:TextBoxProperties.MaximumValue="{Binding ElementName=unitTextBox,Path=Maximum}"
+                     local:TextBoxProperties.MinimumValue="{Binding ElementName=unitTextBox,Path=Minimum}"
+                     local:TextBoxProperties.RetainPlaces="{Binding ElementName=unitTextBox,Path=RetainPlaces}"
+                     Text="{Binding ElementName=unitTextBox,Path=Text}" 
+                     Height="{Binding ElementName=unitTextBox,Path=TextHeight}" 
+                     IsEnabled="{Binding IsEnabled,ElementName=unitTextBox}" 
+                     IsReadOnly="{Binding IsReadOnly,ElementName=unitTextBox}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=TextBox}}"/>
+                    </TextBox.InputBindings>
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TextBox}">
+                                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                                Background="{TemplateBinding Background}" 
+                                                SnapsToDevicePixels="True"
+                                                CornerRadius="2">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <ScrollViewer Grid.Column="0" x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
+                                                <TextBlock Grid.Column="1" Text="{Binding ElementName=unitTextBox, Path=Unit}" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="UIElement.Opacity" Value="0.56"/>
+                                </Trigger>
+                                <Trigger Property="IsReadOnly" Value="true">
+                                    <Setter Property="Background" Value="#F0F0F0"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <TextBlock Text="{Binding ElementName=unitTextBox,Path=Desc}" VerticalAlignment="Center" Foreground="CornflowerBlue"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

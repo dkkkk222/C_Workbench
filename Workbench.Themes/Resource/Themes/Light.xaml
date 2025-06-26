@@ -1,0 +1,64 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--主要文字颜色-->
+    <SolidColorBrush x:Key="PrimaryFontColor" Color="Black"/>
+    <!-- 主要背景颜色-->
+    <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#687CAB"/>
+    <!--次要背景颜色-->
+    <SolidColorBrush x:Key="SecondaryBackgroundColor" Color="#D1DCF0"/>
+
+    <SolidColorBrush x:Key="FooterBackgroundColor" Color="#687cab"/>
+    <!--标题栏底色-->
+    <SolidColorBrush x:Key="TitleBarBackgroundColor" Color="#eef2f9"/>
+    <!--标题栏文字颜色-->
+    <SolidColorBrush x:Key="TitleBarColor" Color="Black"/>
+    <!-- 工程管理标题背景 -->
+    <SolidColorBrush x:Key="ProjectManagementTitleBackground" Color="#cbd5f0"/>
+    <!--底部栏文字颜色-->
+    <SolidColorBrush x:Key="BottomBarTextColor" Color="White"/>
+    <!--底部栏分割线颜色-->
+    <SolidColorBrush x:Key="BottomBarSeparatorColor" Color="#ededed"/>
+    <!-- Home背景颜色 -->
+    <SolidColorBrush x:Key="HomeBackgroundColor" Color="#ffffff"/>
+    <!-- AvalonDock区域背景 -->
+    <SolidColorBrush x:Key="AvalonDockAreaBackgroundColor" Color="#e0e5ee"/>
+    <!-- Tabs区域背景 -->
+    <SolidColorBrush x:Key="TabsBackgroundColor" Color="#e1e8f5"/>
+    <!-- Tab选中背景色 -->
+    <SolidColorBrush x:Key="TabSelectedBackgroundColor" Color="#fff"/>
+    <!-- Tab选中字体色 -->
+    <SolidColorBrush x:Key="TabSelectedFontColor" Color="#0067FF"/>
+    <!-- TreeView背景色 -->
+    <SolidColorBrush x:Key="TreeViewBackgroundColor" Color="#fff"/>
+    <!-- TreeViewItem选择背景色 -->
+    <SolidColorBrush x:Key="TreeViewItemSelectedBackgroundColor" Color="#DCDFE6"/>
+    <!-- Dialog背景色 -->
+    <SolidColorBrush x:Key="DialogBackgroundColor" Color="#fff"/>
+    <!-- AvalonDock Tab下拉按钮颜色 -->
+    <SolidColorBrush x:Key="AvalonDockDropDownButtonColor" Color="#717171"/>
+
+    <!-- MenuItem下拉框背景色 -->
+    <SolidColorBrush x:Key="MenuItemDropBackground" Color="#e9eeff"/>
+    <!-- MenuItem选项高亮 -->
+    <SolidColorBrush x:Key="MenuItemDropHighLight" Color="#b1c5ff"/>
+    <!-- MenuItem选项高亮边框颜色 -->
+    <SolidColorBrush x:Key="MenuItemDropHighLightBorderColor" Color="#203d77"/>
+
+    <!-- 按钮栏图标颜色 -->
+    <SolidColorBrush x:Key="ButtonBarIconColor" Color="#4E5052"/>
+    <!-- 按钮栏图标Hover颜色 -->
+    <SolidColorBrush x:Key="ButtonBarHoverBackground" Color="#ECF4FF"/>
+    <!-- 按钮栏图标Hover边框颜色 -->
+    <SolidColorBrush x:Key="ButtonBarHoverBorderBrush" Color="#5d6b99"/>
+    <!-- 按钮栏图标按压背景色 -->
+    <SolidColorBrush x:Key="ButtonBarPressedBackground" Color="#ededed"/>
+
+    <!-- 黑色 -->
+    <SolidColorBrush x:Key="BlackColor" Color="Black"/>
+
+
+    <!-- ComboBox -->
+    <SolidColorBrush x:Key="ComboBoxToggleBackground" Color="#fff"/>
+    <SolidColorBrush x:Key="ComboBoxItemHighlightBackground" Color="#C0C4CC"/>
+
+</ResourceDictionary>

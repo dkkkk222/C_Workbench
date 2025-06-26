@@ -1,0 +1,88 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- TitleBarBorder -->
+    <Style x:Key="BottomBarText" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{DynamicResource BottomBarTextColor}"/>
+
+    </Style>
+
+    <!-- 最小化、最大化、关闭图标 -->
+    <Style x:Key="WindowControlIcon" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryFontColor}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    
+    <!-- TitleBar文字 -->
+    <Style x:Key="TitleBarStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource TitleBarColor}"/>
+    </Style>
+
+    <!-- Title -->
+    <Style x:Key="TitleStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource TitleBarColor}"/>
+    </Style>
+
+    <!-- 必填标识 -->
+    <Style x:Key="RequiedStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="Red"/>
+        <Setter Property="Margin" Value="3,0,0,0"/>
+    </Style>
+
+    <!-- 按钮栏ICON -->
+    <Style x:Key="ButtonBarIconStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="Foreground" Value="{DynamicResource ButtonBarIconColor}"/>
+    </Style>
+
+    <!-- 新闻动态 -->
+    <Style x:Key="NewsItemStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="LineHeight" Value="22"/>
+    </Style>
+
+    <!-- 新闻动态内容 -->
+    <Style x:Key="NewsItemContentStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryFontColor}"/>
+        <Setter Property="Margin" Value="0,3"/>
+    </Style>
+
+    <!-- 快速开始 -->
+    <Style x:Key="QuickStartStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="Margin" Value="8,0,0,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+    
+    <!-- 开发界面Title-->
+
+    <Style x:Key="DevTitleStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="0,8"/>
+    </Style>
+
+    <!-- ButtonBar Title Style-->
+    <Style x:Key="ButtonBarTitleStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryFontColor}"/>
+    </Style>
+
+    <!-- 右键菜单栏-->
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{DynamicResource TitleBarColor}"/>
+    </Style>
+</ResourceDictionary>

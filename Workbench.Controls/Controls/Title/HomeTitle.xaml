@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Workbench.Controls.HomeTitle"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             x:Name="homeTitle"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="400">
+    <Border Padding="{Binding ElementName=homeTitle, Path=Padding}">
+        <StackPanel Orientation="Horizontal">
+            <Border Width="3" Background="#2494f0"/>
+            <TextBlock Text="{Binding ElementName=homeTitle, Path=Title}" 
+                       Foreground="{DynamicResource PrimaryFontColor}"
+                       FontSize="20" 
+                       Margin="10,0,0,0"/>
+        </StackPanel>
+    </Border>
+</UserControl>

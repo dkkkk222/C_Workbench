@@ -1,0 +1,17 @@
+﻿################################################################################
+# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
+################################################################################
+
+/PPEC.Communication/bin/Debug
+/.vs/Workbench/v17
+/packages
+/packages/CalcBinding.2.5.2/lib/net40/CalcBinding.dll
+/PPEC.Communication/obj/Debug
+/Workbench/bin
+/Workbench/obj
+/Workbench.Controls/bin/Debug
+/Workbench.Controls/obj/Debug
+/Workbench.SerialAsistant/bin/Debug
+/Workbench.SerialAsistant/obj/Debug
+/Workbench.Themes/bin/Debug
+/Workbench.Themes/obj/Debug

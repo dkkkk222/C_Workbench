@@ -1,0 +1,26 @@
+[
+  {
+    "icon": "&#xef4a;",
+    "title": "PPEC-86CA3A",
+    "description": "PPEC-86CA3A 应用于移相全桥电源拓扑，为电源研发企业提供稳定可靠的隔离型DC/DC控制方案。",
+    "href": "http://www.senmuleishi.com/productinfo/1693245.html"
+  },
+  {
+    "icon": "&#xef4a;",
+    "title": "PPEC-86CA3B",
+    "description": "该芯片用于高效大功率DC/DC电源开发，其具有高效能、高功率密度、高稳定性、低噪音、体积小等诸多优点。可用于数据中心、电动汽车、LED照明以及医疗设备等场景。",
+    "href": "http://www.senmuleishi.com/productinfo/2027900.html"
+  },
+  {
+    "icon": "&#xef4a;",
+    "title": "PPEC-86CA3H",
+    "description": "该芯片可用于高压充电机、高压电源的设计开发。适用于工业制造业、科研、军工、环境等行业及领域，特别适用于微波发生器、高压电源脉冲电容充电电源、大功率脉冲源、静电驻极电源，静电除尘高压电源等设备。",
+    "href": "http://www.senmuleishi.com/productinfo/1953419.html"
+  },
+  {
+    "icon": "&#xe64f;",
+    "title": "Workbench操作指南",
+    "description": "PPEC Workbench平台是由武汉森木磊石科技有限公司研发，与PPEC系列控制器配合使用，可以实现电源的快速开发。让电源设计企业降低对人才层次和数量的依赖。",
+    "href": "http://www.senmuleishi.com/filedownload/692996"
+  }
+]

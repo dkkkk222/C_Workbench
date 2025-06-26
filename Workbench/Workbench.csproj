@@ -1,0 +1,643 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F9B782FE-73FF-405F-8094-8D500E362246}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Workbench</RootNamespace>
+    <AssemblyName>Workbench</AssemblyName>
+    <LangVersion>PreView</LangVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>20240426-165532.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AvalonDock, Version=4.60.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dirkster.AvalonDock.4.60.0\lib\net40\AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="AvalonDock.Themes.VS2013, Version=4.60.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dirkster.AvalonDock.Themes.VS2013.4.60.0\lib\net40\AvalonDock.Themes.VS2013.dll</HintPath>
+    </Reference>
+    <Reference Include="CalcBinding, Version=2.5.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CalcBinding.2.5.2\lib\net45\CalcBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="DynamicExpresso.Core, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net461\DynamicExpresso.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.17.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.17\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.1587.40, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1587.40\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.1587.40, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1587.40\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.1587.40, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1587.40\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism, Version=8.1.97.5141, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Core.8.1.97\lib\net461\Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Unity.Wpf, Version=8.1.97.5141, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Unity.8.1.97\lib\net461\Prism.Unity.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Wpf, Version=8.1.97.5141, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.8.1.97\lib\net461\Prism.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Converters.Wpf, Version=1.8.4.0, Culture=neutral, PublicKeyToken=b532964b8548be77, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.4\lib\net46\SharpVectors.Converters.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Core, Version=1.8.4.0, Culture=neutral, PublicKeyToken=7407205e337c98ef, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.4\lib\net46\SharpVectors.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Css, Version=1.8.4.0, Culture=neutral, PublicKeyToken=7a46e3f532fdb787, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.4\lib\net46\SharpVectors.Css.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Dom, Version=1.8.4.0, Culture=neutral, PublicKeyToken=517340b6277b1a7a, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.4\lib\net46\SharpVectors.Dom.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Model, Version=1.8.4.0, Culture=neutral, PublicKeyToken=2236cfc76b505845, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.4\lib\net46\SharpVectors.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Rendering.Gdi, Version=1.8.4.0, Culture=neutral, PublicKeyToken=03902092284347e3, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.4\lib\net46\SharpVectors.Rendering.Gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Rendering.Wpf, Version=1.8.4.0, Culture=neutral, PublicKeyToken=d0902381100df30e, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.4\lib\net46\SharpVectors.Rendering.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Runtime.Wpf, Version=1.8.4.0, Culture=neutral, PublicKeyToken=d16e717f0a981fb9, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.8.4\lib\net46\SharpVectors.Runtime.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Unity.Abstractions, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Abstractions.5.11.7\lib\net46\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.11.11.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Container.5.11.11\lib\net46\Unity.Container.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AvalonDock\PanesStyleSelector.cs" />
+    <Compile Include="AvalonDock\PanesTemplateSelector.cs" />
+    <Compile Include="Events\AddedProjectEvent.cs" />
+    <Compile Include="Events\CloseTabEvent.cs" />
+    <Compile Include="Events\ConnectEvent.cs" />
+    <Compile Include="Events\CurrentPpecChangedEvent.cs" />
+    <Compile Include="Events\DoubleClickTreeNodeEvent.cs" />
+    <Compile Include="Events\RefreshRecentFileEvent.cs" />
+    <Compile Include="Events\RemovePpecEvent.cs" />
+    <Compile Include="Events\RemoveProjectFromSiderEvent.cs" />
+    <Compile Include="Events\SerialPortAddRemoveEvent.cs" />
+    <Compile Include="Events\SplashEvent.cs" />
+    <Compile Include="Events\TabChangeEvent.cs" />
+    <Compile Include="Events\TreeViewSelectedEvent.cs" />
+    <Compile Include="Models\AppConfig.cs" />
+    <Compile Include="Models\AvaDocument.cs" />
+    <Compile Include="Models\BootLoader\BBLLCCANItem.cs" />
+    <Compile Include="Models\BootLoader\CANCommConfig.cs" />
+    <Compile Include="Models\BootLoader\CANHexDataContainer.cs" />
+    <Compile Include="Models\BootLoader\FlashUpgradeClient.cs" />
+    <Compile Include="Models\BootLoader\HexDataContainer.cs" />
+    <Compile Include="Models\BootLoader\TopoChipStatus.cs" />
+    <Compile Include="Models\ComConnectType.cs" />
+    <Compile Include="Models\Consts\CAN_Port.cs" />
+    <Compile Include="Models\ContextMenuItem.cs" />
+    <Compile Include="Models\CurrentTreeNode.cs" />
+    <Compile Include="Models\Data\Display_PPEC_Data.cs" />
+    <Compile Include="Models\Data\PPEC_Data.cs" />
+    <Compile Include="Models\Data\PageMapping.cs" />
+    <Compile Include="Models\Data\PPEC_Introduce.cs" />
+    <Compile Include="Models\Data\TopoMeta.cs" />
+    <Compile Include="Models\Enums\BBLLCCANPort.cs" />
+    <Compile Include="Models\Enums\ComConnectEnum.cs" />
+    <Compile Include="Models\Enums\CommandValue.cs" />
+    <Compile Include="Models\Enums\ControlType.cs" />
+    <Compile Include="Models\Enums\UpdateTopoEnum.cs" />
+    <Compile Include="Models\EventParamModel.cs" />
+    <Compile Include="Models\Options\CommonOptions.cs" />
+    <Compile Include="Models\Pages\ControlConfig.cs" />
+    <Compile Include="Models\Pages\ParamSettingElement.cs" />
+    <Compile Include="Models\Pages\ParamSettingGroup.cs" />
+    <Compile Include="Models\Pages\TreeVeiwModel.cs" />
+    <Compile Include="Models\PPEC_Project.cs" />
+    <Compile Include="Models\ReceiveMessage.cs" />
+    <Compile Include="Models\RecentFile.cs" />
+    <Compile Include="Models\SendMessage.cs" />
+    <Compile Include="Models\StaticUpgrade.cs" />
+    <Compile Include="Models\ValueName.cs" />
+    <Compile Include="Utils\CAN\CANFlashUpgradeClient.cs" />
+    <Compile Include="Utils\CAN\ControlCAN.cs" />
+    <Compile Include="Utils\CAN\ControlCANHelper.cs" />
+    <Compile Include="Utils\CAN\ControlCANHelper64.cs" />
+    <Compile Include="Utils\CommandHandler.cs" />
+    <Compile Include="Utils\Common\CommEntity.cs" />
+    <Compile Include="Utils\Common\HttpHelper.cs" />
+    <Compile Include="Utils\Common\IconUnicode.cs" />
+    <Compile Include="Utils\Common\ProjectLevel.cs" />
+    <Compile Include="Utils\Common\SerialPortHelper.cs" />
+    <Compile Include="Utils\Common\UpdateHelper.cs" />
+    <Compile Include="Utils\Constants.cs" />
+    <Compile Include="Utils\ConverterUtil\BoolToHighLowConverter.cs" />
+    <Compile Include="Utils\ConverterUtil\BoolToYesNoConverter.cs" />
+    <Compile Include="Utils\ConverterUtil\EnumToBooleanConverter.cs" />
+    <Compile Include="Utils\ConverterUtil\StringToIconConverter.cs" />
+    <Compile Include="Utils\ConverterUtil\TreeViewItemMarginConverter.cs" />
+    <Compile Include="Utils\FileHandler.cs" />
+    <Compile Include="Utils\IgnorePropertyContractResolver.cs" />
+    <Compile Include="Utils\JsonHelper.cs" />
+    <Compile Include="Utils\MessageManager.cs" />
+    <Compile Include="Utils\Pinia.cs" />
+    <Compile Include="Utils\ProjectManager.cs" />
+    <Compile Include="Utils\RegionNames.cs" />
+    <Compile Include="Utils\TextManager.cs" />
+    <Compile Include="Utils\UtilsFunc.cs" />
+    <Compile Include="Utils\WindowResizer.cs" />
+    <Compile Include="Utils\WindowResizer2.cs" />
+    <Compile Include="ViewModels\AboutViewModel.cs" />
+    <Compile Include="ViewModels\BootLoaderViewModel.cs" />
+    <Compile Include="ViewModels\Content\ButtonBar\ButtonBarViewModel.cs" />
+    <Compile Include="ViewModels\Content\ContentViewModel.cs" />
+    <Compile Include="ViewModels\Content\Develop\DevelopBaseViewModel.cs" />
+    <Compile Include="ViewModels\Content\Sider\SiderViewModel.cs" />
+    <Compile Include="ViewModels\Content\Tabs\DebugViewModel.cs" />
+    <Compile Include="ViewModels\Content\Tabs\DevelopViewModel.cs" />
+    <Compile Include="ViewModels\Content\Tabs\HomeViewModel.cs" />
+    <Compile Include="ViewModels\CreateProjectViewModel.cs" />
+    <Compile Include="ViewModels\GlobalSettingViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\NodeRedViewModel.cs" />
+    <Compile Include="ViewModels\PasswordViewModel.cs" />
+    <Compile Include="ViewModels\PowerToolViewModel.cs" />
+    <Compile Include="ViewModels\RecentFileViewModel.cs" />
+    <Compile Include="ViewModels\RenameViewModel.cs" />
+    <Compile Include="ViewModels\SplashWindowViewModel.cs" />
+    <Compile Include="ViewModels\Pages\ParamSettingViewModel.cs" />
+    <Compile Include="ViewModels\UserManualViewModel.cs" />
+    <Compile Include="Views\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BootLoaderView.xaml.cs">
+      <DependentUpon>BootLoaderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\ButtonBar\ButtonBarModule.cs" />
+    <Compile Include="Views\Content\ButtonBar\ButtonBarView.xaml.cs">
+      <DependentUpon>ButtonBarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\ContentModule.cs" />
+    <Compile Include="Views\Content\ContentView.xaml.cs">
+      <DependentUpon>ContentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\Sider\SiderModule.cs" />
+    <Compile Include="Views\Content\Sider\SiderView.xaml.cs">
+      <DependentUpon>SiderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\Tabs\DebugView.xaml.cs">
+      <DependentUpon>DebugView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\Tabs\DevelopView.xaml.cs">
+      <DependentUpon>DevelopView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\Tabs\HomeView.xaml.cs">
+      <DependentUpon>HomeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateProjectView.xaml.cs">
+      <DependentUpon>CreateProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GlobalSettingView.xaml.cs">
+      <DependentUpon>GlobalSettingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NodeRedView.xaml.cs">
+      <DependentUpon>NodeRedView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ParamSettingTemplateSelector.cs" />
+    <Compile Include="Views\PasswordView.xaml.cs">
+      <DependentUpon>PasswordView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PowerToolView.xaml.cs">
+      <DependentUpon>PowerToolView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RecentFileView.xaml.cs">
+      <DependentUpon>RecentFileView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RenameView.xaml.cs">
+      <DependentUpon>RenameView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ParamSettingView.xaml.cs">
+      <DependentUpon>ParamSettingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\PasswordWindow.xaml.cs">
+      <DependentUpon>PasswordWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\SplashWindow.xaml.cs">
+      <DependentUpon>SplashWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserManualView.xaml.cs">
+      <DependentUpon>UserManualView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\BootLoaderWindow.xaml.cs">
+      <DependentUpon>BootLoaderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\CreateProjectWindow.xaml.cs">
+      <DependentUpon>CreateProjectWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\GlobalSettingWindow.xaml.cs">
+      <DependentUpon>GlobalSettingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\NodeRedWindow.xaml.cs">
+      <DependentUpon>NodeRedWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\PowerToolWindow.xaml.cs">
+      <DependentUpon>PowerToolWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\RecentFileWindow.xaml.cs">
+      <DependentUpon>RecentFileWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\RenameWindow.xaml.cs">
+      <DependentUpon>RenameWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\UserManualWindow.xaml.cs">
+      <DependentUpon>UserManualWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Resource\Styles\AvalonDock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BootLoaderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Content\ButtonBar\ButtonBarView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Content\ContentView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Content\Sider\SiderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Content\Tabs\DebugView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Content\Tabs\DevelopView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Content\Tabs\HomeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CreateProjectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GlobalSettingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NodeRedView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PasswordView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PowerToolView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RecentFileView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\RenameView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Pages\ParamSettingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\PasswordWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\SplashWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\UserManualView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Windows\AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\BootLoaderWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Windows\CreateProjectWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Windows\GlobalSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\NodeRedWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Windows\PowerToolWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\RecentFileWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Windows\RenameWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Windows\UserManualWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.manifest" />
+    <None Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="Data\ParamSetting\PPEC86CA3A.json" />
+    <None Include="Data\PPEC_Data.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\PageMapping.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\PPEC_Introduce.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Resource Include="dist\fonts\11e2353a399825874867.1e09861f.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <None Include="dist\fonts\2c5394094daa1c985564.deeda95b.eot">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="dist\fonts\6a9f5e4b044e436823f3.decd664f.woff2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="dist\fonts\fa070dcc71d7190e8c44.15ba5442.woff">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="dist\js\app.583da913.js.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="dist\js\chunk-vendors.88470ac3.js.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="dist\workbench_user_manual.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Resource\B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类%281%29.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="upgrade.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="20240426-165532.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ControlCAN.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dist\css\app.40e9858e.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="dist\favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="dist\img\6781170c0c08b15fff2d.d3d37e22.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dist\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dist\js\app.583da913.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dist\js\chunk-vendors.88470ac3.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Resource\Images\System\PPEC-86CA3A.png" />
+    <Resource Include="Resource\20240426-165532.ico" />
+    <Resource Include="Resource\Images\ControlRing.png" />
+    <Resource Include="Resource\Images\ct.png" />
+    <Resource Include="Resource\Images\Logo\logo.png" />
+    <Resource Include="Resource\Images\PIN\PPEC-86CA3MC2.png" />
+    <Resource Include="Resource\Images\Sequential\Din1.png" />
+    <Resource Include="Resource\Images\Sequential\PPEC-86CA3MC2.png" />
+    <Resource Include="Resource\Images\SVG\Buck-Boost.svg" />
+    <Resource Include="Resource\Images\SVG\BuckBoostLLC.svg" />
+    <Resource Include="Resource\Images\SVG\DAB.svg" />
+    <Resource Include="Resource\Images\SVG\LC.svg" />
+    <Resource Include="Resource\Images\SVG\LLC.svg" />
+    <Resource Include="Resource\Images\SVG\logo.svg" />
+    <Resource Include="Resource\Images\SVG\open.svg" />
+    <Resource Include="Resource\Images\SVG\PSFB.svg" />
+    <Resource Include="Resource\Images\SVG\PSFB1.svg" />
+    <Resource Include="Resource\Images\SVG\SPI.svg" />
+    <Resource Include="Resource\Images\SVG\SPR.svg" />
+    <Resource Include="Resource\Images\SVG\TPI.svg" />
+    <Resource Include="Resource\Images\SVG\TPR.svg" />
+    <Resource Include="Resource\Images\System\PPEC-86CA3MC2.png" />
+    <Resource Include="Resource\PPEClogo.png" />
+    <Resource Include="Resource\SMLSlogo.png" />
+    <Resource Include="Resource\startIMG.jpeg" />
+    <Resource Include="Resource\WelcomBackground.png" />
+    <Resource Include="Resource\WorkbenchLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PPEC.Communication\PPEC.Communication.csproj">
+      <Project>{3ced9145-9fa8-4b9e-8096-b428bedf3877}</Project>
+      <Name>PPEC.Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Workbench.Controls\Workbench.Controls.csproj">
+      <Project>{b5a5c776-e10c-440c-ac50-b21d11b75482}</Project>
+      <Name>Workbench.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Workbench.SerialAsistant\Workbench.SerialAsistant.csproj">
+      <Project>{1f65dabf-8d42-4877-b9d4-977c5963e87f}</Project>
+      <Name>Workbench.SerialAsistant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Workbench.Themes\Workbench.Themes.csproj">
+      <Project>{1d2c0bbf-3ff4-415d-8c1b-35df83ae5e1b}</Project>
+      <Name>Workbench.Themes</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Debug\" />
+    <Folder Include="Models\Implement\" />
+    <Folder Include="Models\Interface\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1587.40\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1587.40\build\Microsoft.Web.WebView2.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.1587.40\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.1587.40\build\Microsoft.Web.WebView2.targets'))" />
+  </Target>
+</Project>

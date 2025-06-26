@@ -1,0 +1,258 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows;
+using Workbench.Models.BootLoader;
+using Prism.Ioc;
+using Workbench.Models;
+using PPEC.Communication.Enum;
+using PPEC.Communication;
+using System.Threading;
+using Prism.Ioc;
+using Workbench.SerialAsistant.Utils;
+using System.Threading.Tasks;
+
+namespace Workbench.Utils
+{
+    public static class UtilsFunc
+    {
+
+        public class NaturalStringComparer : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                // 使用正则表达式匹配数字
+                Regex regex = new Regex(@"\d+");
+
+                // 提取x和y中的数字
+                MatchCollection matchesX = regex.Matches(x);
+                MatchCollection matchesY = regex.Matches(y);
+
+                // 比较每对数字
+                for (int i = 0; i < Math.Min(matchesX.Count, matchesY.Count); i++)
+                {
+                    int numX = int.Parse(matchesX[i].Value);
+                    int numY = int.Parse(matchesY[i].Value);
+
+                    if (numX != numY)
+                    {
+                        return numX.CompareTo(numY);
+                    }
+                }
+
+                // 如果数字完全一样，那么按照原字符串比较
+                return x.CompareTo(y);
+            }
+        }
+
+        public static UInt16 CalculateCRC(byte[] data, UInt16 numberOfBytes, int startByte)
+        {
+            byte[] auchCRCHi = {
+                0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
+                0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+                0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01,
+                0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+                0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81,
+                0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
+                0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01,
+                0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+                0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
+                0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+                0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01,
+                0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+                0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
+                0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+                0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01,
+                0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+                0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
+                0x40
+                };
+
+            byte[] auchCRCLo = {
+                0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06, 0x07, 0xC7, 0x05, 0xC5, 0xC4,
+                0x04, 0xCC, 0x0C, 0x0D, 0xCD, 0x0F, 0xCF, 0xCE, 0x0E, 0x0A, 0xCA, 0xCB, 0x0B, 0xC9, 0x09,
+                0x08, 0xC8, 0xD8, 0x18, 0x19, 0xD9, 0x1B, 0xDB, 0xDA, 0x1A, 0x1E, 0xDE, 0xDF, 0x1F, 0xDD,
+                0x1D, 0x1C, 0xDC, 0x14, 0xD4, 0xD5, 0x15, 0xD7, 0x17, 0x16, 0xD6, 0xD2, 0x12, 0x13, 0xD3,
+                0x11, 0xD1, 0xD0, 0x10, 0xF0, 0x30, 0x31, 0xF1, 0x33, 0xF3, 0xF2, 0x32, 0x36, 0xF6, 0xF7,
+                0x37, 0xF5, 0x35, 0x34, 0xF4, 0x3C, 0xFC, 0xFD, 0x3D, 0xFF, 0x3F, 0x3E, 0xFE, 0xFA, 0x3A,
+                0x3B, 0xFB, 0x39, 0xF9, 0xF8, 0x38, 0x28, 0xE8, 0xE9, 0x29, 0xEB, 0x2B, 0x2A, 0xEA, 0xEE,
+                0x2E, 0x2F, 0xEF, 0x2D, 0xED, 0xEC, 0x2C, 0xE4, 0x24, 0x25, 0xE5, 0x27, 0xE7, 0xE6, 0x26,
+                0x22, 0xE2, 0xE3, 0x23, 0xE1, 0x21, 0x20, 0xE0, 0xA0, 0x60, 0x61, 0xA1, 0x63, 0xA3, 0xA2,
+                0x62, 0x66, 0xA6, 0xA7, 0x67, 0xA5, 0x65, 0x64, 0xA4, 0x6C, 0xAC, 0xAD, 0x6D, 0xAF, 0x6F,
+                0x6E, 0xAE, 0xAA, 0x6A, 0x6B, 0xAB, 0x69, 0xA9, 0xA8, 0x68, 0x78, 0xB8, 0xB9, 0x79, 0xBB,
+                0x7B, 0x7A, 0xBA, 0xBE, 0x7E, 0x7F, 0xBF, 0x7D, 0xBD, 0xBC, 0x7C, 0xB4, 0x74, 0x75, 0xB5,
+                0x77, 0xB7, 0xB6, 0x76, 0x72, 0xB2, 0xB3, 0x73, 0xB1, 0x71, 0x70, 0xB0, 0x50, 0x90, 0x91,
+                0x51, 0x93, 0x53, 0x52, 0x92, 0x96, 0x56, 0x57, 0x97, 0x55, 0x95, 0x94, 0x54, 0x9C, 0x5C,
+                0x5D, 0x9D, 0x5F, 0x9F, 0x9E, 0x5E, 0x5A, 0x9A, 0x9B, 0x5B, 0x99, 0x59, 0x58, 0x98, 0x88,
+                0x48, 0x49, 0x89, 0x4B, 0x8B, 0x8A, 0x4A, 0x4E, 0x8E, 0x8F, 0x4F, 0x8D, 0x4D, 0x4C, 0x8C,
+                0x44, 0x84, 0x85, 0x45, 0x87, 0x47, 0x46, 0x86, 0x82, 0x42, 0x43, 0x83, 0x41, 0x81, 0x80,
+                0x40
+                };
+            UInt16 usDataLen = numberOfBytes;
+            byte uchCRCHi = 0xFF;
+            byte uchCRCLo = 0xFF;
+            int i = 0;
+            int uIndex;
+            while (usDataLen > 0)
+            {
+                usDataLen--;
+                if ((i + startByte) < data.Length)
+                {
+                    uIndex = uchCRCLo ^ data[i + startByte];
+                    uchCRCLo = (byte)(uchCRCHi ^ auchCRCHi[uIndex]);
+                    uchCRCHi = auchCRCLo[uIndex];
+                }
+                i++;
+            }
+            return (UInt16)((UInt16)uchCRCHi << 8 | uchCRCLo);
+        }
+
+        public static TopoChipStatus GetTopoChipStatus(byte[] data)
+        {
+            if (data.Length == 0) return null;
+            byte version;
+            CurrentChipStateEnum ccse = CurrentChipStateEnum.None;
+            if (data.Length == 7)
+            {
+                if (data[0] == 0x01 && data[1] == 0x03)
+                {
+                    version = data[3];
+                    ccse = CurrentChipStateEnum.App;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else if (data.Length == 10)
+            {
+                if (data[0] == 0x5A && data[1] == 0x05)
+                {
+                    version = data[6];
+                    ccse = CurrentChipStateEnum.Boot;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+            return new TopoChipStatus(version, ccse);
+        }
+
+        public static void UpdateLocalJson(string parentDirectoryFileName, object obj)
+        {
+            string updatedJsonContent = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All
+            });
+            if (File.Exists(parentDirectoryFileName))
+                File.WriteAllText(parentDirectoryFileName, updatedJsonContent);
+        }
+
+        public static T GetLocalInfo<T>(string jsonFileName)
+        {
+            T jsonFileDes = default(T);
+            if (!File.Exists(jsonFileName))
+                return jsonFileDes;
+            try
+            {
+                var json = File.ReadAllText(jsonFileName);
+                jsonFileDes = JsonConvert.DeserializeObject<T>(json);
+            }
+            catch
+            {
+
+            }
+            return jsonFileDes;
+        }
+
+        public static void ChangeTheme(bool isDarkTheme)
+        {
+            Uri lightTheme = new Uri("pack://application:,,,/Workbench.Themes;component/Resource/Themes/Light.xaml", UriKind.Absolute);
+            Uri darkTheme = new Uri("pack://application:,,,/Workbench.Themes;component/Resource/Themes/Dark.xaml", UriKind.Absolute);
+            ResourceDictionary darkThemeDict = new ResourceDictionary() { Source = darkTheme };
+            ResourceDictionary lightThemeDict = new ResourceDictionary() { Source = lightTheme };
+            if (isDarkTheme)
+            {
+                System.Windows.Application.Current.Resources.MergedDictionaries.Remove(lightThemeDict);
+                System.Windows.Application.Current.Resources.MergedDictionaries.Add(darkThemeDict);
+            }
+            else
+            {
+                System.Windows.Application.Current.Resources.MergedDictionaries.Remove(darkThemeDict);
+                System.Windows.Application.Current.Resources.MergedDictionaries.Add(lightThemeDict);
+            }
+            var fileHandler = ContainerLocator.Container.Resolve<FileHandler>();
+            var appConfig = fileHandler.ReadLocalFileObject<AppConfig>(Constants.CONFIG_FILE_PATH);
+            appConfig.UserTheme = isDarkTheme ? Constants.DarkTheme : Constants.LightTheme;
+            using (StreamWriter writer = new StreamWriter(Constants.CONFIG_FILE_PATH, false))
+            {
+                writer.WriteLine(JsonHelper.SerializeObject(appConfig));
+            }
+        }
+
+        public static bool CheckPassword(Int32 p, ITopologyMaster CurrentTopoMaster)
+        {
+            if (p == 0)
+                return false;
+            //将密码发送到下位机解保护
+            CurrentTopoMaster.SetValue(p, AddressName.PROTECTION_REGISTER_UNLOCK);
+            Thread.Sleep(200);
+            CurrentTopoMaster.SlaveToBufferBatch(AddressName.PASSWORD, 4);
+            //解保护之后才能读取正确的密码，解保护一次后获取到的就一直是正确的密码
+            var realPassword = CurrentTopoMaster.GetValue<Int32>(AddressName.PASSWORD, false);
+            //解保护的密码和正确的密码进行比较
+            var ulockPassword = CurrentTopoMaster.GetValue<Int32>(AddressName.PROTECTION_REGISTER_UNLOCK, false);
+            return realPassword == ulockPassword;
+        }
+
+        internal static void PowerOffEvent()
+        {
+            //遍历打开的工程
+            var projectManager = ContainerLocator.Container.Resolve<ProjectManager>();
+            var portNames = SerialPortHelper.GetPortNames();
+            foreach (var project in projectManager.OpenedProjectList)
+            {
+                foreach (var ppec in project.Children)
+                {
+                    if (!ppec.IsTrueConnected)
+                        continue;
+                    //如果串口没了
+                    if (!portNames.Contains(ppec.LastPortName))
+                    {
+                        ppec.Disconnect();
+                        if (projectManager.CurrentPPEC.UID == ppec.UID)
+                            projectManager.SetCurrentPpec(ppec);
+                    }
+                }
+            }
+        }
+
+        internal static async void PowerOnEvent()
+        {
+            //遍历打开的工程
+            var projectManager = ContainerLocator.Container.Resolve<ProjectManager>();
+            var portNames = SerialPortHelper.GetPortNames();
+            foreach (var project in projectManager.OpenedProjectList)
+            {
+                foreach (var ppec in project.Children)
+                {
+                    if (ppec.IsTrueConnected || !ppec.Password.HasValue)
+                        continue;
+                    //如果最后一次连接串口在串口列表中
+                    if (portNames.Contains(ppec.LastPortName))
+                    {
+                        ppec.PortName = ppec.LastPortName;
+                        await projectManager.ConnectAsync(ppec);
+                    }
+                }
+            }
+        }
+    }
+}
