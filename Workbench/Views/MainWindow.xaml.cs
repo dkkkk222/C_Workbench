@@ -262,6 +262,15 @@ namespace Workbench.Views
             {
             }, nameof(GlobalSettingWindow));
         }
+
+        private void ShowChipCommand_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            _dialogService.Show(nameof(ChipManagerView), new DialogParameters(), result =>
+            {
+
+            }, nameof(ChipManagerWindow));
+        }
     }
 
 }

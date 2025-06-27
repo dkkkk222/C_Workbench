@@ -11,12 +11,15 @@ namespace PPEC.Communication.Enum
         ResetCommand = 0x0000,   // 复位
         ReadRegisterCommand = 0x000A,   // 寄存器读
         WriteRegisterCommand = 0x000F,   // 寄存器写
-        ReadRegisterResponse = 0x0014    // 从机寄存器应答
+        ReadRegisterResponse = 0x0014,    // 从机寄存器应答
+        InvRealtime= 0x0001,
     }
     public enum ConnectPortType
     {
         UART,
         CAN,
-        I2C
+        I2C,
+        TCP,
+        INV
     }
 }

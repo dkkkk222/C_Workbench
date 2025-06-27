@@ -203,7 +203,7 @@
                             <Border Height="25"
 						                        x:Name="BD"
 						                        Grid.ColumnSpan="2" Background="{DynamicResource TabsBackgroundColor}" CornerRadius="6,6,0,0"
-						                        BorderBrush="#A9BAD9"
+						                        BorderBrush="#E8E8E8"
 						                        BorderThickness="0,0,0,1" />
                             <avalonDockControls:DocumentPaneTabPanel Background="Transparent"
 						                                                        x:Name="HeaderPanel"

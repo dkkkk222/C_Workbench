@@ -18,6 +18,9 @@ using Workbench.SerialAsistant;
 using PPEC.Communication;
 using Workbench.ViewModels.Pages;
 using Workbench.Views.Pages;
+using PPEC.Communication.DB;
+using PPEC.Communication.DB.Provided;
+using PPEC.Communication.Interface.DB;
 
 namespace Workbench
 {
@@ -60,10 +63,14 @@ namespace Workbench
         {
             RegisterDialog(containerRegistry);
             RegisterViewAndViewModel(containerRegistry);
+            containerRegistry.RegisterSingleton<IChipService, ChipService>();
             containerRegistry.RegisterSingleton<ProjectManager>();
             containerRegistry.RegisterSingleton<FileHandler>();
             containerRegistry.RegisterSingleton<CommandHandler>();
+            containerRegistry.RegisterSingleton<MainServices>();
+            containerRegistry.RegisterSingleton<SmlsContext>(() => new SmlsContext($@"Data Source={AppDomain.CurrentDomain.BaseDirectory}smls_vision.db;Version=3"));
             containerRegistry.Register<SerialBootStrapper>();
+
         }
 
         private void RegisterViewAndViewModel(IContainerRegistry containerRegistry)
@@ -74,7 +81,10 @@ namespace Workbench
         private void RegisterDialog(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialogWindow<CreateProjectWindow>(nameof(CreateProjectWindow));
+            containerRegistry.RegisterDialogWindow<ChipManagerWindow>(nameof(ChipManagerWindow)); 
             containerRegistry.RegisterDialog<CreateProjectView, CreateProjectViewModel>();
+            containerRegistry.RegisterSingleton<ChipManagerViewModel>();
+            containerRegistry.RegisterDialog<ChipManagerView, ChipManagerViewModel>();
             containerRegistry.RegisterDialogWindow<RenameWindow>(nameof(RenameWindow));
             containerRegistry.RegisterDialog<RenameView, RenameViewModel>();
             containerRegistry.RegisterDialogWindow<RecentFileWindow>(nameof(RecentFileWindow));

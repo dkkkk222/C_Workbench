@@ -122,4 +122,72 @@ BorderThickness="{TemplateBinding BorderThickness}" >
             </Setter.Value>
         </Setter>
     </Style>
+
+
+    <!--芯片管理按钮-->
+    <Style x:Key="ConfirmButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource ConfirmButtonColor}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="16,6"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                                CornerRadius="2">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- 悬停 -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource HoverButtonColor}"/>
+                        </Trigger>
+                        <!-- 按下 -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource PressedButtonColor}"/>
+                        </Trigger>
+                        <!-- 禁用 -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource EnabledButtonColor}"/>
+                            <Setter Property="Foreground" Value="{StaticResource EnabledForeColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 取消按钮样式，基于 ConfirmButtonStyle，只替换颜色 -->
+    <Style x:Key="CancelButtonStyle" TargetType="Button" BasedOn="{StaticResource ConfirmButtonStyle}">
+        <!-- 正常态背景改成灰色，前景默认也可以跟随 -->
+        <Setter Property="Background" Value="{StaticResource CancelButtonColor}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <!-- 重写模板触发器颜色 -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                                CornerRadius="2">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource CancelHoverButtonColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource CancelPressedButtonColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource CancelEnabledButtonColor}"/>
+                            <Setter Property="Foreground" Value="{StaticResource CancelEnabledForeColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

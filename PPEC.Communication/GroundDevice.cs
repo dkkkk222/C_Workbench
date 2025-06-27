@@ -14,7 +14,7 @@ namespace PPEC.Communication
     public class GroundDevice : IDisposable
     {
         private readonly ConnectPortType _type;
-        private readonly ICommChannel _ch;
+        public readonly ICommChannel _ch;
         private readonly IProtocolHandler _proto;
         private readonly BlockingCollection<IUartMessage> _q = new BlockingCollection<IUartMessage>();
         private readonly Task _loop;

@@ -14,19 +14,19 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Border Padding="5,5">
+        <Border Padding="5,5" BorderThickness="0,1,0,1" BorderBrush="#CCCCCC">
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource ButtonBarStyle}" ToolTip="新建" Command="{Binding NewProjectCommand}">
                     <TextBlock Text="&#xe620;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                 </Button>
                 <Button Style="{StaticResource ButtonBarStyle}" ToolTip="打开" Command="{Binding OpenProjectCommand}">
-                    <TextBlock Text="&#xe60a;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
+                    <TextBlock Text="&#xe614;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                 </Button>
                 <Button Style="{StaticResource ButtonBarStyle}" ToolTip="保存" Command="{Binding SaveProjectCommand}">
-                    <TextBlock Text="&#xe60c;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
+                    <TextBlock Text="&#xe627;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                 </Button>
                 <Button Style="{StaticResource ButtonBarStyle}" ToolTip="另存为" Command="{Binding SaveAsProjectCommand}">
-                    <TextBlock Text="&#xe624;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
+                    <TextBlock Text="&#xe628;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                 </Button>
                 <StackPanel Orientation="Horizontal" Visibility="{calc:Binding IsSelectedProject,FalseToVisibility=Collapsed}">
                     <Border Style="{StaticResource VerticalSeparatorStyle}"/>
@@ -96,8 +96,8 @@
 
             </StackPanel>
         </Border>
-        <Border Grid.Column="1" Padding="0,0,8,0">
+        <!--<Border Grid.Column="1" Padding="0,0,8,0">
             <controls:ToggleButton VerticalAlignment="Center" IsChecked="{Binding IsDarkTheme,Mode=TwoWay}"/>
-        </Border>
+        </Border>-->
     </Grid>
 </UserControl>

@@ -3,33 +3,33 @@
     <!--主要文字颜色-->
     <SolidColorBrush x:Key="PrimaryFontColor" Color="Black"/>
     <!-- 主要背景颜色-->
-    <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#687CAB"/>
+    <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#E8E8E8"/>
     <!--次要背景颜色-->
-    <SolidColorBrush x:Key="SecondaryBackgroundColor" Color="#D1DCF0"/>
+    <SolidColorBrush x:Key="SecondaryBackgroundColor" Color="#E8E8E8"/>
 
-    <SolidColorBrush x:Key="FooterBackgroundColor" Color="#687cab"/>
+    <SolidColorBrush x:Key="FooterBackgroundColor" Color="#F4F4F4"/>
     <!--标题栏底色-->
-    <SolidColorBrush x:Key="TitleBarBackgroundColor" Color="#eef2f9"/>
+    <SolidColorBrush x:Key="TitleBarBackgroundColor" Color="#FDFDFD"/>
     <!--标题栏文字颜色-->
     <SolidColorBrush x:Key="TitleBarColor" Color="Black"/>
     <!-- 工程管理标题背景 -->
-    <SolidColorBrush x:Key="ProjectManagementTitleBackground" Color="#cbd5f0"/>
+    <SolidColorBrush x:Key="ProjectManagementTitleBackground" Color="#F8F8F8"/>
     <!--底部栏文字颜色-->
-    <SolidColorBrush x:Key="BottomBarTextColor" Color="White"/>
+    <SolidColorBrush x:Key="BottomBarTextColor" Color="Black"/>
     <!--底部栏分割线颜色-->
     <SolidColorBrush x:Key="BottomBarSeparatorColor" Color="#ededed"/>
     <!-- Home背景颜色 -->
     <SolidColorBrush x:Key="HomeBackgroundColor" Color="#ffffff"/>
     <!-- AvalonDock区域背景 -->
-    <SolidColorBrush x:Key="AvalonDockAreaBackgroundColor" Color="#e0e5ee"/>
+    <SolidColorBrush x:Key="AvalonDockAreaBackgroundColor" Color="#ffffff"/>
     <!-- Tabs区域背景 -->
-    <SolidColorBrush x:Key="TabsBackgroundColor" Color="#e1e8f5"/>
+    <SolidColorBrush x:Key="TabsBackgroundColor" Color="#E8E8E8"/>
     <!-- Tab选中背景色 -->
     <SolidColorBrush x:Key="TabSelectedBackgroundColor" Color="#fff"/>
     <!-- Tab选中字体色 -->
     <SolidColorBrush x:Key="TabSelectedFontColor" Color="#0067FF"/>
     <!-- TreeView背景色 -->
-    <SolidColorBrush x:Key="TreeViewBackgroundColor" Color="#fff"/>
+    <SolidColorBrush x:Key="TreeViewBackgroundColor" Color="#E8E8E8"/>
     <!-- TreeViewItem选择背景色 -->
     <SolidColorBrush x:Key="TreeViewItemSelectedBackgroundColor" Color="#DCDFE6"/>
     <!-- Dialog背景色 -->
@@ -55,8 +55,20 @@
 
     <!-- 黑色 -->
     <SolidColorBrush x:Key="BlackColor" Color="Black"/>
+    <!--芯片管理-->
+    <SolidColorBrush x:Key="AddButtonColor" Color="#539AE4"/>
+    <SolidColorBrush x:Key="ConfirmButtonColor" Color="#539AE4"/>
+    <SolidColorBrush x:Key="HoverButtonColor" Color="#6CADEF"/>
+    <SolidColorBrush x:Key="PressedButtonColor" Color="#3B79B8"/>
+    <SolidColorBrush x:Key="EnabledButtonColor" Color="#CCDDEE"/>
+    <SolidColorBrush x:Key="EnabledForeColor" Color="#AAAAAA"/>
 
-
+    <SolidColorBrush x:Key="CancelButtonColor" Color="#9E9E9E"/>
+    <SolidColorBrush x:Key="CancelHoverButtonColor" Color="#B0B0B0"/>
+    <SolidColorBrush x:Key="CancelPressedButtonColor" Color="#7E7E7E"/>
+    <SolidColorBrush x:Key="CancelEnabledButtonColor" Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="CancelEnabledForeColor" Color="#AAAAAA"/>
+    
     <!-- ComboBox -->
     <SolidColorBrush x:Key="ComboBoxToggleBackground" Color="#fff"/>
     <SolidColorBrush x:Key="ComboBoxItemHighlightBackground" Color="#C0C4CC"/>

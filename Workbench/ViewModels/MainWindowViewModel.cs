@@ -16,18 +16,22 @@ using Workbench.Models;
 using PPEC.Communication;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Common;
+using PPEC.Communication.DB;
+using Prism.Ioc;
 
 namespace Workbench.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        private MainServices MainServices;
         private readonly FileHandler _fileHandler;
         private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
         private static readonly ILog _log = LogManager.GetLogger(typeof(MainWindowViewModel));
         public string ExcelPath = "D:\\Work\\Project\\UpClient\\starvisionworkbench\\starvisionworkbench\\Workbench\\bin\\Debug\\Resource\\B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类(1).xlsx";
-        public MainWindowViewModel(IEventAggregator eventAggregator, FileHandler fileHandler, ProjectManager projectManager)
+        public MainWindowViewModel(IContainerProvider containerProvider, IEventAggregator eventAggregator, FileHandler fileHandler, ProjectManager projectManager)
         {
+            MainServices = containerProvider.Resolve<MainServices>();
             _fileHandler = fileHandler;
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;
@@ -39,8 +43,14 @@ namespace Workbench.ViewModels
             //EXCEL解析--wzw--626
             RegisterExcelParser rep=new RegisterExcelParser();
             rep.Parse(ExcelPath);
+            //WZW--627
+            InitDataList();
         }
 
+        public async void InitDataList()
+        {
+            await InitDataModelService.Instance.InitChipList(MainServices.ChipService);
+        }
         static async Task TestMain()
         {
             var devU = new GroundDevice("COM3", ConnectPortType.UART);

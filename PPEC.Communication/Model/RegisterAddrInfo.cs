@@ -16,14 +16,6 @@ namespace PPEC.Communication.Model
         public string RW { get; set; }          // R/W
         public string ResetValue { get; set; }  // 复位值
     }
-    //public class BitField
-    //{
-    //    public int StartBit { get; set; }       // 低位
-    //    public int EndBit { get; set; }       // 高位
-    //    public int Length => EndBit - StartBit + 1;
-    //    public string Desc { get; set; }       // 位域功能描述
-    //    public List<BitOption> Options { get; } = new List<BitOption>();  // 具体取值→含义
-    //}
     public class BitField
     {
         public int StartBit { get; set; }   // 低位

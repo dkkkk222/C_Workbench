@@ -44,7 +44,7 @@
                             </MenuItem>
                             <MenuItem x:Name="OpenProject" Header="打开" Click="OpenProject_Click">
                                 <MenuItem.Icon>
-                                    <TextBlock Text="&#xe60a;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
+                                    <TextBlock Text="&#xe614;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem x:Name="SaveProject" 
@@ -52,7 +52,7 @@
                                       IsEnabled="{Binding HasPpec}"
                                       Click="SaveProject_Click">
                                 <MenuItem.Icon>
-                                    <TextBlock Text="&#xe60c;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
+                                    <TextBlock Text="&#xe627;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem x:Name="SaveAsProject" 
@@ -60,7 +60,14 @@
                                       IsEnabled="{Binding HasPpec}"
                                       Click="SaveAsProject_Click">
                                 <MenuItem.Icon>
-                                    <TextBlock Text="&#xe624;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
+                                    <TextBlock Text="&#xe628;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+                        <MenuItem Header="芯片(_C)" SubmenuOpened="MenuItem_SubmenuOpened">
+                            <MenuItem Header="芯片管理" Click="ShowChipCommand_Click" >
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xe7a9;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuItem>
@@ -75,68 +82,7 @@
                                     <TextBlock Text="&#xe61b;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="固化" IsEnabled="{Binding IsConnected}">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe60b;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="下发参数" IsEnabled="{Binding IsConnected}">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe62d;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="工程设置" IsEnabled="{Binding HasPpec}">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe61c;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                        </MenuItem>
-                        <MenuItem Header="工具(_T)">
-                            <MenuItem Header="固件升级" Click="BootLoader_Click">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe60f;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="行业计算工具" Click="PowerTool_Click">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe60d;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="串口助手" Click="SerialAssistant_Click">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe622;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <!--<MenuItem Header="Node-Red" Click="NodeRed_Click">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe619;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>-->
-                        </MenuItem>
-                        <MenuItem Header="设置(_S)">
-                            <MenuItem Header="全局设置" Click="GlobalSetting_Click">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe617;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                        </MenuItem>
-                        <MenuItem Header="帮助(_H)">
-                            <MenuItem Header="用户手册" Click="UserManual_Click">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe623;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="升级更新" Command="{Binding UpgradeCommand}">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe614;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="关于" Click="About_Click">
-                                <MenuItem.Icon>
-                                    <TextBlock Text="&#xe616;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                        </MenuItem>
+                        </MenuItem>                      
                     </Menu>
                 </Border>
                 <Border Grid.Column="2"></Border>

@@ -193,7 +193,6 @@ namespace Workbench.ViewModels.Content.ButtonBar
         #endregion
 
         #region Command
-
         private DelegateCommand _newProjectCommand;
         public DelegateCommand NewProjectCommand =>
             _newProjectCommand ?? (_newProjectCommand = new DelegateCommand(() =>
