@@ -47,7 +47,7 @@ namespace PPEC.Communication
             //{
             //    return new CANMaster(t.Resolve<ITopologyConfigLookup>(), new Dictionary<string, CANModelParam>(), t.Resolve<ITransformLookup>());
             //});
-            _containerRegistry.Register<IFactory, Factory>();
+            //_containerRegistry.Register<IFactory, Factory>();
 
             _containerRegistry.Register(typeof(ICommunicationMaster), c =>
             {

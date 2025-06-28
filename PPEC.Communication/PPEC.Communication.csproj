@@ -172,8 +172,8 @@
     <Compile Include="Config\CommunicationConfig.cs" />
     <Compile Include="Config\NetworkConfig.cs" />
     <Compile Include="Config\SerialPortConfig.cs" />
-    <Compile Include="Config\TopologyConfig_86CA3B.cs" />
     <Compile Include="Config\TopologyConfig_86CA3A.cs" />
+    <Compile Include="Config\TopologyConfig_86CA3B.cs" />
     <Compile Include="ConstParams.cs" />
     <Compile Include="CrcExtensions.cs" />
     <Compile Include="DB\InitDataModelService.cs" />
@@ -190,8 +190,6 @@
     <Compile Include="Enum\RegisterType.cs" />
     <Compile Include="Enum\TopologyId.cs" />
     <Compile Include="Enum\UartDataType.cs" />
-    <Compile Include="ExceptionResponse.cs" />
-    <Compile Include="Factory.cs" />
     <Compile Include="FunctionCodes.cs" />
     <Compile Include="GroundDevice.cs" />
     <Compile Include="ICommunicationMaster.cs" />
@@ -213,10 +211,7 @@
     <Compile Include="ITransport.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LoggingExtensions.cs" />
-    <Compile Include="MasterAssistant.cs" />
-    <Compile Include="MasterModbus.cs" />
     <Compile Include="Message\PublicMessageImpl.cs" />
-    <Compile Include="Message\SlaveException.cs" />
     <Compile Include="Model\ChannelFactory.cs" />
     <Compile Include="Model\ChipInfo.cs" />
     <Compile Include="Model\InvFrame.cs" />
@@ -255,27 +250,11 @@
     <Compile Include="Parameter\Utility\UtilityFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolFactory.cs" />
-    <Compile Include="ReadRequestModbus.cs" />
-    <Compile Include="ReadResponseModbus.cs" />
-    <Compile Include="RegisterCollection.cs" />
-    <Compile Include="SerialAssistantRequestResponse.cs" />
     <Compile Include="SerialChannelMaster.cs" />
-    <Compile Include="SerialPortAdapter.cs" />
-    <Compile Include="TcpClientAdapter.cs" />
-    <Compile Include="TcpClientDataReceivedEventArgs.cs" />
-    <Compile Include="TcpClientWithListener.cs" />
     <Compile Include="TopologyConfig.cs" />
     <Compile Include="TopologyConfigLookup.cs" />
     <Compile Include="TopologyMaster.cs" />
-    <Compile Include="Transport.cs" />
-    <Compile Include="TransportBaseEvent.cs" />
-    <Compile Include="TransportModbus.cs" />
-    <Compile Include="TransportNetWorkWithEvent.cs" />
-    <Compile Include="TransportSerialWithEvent.cs" />
     <Compile Include="Utility.cs" />
-    <Compile Include="WriteMultipleRequestModbus.cs" />
-    <Compile Include="WriteMultipleResponseModbus.cs" />
-    <Compile Include="WriteSingleRequestModbus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LinqToDB.Templates\DataAnnotations.ttinclude" />
