@@ -15,6 +15,7 @@ namespace PPEC.Communication.Model
         public string Name { get; set; }        // 寄存器名称
         public string RW { get; set; }          // R/W
         public string ResetValue { get; set; }  // 复位值
+        public byte[] Value { get; set; }
     }
     public class BitField
     {
@@ -25,20 +26,29 @@ namespace PPEC.Communication.Model
         public string Desc { get; set; }
 
         /* 以下为新字段 —— 任选其一有值 */
-        public List<BitOption> Options { get; } = new List<BitOption>(); // 离散取值
+        public List<BitOption> Options { get; set; } = new List<BitOption>(); // 离散取值
         public uint? RangeMin { get; set; }   // 连续范围最小值
         public uint? RangeMax { get; set; }   // 连续范围最大值
 
         public string ExtraNote { get; set; } // “先写后清除”等操作提示
+        public FormulaParam FormParam { get; set; }
+        public byte[] Value { get; set; }
     }
     public class BitOption
     {
         public uint Value { get; set; }         // 对应数值（已右移到最低位）
         public string Display { get; set; }     // 显示文本
     }
+    public class FormulaParam
+    {
+        public string ParamName { get; set; }
+        public string ParamA { get; set; }
+        public string ParamB { get; set; }
+        public string UnitName { get; set; }
+    }
     public class RegisterMeta
     {
         public RegisterAddrInfo AddrInfo { get; set; }
-        public List<BitField> BitFields { get; } = new List<BitField>();
+        public List<BitField> BitFields { get; set; } = new List<BitField>();
     }
 }

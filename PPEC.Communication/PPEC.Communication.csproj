@@ -218,6 +218,7 @@
     <Compile Include="Message\PublicMessageImpl.cs" />
     <Compile Include="Message\SlaveException.cs" />
     <Compile Include="Model\ChannelFactory.cs" />
+    <Compile Include="Model\ChipInfo.cs" />
     <Compile Include="Model\InvFrame.cs" />
     <Compile Include="Model\INVProtocolHandler.cs" />
     <Compile Include="Model\RegisterAddrInfo.cs" />
