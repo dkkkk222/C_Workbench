@@ -22,7 +22,10 @@
                 <TextBox Text="{Binding ElementName=tbx, Path=Text}"
                          local:TextBoxProperties.IsNumericOnly="True"
                          local:TextBoxProperties.RetainPlaces="{Binding ElementName=tbx,Path=RetainPlaces}"
-                         Height="{Binding ElementName=tbx, Path=Height}">
+                         Height="{Binding ElementName=tbx, Path=Height}" 
+                         AcceptsReturn="{Binding ElementName=tbx, Path=AcceptsReturn}"
+                         TextWrapping="{Binding ElementName=tbx, Path=TextWrapping}"
+                         VerticalScrollBarVisibility="{Binding ElementName=tbx, Path=VerticalScrollBarVisibility}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Enter" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=TextBox}}"/>
                     </TextBox.InputBindings>

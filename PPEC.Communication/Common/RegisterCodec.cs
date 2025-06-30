@@ -13,7 +13,7 @@ namespace PPEC.Communication.Common
         public static string Decode(uint regValue, RegisterMeta meta)
         {
             var sb = new StringBuilder();
-            foreach (var bf in meta.BitFields)
+            foreach (var bf in meta.AddrInfo.BitFields)
             {
                 uint fieldVal = (regValue >> bf.StartBit) &
                                 ((uint)((1 << (bf.EndBit - bf.StartBit + 1)) - 1));

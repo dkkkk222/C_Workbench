@@ -2,9 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LinqToDB.Async;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Interface;
 using PPEC.Communication.Model;
@@ -16,20 +18,31 @@ namespace PPEC.Communication
         private readonly ConnectPortType _type;
         public readonly ICommChannel _ch;
         private readonly IProtocolHandler _proto;
-        private readonly BlockingCollection<IUartMessage> _q = new BlockingCollection<IUartMessage>();
+        public readonly BlockingCollection<IUartMessage> _q = new BlockingCollection<IUartMessage>();
+        public readonly BlockingCollection<ReadOnlyMemory<byte>> _rawQueue = new BlockingCollection<ReadOnlyMemory<byte>>();
+        //public readonly BlockingCollection<InvRealtimeMessage> _rawQueue = new BlockingCollection<InvRealtimeMessage>();
         private readonly Task _loop;
 
         private readonly byte _i2cAddr;            // I²C 专用
 
-        public GroundDevice(string id, ConnectPortType type)
+        public GroundDevice(string id, ConnectPortType type, int baud=256000)
         {
             _type = type;
-            _ch = ChannelFactory.Create(type, id);
+            _ch = ChannelFactory.Create(type, id, baud);
             _proto = ProtocolFactory.Create(type);
 
+            //_ch.MessageParsed += OnMessageParsed;
+            Task.Run(() =>
+            {
+                foreach (var raw in _rawQueue.GetConsumingEnumerable())
+                {
+                    _proto.Feed(raw.Span); // 这里做协议帧解析
+                }
+            });
             _ch.BytesReceived += (_, m) =>
             {
-                _proto.Feed(m.Span);
+                _rawQueue.Add(m);
+                //_proto.Feed(m.Span);
             };
             _proto.MessageParsed += (_, msg) =>
             {
@@ -39,9 +52,17 @@ namespace PPEC.Communication
             if (type == ConnectPortType.I2C)
                 _i2cAddr = byte.Parse(id);         // id 传的就是 7bit 地址
 
-            _loop = Task.Run(ProcessLoop);
+            //_loop = Task.Run(ProcessLoop);
         }
-
+        private void OnMessageParsed(object sender, IUartMessage msg)
+        {
+            // **一定要回到 UI 线程再修改绑定属性**
+            //if(msg is InvRealtimeMessage msg1)
+            //{
+            //    _rawQueue.Add(msg1);                
+            //}
+           
+        }
         public Task ConnectAsync() => _ch.ConnectAsync();
 
         public Task ResetAsync()
@@ -139,9 +160,9 @@ namespace PPEC.Communication
     {
         private readonly ConcurrentDictionary<string, GroundDevice> _devs = new ConcurrentDictionary<string, GroundDevice>();
 
-        public async Task AddDeviceAsync(string port, ConnectPortType type)
+        public async Task AddDeviceAsync(string port, ConnectPortType type,int baud)
         {
-            var dev = new GroundDevice(port, type);
+            var dev = new GroundDevice(port, type, baud);
             await dev.ConnectAsync();
             _devs[port] = dev;
         }

@@ -53,7 +53,7 @@ namespace Workbench.ViewModels
         }
         static async Task TestMain()
         {
-            var devU = new GroundDevice("COM3", ConnectPortType.UART);
+            var devU = new GroundDevice("COM3", ConnectPortType.UART,115200);
 
             await Task.WhenAll(devU.ConnectAsync());
 

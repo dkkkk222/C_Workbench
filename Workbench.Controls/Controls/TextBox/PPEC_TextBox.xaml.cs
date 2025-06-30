@@ -25,6 +25,33 @@ namespace Workbench.Controls
             InitializeComponent();
         }
 
+        public static readonly DependencyProperty AcceptsReturnProperty =
+        DependencyProperty.Register("AcceptsReturn", typeof(bool), typeof(PPEC_TextBox), new PropertyMetadata(false));
+
+        public bool AcceptsReturn
+        {
+            get { return (bool)GetValue(AcceptsReturnProperty); }
+            set { SetValue(AcceptsReturnProperty, value); }
+        }
+
+        public static readonly DependencyProperty TextWrappingProperty =
+            DependencyProperty.Register("TextWrapping", typeof(TextWrapping), typeof(PPEC_TextBox), new PropertyMetadata(TextWrapping.NoWrap));
+
+        public TextWrapping TextWrapping
+        {
+            get { return (TextWrapping)GetValue(TextWrappingProperty); }
+            set { SetValue(TextWrappingProperty, value); }
+        }
+
+        public static readonly DependencyProperty VerticalScrollBarVisibilityProperty =
+            DependencyProperty.Register("VerticalScrollBarVisibility", typeof(ScrollBarVisibility), typeof(PPEC_TextBox), new PropertyMetadata(ScrollBarVisibility.Hidden));
+
+        public ScrollBarVisibility VerticalScrollBarVisibility
+        {
+            get { return (ScrollBarVisibility)GetValue(VerticalScrollBarVisibilityProperty); }
+            set { SetValue(VerticalScrollBarVisibilityProperty, value); }
+        }
+
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register("Title", typeof(string), typeof(PPEC_TextBox), new PropertyMetadata(""));
         public string Title

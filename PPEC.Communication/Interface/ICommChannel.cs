@@ -26,6 +26,7 @@ namespace PPEC.Communication.Interface
 
         /// <summary>底层异常 / 掉线</summary>
         event EventHandler<Exception> ChannelFaulted;
+        public event EventHandler<IUartMessage> MessageParsed;
     }
     public interface IUartMessage
     {

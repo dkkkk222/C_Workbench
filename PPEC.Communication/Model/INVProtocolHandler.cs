@@ -13,11 +13,61 @@ namespace PPEC.Communication.Model
         private const byte Head1 = 0x55;
         private const byte Head2 = 0xAA;
 
-        private readonly byte[] _buf = new byte[4096];
         private int _len = 0;
         private bool _disposed;
 
         public event EventHandler<IUartMessage> MessageParsed;
+        private const int BufSize = 64 * 1024;
+        private readonly byte[] _buf = new byte[BufSize];
+        public void Feed1(ReadOnlySpan<byte> raw)
+        {
+            if (raw.IsEmpty) return;
+
+            // 1. Append 原始数据，够不到就丢最旧
+            if (_len + raw.Length > BufSize)
+            {
+                int drop = (_len + raw.Length) - BufSize;
+                Buffer.BlockCopy(_buf, drop, _buf, 0, _len - drop);
+                _len -= drop;
+            }
+            raw.CopyTo(new Span<byte>(_buf, _len, raw.Length));
+            _len += raw.Length;
+
+            // 2. 解析
+            int idx = 0;
+            while (true)
+            {
+                // 找头
+                while (idx + 1 < _len && (_buf[idx] != Head1 || _buf[idx + 1] != Head2))
+                    idx++;
+
+                // 剩余长度是否够一帧
+                if (_len - idx < FrameLen) break;
+                
+                // CRC / 解析 …
+                //ParseFrame(idx);
+                var msg = new InvRealtimeMessage
+                {
+                    Vout = ReadInt16BE(_buf, idx + 2),// BitConverter.ToUInt16(_buf, idx + 2),
+                    Iout = ReadInt16BE(_buf, idx + 4),// BitConverter.ToUInt16(_buf, idx + 4),
+                    Phase = ReadInt16BE(_buf, idx + 6),// BitConverter.ToUInt16(_buf, idx + 6),
+                    PI = ReadInt16BE(_buf, idx + 8),//BitConverter.ToUInt16(_buf, idx + 8),
+                    FreqVout = ReadInt16BE(_buf, idx + 10),// BitConverter.ToUInt16(_buf, idx + 10),
+                    FreqIout = ReadInt16BE(_buf, idx + 12),//BitConverter.ToUInt16(_buf, idx + 12),
+                    TempValue = ReadInt16BE(_buf, idx + 14),// BitConverter.ToUInt16(_buf, idx + 14),
+                    Timestamp = DateTime.Now
+                };
+                MessageParsed?.Invoke(this, msg);
+                idx += FrameLen;
+            }
+
+            // 3. 把剩余未处理的字节移到 0 位置
+            if (idx > 0)
+            {
+                Buffer.BlockCopy(_buf, idx, _buf, 0, _len - idx);
+                _len -= idx;
+            }
+        }
 
         /// <summary>上层收到串口原始字节后直接调用</summary>
         public void Feed(ReadOnlySpan<byte> raw)
@@ -54,12 +104,13 @@ namespace PPEC.Communication.Model
                 // (3) 组装消息对象
                 var msg = new InvRealtimeMessage
                 {
-                    Vout = BitConverter.ToUInt16(_buf, idx + 2),
-                    Iout = BitConverter.ToUInt16(_buf, idx + 4),
-                    Phase = BitConverter.ToUInt16(_buf, idx + 6),
-                    PI = BitConverter.ToUInt16(_buf, idx + 8),
-                    FreqVout = BitConverter.ToUInt16(_buf, idx + 10),
-                    FreqIout = BitConverter.ToUInt16(_buf, idx + 12),
+                    Vout = ReadInt16BE(_buf, idx + 2),// BitConverter.ToUInt16(_buf, idx + 2),
+                    Iout = ReadInt16BE(_buf, idx + 4),// BitConverter.ToUInt16(_buf, idx + 4),
+                    Phase = ReadInt16BE(_buf, idx + 6),// BitConverter.ToUInt16(_buf, idx + 6),
+                    PI = ReadInt16BE(_buf, idx + 8),//BitConverter.ToUInt16(_buf, idx + 8),
+                    FreqVout = ReadInt16BE(_buf, idx + 10),// BitConverter.ToUInt16(_buf, idx + 10),
+                    FreqIout = ReadInt16BE(_buf, idx + 12),//BitConverter.ToUInt16(_buf, idx + 12),
+                    TempValue = ReadInt16BE(_buf, idx + 14),// BitConverter.ToUInt16(_buf, idx + 14),
                     Timestamp = DateTime.Now
                 };
                 MessageParsed?.Invoke(this, msg);
@@ -74,7 +125,14 @@ namespace PPEC.Communication.Model
                 _len -= idx;
             }
         }
-
+        public static short ReadInt16BE(byte[] buffer, int index)
+        {
+            return (short)((buffer[index] << 8) | buffer[index + 1]);
+        }
+        public ushort ReadUInt16BE(byte[] buffer, int index)
+        {
+            return (ushort)((buffer[index] << 8) | buffer[index + 1]);
+        }
         public void Reset() => _len = 0;
 
         #region CRC16-IBM

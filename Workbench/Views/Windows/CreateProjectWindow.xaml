@@ -9,7 +9,7 @@
         WindowStyle="None"
         WindowStartupLocation="CenterOwner"
         Style="{StaticResource DefaulClientWindow}"
-        Height="580" Width="950">
+        Height="380" Width="550">
     <comCtrl:NoTitleBarWindow.TitleBarContent>
         <comCtrl:TitleBar>
             <comCtrl:TitleBar.Title>

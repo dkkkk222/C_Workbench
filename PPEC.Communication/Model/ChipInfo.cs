@@ -11,8 +11,6 @@ namespace PPEC.Communication.Model
         public int ChipId { get; set; }
         public string ChipName { get; set; }
         public string ChipPath { get; set; }
-        public int AddressDec { get; set; }
-        public RegisterAddrInfo ChipRegisterInfo { get; set; }
-        public List<BitField> BitFields { get; set; } = new List<BitField>();
+        public List<RegisterMeta> ChipRegisterInfo { get; set; }
     }
 }

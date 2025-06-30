@@ -10,33 +10,40 @@ using PPEC.Communication.Common;
 using PPEC.Communication.Config;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Interface;
+using PPEC.Communication.Model;
 
 namespace PPEC.Communication
 {
     public sealed class SerialCommChannel : ICommChannel
     {
         private readonly SerialPort _sp;
-        private readonly byte[] _rxBuf = new byte[4096];
+        private readonly byte[] _rxBuf = new byte[65536];
 
         public string Name => $"SERIAL:{_sp.PortName}";
         public bool IsConnected => _sp.IsOpen;
 
         public event EventHandler<ReadOnlyMemory<byte>> BytesReceived;
         public event EventHandler<Exception> ChannelFaulted;
-
+        public INVProtocolHandler ipro=null;
+        public event EventHandler<IUartMessage> MessageParsed;   // 暴露给上层
         public SerialCommChannel(string port, int baud = 115200)
         {
-            _sp = new SerialPort(port, baud, Parity.None, 8, StopBits.Two)
+            _sp = new SerialPort(port, baud, Parity.None, 8, StopBits.One)
             {
-                ReadBufferSize = 4096,
-                WriteBufferSize = 4096
+                ReadBufferSize = 65536,
+                WriteBufferSize = 16384
             };
-
+            ipro = new INVProtocolHandler();
             _sp.DataReceived += OnDataReceived;
             _sp.ErrorReceived += (_, e) =>
                 RaiseChannelFaulted(new IOException($"Serial error: {e.EventType}"));
+            ipro.MessageParsed += (_, msg) => RaiseMessageParsed(msg);
         }
-
+        private void RaiseMessageParsed(IUartMessage msg)
+        {
+            var handler = MessageParsed;
+            if (handler != null) handler(this, msg);   // 仍在串口事件线程
+        }
         public Task ConnectAsync(CancellationToken token = default)
         {
             if (IsConnected) return Task.CompletedTask;
@@ -72,9 +79,19 @@ namespace PPEC.Communication
         {
             try
             {
-                int n = _sp.Read(_rxBuf, 0, _rxBuf.Length);
-                if (n > 0)
-                    RaiseBytesReceived(new ReadOnlyMemory<byte>(_rxBuf, 0, n));
+                //while (_sp.BytesToRead > 0)                    // ① 读到空
+                //{
+                //    int n = _sp.Read(_rxBuf, 0, _rxBuf.Length);
+                //    if (n > 0)
+                //        ipro.Feed(new ReadOnlySpan<byte>(_rxBuf, 0, n));
+                //}
+                while (_sp.BytesToRead > 0)                    // ① 读到空
+                {
+                    int n = _sp.Read(_rxBuf, 0, _rxBuf.Length);
+                    if (n > 0)
+                        RaiseBytesReceived(new ReadOnlyMemory<byte>(_rxBuf, 0, n));
+                }
+
             }
             catch (Exception ex)
             {
@@ -103,6 +120,8 @@ namespace PPEC.Communication
         private readonly ICommChannel _inner;
         private readonly TimeSpan _retryInterval;
         private CancellationTokenSource _loopCts;
+
+        public event EventHandler<IUartMessage> MessageParsed;
 
         public string Name => _inner.Name;
         public bool IsConnected => _inner.IsConnected;
@@ -191,6 +210,7 @@ namespace PPEC.Communication
 
         public event EventHandler<ReadOnlyMemory<byte>> BytesReceived;
         public event EventHandler<Exception> ChannelFaulted;
+        public event EventHandler<IUartMessage> MessageParsed;
 
         public CanCommChannel(uint channelIndex=0)
         {
@@ -291,6 +311,7 @@ namespace PPEC.Communication
 
         public event EventHandler<ReadOnlyMemory<byte>> BytesReceived;     // 仅在 Read 后回调
         public event EventHandler<Exception> ChannelFaulted;
+        public event EventHandler<IUartMessage> MessageParsed;
 
         public I2cCommChannel(byte addr7) { _addr7 = addr7; }
 

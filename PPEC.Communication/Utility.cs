@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using PPEC.Communication.Model;
 
 namespace PPEC.Communication
 {
@@ -236,6 +237,109 @@ namespace PPEC.Communication
             }
 
             return BitConverter.GetBytes(crc);
+        }
+
+        public static void FillBitFieldValues(uint rawValue, IList<BitField> bitFields)
+        {
+            if (bitFields == null) throw new ArgumentNullException(nameof(bitFields));
+
+            foreach (var bf in bitFields)
+            {
+                // 基本合法性校验
+                if (bf.StartBit < 0 || bf.EndBit > 31 || bf.EndBit < bf.StartBit)
+                    throw new ArgumentOutOfRangeException(
+                        $"无效位区间: [{bf.StartBit}-{bf.EndBit}]");
+
+                // 该字段所占的位宽
+                int len = bf.Length;                // = EndBit - StartBit + 1
+
+                // 构造 (len) 位的掩码，例如 len=3 → 0b111
+                uint mask = len == 32
+                    ? 0xFFFFFFFFu                // 理论上不会走到这一步，保险处理
+                    : ((1u << len) - 1u);
+
+                // 右移到最低位后取掩码
+                bf.Value = (rawValue >> bf.StartBit) & mask;
+            }
+        }
+        public static uint ParseHexToUInt(string hexString)
+        {
+            if (string.IsNullOrWhiteSpace(hexString))
+                throw new ArgumentException("输入不能为空");
+
+            // 去掉 "0x" 或 "0X" 前缀（如果有）
+            if (hexString.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                hexString = hexString.Substring(2);
+
+            // 转为 uint（支持最大 0xFFFFFFFF）
+            return Convert.ToUInt32(hexString, 16);
+        }
+        /// <summary>
+        /// 将任意合法的 Hex 字符串格式化为 0x 前缀 + 8位大写十六进制字符串
+        /// </summary>
+        public static string FormatHex(string hex)
+        {
+            if (string.IsNullOrWhiteSpace(hex))
+                return "0x00000000";
+
+            // 移除 0x 前缀
+            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                hex = hex.Substring(2);
+
+            // 尝试解析
+            if (!uint.TryParse(hex, System.Globalization.NumberStyles.HexNumber, null, out var val))
+                return "0x00000000";
+
+            // 格式化为 8 位大写十六进制
+            return "0x" + val.ToString("X8");
+        }
+    }
+
+    public static class CloneHelper
+    {
+        public static RegisterMeta DeepClone(this RegisterMeta original)
+        {
+            return new RegisterMeta
+            {
+                AddrInfo = new RegisterAddrInfo
+                {
+                    AddressDec = original.AddrInfo.AddressDec,
+                    AddressHex = original.AddrInfo.AddressHex,
+                    Category = original.AddrInfo.Category,
+                    SubCategory = original.AddrInfo.SubCategory,
+                    Name = original.AddrInfo.Name,
+                    RW = original.AddrInfo.RW,
+                    ResetValue = original.AddrInfo.ResetValue,
+                    ResetDecValue = original.AddrInfo.ResetDecValue,
+                    Value = original.AddrInfo.Value?.ToArray(),
+                    DecValue = original.AddrInfo.DecValue,
+                    HexValue = original.AddrInfo.HexValue,
+                    BitFields = original.AddrInfo.BitFields
+                        .Select(bf => new BitField
+                        {
+                            StartBit = bf.StartBit,
+                            EndBit = bf.EndBit,
+                            Desc = bf.Desc,
+                            ExtraNote = bf.ExtraNote,
+                            Options = bf.Options?.Select(opt => new BitOption
+                            {
+                                Value = opt.Value,
+                                Display = opt.Display
+                            }).ToList(),
+                            RangeMin = bf.RangeMin,
+                            RangeMax = bf.RangeMax,
+                            FormParam = bf.FormParam == null ? null : new FormulaParam
+                            {
+                                ParamName = bf.FormParam.ParamName,
+                                ParamA = bf.FormParam.ParamA,
+                                ParamB = bf.FormParam.ParamB,
+                                UnitName = bf.FormParam.UnitName
+                            },
+                            Value = bf.Value,
+                            Result = bf.Result
+                        }).ToList()
+                }
+            };
         }
     }
 }

@@ -15,7 +15,14 @@ namespace Workbench.Models
             get { return _name; }
             set { SetProperty(ref _name, value); }
         }
+        public ChipInfo _Chip;
+        public ChipInfo Chip
+        {
+            get { return _Chip; }
+            set { SetProperty(ref _Chip, value); }
+        }
         public string Path { get; set; }
+        public string ProjectMark { get; set; }
         public string Icon { get; set; }
         public string Label { get; set; }
         public string Level { get; set; }

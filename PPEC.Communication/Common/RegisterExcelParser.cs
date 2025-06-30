@@ -30,7 +30,7 @@ namespace PPEC.Communication.Common
 
                     var info = new RegisterAddrInfo
                     {
-                        AddressDec = int.Parse(formatter.FormatCellValue(r.GetCell(0))),
+                        AddressDec = uint.Parse(formatter.FormatCellValue(r.GetCell(0))),
                         AddressHex = formatter.FormatCellValue(r.GetCell(1)).PadLeft(4, '0'),
                         Category = formatter.FormatCellValue(r.GetCell(2)),
                         SubCategory = formatter.FormatCellValue(r.GetCell(3)),
@@ -69,7 +69,7 @@ namespace PPEC.Communication.Common
                     if (current != null && !string.IsNullOrEmpty(bitStr))
                     {
                         var bf = ParseBitField(bitStr, desc, remark);
-                        current.BitFields.Add(bf);
+                        current.AddrInfo.BitFields.Add(bf);
                     }
                 }
             }

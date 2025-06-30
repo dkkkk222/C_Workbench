@@ -34,7 +34,7 @@
                             ToolTip="连接" 
                             Command="{Binding ConnectCommand}"
                             IsEnabled="{calc:Binding !IsConnected}">
-                        <TextBlock Text="&#xe625;" 
+                        <TextBlock Text="&#xe67e;" 
                                    FontFamily="{StaticResource Iconfont}" 
                                    Style="{StaticResource ButtonBarIconStyle}"/>
                     </Button>
@@ -42,25 +42,25 @@
                             ToolTip="断开" 
                             Command="{Binding DisconnectCommand}"
                             IsEnabled="{Binding IsConnected}">
-                        <TextBlock Text="&#xe603;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
+                        <TextBlock Text="&#xe64d;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                     </Button>
                     <Button Style="{StaticResource ButtonBarStyle}" ToolTip="调试" IsEnabled="{Binding IsConnected}">
-                        <TextBlock Text="&#xe61b;" 
+                        <TextBlock Text="&#xe671;" 
                                    FontFamily="{StaticResource Iconfont}" 
                                    Style="{StaticResource ButtonBarIconStyle}"/>
                     </Button>
-                    <Button Style="{StaticResource ButtonBarStyle}" ToolTip="固化参数" IsEnabled="{Binding IsConnected}">
+                    <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="固化参数" IsEnabled="{Binding IsConnected}">
                         <TextBlock Text="&#xe60b;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>
-                    <Button Style="{StaticResource ButtonBarStyle}" ToolTip="下发参数" IsEnabled="{Binding IsConnected}">
+                    </Button>-->
+                    <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="下发参数" IsEnabled="{Binding IsConnected}">
                         <TextBlock Text="&#xe62d;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>
-                    <Button Style="{StaticResource ButtonBarStyle}" ToolTip="工程设置">
+                    </Button>-->
+                    <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="工程设置">
                         <TextBlock Text="&#xe61c;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                     </Button>
                     <Button Style="{StaticResource ButtonBarStyle}" ToolTip="固件升级">
                         <TextBlock Text="&#xe60f;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>
+                    </Button>-->
                     <Border Style="{StaticResource VerticalSeparatorStyle}"/>
                     <!-- 通讯方式 -->
                     <Border Margin="8,0,0,0">
@@ -82,13 +82,13 @@
                                       IsEnabled="{calc:Binding !IsConnected}"
                                       Visibility="{calc:Binding IsModbusSelected,FalseToVisibility=Collapsed}"/>
                             <!-- CAN口 -->
-                            <ComboBox Width="120" ItemsSource="{Binding CANList}"
+                            <!--<ComboBox Width="120" ItemsSource="{Binding CANList}"
                                       SelectedItem="{Binding SelectedCAN,Mode=TwoWay}"
                                       DisplayMemberPath="Name"
                                       SelectedValuePath="Value"
                                       Height="22"
                                       IsEnabled="{calc:Binding !IsConnected}"
-                                      Visibility="{calc:Binding !IsModbusSelected,FalseToVisibility=Collapsed}"/>
+                                      Visibility="{calc:Binding !IsModbusSelected,FalseToVisibility=Collapsed}"/>-->
                         </StackPanel>
                     </Border>
                 </StackPanel>

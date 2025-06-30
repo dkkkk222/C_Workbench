@@ -1,4 +1,7 @@
-﻿using Prism.Commands;
+﻿using PPEC.Communication;
+using PPEC.Communication.DB;
+using PPEC.Communication.Model;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
@@ -21,27 +24,31 @@ namespace Workbench.ViewModels
         public CreateProjectViewModel(FileHandler fileHandler, ProjectManager projectManager)
         {
             _fileHandler = fileHandler;
-            _projectManager = projectManager;
-            OrderItems = new ObservableCollection<ValueName>
-            {
-                new ValueName { Value = "byTopo", Name = "按拓扑" },
-                new ValueName { Value = "byChip", Name = "按芯片" }
-            };
-            SelectedOrderItem = OrderItems.First();
+            _projectManager = projectManager;            
             InitData();
         }
 
+        public void InitData()
+        {
+            ChipTypeSource.Clear();
+            foreach (var chip in InitDataModelService.Instance.ListChip)
+            {
+                ChipTypeSource.Add(new ValueName { Value = chip.Id, Name = chip.Name,Label=chip.FilePath });
+            }
+
+            SelectChipType = ChipTypeSource.First();
+        }
         #region Property
 
         public string Title => string.Empty;
 
         public event Action<IDialogResult> RequestClose;
 
-        private ObservableCollection<ValueName> _orderItems;
-        public ObservableCollection<ValueName> OrderItems
+        private ObservableCollection<ValueName> _chipTypeSource=new ObservableCollection<ValueName>();
+        public ObservableCollection<ValueName> ChipTypeSource
         {
-            get => _orderItems;
-            set => SetProperty(ref _orderItems, value);
+            get => _chipTypeSource;
+            set => SetProperty(ref _chipTypeSource, value);
         }
 
         private bool _isSelectedTopo;
@@ -71,16 +78,22 @@ namespace Workbench.ViewModels
             get => _svgPath;
             set => SetProperty(ref _svgPath, value);
         }
-
-        private ValueName _selectedOrderItem;
-        public ValueName SelectedOrderItem
+        private string _projectMark = "";
+        public string ProjectMark
         {
-            get => _selectedOrderItem;
+            get => _projectMark;
+            set => SetProperty(ref _projectMark, value);
+        }
+
+        private ValueName _selectChipType;
+        public ValueName SelectChipType
+        {
+            get => _selectChipType;
             set
             {
-                SetProperty(ref _selectedOrderItem, value);
-                IsSelectedTopo = (string)value.Value == "byTopo";
-                ExtrackData();
+                SetProperty(ref _selectChipType, value);
+                //IsSelectedTopo = (string)value.Value == "byTopo";
+                //ExtrackData();
             }
         }
 
@@ -129,22 +142,32 @@ namespace Workbench.ViewModels
         public DelegateCommand CreateCommand =>
             _createCommand ?? (_createCommand = new DelegateCommand(() =>
             {
+                if (SelectChipType == null)
+                    return;
                 var projectId = Guid.NewGuid().ToString();
                 var ppecId = Guid.NewGuid().ToString();
+                var selectChip = InitDataModelService.Instance.DicChipAddress[(int)SelectChipType.Value];
+                ChipInfo CreateChipInfo = new ChipInfo();
+                CreateChipInfo.ChipId = (int)SelectChipType.Value;
+                CreateChipInfo.ChipName = SelectChipType.Name.ToString();
+                CreateChipInfo.ChipPath = SelectChipType.Label;
+                CreateChipInfo.ChipRegisterInfo = selectChip.Select(r => r.DeepClone()).ToList();
                 var project = new PPEC_Project()
                 {
                     UID = projectId,
                     Name = FileName,
                     Path = FilePath,
+                    ProjectMark= ProjectMark,
                     Icon = IconUnicode.Project,
                     Label = FileName,
                     Level = ProjectLevel.Project,
+                    Chip= CreateChipInfo,
                     Children = new ObservableCollection<PPEC_Project>() { new PPEC_Project()
                     {
                         UID = ppecId,
-                        Name = SelectedPpec.PPEC,
+                        Name =CreateChipInfo.ChipName,// SelectedPpec.PPEC,
                         Icon = IconUnicode.PPEC,
-                        Label = SelectedPpec.PPEC,
+                        Label =CreateChipInfo.ChipName,//  SelectedPpec.PPEC,
                         Level = ProjectLevel.PPEC,
                         ProjectId = projectId,
                         Children = new ObservableCollection<PPEC_Project>()
@@ -152,8 +175,8 @@ namespace Workbench.ViewModels
                             new PPEC_Project()
                             {
                                 UID = Guid.NewGuid().ToString(),
-                                Name = "开发",
-                                Label = "开发",
+                                Name = "参数设置",
+                                Label = "参数设置",
                                 Level = ProjectLevel.Develop,
                                 Icon = IconUnicode.Develop,
                                 PPEC_Id = ppecId,
@@ -162,8 +185,8 @@ namespace Workbench.ViewModels
                             new PPEC_Project()
                             {
                                 UID = Guid.NewGuid().ToString(),
-                                Name = "调试",
-                                Label = "调试",
+                                Name = "状态监测",
+                                Label = "状态监测",
                                 Level = ProjectLevel.Debug,
                                 Icon = IconUnicode.Debug,
                                 PPEC_Id = ppecId,
@@ -194,54 +217,54 @@ namespace Workbench.ViewModels
         {
         }
 
-        private void InitData()
-        {
-            var path = "Data/PPEC_Data.json";
-            var data = _fileHandler.ReadLocalFile(path);
-            if (!string.IsNullOrEmpty(data))
-            {
-                _data = JsonHelper.DeserializeObject<List<PPEC_Data>>(data);
-                ExtrackData();
-            }
-        }
+        //private void InitData()
+        //{
+        //    var path = "Data/PPEC_Data.json";
+        //    var data = _fileHandler.ReadLocalFile(path);
+        //    if (!string.IsNullOrEmpty(data))
+        //    {
+        //        _data = JsonHelper.DeserializeObject<List<PPEC_Data>>(data);
+        //        ExtrackData();
+        //    }
+        //}
 
         private void ExtrackData()
         {
-            if (!_data.Any()) return;
-            PpecData.Clear();
-            if (SelectedOrderItem.Value == "byTopo")
-            {
-                foreach (var item in _data)
-                {
-                    PpecData.Add(new Display_PPEC_Data()
-                    {
-                        Icon = "\xe600",
-                        Title = item.Title,
-                        Content = item.Desc,
-                        Tags = item.Tags,
-                        Type = item.Type,
-                        PPEC = item.Ppec
-                    });
-                }
-            }
-            else
-            {
-                var group = _data.GroupBy(t => t.Ppec).ToDictionary(t => t.Key, t => t.ToList());
-                foreach (var kv in group)
-                {
-                    var item = kv.Value.First();
-                    PpecData.Add(new Display_PPEC_Data()
-                    {
-                        Icon = "\xef4a",
-                        Title = kv.Key,
-                        Content = $"适用领域：{item.ChipDesc}",
-                        Tags = kv.Value.Select(t => t.Title).ToList(),
-                        Type = item.Type,
-                        PPEC = item.Ppec
-                    });
-                }
-            }
-            SelectedPpec = PpecData.First();
+            //if (!_data.Any()) return;
+            //PpecData.Clear();
+            //if (SelectedOrderItem.Value == "byTopo")
+            //{
+            //    foreach (var item in _data)
+            //    {
+            //        PpecData.Add(new Display_PPEC_Data()
+            //        {
+            //            Icon = "\xe600",
+            //            Title = item.Title,
+            //            Content = item.Desc,
+            //            Tags = item.Tags,
+            //            Type = item.Type,
+            //            PPEC = item.Ppec
+            //        });
+            //    }
+            //}
+            //else
+            //{
+            //    var group = _data.GroupBy(t => t.Ppec).ToDictionary(t => t.Key, t => t.ToList());
+            //    foreach (var kv in group)
+            //    {
+            //        var item = kv.Value.First();
+            //        PpecData.Add(new Display_PPEC_Data()
+            //        {
+            //            Icon = "\xef4a",
+            //            Title = kv.Key,
+            //            Content = $"适用领域：{item.ChipDesc}",
+            //            Tags = kv.Value.Select(t => t.Title).ToList(),
+            //            Type = item.Type,
+            //            PPEC = item.Ppec
+            //        });
+            //    }
+            //}
+            //SelectedPpec = PpecData.First();
         }
 
         #endregion

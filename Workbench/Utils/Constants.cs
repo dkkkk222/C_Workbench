@@ -15,7 +15,7 @@ namespace Workbench.Utils
         public const string CAN_PORT = "CAN口";
 
         //Modbus
-        public const string Modbus = "Modbus";
+        public const string Modbus = "串口";//"Modbus";
 
         //CAN
         public const string CAN = "CAN";

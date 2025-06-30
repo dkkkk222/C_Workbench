@@ -228,8 +228,8 @@ namespace Workbench.Utils
                             new PPEC_Project()
                             {
                                 UID = Guid.NewGuid().ToString(),
-                                Name = "开发",
-                                Label = "开发",
+                                Name = "参数设置",
+                                Label = "参数设置",
                                 Level = ProjectLevel.Develop,
                                 Icon = IconUnicode.Develop,
                                 PPEC_Id = uid,
@@ -238,8 +238,8 @@ namespace Workbench.Utils
                             new PPEC_Project()
                             {
                                 UID = Guid.NewGuid().ToString(),
-                                Name = "调试",
-                                Label = "调试",
+                                Name = "状态监测",
+                                Label = "状态监测",
                                 Level = ProjectLevel.Debug,
                                 Icon = IconUnicode.Debug,
                                 PPEC_Id = uid,

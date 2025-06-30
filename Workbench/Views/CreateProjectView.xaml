@@ -18,163 +18,42 @@
     <Grid Background="{DynamicResource TreeViewBackgroundColor}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Border Background="Transparent" Padding="8,8,8,0">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Border Background="Transparent" Margin="0,0,4,0" CornerRadius="3">
-                    <Grid Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Border Background="Transparent" Height="30" Padding="8,0">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="排列:" VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
-                                <ComboBox ItemsSource="{Binding OrderItems}"
-                                          Margin="8,0,0,0"
-                                          Height="25"
-                                          SelectedItem="{Binding SelectedOrderItem}"
-                                          DisplayMemberPath="Name"
-                                          SelectedValuePath="Value"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Row="1" Background="Transparent">
-                            <ScrollViewer>
-                                <ListBox ItemsSource="{Binding PpecData}" SelectionMode="Single" SelectedItem="{Binding SelectedPpec}">
-                                    <ListBox.Template>
-                                        <ControlTemplate>
-                                            <StackPanel Background="Transparent" IsItemsHost="True"></StackPanel>
-                                        </ControlTemplate>
-                                    </ListBox.Template>
-                                    <ListBox.Resources>
-                                        <Style TargetType="ListBoxItem">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="ListBoxItem">
-                                                        <Border x:Name="box"
-                                                                Margin="0,0,10,0"
-                                                                SnapsToDevicePixels="True"
-                                                                Background="{TemplateBinding Background}"
-                                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                                BorderThickness="{TemplateBinding BorderThickness}">
-                                                            <ContentPresenter x:Name="contentPresenter" TextElement.Foreground="{DynamicResource TitleBarColor}"/>
-                                                        </Border>
-                                                        <ControlTemplate.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="#d9ecff"/>
-                                                                <Setter TargetName="box" Property="CornerRadius" Value="6"/>
-                                                                <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{DynamicResource BlackColor}"/>
-                                                            </Trigger>
-                                                            <Trigger Property="IsSelected" Value="True">
-                                                                <Setter Property="Background" Value="#d9ecff"/>
-                                                                <Setter TargetName="box" Property="CornerRadius" Value="6"/>
-                                                                <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{DynamicResource BlackColor}"/>
-                                                            </Trigger>
-                                                        </ControlTemplate.Triggers>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </ListBox.Resources>
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border x:Name="box" BorderThickness="0,0,0,1" BorderBrush="#ededed">
-                                                <Grid Height="120" Margin="0,2">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Border Background="Transparent" Width="50" Padding="0,8,0,0">
-                                                        <TextBlock Text="{Binding Icon}" 
-                                                                   FontFamily="{StaticResource Iconfont}" 
-                                                                   Visibility="{calc:Binding 'SelectedOrderItem == byTopo',FalseToVisibility=Collapsed}"
-                                                                   FontSize="30"
-                                                                   HorizontalAlignment="Center"/>
-                                                    </Border>
-                                                    <Border Grid.Column="1" Background="Transparent" Padding="2">
-                                                        <Grid>
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition Height="Auto"/>
-                                                                <RowDefinition Height="Auto"/>
-                                                                <RowDefinition Height="*"/>
-                                                            </Grid.RowDefinitions>
-                                                            <Border Background="Transparent" Height="25">
-                                                                <TextBlock Text="{Binding Title}"
-                                                                           FontSize="16"
-                                                                           VerticalAlignment="Center"/>
-                                                            </Border>
-                                                            <Border Grid.Row="1" Background="Transparent" Padding="0,4,0,0">
-                                                                <TextBlock Text="{Binding Content}"
-                                                                           FontSize="13"
-                                                                           TextWrapping="WrapWithOverflow"/>
-                                                            </Border>
-                                                            <Border Grid.Row="2" Background="Transparent" Height="25">
-                                                                <ItemsControl ItemsSource="{Binding Tags}">
-                                                                    <ItemsControl.ItemsPanel>
-                                                                        <ItemsPanelTemplate>
-                                                                            <StackPanel Orientation="Horizontal"></StackPanel>
-                                                                        </ItemsPanelTemplate>
-                                                                    </ItemsControl.ItemsPanel>
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <Border Style="{DynamicResource TagStyle}">
-                                                                                <TextBlock Text="{Binding}" Foreground="#409eff"/>
-                                                                            </Border>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
-                                                            </Border>
-                                                        </Grid>
-                                                    </Border>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </ScrollViewer>
-                        </Border>
-                    </Grid>
-                </Border>
                 <Border Grid.Column="1" Background="Transparent" Margin="4,0,0,0" CornerRadius="3">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Margin="10">
-                            <Border Style="{StaticResource FormBorderStyle}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="工程名称" Style="{DynamicResource TitleStyle}"/>
-                                    <TextBlock Text="*" Style="{DynamicResource RequiedStyle}"/>
+                            <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="工程类型 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
+                                    <TextBlock Width="10"></TextBlock>
+                                    <controls:PPEC_ComboBox  ItemsSource="{Binding ChipTypeSource}" SelectedItem="{Binding SelectChipType}" 
+                                                             DisplayMemberPath="Name"
+                                                             TitleWidth="0" Width="350" HorizontalAlignment="Left"/>
                                 </StackPanel>
                             </Border>
-                            <Border>
-                                <controls:CommonTextBox Text="{Binding FileName,Mode=TwoWay}" TitleWidth="0" Width="250" HorizontalAlignment="Left"/>
-                            </Border>
-                            <Border Style="{StaticResource FormBorderStyle}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="工程路径" Style="{DynamicResource TitleStyle}"/>
-                                    <TextBlock Text="*" Style="{DynamicResource RequiedStyle}"/>
+                            <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="工程名称 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
+                                    <TextBlock Width="10"></TextBlock>
+                                    <controls:CommonTextBox Text="{Binding FileName,Mode=TwoWay}" TitleWidth="0" Width="350" HorizontalAlignment="Left"/>
                                 </StackPanel>
                             </Border>
-                            <Border>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <controls:CommonTextBox Text="{Binding FilePath,Mode=TwoWay}" TitleWidth="0"/>
-
+                            <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="工程路径 : " HorizontalAlignment="Center"  VerticalAlignment="Center"  Style="{DynamicResource TitleStyle}"/>
+                                    <TextBlock Width="10"></TextBlock>
+                                    <controls:CommonTextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350"  TitleWidth="0"/>
                                     <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseCommand}">
                                         <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/open.svg" 
-                                                         Height="18"
-                                                         VerticalAlignment="Center"
-                                                         HorizontalAlignment="Center">
+Height="18"
+VerticalAlignment="Center"
+HorizontalAlignment="Center">
                                         </svgc:SvgViewbox>
                                         <Button.Resources>
                                             <Style TargetType="{x:Type Button}">
@@ -188,23 +67,40 @@
                                             </Style>
                                         </Button.Resources>
                                     </Button>
-                                </Grid>
-                                
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="工程描述 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
+                                    <TextBlock Width="10"></TextBlock>
+                                    <controls:PPEC_TextBox Text="{Binding ProjectMark,Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap"
+                                                VerticalScrollBarVisibility="Auto" TitleWidth="0" Width="350" Height="100" HorizontalAlignment="Left"/>
+                                </StackPanel>
                             </Border>
                         </StackPanel>
-                        <Border Grid.Row="1" Background="#fff" Padding="10">
-                            <svgc:SvgViewbox Source="{Binding SvgPath}"/>
+                        <Border Grid.Row="1">
+                            <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                                <TextBlock Width="10"></TextBlock>
+                                <Button Style="{StaticResource ConfirmButtonStyle}" Width="80" Height="30"
+                    Content="确认" Command="{Binding CreateCommand}"/>
+                                <TextBlock Width="10"></TextBlock>
+                                <Button Style="{StaticResource CancelButtonStyle}" Width="80" Height="30"
+                    Content="取消" Command="{Binding CloseCommand}"/>
+                            </StackPanel>
                         </Border>
+
                     </Grid>
                     
                 </Border>
             </Grid>
         </Border>
-        <Border Grid.Row="1" Background="Transparent" Height="40">
+        <!--<Border Grid.Row="1" Background="Transparent" Height="40">
             <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,0,16,0" VerticalAlignment="Center">
                 <Button Content="确定" Style="{DynamicResource LeftButtonStyle}" Command="{Binding CreateCommand}"/>
                 <Button Content="取消" Style="{DynamicResource RightButtonStyle}" Command="{Binding CloseCommand}"/>
             </StackPanel>
-        </Border>
+        </Border>-->
     </Grid>
 </UserControl>

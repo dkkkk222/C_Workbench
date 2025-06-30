@@ -17,7 +17,7 @@ namespace PPEC.Communication
             {
                 case ConnectPortType.UART: return new UartProtocolHandler(); // = UartParser + Decoder
                 //case ConnectPortType.CAN: return new CanProtocolHandler();  // 你稍后实现
-                case ConnectPortType.INV: return new UartProtocolHandler();
+                case ConnectPortType.INV: return new INVProtocolHandler();
                 default: throw new NotSupportedException();
             }
         }

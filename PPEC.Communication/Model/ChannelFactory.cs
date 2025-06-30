@@ -10,13 +10,14 @@ namespace PPEC.Communication.Model
 {
     public static class ChannelFactory
     {
-        public static ICommChannel Create(ConnectPortType t, string id)
+        public static ICommChannel Create(ConnectPortType t, string id, int baud)
         {
             switch (t)
             {
-                case ConnectPortType.UART: return new SerialCommChannel(id);       // id = “COM3”
+                case ConnectPortType.UART: return new SerialCommChannel(id, baud);       // id = “COM3”
                 case ConnectPortType.CAN: return new CanCommChannel(uint.Parse(id)); // id = “0”
                 case ConnectPortType.I2C: return new I2cCommChannel(byte.Parse(id)); // id = “160”(0xA0)
+                case ConnectPortType.INV: return new SerialCommChannel(id, baud);
                 default: throw new NotSupportedException();
             }
         }

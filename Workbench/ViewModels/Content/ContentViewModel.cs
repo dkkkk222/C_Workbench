@@ -45,7 +45,7 @@ namespace Workbench.ViewModels.Content
                 if (treeNodeProject.Level == ProjectLevel.Develop)
                 {
                     var developViewModel = _container.Resolve<DevelopViewModel>();
-                    developViewModel.Title = "开发";
+                    developViewModel.Title = "参数设置";
                     developViewModel.IsActive = true;
                     developViewModel.ContentId = treeNodeProject.UID;
                     developViewModel.Project = treeNodeProject;
@@ -55,7 +55,7 @@ namespace Workbench.ViewModels.Content
                 else if (treeNodeProject.Level == ProjectLevel.Debug)
                 {
                     var debugViewModel = _container.Resolve<DebugViewModel>();
-                    debugViewModel.Title = "调试";
+                    debugViewModel.Title = "状态监测";
                     debugViewModel.IsActive = true;
                     debugViewModel.ContentId = treeNodeProject.UID;
                     debugViewModel.Project = treeNodeProject;
