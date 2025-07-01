@@ -267,6 +267,8 @@
     <Compile Include="ViewModels\Content\Tabs\DevelopViewModel.cs" />
     <Compile Include="ViewModels\Content\Tabs\HomeViewModel.cs" />
     <Compile Include="ViewModels\CreateProjectViewModel.cs" />
+    <Compile Include="ViewModels\dw\BatchParamsViewModel.cs" />
+    <Compile Include="ViewModels\dw\SingleParamsViewModel.cs" />
     <Compile Include="ViewModels\GlobalSettingViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\NodeRedViewModel.cs" />
@@ -309,6 +311,12 @@
     </Compile>
     <Compile Include="Views\CreateProjectView.xaml.cs">
       <DependentUpon>CreateProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\dw\BatchParamsView.xaml.cs">
+      <DependentUpon>BatchParamsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\dw\SingleParamsView.xaml.cs">
+      <DependentUpon>SingleParamsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GlobalSettingView.xaml.cs">
       <DependentUpon>GlobalSettingView.xaml</DependentUpon>
@@ -421,6 +429,14 @@
     <Page Include="Views\CreateProjectView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\dw\BatchParamsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\dw\SingleParamsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GlobalSettingView.xaml">
       <SubType>Designer</SubType>

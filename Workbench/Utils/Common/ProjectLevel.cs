@@ -12,5 +12,8 @@ namespace Workbench.Utils.Common
         public const string PPEC = "PPEC";
         public const string Develop = "Develop";
         public const string Debug = "Debug";
+        public const string SingleParams = "SingleParams";
+        public const string BatchParams = "BatchParams";
+
     }
 }

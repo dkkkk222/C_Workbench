@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Workbench.ViewModels.Content.Tabs;
+using Workbench.ViewModels.dw;
 
 namespace Workbench.AvalonDock
 {
@@ -25,6 +26,18 @@ namespace Workbench.AvalonDock
             set;
         }
 
+        public Style SingleParamsStyle
+        {
+            get;
+            set;
+        }
+
+        public Style BatchParamsStyle
+        {
+            get;
+            set;
+        }
+
         public override System.Windows.Style SelectStyle(object item, System.Windows.DependencyObject container)
         {
             if (item is HomeViewModel)
@@ -35,6 +48,12 @@ namespace Workbench.AvalonDock
 
             if (item is DebugViewModel)
                 return DebugStyle;
+
+            if (item is SingleParamsViewModel)
+                return SingleParamsStyle;
+
+            if (item is BatchParamsViewModel)
+                return BatchParamsStyle;
 
             return base.SelectStyle(item, container);
         }

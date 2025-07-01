@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Workbench.Views.dw.SingleParamsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Workbench.Views.dw"
+             xmlns:viewModels="clr-namespace:Workbench.ViewModels.dw"
+             xmlns:views="clr-namespace:Workbench.Views.dw"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type viewModels:SingleParamsViewModel}">
+            <views:SingleParamsView />
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid Background="Red">
+
+    </Grid>
+</UserControl>

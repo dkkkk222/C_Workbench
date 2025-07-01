@@ -12,6 +12,7 @@ using Workbench.Events;
 using Workbench.Models;
 using Workbench.Utils.Common;
 using Workbench.ViewModels.Content.Tabs;
+using Workbench.ViewModels.dw;
 using Workbench.Views.Content.Tabs;
 
 namespace Workbench.ViewModels.Content
@@ -42,20 +43,30 @@ namespace Workbench.ViewModels.Content
                     return;
                 }
 
-                if (treeNodeProject.Level == ProjectLevel.Develop)
+                if (treeNodeProject.Level == ProjectLevel.SingleParams)
                 {
-                    var developViewModel = _container.Resolve<DevelopViewModel>();
-                    developViewModel.Title = "参数设置";
-                    developViewModel.IsActive = true;
-                    developViewModel.ContentId = treeNodeProject.UID;
-                    developViewModel.Project = treeNodeProject;
-                    Documents.Add(developViewModel);
-                    developViewModel.LoadData();
+                    var singleParamsViewModel = _container.Resolve<SingleParamsViewModel>();
+                    singleParamsViewModel.Title = treeNodeProject.Label;
+                    singleParamsViewModel.IsActive = true;
+                    singleParamsViewModel.ContentId = treeNodeProject.UID;
+                    singleParamsViewModel.Project = treeNodeProject;
+                    Documents.Add(singleParamsViewModel);
+                    singleParamsViewModel.LoadData();
+                }
+                else if (treeNodeProject.Level == ProjectLevel.BatchParams)
+                {
+                    var batchParamsViewModel = _container.Resolve<BatchParamsViewModel>();
+                    batchParamsViewModel.Title = treeNodeProject.Label;
+                    batchParamsViewModel.IsActive = true;
+                    batchParamsViewModel.ContentId = treeNodeProject.UID;
+                    batchParamsViewModel.Project = treeNodeProject;
+                    Documents.Add(batchParamsViewModel);
+                    batchParamsViewModel.LoadData();
                 }
                 else if (treeNodeProject.Level == ProjectLevel.Debug)
                 {
                     var debugViewModel = _container.Resolve<DebugViewModel>();
-                    debugViewModel.Title = "状态监测";
+                    debugViewModel.Title = treeNodeProject.Label;
                     debugViewModel.IsActive = true;
                     debugViewModel.ContentId = treeNodeProject.UID;
                     debugViewModel.Project = treeNodeProject;

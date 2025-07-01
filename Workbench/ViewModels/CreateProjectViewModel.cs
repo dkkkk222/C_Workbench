@@ -24,7 +24,7 @@ namespace Workbench.ViewModels
         public CreateProjectViewModel(FileHandler fileHandler, ProjectManager projectManager)
         {
             _fileHandler = fileHandler;
-            _projectManager = projectManager;            
+            _projectManager = projectManager;
             InitData();
         }
 
@@ -33,7 +33,7 @@ namespace Workbench.ViewModels
             ChipTypeSource.Clear();
             foreach (var chip in InitDataModelService.Instance.ListChip)
             {
-                ChipTypeSource.Add(new ValueName { Value = chip.Id, Name = chip.Name,Label=chip.FilePath });
+                ChipTypeSource.Add(new ValueName { Value = chip.Id, Name = chip.Name, Label = chip.FilePath });
             }
 
             SelectChipType = ChipTypeSource.First();
@@ -44,7 +44,7 @@ namespace Workbench.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        private ObservableCollection<ValueName> _chipTypeSource=new ObservableCollection<ValueName>();
+        private ObservableCollection<ValueName> _chipTypeSource = new ObservableCollection<ValueName>();
         public ObservableCollection<ValueName> ChipTypeSource
         {
             get => _chipTypeSource;
@@ -157,11 +157,11 @@ namespace Workbench.ViewModels
                     UID = projectId,
                     Name = FileName,
                     Path = FilePath,
-                    ProjectMark= ProjectMark,
+                    ProjectMark = ProjectMark,
                     Icon = IconUnicode.Project,
                     Label = FileName,
                     Level = ProjectLevel.Project,
-                    Chip= CreateChipInfo,
+                    Chip = CreateChipInfo,
                     Children = new ObservableCollection<PPEC_Project>() { new PPEC_Project()
                     {
                         UID = ppecId,
@@ -175,9 +175,19 @@ namespace Workbench.ViewModels
                             new PPEC_Project()
                             {
                                 UID = Guid.NewGuid().ToString(),
-                                Name = "参数设置",
-                                Label = "参数设置",
-                                Level = ProjectLevel.Develop,
+                                Name = "单参数",
+                                Label = "单参数",
+                                Level = ProjectLevel.SingleParams,
+                                Icon = IconUnicode.Develop,
+                                PPEC_Id = ppecId,
+                                ProjectId = projectId
+                            },
+                            new PPEC_Project()
+                            {
+                                UID = Guid.NewGuid().ToString(),
+                                Name = "批量参数",
+                                Label = "批量参数",
+                                Level = ProjectLevel.BatchParams,
                                 Icon = IconUnicode.Develop,
                                 PPEC_Id = ppecId,
                                 ProjectId = projectId

@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Workbench.ViewModels.Content.Tabs;
+using Workbench.ViewModels.dw;
 
 namespace Workbench.AvalonDock
 {
@@ -25,6 +26,18 @@ namespace Workbench.AvalonDock
             set;
         }
 
+        public DataTemplate SingleParamsViewTemplate
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate BatchParamsViewTemplate
+        {
+            get;
+            set;
+        }
+
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container)
         {
             var itemAsLayoutContent = item as LayoutContent;
@@ -37,6 +50,16 @@ namespace Workbench.AvalonDock
 
             if (item is DebugViewModel)
                 return DebugViewTemplate;
+
+            if (item is SingleParamsViewModel)
+            {
+                return SingleParamsViewTemplate;
+            }
+
+            if (item is BatchParamsViewModel)
+            {
+                return BatchParamsViewTemplate;
+            }
 
             return base.SelectTemplate(item, container);
         }
