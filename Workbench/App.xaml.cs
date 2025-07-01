@@ -32,12 +32,6 @@ namespace Workbench
         private static readonly ILog _log = LogManager.GetLogger(typeof(App));
         protected override void OnStartup(StartupEventArgs e)
         {
-            Exit += (sender, args) =>
-            {
-                //关闭node-red进程
-                var cmd = Container.Resolve<CommandHandler>();
-                cmd.CloseCommandProcess();
-            };
             XmlConfigurator.Configure(new FileInfo("log4net.config"));
             _log.Info("Workbench started.");
             base.OnStartup(e);
@@ -46,11 +40,7 @@ namespace Workbench
         protected override Window CreateShell()
         {
             CatchException();
-            Container.Resolve<SerialBootStrapper>().OnStart();
-            Container.Resolve<BootStrapper>().OnStart();
             var mainWindow = Container.Resolve<MainWindow>();
-            var splashWindow = Container.Resolve<SplashWindow>();
-            splashWindow.ShowDialog();
             return mainWindow;
         }
 
@@ -66,16 +56,12 @@ namespace Workbench
             containerRegistry.RegisterSingleton<IChipService, ChipService>();
             containerRegistry.RegisterSingleton<ProjectManager>();
             containerRegistry.RegisterSingleton<FileHandler>();
-            containerRegistry.RegisterSingleton<CommandHandler>();
             containerRegistry.RegisterSingleton<MainServices>();
             containerRegistry.RegisterSingleton<SmlsContext>(() => new SmlsContext($@"Data Source={AppDomain.CurrentDomain.BaseDirectory}smls_vision.db;Version=3"));
-            containerRegistry.Register<SerialBootStrapper>();
-
         }
 
         private void RegisterViewAndViewModel(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<ParamSettingView, ParamSettingViewModel>();
         }
 
         private void RegisterDialog(IContainerRegistry containerRegistry)
@@ -85,24 +71,8 @@ namespace Workbench
             containerRegistry.RegisterDialog<CreateProjectView, CreateProjectViewModel>();
             containerRegistry.RegisterSingleton<ChipManagerViewModel>();
             containerRegistry.RegisterDialog<ChipManagerView, ChipManagerViewModel>();
-            containerRegistry.RegisterDialogWindow<RenameWindow>(nameof(RenameWindow));
-            containerRegistry.RegisterDialog<RenameView, RenameViewModel>();
             containerRegistry.RegisterDialogWindow<RecentFileWindow>(nameof(RecentFileWindow));
             containerRegistry.RegisterDialog<RecentFileView, RecentFileViewModel>();
-            containerRegistry.RegisterDialogWindow<NodeRedWindow>(nameof(NodeRedWindow));
-            containerRegistry.RegisterDialog<NodeRedView, NodeRedViewModel>();
-            containerRegistry.RegisterDialogWindow<UserManualWindow>(nameof(UserManualWindow));
-            containerRegistry.RegisterDialog<UserManualView, UserManualViewModel>();
-            containerRegistry.RegisterDialogWindow<BootLoaderWindow>(nameof(BootLoaderWindow));
-            containerRegistry.RegisterDialog<BootLoaderView, BootLoaderViewModel>();
-            containerRegistry.RegisterDialogWindow<AboutWindow>(nameof(AboutWindow));
-            containerRegistry.RegisterDialog<AboutView, AboutViewModel>();
-            containerRegistry.RegisterDialogWindow<PowerToolWindow>(nameof(PowerToolWindow));
-            containerRegistry.RegisterDialog<PowerToolView, PowerToolViewModel>();
-            containerRegistry.RegisterDialogWindow<GlobalSettingWindow>(nameof(GlobalSettingWindow));
-            containerRegistry.RegisterDialog<GlobalSettingView, GlobalSettingViewModel>();
-            containerRegistry.RegisterDialogWindow<PasswordWindow>(nameof(PasswordWindow));
-            containerRegistry.RegisterDialog<PasswordView, PasswordViewModel>();
         }
 
         private void CatchException()
