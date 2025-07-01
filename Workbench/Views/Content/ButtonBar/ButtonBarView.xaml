@@ -66,7 +66,7 @@
                     <Border Margin="8,0,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="通讯方式：" Style="{DynamicResource ButtonBarTitleStyle}"/>
-                            <ComboBox Width="120" ItemsSource="{Binding CommunicationTypeList}"
+                            <ComboBox Width="120" ItemsSource="{Binding CommunicationTypeList}" Style="{StaticResource ComboBoxExtend.Small}"
                                       SelectedItem="{Binding SelectedCommunicationType}"
                                       IsEnabled="{calc:Binding !IsConnected}"
                                       Height="22"/>
@@ -76,7 +76,7 @@
                     <Border Margin="10,0,0,0" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="{Binding PortTitle}" Style="{DynamicResource ButtonBarTitleStyle}"/>
-                            <ComboBox ItemsSource="{Binding PortList}" Width="120"
+                            <ComboBox ItemsSource="{Binding PortList}" Width="120" Style="{StaticResource ComboBoxExtend.Small}"
                                       SelectedItem="{Binding SerialPortName, Mode=TwoWay}"
                                       Height="22"
                                       IsEnabled="{calc:Binding !IsConnected}"
