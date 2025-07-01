@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Workbench.Controls;component/Controls/Windows/NoTitleBarWindow.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Workbench;component/Resource/Icons/CustomIcon.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

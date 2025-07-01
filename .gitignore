@@ -3,7 +3,8 @@
 ################################################################################
 
 /PPEC.Communication/bin/Debug
-/.vs/Workbench/v17
+/.vs
+/Workbench/.vs
 /packages
 /packages/CalcBinding.2.5.2/lib/net40/CalcBinding.dll
 /PPEC.Communication/obj/Debug

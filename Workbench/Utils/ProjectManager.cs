@@ -67,16 +67,6 @@ namespace Workbench.Utils
         #region Method
 
         /// <summary>
-        /// 获取列表中的工程
-        /// </summary>
-        /// <returns></returns>
-        public PpecProject GetCacheProject()
-        {
-            return OpenedProjectList.FirstOrDefault(t => t.UID == CurrentProject.UID);
-        }
-
-
-        /// <summary>
         /// 获取列表中的当前选中的PPEC
         /// </summary>
         /// <returns></returns>
@@ -209,44 +199,6 @@ namespace Workbench.Utils
             return true;
         }
 
-        internal PpecProject CreatePPEC(string ppec, string projectId)
-        {
-            var uid = Guid.NewGuid().ToString();
-            var project = new PpecProject()
-            {
-                UID = uid,
-                Name = ppec,
-                Icon = IconUnicode.PPEC,
-                Label = ppec,
-                Level = ProjectLevel.PPEC,
-                ProjectId = projectId,
-                Children = new ObservableCollection<PpecProject>()
-                        {
-                            new PpecProject()
-                            {
-                                UID = Guid.NewGuid().ToString(),
-                                Name = "参数设置",
-                                Label = "参数设置",
-                                Level = ProjectLevel.Develop,
-                                Icon = IconUnicode.Develop,
-                                PPEC_Id = uid,
-                                ProjectId = projectId
-                            },
-                            new PpecProject()
-                            {
-                                UID = Guid.NewGuid().ToString(),
-                                Name = "状态监测",
-                                Label = "状态监测",
-                                Level = ProjectLevel.Debug,
-                                Icon = IconUnicode.Debug,
-                                PPEC_Id = uid,
-                                ProjectId = projectId
-                            }
-                        }
-            };
-            return project;
-        }
-
         /// <summary>
         /// 另存为
         /// </summary>
@@ -298,32 +250,6 @@ namespace Workbench.Utils
             }
         }
 
-        /// <summary>
-        /// 重命名
-        /// </summary>
-        /// <param name="project"></param>
-        /// <param name="oldName"></param>
-        internal void RenameProject(PpecProject project, string oldName)
-        {
-            //保存工程文件
-            SaveProject(project);
-
-            //更新最近文件列表中的文件名
-            var recentFiles = _fileHandler.GetRecentFiles();
-            var recentFile = recentFiles.FirstOrDefault(t => t.UID == project.UID);
-            recentFile.FileName = project.Name ?? project.Label;
-            recentFile.DateTime = DateTime.Now;
-            _fileHandler.SaveRecentFiles(recentFiles);
-
-            //删除原来的工程文件
-            var filePath = Path.Combine(project.Path, oldName + ".ppec");
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-            _eventAggregator.GetEvent<RefreshRecentFileEvent>().Publish();
-        }
-
         internal string ChooseDirectory()
         {
             var path = string.Empty;
@@ -334,17 +260,6 @@ namespace Workbench.Utils
                 path = folderBrowserDialog.SelectedPath;
             }
             return path;
-        }
-
-        /// <summary>
-        /// 通过id获取PPEC对象
-        /// </summary>
-        /// <param name="projectId"></param>
-        /// <param name="ppecId"></param>
-        /// <returns></returns>
-        public PpecProject GetPpecById(string projectId, string ppecId)
-        {
-            return OpenedProjectList.FirstOrDefault(t => t.UID == projectId).Children.FirstOrDefault(t => t.UID == ppecId);
         }
 
         /// <summary>
@@ -360,34 +275,7 @@ namespace Workbench.Utils
                 return;
             }
             await CreateMasterAsync(cachePpec);
-            //判断板子的状态
-            //var returnValue = cachePpec.Master.ComMaster.SendASync(CommonParametersName.ChipStateQuery, IsSendPure: true);
-            //returnValue.GetAwaiter().OnCompleted(() =>
-            //{
-            //    if (returnValue == null || returnValue.IsFaulted || returnValue.Result == null)
-            //    {
-            //        //发生异常
-            //        cachePpec.Disconnect();
-            //        MessageBox.Show("连接失败，请检查下位机状态", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //        return;
-            //    }
-            //    var tcs = UtilsFunc.GetTopoChipStatus(returnValue.Result.PureBytes);
-            //    if (tcs != null && tcs.CurrentChipState != CurrentChipStateEnum.App)
-            //    {
-            //        //下位机处于Boot状态
-            //        cachePpec.Disconnect();
-            //        //弹出固件升级敞口
-            //        _dialogService.ShowDialog(nameof(BootLoaderView), new DialogParameters(), result =>
-            //        {
-            //        }, nameof(BootLoaderWindow));
-            //    }
-            //    else
-            //    {
-            //        //下位机处于App状态
-            //        CheckPassword(cachePpec);
-            //        SetCurrentPpec(cachePpec);
-            //    }
-            //});
+            
         }
 
         public void SetCurrentPpec(PpecProject ppec)

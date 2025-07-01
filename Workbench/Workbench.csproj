@@ -192,6 +192,8 @@
     <Compile Include="Models\ComConnectType.cs" />
     <Compile Include="Models\Consts\CAN_Port.cs" />
     <Compile Include="Models\ContextMenuItem.cs" />
+    <Compile Include="Models\dw\Sequence.cs" />
+    <Compile Include="Models\dw\SettingCategory.cs" />
     <Compile Include="Models\dw\SingleParamHistory.cs" />
     <Compile Include="Models\dw\SingleParamRegisterInfo.cs" />
     <Compile Include="Models\dw\SingleParamTree.cs" />
@@ -283,6 +285,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Resource Include="Resource\Icons\CustomIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Page Include="Resource\Styles\AvalonDock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
