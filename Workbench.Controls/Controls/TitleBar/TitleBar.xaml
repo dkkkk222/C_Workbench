@@ -28,7 +28,7 @@
                         <Border Grid.Column="2"></Border>
                         <Border Grid.Column="3">
                             <StackPanel Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
-                                <Button Content="&#xe630;" Style="{DynamicResource WindowControlButton}" 
+                        <Button Content="&#xe646;" Style="{DynamicResource WindowControlButton}" 
                                         Click="Minimum_Click" 
                                         Visibility="{calc:Binding ElementName=titleBar, Path=ShowMaximize, FalseToVisibility=Collapsed}"/>
                                 <Button Style="{StaticResource MaximizeButtonStyle}" Click="Maximum_Click"

@@ -24,7 +24,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type MenuItem}">
+    <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
         <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
         <Setter Property="Template">
             <Setter.Value>

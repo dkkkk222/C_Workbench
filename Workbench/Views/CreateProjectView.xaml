@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
              xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              UseLayoutRounding="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -32,28 +33,28 @@
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="工程类型 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
                                     <TextBlock Width="10"></TextBlock>
-                                    <controls:PPEC_ComboBox  ItemsSource="{Binding ChipTypeSource}" SelectedItem="{Binding SelectChipType}" 
-                                                             DisplayMemberPath="Name"
-                                                             TitleWidth="0" Width="350" HorizontalAlignment="Left"/>
+                                    <ComboBox ItemsSource="{Binding ChipTypeSource}" SelectedItem="{Binding SelectChipType}" DisplayMemberPath="Name"
+                                              Style="{StaticResource ComboBoxExtend}" Width="350"/>
                                 </StackPanel>
                             </Border>
                             <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="工程名称 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
                                     <TextBlock Width="10"></TextBlock>
-                                    <controls:CommonTextBox Text="{Binding FileName,Mode=TwoWay}" TitleWidth="0" Width="350" HorizontalAlignment="Left"/>
+                                    <TextBox Text="{Binding FileName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" Width="350"
+                                             hc:InfoElement.Placeholder="请输入工程名称"/>
                                 </StackPanel>
                             </Border>
                             <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="工程路径 : " HorizontalAlignment="Center"  VerticalAlignment="Center"  Style="{DynamicResource TitleStyle}"/>
                                     <TextBlock Width="10"></TextBlock>
-                                    <controls:CommonTextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350"  TitleWidth="0"/>
+                                    <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350" Style="{StaticResource TextBoxExtend}"/>
                                     <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseCommand}">
                                         <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/open.svg" 
-Height="18"
-VerticalAlignment="Center"
-HorizontalAlignment="Center">
+                                                Height="18"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center">
                                         </svgc:SvgViewbox>
                                         <Button.Resources>
                                             <Style TargetType="{x:Type Button}">
@@ -73,8 +74,13 @@ HorizontalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="工程描述 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
                                     <TextBlock Width="10"></TextBlock>
-                                    <controls:PPEC_TextBox Text="{Binding ProjectMark,Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap"
-                                                VerticalScrollBarVisibility="Auto" TitleWidth="0" Width="350" Height="100" HorizontalAlignment="Left"/>
+                                    <RichTextBox  Width="350" Height="100">
+                                        <FlowDocument>
+                                            <Paragraph>
+                                                <Run Text="{Binding ProjectMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </Paragraph>
+                                        </FlowDocument>
+                                    </RichTextBox>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -83,16 +89,15 @@ HorizontalAlignment="Center">
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Style="{StaticResource ConfirmButtonStyle}" Width="80" Height="30"
-                    Content="确认" Command="{Binding CreateCommand}"/>
+                                <Button  Content="取消" Width="80" Height="30" Command="{Binding CloseCommand}"/>
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Style="{StaticResource CancelButtonStyle}" Width="80" Height="30"
-                    Content="取消" Command="{Binding CloseCommand}"/>
+                                <Button Style="{StaticResource ButtonPrimary}" Content="确认" Width="80" Height="30" Command="{Binding CreateCommand}"/>
+
                             </StackPanel>
                         </Border>
 
                     </Grid>
-                    
+
                 </Border>
             </Grid>
         </Border>

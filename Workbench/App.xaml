@@ -5,10 +5,13 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+
                 <ResourceDictionary Source="pack://application:,,,/Workbench.Themes;component/Resource/Themes/Light.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Workbench.Themes;component/Resource/Styles/Controls.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Workbench;component/Resource/Styles/AvalonDock.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Workbench.Controls;component/Controls/Windows/NoTitleBarWindow.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

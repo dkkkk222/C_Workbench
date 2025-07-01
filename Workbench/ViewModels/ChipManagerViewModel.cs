@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Web.WebView2.Core;
 using PPEC.Communication.Common;
 using PPEC.Communication.DB;
 using PPEC.Communication.DB.Model;
@@ -15,7 +11,6 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Workbench.Utils;
-using static LinqToDB.Reflection.Methods.LinqToDB;
 
 namespace Workbench.ViewModels
 {

@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Workbench.Views.Content.Sider"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             xmlns:wv="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="225">
     <Border Padding="0" Background="{DynamicResource PrimaryBackgroundColor}">
