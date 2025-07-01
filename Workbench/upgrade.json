@@ -1,9 +1,0 @@
-{
-  "host": "http://ppec.smlstec.com/workbench",
-  "updater": {
-    "version": "1.0.0"
-  },
-  "workbench": {
-    "version": "2.2.0"
-  }
-}

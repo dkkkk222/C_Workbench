@@ -110,7 +110,7 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="project"></param>
         /// <param name="coverUid">被覆盖文件uid</param>
-        internal void AppendToRecentFile(PPEC_Project project, string coverUid = "")
+        internal void AppendToRecentFile(PpecProject project, string coverUid = "")
         {
             var recentFiles = GetRecentFiles();
             var list = recentFiles;
@@ -185,7 +185,7 @@ namespace Workbench.Utils
         internal void UpdateRecentFileDatetime(string projectStr)
         {
             var recentFiles = GetRecentFiles();
-            var project = JsonHelper.DeserializeObject<PPEC_Project>(projectStr);
+            var project = JsonHelper.DeserializeObject<PpecProject>(projectStr);
             var recentFile = recentFiles.FirstOrDefault(t => t.UID == project.UID);
             recentFile.DateTime = DateTime.Now;
             SaveRecentFiles(recentFiles);

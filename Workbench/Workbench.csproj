@@ -191,60 +191,25 @@
     <Compile Include="Events\RemovePpecEvent.cs" />
     <Compile Include="Events\RemoveProjectFromSiderEvent.cs" />
     <Compile Include="Events\SerialPortAddRemoveEvent.cs" />
-    <Compile Include="Events\SplashEvent.cs" />
     <Compile Include="Events\TabChangeEvent.cs" />
     <Compile Include="Events\TreeViewSelectedEvent.cs" />
     <Compile Include="Models\AppConfig.cs" />
     <Compile Include="Models\AvaDocument.cs" />
-    <Compile Include="Models\BootLoader\BBLLCCANItem.cs" />
-    <Compile Include="Models\BootLoader\CANCommConfig.cs" />
-    <Compile Include="Models\BootLoader\CANHexDataContainer.cs" />
-    <Compile Include="Models\BootLoader\FlashUpgradeClient.cs" />
-    <Compile Include="Models\BootLoader\HexDataContainer.cs" />
-    <Compile Include="Models\BootLoader\TopoChipStatus.cs" />
     <Compile Include="Models\ComConnectType.cs" />
     <Compile Include="Models\Consts\CAN_Port.cs" />
     <Compile Include="Models\ContextMenuItem.cs" />
-    <Compile Include="Models\CurrentTreeNode.cs" />
-    <Compile Include="Models\Data\Display_PPEC_Data.cs" />
-    <Compile Include="Models\Data\PPEC_Data.cs" />
-    <Compile Include="Models\Data\PageMapping.cs" />
-    <Compile Include="Models\Data\PPEC_Introduce.cs" />
-    <Compile Include="Models\Data\TopoMeta.cs" />
-    <Compile Include="Models\Enums\BBLLCCANPort.cs" />
-    <Compile Include="Models\Enums\ComConnectEnum.cs" />
-    <Compile Include="Models\Enums\CommandValue.cs" />
-    <Compile Include="Models\Enums\ControlType.cs" />
-    <Compile Include="Models\Enums\UpdateTopoEnum.cs" />
-    <Compile Include="Models\EventParamModel.cs" />
-    <Compile Include="Models\Options\CommonOptions.cs" />
-    <Compile Include="Models\Pages\ControlConfig.cs" />
-    <Compile Include="Models\Pages\ParamSettingElement.cs" />
-    <Compile Include="Models\Pages\ParamSettingGroup.cs" />
     <Compile Include="Models\Pages\TreeVeiwModel.cs" />
-    <Compile Include="Models\PPEC_Project.cs" />
-    <Compile Include="Models\ReceiveMessage.cs" />
+    <Compile Include="Models\PpecProject.cs" />
     <Compile Include="Models\RecentFile.cs" />
-    <Compile Include="Models\SendMessage.cs" />
     <Compile Include="Models\StaticUpgrade.cs" />
     <Compile Include="Models\ValueName.cs" />
-    <Compile Include="Utils\CAN\CANFlashUpgradeClient.cs" />
-    <Compile Include="Utils\CAN\ControlCAN.cs" />
-    <Compile Include="Utils\CAN\ControlCANHelper.cs" />
-    <Compile Include="Utils\CAN\ControlCANHelper64.cs" />
     <Compile Include="Utils\CommandHandler.cs" />
     <Compile Include="Utils\Common\CommEntity.cs" />
     <Compile Include="Utils\Common\HttpHelper.cs" />
     <Compile Include="Utils\Common\IconUnicode.cs" />
     <Compile Include="Utils\Common\ProjectLevel.cs" />
     <Compile Include="Utils\Common\SerialPortHelper.cs" />
-    <Compile Include="Utils\Common\UpdateHelper.cs" />
     <Compile Include="Utils\Constants.cs" />
-    <Compile Include="Utils\ConverterUtil\BoolToHighLowConverter.cs" />
-    <Compile Include="Utils\ConverterUtil\BoolToYesNoConverter.cs" />
-    <Compile Include="Utils\ConverterUtil\EnumToBooleanConverter.cs" />
-    <Compile Include="Utils\ConverterUtil\StringToIconConverter.cs" />
-    <Compile Include="Utils\ConverterUtil\TreeViewItemMarginConverter.cs" />
     <Compile Include="Utils\FileHandler.cs" />
     <Compile Include="Utils\IgnorePropertyContractResolver.cs" />
     <Compile Include="Utils\JsonHelper.cs" />
@@ -256,8 +221,6 @@
     <Compile Include="Utils\UtilsFunc.cs" />
     <Compile Include="Utils\WindowResizer.cs" />
     <Compile Include="Utils\WindowResizer2.cs" />
-    <Compile Include="ViewModels\AboutViewModel.cs" />
-    <Compile Include="ViewModels\BootLoaderViewModel.cs" />
     <Compile Include="ViewModels\ChipManagerViewModel.cs" />
     <Compile Include="ViewModels\Content\ButtonBar\ButtonBarViewModel.cs" />
     <Compile Include="ViewModels\Content\ContentViewModel.cs" />
@@ -269,22 +232,8 @@
     <Compile Include="ViewModels\CreateProjectViewModel.cs" />
     <Compile Include="ViewModels\dw\BatchParamsViewModel.cs" />
     <Compile Include="ViewModels\dw\SingleParamsViewModel.cs" />
-    <Compile Include="ViewModels\GlobalSettingViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\NodeRedViewModel.cs" />
-    <Compile Include="ViewModels\PasswordViewModel.cs" />
-    <Compile Include="ViewModels\PowerToolViewModel.cs" />
     <Compile Include="ViewModels\RecentFileViewModel.cs" />
-    <Compile Include="ViewModels\RenameViewModel.cs" />
-    <Compile Include="ViewModels\SplashWindowViewModel.cs" />
-    <Compile Include="ViewModels\Pages\ParamSettingViewModel.cs" />
-    <Compile Include="ViewModels\UserManualViewModel.cs" />
-    <Compile Include="Views\AboutView.xaml.cs">
-      <DependentUpon>AboutView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\BootLoaderView.xaml.cs">
-      <DependentUpon>BootLoaderView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ChipManagerView.xaml.cs">
       <DependentUpon>ChipManagerView.xaml</DependentUpon>
     </Compile>
@@ -318,83 +267,26 @@
     <Compile Include="Views\dw\SingleParamsView.xaml.cs">
       <DependentUpon>SingleParamsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\GlobalSettingView.xaml.cs">
-      <DependentUpon>GlobalSettingView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\NodeRedView.xaml.cs">
-      <DependentUpon>NodeRedView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Pages\ParamSettingTemplateSelector.cs" />
-    <Compile Include="Views\PasswordView.xaml.cs">
-      <DependentUpon>PasswordView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PowerToolView.xaml.cs">
-      <DependentUpon>PowerToolView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RecentFileView.xaml.cs">
       <DependentUpon>RecentFileView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RenameView.xaml.cs">
-      <DependentUpon>RenameView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Pages\ParamSettingView.xaml.cs">
-      <DependentUpon>ParamSettingView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Windows\ChipManagerWindow.xaml.cs">
       <DependentUpon>ChipManagerWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Windows\PasswordWindow.xaml.cs">
-      <DependentUpon>PasswordWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Windows\SplashWindow.xaml.cs">
-      <DependentUpon>SplashWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\UserManualView.xaml.cs">
-      <DependentUpon>UserManualView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Windows\AboutWindow.xaml.cs">
-      <DependentUpon>AboutWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Windows\BootLoaderWindow.xaml.cs">
-      <DependentUpon>BootLoaderWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Windows\CreateProjectWindow.xaml.cs">
       <DependentUpon>CreateProjectWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Windows\GlobalSettingWindow.xaml.cs">
-      <DependentUpon>GlobalSettingWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Windows\NodeRedWindow.xaml.cs">
-      <DependentUpon>NodeRedWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Windows\PowerToolWindow.xaml.cs">
-      <DependentUpon>PowerToolWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Windows\RecentFileWindow.xaml.cs">
       <DependentUpon>RecentFileWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Windows\RenameWindow.xaml.cs">
-      <DependentUpon>RenameWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Windows\UserManualWindow.xaml.cs">
-      <DependentUpon>UserManualWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resource\Styles\AvalonDock.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\AboutView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\BootLoaderView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -438,87 +330,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GlobalSettingView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\NodeRedView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PasswordView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PowerToolView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RecentFileView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\RenameView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Pages\ParamSettingView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Windows\ChipManagerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Windows\PasswordWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Windows\SplashWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\UserManualView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Windows\AboutWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Windows\BootLoaderWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Windows\CreateProjectWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Windows\GlobalSettingWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Windows\NodeRedWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Windows\PowerToolWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Windows\RecentFileWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Windows\RenameWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Windows\UserManualWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -542,19 +370,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
-    <None Include="config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <EmbeddedResource Include="Data\ParamSetting\PPEC86CA3A.json" />
-    <None Include="Data\PPEC_Data.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\PageMapping.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\PPEC_Introduce.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -569,9 +384,6 @@
     <None Include="smls_vision.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="upgrade.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -583,33 +395,8 @@
     <Content Include="ControlCAN.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resource\Images\System\PPEC-86CA3A.png" />
     <Resource Include="Resource\20240426-165532.ico" />
-    <Resource Include="Resource\Images\ControlRing.png" />
-    <Resource Include="Resource\Images\ct.png" />
     <Resource Include="Resource\Images\Logo\logo.png" />
-    <Resource Include="Resource\Images\PIN\PPEC-86CA3MC2.png" />
-    <Resource Include="Resource\Images\Sequential\Din1.png" />
-    <Resource Include="Resource\Images\Sequential\PPEC-86CA3MC2.png" />
-    <Resource Include="Resource\Images\SVG\Buck-Boost.svg" />
-    <Resource Include="Resource\Images\SVG\BuckBoostLLC.svg" />
-    <Resource Include="Resource\Images\SVG\DAB.svg" />
-    <Resource Include="Resource\Images\SVG\LC.svg" />
-    <Resource Include="Resource\Images\SVG\LLC.svg" />
-    <Resource Include="Resource\Images\SVG\logo.svg" />
-    <Resource Include="Resource\Images\SVG\open.svg" />
-    <Resource Include="Resource\Images\SVG\PSFB.svg" />
-    <Resource Include="Resource\Images\SVG\PSFB1.svg" />
-    <Resource Include="Resource\Images\SVG\SPI.svg" />
-    <Resource Include="Resource\Images\SVG\SPR.svg" />
-    <Resource Include="Resource\Images\SVG\TPI.svg" />
-    <Resource Include="Resource\Images\SVG\TPR.svg" />
-    <Resource Include="Resource\Images\System\PPEC-86CA3MC2.png" />
-    <Resource Include="Resource\PPEClogo.png" />
-    <Resource Include="Resource\SMLSlogo.png" />
-    <Resource Include="Resource\startIMG.jpeg" />
-    <Resource Include="Resource\WelcomBackground.png" />
-    <Resource Include="Resource\WorkbenchLogo.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PPEC.Communication\PPEC.Communication.csproj">
@@ -629,11 +416,7 @@
       <Name>Workbench.Themes</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Debug\" />
-    <Folder Include="Models\Implement\" />
-    <Folder Include="Models\Interface\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1587.40\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1587.40\build\Microsoft.Web.WebView2.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

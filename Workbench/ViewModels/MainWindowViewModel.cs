@@ -1,21 +1,15 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 using System;
 using System.Management;
 using System.Windows;
-using Workbench.Utils.Common;
 using Workbench.Utils;
 using Prism.Events;
 using Workbench.Events;
 using log4net;
-using System.Diagnostics;
-using Newtonsoft.Json;
-using System.IO;
 using System.Threading.Tasks;
 using Workbench.Models;
 using PPEC.Communication;
 using PPEC.Communication.Enum;
-using PPEC.Communication.Common;
 using PPEC.Communication.DB;
 using Prism.Ioc;
 
@@ -36,7 +30,6 @@ namespace Workbench.ViewModels
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;
             CreateUSBWatcher();
-            InitVersionHub();
 
             //新协议通讯--wzw-625
             //TestMain();
@@ -53,7 +46,7 @@ namespace Workbench.ViewModels
         }
         static async Task TestMain()
         {
-            var devU = new GroundDevice("COM3", ConnectPortType.UART,115200);
+            var devU = new GroundDevice("COM3", ConnectPortType.UART, 115200);
 
             await Task.WhenAll(devU.ConnectAsync());
 
@@ -181,130 +174,21 @@ namespace Workbench.ViewModels
 
         #region Commands
 
-        private DelegateCommand _upgradeCommand;
-        public DelegateCommand UpgradeCommand =>
-            _upgradeCommand ?? (_upgradeCommand = new DelegateCommand(() =>
-            {
-                //找到启动器路径，然后启动启动器，关闭本程序
-                try
-                {
-                    var result = CheckUpdaterVersion().GetAwaiter();
-                    result.OnCompleted(() =>
-                    {
-                        if (result.GetResult())
-                        {
-                            var callback = System.Windows.MessageBox.Show("是否开始更新?", "提示", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                            if (callback == MessageBoxResult.Yes)
-                            {
-                                string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;//当前程序目录
-                                DirectoryInfo directoryInfo = new DirectoryInfo(currentDirectory).Parent;
-                                string targetFolderPath = Path.Combine(directoryInfo.FullName, upgradeProcedure);
-                                currentProInfo.IsDirectUpdate = "true";
-                                UtilsFunc.UpdateLocalJson(targetFolderPath, currentProInfo);
-
-                                var StartUpName = _fileHandler.ReadLocalFileObject<AppConfig>(Constants.CONFIG_FILE_PATH)?.StartUpName;
-                                ProcessStartInfo startInfo = new ProcessStartInfo();
-                                startInfo.WorkingDirectory = directoryInfo.FullName;//设置工作目录
-                                startInfo.FileName = string.IsNullOrEmpty(StartUpName) ? "initiating.exe" : StartUpName;
-                                startInfo.UseShellExecute = true;
-                                startInfo.Verb = "runas";
-                                Process.Start(startInfo);
-                                //关闭本程序
-                                Process.GetCurrentProcess().Kill();
-                            }
-                        }
-                        else
-                        {
-                            System.Windows.MessageBox.Show("当前版本已是最新!", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    });
-
-                }
-                catch (Exception ex)
-                {
-                    _log.Error(ex.Message);
-                    Process.GetCurrentProcess().Kill();
-                }
-            }));
-
-        private DelegateCommand _connectCommand;
-        public DelegateCommand ConnectCommand =>
-            _connectCommand ?? (_connectCommand = new DelegateCommand(async () =>
-            {
-                if (_projectManager.CurrentPPEC == null)
-                {
-                    MessageBox.Show("请选择工程", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
-                _eventAggregator.GetEvent<ConnectEvent>().Publish();
-            }));
+        //private DelegateCommand _connectCommand;
+        //public DelegateCommand ConnectCommand =>
+        //    _connectCommand ?? (_connectCommand = new DelegateCommand(async () =>
+        //    {
+        //        if (_projectManager.CurrentPPEC == null)
+        //        {
+        //            MessageBox.Show("请选择工程", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+        //            return;
+        //        }
+        //        _eventAggregator.GetEvent<ConnectEvent>().Publish();
+        //    }));
 
         #endregion
 
         #region Methods
-
-        public async Task<bool> CheckUpdaterVersion()
-        {
-            if (upgradeLocal != null)
-            {
-                _host = upgradeLocal.Host;
-                upgradeRemote = await UpdateHelper.GetUpdaterRemoteInfo(_host, upgradeFileName);
-                if (upgradeRemote != null)
-                {
-                    //版本比较
-                    int res = 0;
-                    res = UpdateHelper.Compare(upgradeRemote.Workbench.Version, upgradeLocal.Workbench.Version);
-                    if (res > 0)
-                    {
-                        //需要update更新程序
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                string HostUrl = _fileHandler.ReadLocalFileObject<AppConfig>(Constants.CONFIG_FILE_PATH)?.HostUrl;
-                _host = HostUrl;
-                upgradeRemote = await UpdateHelper.GetUpdaterRemoteInfo(_host, upgradeFileName);
-                string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;//当前程序目录
-                string targetFolderPath = Path.Combine(currentDirectory, "upgrade.json");//版本文件
-                using (StreamWriter writer = new StreamWriter(targetFolderPath))
-                {
-                    var content = JsonConvert.SerializeObject(upgradeRemote);
-                    writer.WriteLine(content);
-                }
-            }
-
-            return false;
-        }
-
-        private void InitVersionHub()
-        {
-            string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;//当前程序目录
-            DirectoryInfo directoryInfo = new DirectoryInfo(currentDirectory).Parent;
-            string targetFolderPath = Path.Combine(directoryInfo.FullName, upgradeProcedure);//需要启动的程序所在文件夹
-            currentProInfo = UpdateHelper.GetLocalInfo<StaticUpgrade>(targetFolderPath);
-            upgradeLocal = UpdateHelper.GetLocalInfo<Upgrade>(upgradeFileName);
-            var result = CheckUpdaterVersion().GetAwaiter();
-            result.OnCompleted(() =>
-            {
-                if (result.GetResult())
-                {
-                    App.Current.Dispatcher.InvokeAsync(() =>
-                    {
-                        UpdateBadge = true;
-                    });
-
-                }
-                else
-                {
-                    App.Current.Dispatcher.InvokeAsync(() =>
-                    {
-                        UpdateBadge = false;
-                    });
-                }
-            });
-        }
 
         #endregion
     }

@@ -16,10 +16,7 @@ using System.Windows.Forms;
 using Unity;
 using Workbench.Events;
 using Workbench.Models;
-using Workbench.Models.BootLoader;
 using Workbench.Utils.Common;
-using Workbench.Views;
-using Workbench.Views.Windows;
 
 namespace Workbench.Utils
 {
@@ -45,13 +42,13 @@ namespace Workbench.Utils
         /// <summary>
         /// 当前工程
         /// </summary>
-        public PPEC_Project CurrentProject { get; set; }
+        public PpecProject CurrentProject { get; set; }
 
         /// <summary>
         /// 当前PPEC
         /// </summary>
-        private PPEC_Project _currentPPEC;
-        public PPEC_Project CurrentPPEC
+        private PpecProject _currentPPEC;
+        public PpecProject CurrentPPEC
         {
             get { return _currentPPEC; }
             set
@@ -64,7 +61,7 @@ namespace Workbench.Utils
         /// <summary>
         /// 已打开工程列表
         /// </summary>
-        public List<PPEC_Project> OpenedProjectList { get; set; } = new List<PPEC_Project>();
+        public List<PpecProject> OpenedProjectList { get; set; } = new List<PpecProject>();
 
         #endregion
         #region Method
@@ -73,7 +70,7 @@ namespace Workbench.Utils
         /// 获取列表中的工程
         /// </summary>
         /// <returns></returns>
-        public PPEC_Project GetCacheProject()
+        public PpecProject GetCacheProject()
         {
             return OpenedProjectList.FirstOrDefault(t => t.UID == CurrentProject.UID);
         }
@@ -83,7 +80,7 @@ namespace Workbench.Utils
         /// 获取列表中的当前选中的PPEC
         /// </summary>
         /// <returns></returns>
-        public PPEC_Project GetCachePPEC()
+        public PpecProject GetCachePPEC()
         {
             if (CurrentProject == null)
                 return null;
@@ -101,7 +98,7 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
-        public bool CreateProject(PPEC_Project project)
+        public bool CreateProject(PpecProject project)
         {
             var dirPath = project.Path;
             var fileName = project.Name;
@@ -137,7 +134,7 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
-        public bool SaveProject(PPEC_Project project)
+        public bool SaveProject(PpecProject project)
         {
             if (project == null)
             {
@@ -181,7 +178,7 @@ namespace Workbench.Utils
                 content = File.ReadAllText(filePath);
                 //更新最近文件列表中的时间
                 _fileHandler.UpdateRecentFileDatetime(content);
-                _eventAggregator.GetEvent<AddedProjectEvent>().Publish(JsonHelper.DeserializeObject<PPEC_Project>(content));
+                _eventAggregator.GetEvent<AddedProjectEvent>().Publish(JsonHelper.DeserializeObject<PpecProject>(content));
             }
             return true;
         }
@@ -194,7 +191,7 @@ namespace Workbench.Utils
                 var projectStr = File.ReadAllText(filePath);
                 //更新最近文件列表中的时间
                 _fileHandler.UpdateRecentFileDatetime(projectStr);
-                _eventAggregator.GetEvent<AddedProjectEvent>().Publish(JsonHelper.DeserializeObject<PPEC_Project>(projectStr));
+                _eventAggregator.GetEvent<AddedProjectEvent>().Publish(JsonHelper.DeserializeObject<PpecProject>(projectStr));
                 return true;
             }
             else
@@ -212,10 +209,10 @@ namespace Workbench.Utils
             return true;
         }
 
-        internal PPEC_Project CreatePPEC(string ppec, string projectId)
+        internal PpecProject CreatePPEC(string ppec, string projectId)
         {
             var uid = Guid.NewGuid().ToString();
-            var project = new PPEC_Project()
+            var project = new PpecProject()
             {
                 UID = uid,
                 Name = ppec,
@@ -223,9 +220,9 @@ namespace Workbench.Utils
                 Label = ppec,
                 Level = ProjectLevel.PPEC,
                 ProjectId = projectId,
-                Children = new ObservableCollection<PPEC_Project>()
+                Children = new ObservableCollection<PpecProject>()
                         {
-                            new PPEC_Project()
+                            new PpecProject()
                             {
                                 UID = Guid.NewGuid().ToString(),
                                 Name = "参数设置",
@@ -235,7 +232,7 @@ namespace Workbench.Utils
                                 PPEC_Id = uid,
                                 ProjectId = projectId
                             },
-                            new PPEC_Project()
+                            new PpecProject()
                             {
                                 UID = Guid.NewGuid().ToString(),
                                 Name = "状态监测",
@@ -254,7 +251,7 @@ namespace Workbench.Utils
         /// 另存为
         /// </summary>
         /// <param name="saveAsProject"></param>
-        internal void SaveAsProject(PPEC_Project saveAsProject)
+        internal void SaveAsProject(PpecProject saveAsProject)
         {
             if (saveAsProject == null)
             {
@@ -262,7 +259,7 @@ namespace Workbench.Utils
                 return;
             }
 
-            PPEC_Project saveAsFileProject = null;
+            PpecProject saveAsFileProject = null;
             var saveFileDialog = new Microsoft.Win32.SaveFileDialog()
             {
                 Title = "另存为",
@@ -276,7 +273,7 @@ namespace Workbench.Utils
                 {
                     //不能覆盖已打开的工程文件
                     var saveAsFile = File.ReadAllText(fileName);
-                    saveAsFileProject = JsonHelper.DeserializeObject<PPEC_Project>(saveAsFile);
+                    saveAsFileProject = JsonHelper.DeserializeObject<PpecProject>(saveAsFile);
                     if (OpenedProjectList.Any(t => t.UID == saveAsFileProject.UID))
                     {
                         MessageBox.Show("不能覆盖已打开的工程文件", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -306,7 +303,7 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="project"></param>
         /// <param name="oldName"></param>
-        internal void RenameProject(PPEC_Project project, string oldName)
+        internal void RenameProject(PpecProject project, string oldName)
         {
             //保存工程文件
             SaveProject(project);
@@ -345,7 +342,7 @@ namespace Workbench.Utils
         /// <param name="projectId"></param>
         /// <param name="ppecId"></param>
         /// <returns></returns>
-        public PPEC_Project GetPpecById(string projectId, string ppecId)
+        public PpecProject GetPpecById(string projectId, string ppecId)
         {
             return OpenedProjectList.FirstOrDefault(t => t.UID == projectId).Children.FirstOrDefault(t => t.UID == ppecId);
         }
@@ -354,7 +351,7 @@ namespace Workbench.Utils
         /// 连接
         /// </summary>
         /// <returns></returns>
-        internal async Task ConnectAsync(PPEC_Project cachePpec)
+        internal async Task ConnectAsync(PpecProject cachePpec)
         {
             if (cachePpec.IsTrueConnected)
             {
@@ -393,38 +390,12 @@ namespace Workbench.Utils
             //});
         }
 
-        public void SetCurrentPpec(PPEC_Project ppec)
+        public void SetCurrentPpec(PpecProject ppec)
         {
             CurrentPPEC = ppec;
         }
 
-        private void CheckPassword(PPEC_Project cachePpec)
-        {
-            if (!cachePpec.Password.HasValue)
-            {
-                _dialogService.ShowDialog(nameof(PasswordView), null, result =>
-                {
-                    if (result.Result == ButtonResult.OK)
-                    {
-                        cachePpec.IsTrueConnected = true;
-                    }
-                    else
-                    {
-                        cachePpec.Disconnect();
-                    }
-                }, nameof(PasswordWindow));
-            }
-            else
-            {
-                var checkResult = UtilsFunc.CheckPassword(cachePpec.Password.Value, cachePpec.Master);
-                if (checkResult)
-                    cachePpec.IsTrueConnected = true;
-                else
-                    cachePpec.Disconnect();
-            }
-        }
-
-        public async Task CreateMasterAsync(PPEC_Project cachePpec)
+        public async Task CreateMasterAsync(PpecProject cachePpec)
         {
             ITopologyMaster master = null;
             switch (cachePpec.CommunicationType)

@@ -10,7 +10,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Workbench.Models;
-using Workbench.Models.Data;
 using Workbench.Utils;
 using Workbench.Utils.Common;
 
@@ -20,7 +19,6 @@ namespace Workbench.ViewModels
     {
         private readonly FileHandler _fileHandler;
         private readonly ProjectManager _projectManager;
-        private static List<PPEC_Data> _data = new List<PPEC_Data>();
         public CreateProjectViewModel(FileHandler fileHandler, ProjectManager projectManager)
         {
             _fileHandler = fileHandler;
@@ -97,27 +95,6 @@ namespace Workbench.ViewModels
             }
         }
 
-        private Display_PPEC_Data _selectedPpec;
-        public Display_PPEC_Data SelectedPpec
-        {
-            get => _selectedPpec;
-            set
-            {
-                if (value != null)
-                {
-                    SvgPath = $"/Resource/Images/SVG/{value.Type}.svg";
-                }
-                SetProperty(ref _selectedPpec, value);
-            }
-        }
-
-        private ObservableCollection<Display_PPEC_Data> _ppecData = new ObservableCollection<Display_PPEC_Data>();
-        public ObservableCollection<Display_PPEC_Data> PpecData
-        {
-            get => _ppecData;
-            set => SetProperty(ref _ppecData, value);
-        }
-
         #endregion
 
         #region Command
@@ -152,7 +129,7 @@ namespace Workbench.ViewModels
                 CreateChipInfo.ChipName = SelectChipType.Name.ToString();
                 CreateChipInfo.ChipPath = SelectChipType.Label;
                 CreateChipInfo.ChipRegisterInfo = selectChip.Select(r => r.DeepClone()).ToList();
-                var project = new PPEC_Project()
+                var project = new PpecProject()
                 {
                     UID = projectId,
                     Name = FileName,
@@ -162,7 +139,7 @@ namespace Workbench.ViewModels
                     Label = FileName,
                     Level = ProjectLevel.Project,
                     Chip = CreateChipInfo,
-                    Children = new ObservableCollection<PPEC_Project>() { new PPEC_Project()
+                    Children = new ObservableCollection<PpecProject>() { new PpecProject()
                     {
                         UID = ppecId,
                         Name =CreateChipInfo.ChipName,// SelectedPpec.PPEC,
@@ -170,9 +147,9 @@ namespace Workbench.ViewModels
                         Label =CreateChipInfo.ChipName,//  SelectedPpec.PPEC,
                         Level = ProjectLevel.PPEC,
                         ProjectId = projectId,
-                        Children = new ObservableCollection<PPEC_Project>()
+                        Children = new ObservableCollection<PpecProject>()
                         {
-                            new PPEC_Project()
+                            new PpecProject()
                             {
                                 UID = Guid.NewGuid().ToString(),
                                 Name = "单参数",
@@ -182,7 +159,7 @@ namespace Workbench.ViewModels
                                 PPEC_Id = ppecId,
                                 ProjectId = projectId
                             },
-                            new PPEC_Project()
+                            new PpecProject()
                             {
                                 UID = Guid.NewGuid().ToString(),
                                 Name = "批量参数",
@@ -192,7 +169,7 @@ namespace Workbench.ViewModels
                                 PPEC_Id = ppecId,
                                 ProjectId = projectId
                             },
-                            new PPEC_Project()
+                            new PpecProject()
                             {
                                 UID = Guid.NewGuid().ToString(),
                                 Name = "状态监测",

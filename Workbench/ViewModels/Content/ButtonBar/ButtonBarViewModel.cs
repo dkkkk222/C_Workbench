@@ -1,7 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using System;
 using System.Linq;
 using Workbench.Views.Windows;
 using Workbench.Views;
@@ -10,7 +9,6 @@ using System.Collections.ObjectModel;
 using Prism.Events;
 using Workbench.Events;
 using Workbench.Utils.Common;
-using Workbench.Models.BootLoader;
 using Workbench.Models;
 using System.Windows.Forms;
 using System.Threading.Tasks;
@@ -34,9 +32,6 @@ namespace Workbench.ViewModels.Content.ButtonBar
             EventListeners();
             PortList.AddRange(SerialPortHelper.GetPortNames());
             SerialPortName = PortList.FirstOrDefault();
-
-            //CAN口默认值
-            SelectedCAN = _cANList.FirstOrDefault();
         }
 
         private void EventListeners()
@@ -65,8 +60,6 @@ namespace Workbench.ViewModels.Content.ButtonBar
                         SelectedCommunicationType = string.IsNullOrEmpty(ppec.CommunicationType) ? Constants.Modbus : ppec.CommunicationType;
                         if (ppec.CommunicationType == Constants.Modbus && !string.IsNullOrEmpty(ppec.PortName))
                             SerialPortName = ppec.PortName;
-                        else if (ppec.CommunicationType == Constants.CAN && !string.IsNullOrEmpty(ppec.PortName))
-                            SelectedCAN = _cANList.FirstOrDefault(x => x.Name == ppec.PortName);
                     }
                 }
                 else
@@ -120,26 +113,6 @@ namespace Workbench.ViewModels.Content.ButtonBar
             set
             {
                 SetProperty(ref _serialPortName, value);
-            }
-        }
-
-        private ObservableCollection<BBLLCCANItem> _cANList = CommEntity.BBLLCCANList;
-        public ObservableCollection<BBLLCCANItem> CANList
-        {
-            get => _cANList;
-            set => SetProperty(ref _cANList, value);
-        }
-
-        private BBLLCCANItem _selectedCAN;
-        public BBLLCCANItem SelectedCAN
-        {
-            get => _selectedCAN;
-            set
-            {
-                var ppec = _projectManager.GetCachePPEC();
-                if (ppec != null)
-                    ppec.PortName = value?.Name;
-                SetProperty(ref _selectedCAN, value);
             }
         }
 
@@ -249,8 +222,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
 
         private void InitTheme()
         {
-            var appConfig = _fileHandler.ReadLocalFileObject<AppConfig>(Constants.CONFIG_FILE_PATH);
-            IsDarkTheme = appConfig.UserTheme == Constants.DarkTheme;
+            IsDarkTheme = false;
         }
 
         private async Task OnConnectionAsync()

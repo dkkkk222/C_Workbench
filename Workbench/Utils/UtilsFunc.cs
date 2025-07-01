@@ -4,15 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
-using Workbench.Models.BootLoader;
 using Prism.Ioc;
 using Workbench.Models;
 using PPEC.Communication.Enum;
 using PPEC.Communication;
 using System.Threading;
-using Prism.Ioc;
 using Workbench.SerialAsistant.Utils;
-using System.Threading.Tasks;
 
 namespace Workbench.Utils
 {
@@ -109,42 +106,6 @@ namespace Workbench.Utils
             return (UInt16)((UInt16)uchCRCHi << 8 | uchCRCLo);
         }
 
-        public static TopoChipStatus GetTopoChipStatus(byte[] data)
-        {
-            if (data.Length == 0) return null;
-            byte version;
-            CurrentChipStateEnum ccse = CurrentChipStateEnum.None;
-            if (data.Length == 7)
-            {
-                if (data[0] == 0x01 && data[1] == 0x03)
-                {
-                    version = data[3];
-                    ccse = CurrentChipStateEnum.App;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else if (data.Length == 10)
-            {
-                if (data[0] == 0x5A && data[1] == 0x05)
-                {
-                    version = data[6];
-                    ccse = CurrentChipStateEnum.Boot;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
-            return new TopoChipStatus(version, ccse);
-        }
-
         public static void UpdateLocalJson(string parentDirectoryFileName, object obj)
         {
             string updatedJsonContent = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
@@ -189,12 +150,6 @@ namespace Workbench.Utils
                 System.Windows.Application.Current.Resources.MergedDictionaries.Add(lightThemeDict);
             }
             var fileHandler = ContainerLocator.Container.Resolve<FileHandler>();
-            var appConfig = fileHandler.ReadLocalFileObject<AppConfig>(Constants.CONFIG_FILE_PATH);
-            appConfig.UserTheme = isDarkTheme ? Constants.DarkTheme : Constants.LightTheme;
-            using (StreamWriter writer = new StreamWriter(Constants.CONFIG_FILE_PATH, false))
-            {
-                writer.WriteLine(JsonHelper.SerializeObject(appConfig));
-            }
         }
 
         public static bool CheckPassword(Int32 p, ITopologyMaster CurrentTopoMaster)

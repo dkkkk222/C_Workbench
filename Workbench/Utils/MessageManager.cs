@@ -48,7 +48,7 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
-        internal string CreateProject(PPEC_Project project)
+        internal string CreateProject(PpecProject project)
         {
             var dirPath = project.Path;
             var fileName = project.Name;
@@ -140,7 +140,7 @@ namespace Workbench.Utils
         /// 保存工程文件
         /// </summary>
         /// <param name="currentProject">工程对象</param>
-        internal void SaveProject(PPEC_Project currentProject)
+        internal void SaveProject(PpecProject currentProject)
         {
             if (currentProject == null)
             {
@@ -167,7 +167,7 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="project"></param>
         /// <param name="coverUid">被覆盖文件uid</param>
-        internal void AppendToRecentFile(PPEC_Project project, string coverUid = "")
+        internal void AppendToRecentFile(PpecProject project, string coverUid = "")
         {
             var recentFiles = _fileHandler.GetRecentFiles();
             var list = recentFiles;
@@ -185,7 +185,7 @@ namespace Workbench.Utils
             _fileHandler.SaveRecentFiles(list);
         }
 
-        internal void SaveAsProject(Action postMessageAction, PPEC_Project saveAsProject)
+        internal void SaveAsProject(Action postMessageAction, PpecProject saveAsProject)
         {
             if (saveAsProject == null)
             {
@@ -193,7 +193,7 @@ namespace Workbench.Utils
                 return;
             }
 
-            PPEC_Project saveAsFileProject = null;
+            PpecProject saveAsFileProject = null;
             var saveFileDialog = new Microsoft.Win32.SaveFileDialog()
             {
                 Title = "另存为",
@@ -207,7 +207,7 @@ namespace Workbench.Utils
                 {
                     //不能覆盖已打开的工程文件
                     var saveAsFile = File.ReadAllText(fileName);
-                    saveAsFileProject = JsonHelper.DeserializeObject<PPEC_Project>(saveAsFile);
+                    saveAsFileProject = JsonHelper.DeserializeObject<PpecProject>(saveAsFile);
                     if (_cache.OpenedProjectUidList.Contains(saveAsFileProject.UID))
                     {
                         MessageBox.Show("不能覆盖已打开的工程文件", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -234,7 +234,7 @@ namespace Workbench.Utils
             }
         }
 
-        internal void RenameProject(PPEC_Project project, string oldName)
+        internal void RenameProject(PpecProject project, string oldName)
         {
             //保存工程文件
             SaveProject(project);

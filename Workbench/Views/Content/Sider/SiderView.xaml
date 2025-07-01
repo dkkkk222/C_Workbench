@@ -7,12 +7,8 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:wv="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-             xmlns:converters="clr-namespace:Workbench.Utils.ConverterUtil"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="225">
-    <UserControl.Resources>
-        <converters:TreeViewItemMarginConverter x:Key="TreeViewItemMarginConverter"/>
-    </UserControl.Resources>
     <Border Padding="0" Background="{DynamicResource PrimaryBackgroundColor}">
         <Grid>
             <Grid.RowDefinitions>

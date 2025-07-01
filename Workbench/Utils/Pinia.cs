@@ -12,12 +12,12 @@ namespace Workbench.Utils
         /// <summary>
         /// 当前工程
         /// </summary>
-        public PPEC_Project CurrentProject { get; set; }
+        public PpecProject CurrentProject { get; set; }
 
         /// <summary>
         /// 当前PPEC
         /// </summary>
-        public PPEC_Project CurrentPPEC { get; set; }
+        public PpecProject CurrentPPEC { get; set; }
 
         /// <summary>
         /// 已打开工程列表
@@ -30,12 +30,12 @@ namespace Workbench.Utils
             CurrentPPEC = null;
         }
 
-        public void SetCurrentProject(PPEC_Project project)
+        public void SetCurrentProject(PpecProject project)
         {
             CurrentProject = project;
         }
 
-        internal void SetCurrentPPEC(PPEC_Project currentPPEC)
+        internal void SetCurrentPPEC(PpecProject currentPPEC)
         {
             CurrentPPEC = currentPPEC;
         }

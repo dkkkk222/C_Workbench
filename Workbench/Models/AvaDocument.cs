@@ -38,8 +38,8 @@ namespace Workbench.Models
             set => SetProperty(ref _contentId, value);
         }
 
-        private PPEC_Project _project;
-        public PPEC_Project Project
+        private PpecProject _project;
+        public PpecProject Project
         {
             get => _project;
             set => SetProperty(ref _project, value);

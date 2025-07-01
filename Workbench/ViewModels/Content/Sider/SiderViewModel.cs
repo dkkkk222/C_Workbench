@@ -65,8 +65,8 @@ namespace Workbench.ViewModels.Content.Sider
 
         #region Properties
 
-        private ObservableCollection<PPEC_Project> _projects = new ObservableCollection<PPEC_Project>();
-        public ObservableCollection<PPEC_Project> Projects
+        private ObservableCollection<PpecProject> _projects = new ObservableCollection<PpecProject>();
+        public ObservableCollection<PpecProject> Projects
         {
             get { return _projects; }
             set

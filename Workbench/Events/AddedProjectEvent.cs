@@ -8,7 +8,7 @@ using Workbench.Models;
 
 namespace Workbench.Events
 {
-    public class AddedProjectEvent : PubSubEvent<PPEC_Project>
+    public class AddedProjectEvent : PubSubEvent<PpecProject>
     {
     }
 }

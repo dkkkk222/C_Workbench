@@ -1,13 +1,9 @@
 ﻿using Prism.Commands;
 using Prism.Events;
 using Prism.Services.Dialogs;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Utils;
@@ -56,24 +52,9 @@ namespace Workbench.ViewModels.Content.Tabs
 
         private void LoadIntroduceData()
         {
-            var json = _fileHandler.ReadLocalFile("Data/PPEC_Introduce.json");
-            if (!string.IsNullOrEmpty(json))
-            {
-                Introduces = JsonHelper.DeserializeObject<ObservableCollection<PPEC_Introduce>>(json);
-            }
         }
 
         #region property
-
-        private ObservableCollection<PPEC_Introduce> _introduces = new ObservableCollection<PPEC_Introduce>();
-        public ObservableCollection<PPEC_Introduce> Introduces
-        {
-            get { return _introduces; }
-            set
-            {
-                SetProperty(ref _introduces, value);
-            }
-        }
 
         private ObservableCollection<RecentFile> _recentFiles = new ObservableCollection<RecentFile>();
         public ObservableCollection<RecentFile> RecentFiles

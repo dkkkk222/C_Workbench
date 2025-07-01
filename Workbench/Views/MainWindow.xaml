@@ -36,7 +36,7 @@
                 </Border>
                 <Border Grid.Column="1">
                     <Menu Style="{DynamicResource MenuStyle}">
-                        <MenuItem Header="文件(_F)" SubmenuOpened="MenuItem_SubmenuOpened">
+                        <MenuItem Header="文件(_F)">
                             <MenuItem x:Name="NewProject" Header="新建" Click="NewProject_Click">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xe620;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
@@ -64,14 +64,14 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="芯片(_C)" SubmenuOpened="MenuItem_SubmenuOpened">
+                        <MenuItem Header="芯片(_C)">
                             <MenuItem Header="芯片管理" Click="ShowChipCommand_Click" >
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xe7a9;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="工程(_P)" SubmenuOpened="MenuItem_SubmenuOpened">
+                        <MenuItem Header="工程(_P)">
                             <MenuItem Header="{Binding ConnectName}" Command="{Binding ConnectCommand}" IsEnabled="{Binding HasPpec}">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xe625;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
