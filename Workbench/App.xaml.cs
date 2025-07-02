@@ -17,6 +17,11 @@ using Workbench.Views.Windows;
 using PPEC.Communication.DB;
 using PPEC.Communication.DB.Provided;
 using PPEC.Communication.Interface.DB;
+using Microsoft.Extensions.DependencyInjection;
+using FluentMigrator.Runner;
+using System.Reflection;
+using Workbench.Db;
+using System.Linq;
 
 namespace Workbench
 {
@@ -28,9 +33,65 @@ namespace Workbench
         private static readonly ILog _log = LogManager.GetLogger(typeof(App));
         protected override void OnStartup(StartupEventArgs e)
         {
+            HotLoadDatabase();
+            RegisteFluentMigrator();
             XmlConfigurator.Configure(new FileInfo("log4net.config"));
             _log.Info("Workbench started.");
             base.OnStartup(e);
+        }
+
+        private void HotLoadDatabase()
+        {
+            try
+            {
+                //预热数据库
+                using (var db = new DbContext())
+                {
+                    var check = db.Registers.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+        }
+
+        private void RegisteFluentMigrator()
+        {
+            using (var serviceProvider = CreateServices())
+            using (var scope = serviceProvider.CreateScope())
+            {
+                // Put the database update into a scope to ensure
+                // that all resources will be disposed.
+                UpdateDatabase(scope.ServiceProvider);
+            }
+        }
+
+        private static void UpdateDatabase(IServiceProvider serviceProvider)
+        {
+            // Instantiate the runner
+            var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+
+            // Execute the migrations
+            runner.MigrateUp();
+        }
+
+        private static ServiceProvider CreateServices()
+        {
+            return new ServiceCollection()
+                // Add common FluentMigrator services
+                .AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                    // Add SQLite support to FluentMigrator
+                    .AddSQLite()
+                    // Set the connection string
+                    .WithGlobalConnectionString("Data Source=smls_vision.sqlite")
+                    // Define the assembly containing the migrations, maintenance migrations and other customizations
+                    .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
+                // Enable logging to console in the FluentMigrator way
+                .AddLogging(lb => lb.AddFluentMigratorConsole())
+                // Build the service provider
+                .BuildServiceProvider(false);
         }
 
         protected override Window CreateShell()
@@ -63,7 +124,7 @@ namespace Workbench
         private void RegisterDialog(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialogWindow<CreateProjectWindow>(nameof(CreateProjectWindow));
-            containerRegistry.RegisterDialogWindow<ChipManagerWindow>(nameof(ChipManagerWindow)); 
+            containerRegistry.RegisterDialogWindow<ChipManagerWindow>(nameof(ChipManagerWindow));
             containerRegistry.RegisterDialog<CreateProjectView, CreateProjectViewModel>();
             containerRegistry.RegisterSingleton<ChipManagerViewModel>();
             containerRegistry.RegisterDialog<ChipManagerView, ChipManagerViewModel>();

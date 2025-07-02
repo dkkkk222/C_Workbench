@@ -37,7 +37,7 @@ namespace Workbench.ViewModels
             //RegisterExcelParser rep=new RegisterExcelParser();
             //rep.Parse(ExcelPath);
             //WZW--627
-            InitDataList();
+            //InitDataList();
         }
 
         public async void InitDataList()

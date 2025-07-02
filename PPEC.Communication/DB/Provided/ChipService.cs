@@ -12,7 +12,7 @@ using PPEC.Communication.Interface.DB;
 
 namespace PPEC.Communication.DB.Provided
 {
-    public class ChipService:IChipService
+    public class ChipService : IChipService
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(ChipService));
         private readonly SmlsContext dbContext;
@@ -23,7 +23,7 @@ namespace PPEC.Communication.DB.Provided
 
         public async Task<List<smls_chip>> GetChip()
         {
-            return await dbContext.GetTable<smls_chip>().ToListAsync();            
+            return await dbContext.GetTable<smls_chip>().ToListAsync();
         }
 
         public async Task<int> AddChip(string name, string filePath)
@@ -33,7 +33,7 @@ namespace PPEC.Communication.DB.Provided
                 var id = await dbContext.InsertWithInt32IdentityAsync(new smls_chip { Name = name, FilePath = filePath });
                 return (int)id;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return -1;
             }
@@ -53,7 +53,7 @@ namespace PPEC.Communication.DB.Provided
             catch (Exception ex)
             {
                 return -1;
-            }   
+            }
         }
 
         public async Task<int> DeleteChip(int id)
@@ -62,7 +62,7 @@ namespace PPEC.Communication.DB.Provided
             {
                 return await dbContext.GetTable<smls_chip>().DeleteAsync(c => c.Id == id);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return -1;
             }
