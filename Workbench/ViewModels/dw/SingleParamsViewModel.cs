@@ -1,4 +1,5 @@
 ﻿using PPEC.Communication.Model;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -74,6 +75,13 @@ namespace Workbench.ViewModels.dw
             get => _registerInfoList;
             set => SetProperty(ref _registerInfoList, value);
         }
+
+        private DelegateCommand<SingleParamTree> _selectedItemChangedCommand;
+        public DelegateCommand<SingleParamTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??
+            (_selectedItemChangedCommand = new DelegateCommand<SingleParamTree>((param) =>
+            {
+                if (param.Type != SingleParamTreeType.Register) return;
+            }));
 
         public override void LoadData()
         {

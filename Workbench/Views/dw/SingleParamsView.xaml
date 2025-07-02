@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Workbench.Views.dw"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:viewModels="clr-namespace:Workbench.ViewModels.dw"
              xmlns:views="clr-namespace:Workbench.Views.dw"
              xmlns:hc="https://handyorg.github.io/handycontrol"
@@ -42,6 +43,12 @@
                 </hc:SearchBar>
                 <Border Margin="0,5,0,0" Grid.Row="1">
                     <TreeView ItemsSource="{Binding SingleParamTrees}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedItemChanged">
+                                <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 
+                                 CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=TreeView}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <TextBlock Text="{Binding Title}"/>
@@ -125,90 +132,28 @@
                                             <TextBlock Text="bit->" Style="{StaticResource ItemTitle}"/>
                                             <hc:Row Width="200">
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="7" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="31" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="6" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="30" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="5" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="29" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="4" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="28" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="3" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="27" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="2" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="26" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="1" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="25" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="0" HorizontalAlignment="Center"/>
-                                                </hc:Col>
-                                            </hc:Row>
-                                        </StackPanel>
-                                    </Border>
-                                    <Border>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
-                                            <hc:Row Width="200">
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                            </hc:Row>
-                                        </StackPanel>
-                                    </Border>
-                                    <Border>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="bit->" Style="{StaticResource ItemTitle}"/>
-                                            <hc:Row Width="200">
-                                                <hc:Col Span="3">
-                                                    <TextBlock Text="15" HorizontalAlignment="Center"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBlock Text="14" HorizontalAlignment="Center"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBlock Text="13" HorizontalAlignment="Center"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBlock Text="12" HorizontalAlignment="Center"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBlock Text="11" HorizontalAlignment="Center"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBlock Text="10" HorizontalAlignment="Center"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBlock Text="9" HorizontalAlignment="Center"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBlock Text="8" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="24" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                             </hc:Row>
                                         </StackPanel>
@@ -311,28 +256,90 @@
                                             <TextBlock Text="bit->" Style="{StaticResource ItemTitle}"/>
                                             <hc:Row Width="200">
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="31" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="15" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="30" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="14" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="29" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="13" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="28" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="12" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="27" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="11" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="26" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="10" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="25" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="9" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                                 <hc:Col Span="3">
-                                                    <TextBlock Text="24" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="8" HorizontalAlignment="Center"/>
+                                                </hc:Col>
+                                            </hc:Row>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
+                                            <hc:Row Width="200">
+                                                <hc:Col Span="3">
+                                                    <TextBox Text="0"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBox Text="0"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBox Text="0"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBox Text="0"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBox Text="0"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBox Text="0"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBox Text="0"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBox Text="0"/>
+                                                </hc:Col>
+                                            </hc:Row>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="bit->" Style="{StaticResource ItemTitle}"/>
+                                            <hc:Row Width="200">
+                                                <hc:Col Span="3">
+                                                    <TextBlock Text="7" HorizontalAlignment="Center"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBlock Text="6" HorizontalAlignment="Center"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBlock Text="5" HorizontalAlignment="Center"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBlock Text="4" HorizontalAlignment="Center"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBlock Text="3" HorizontalAlignment="Center"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBlock Text="2" HorizontalAlignment="Center"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBlock Text="1" HorizontalAlignment="Center"/>
+                                                </hc:Col>
+                                                <hc:Col Span="3">
+                                                    <TextBlock Text="0" HorizontalAlignment="Center"/>
                                                 </hc:Col>
                                             </hc:Row>
                                         </StackPanel>
@@ -349,7 +356,10 @@
                         <Border Grid.Column="1" Padding="15,0,0,0">
                             <DockPanel LastChildFill="True">
                                 <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                                    <TextBlock Text="历史数据"/>
+                                    <hc:UniformSpacingPanel Spacing="15">
+                                        <TextBlock Text="历史数据" FontSize="14"/>
+                                        <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource CustomDownload}"/>
+                                    </hc:UniformSpacingPanel>
                                 </Border>
                                 <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0">
                                     <DataGrid ItemsSource="{Binding HistoryData}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"

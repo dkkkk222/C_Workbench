@@ -336,6 +336,7 @@ namespace Workbench.Utils
                 list.Add(new SingleParamTree()
                 {
                     Title = category,
+                    Type = SingleParamTreeType.Category,
                     Children = GetSubCategory(category, infos)
                 });
             }
@@ -352,6 +353,7 @@ namespace Workbench.Utils
                 list.Add(new SingleParamTree()
                 {
                     Title = subCategory,
+                    Type = SingleParamTreeType.SubCategory,
                     Children = GetRegister(subCategory, infos)
                 });
             }
@@ -369,6 +371,7 @@ namespace Workbench.Utils
                 list.Add(new SingleParamTree()
                 {
                     Title = register,
+                    Type = SingleParamTreeType.Register,
                 });
             }
 
