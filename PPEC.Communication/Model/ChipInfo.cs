@@ -8,7 +8,7 @@ namespace PPEC.Communication.Model
 {
     public class ChipInfo
     {
-        public int ChipId { get; set; }
+        public string ChipId { get; set; }
         public string ChipName { get; set; }
         public string ChipPath { get; set; }
         public List<RegisterMeta> ChipRegisterInfo { get; set; }

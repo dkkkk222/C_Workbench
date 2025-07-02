@@ -1,14 +1,16 @@
-﻿using PPEC.Communication;
-using PPEC.Communication.DB;
+﻿using LinqToDB;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Workbench.Db;
+using Workbench.Db.IService;
+using Workbench.Db.Tables;
 using Workbench.Models;
 using Workbench.Utils;
 using Workbench.Utils.Common;
@@ -17,24 +19,27 @@ namespace Workbench.ViewModels
 {
     public class CreateProjectViewModel : BindableBase, IDialogAware
     {
-        private readonly FileHandler _fileHandler;
+        private readonly ICpService _cpService;
         private readonly ProjectManager _projectManager;
-        public CreateProjectViewModel(FileHandler fileHandler, ProjectManager projectManager)
+        public CreateProjectViewModel(ProjectManager projectManager, ICpService cpService)
         {
-            _fileHandler = fileHandler;
+            _cpService = cpService;
             _projectManager = projectManager;
-            InitData();
         }
 
-        public void InitData()
+        public async Task InitData()
         {
             ChipTypeSource.Clear();
-            foreach (var chip in InitDataModelService.Instance.ListChip)
-            {
-                ChipTypeSource.Add(new ValueName { Value = chip.Id, Name = chip.Name, Label = chip.FilePath });
-            }
 
-            SelectChipType = ChipTypeSource.FirstOrDefault();
+            using (var db = new DbContext())
+            {
+                var chips = await db.Chips.Where(t => t.IsDeleted == "A").ToListAsync();
+                foreach (var chip in chips)
+                {
+                    ChipTypeSource.Add(new ValueName { Value = chip.Id, Name = chip.Name, Label = chip.FileName });
+                }
+                SelectChipType = ChipTypeSource.FirstOrDefault();
+            }
         }
         #region Property
 
@@ -117,18 +122,20 @@ namespace Workbench.ViewModels
 
         private DelegateCommand _createCommand;
         public DelegateCommand CreateCommand =>
-            _createCommand ?? (_createCommand = new DelegateCommand(() =>
+            _createCommand ?? (_createCommand = new DelegateCommand(async () =>
             {
                 if (SelectChipType == null)
                     return;
                 var projectId = Guid.NewGuid().ToString();
                 var ppecId = Guid.NewGuid().ToString();
-                var selectChip = InitDataModelService.Instance.DicChipAddress[(int)SelectChipType.Value];
+                //var selectChip = InitDataModelService.Instance.DicChipAddress[(int)SelectChipType.Value];
+                string chipId = SelectChipType.Value.ToString();
+                var chip = await _cpService.GetChipById(chipId);
                 ChipInfo CreateChipInfo = new ChipInfo();
-                CreateChipInfo.ChipId = (int)SelectChipType.Value;
-                CreateChipInfo.ChipName = SelectChipType.Name.ToString();
-                CreateChipInfo.ChipPath = SelectChipType.Label;
-                CreateChipInfo.ChipRegisterInfo = selectChip.Select(r => r.DeepClone()).ToList();
+                CreateChipInfo.ChipId = chip.Id;
+                CreateChipInfo.ChipName = chip.Name;
+                CreateChipInfo.ChipPath = chip.FileName;
+                CreateChipInfo.ChipRegisterInfo = await _cpService.GetChipRegisters(chipId);
                 var project = new PpecProject()
                 {
                     UID = projectId,
@@ -202,56 +209,10 @@ namespace Workbench.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-        }
-
-        //private void InitData()
-        //{
-        //    var path = "Data/PPEC_Data.json";
-        //    var data = _fileHandler.ReadLocalFile(path);
-        //    if (!string.IsNullOrEmpty(data))
-        //    {
-        //        _data = JsonHelper.DeserializeObject<List<PPEC_Data>>(data);
-        //        ExtrackData();
-        //    }
-        //}
-
-        private void ExtrackData()
-        {
-            //if (!_data.Any()) return;
-            //PpecData.Clear();
-            //if (SelectedOrderItem.Value == "byTopo")
-            //{
-            //    foreach (var item in _data)
-            //    {
-            //        PpecData.Add(new Display_PPEC_Data()
-            //        {
-            //            Icon = "\xe600",
-            //            Title = item.Title,
-            //            Content = item.Desc,
-            //            Tags = item.Tags,
-            //            Type = item.Type,
-            //            PPEC = item.Ppec
-            //        });
-            //    }
-            //}
-            //else
-            //{
-            //    var group = _data.GroupBy(t => t.Ppec).ToDictionary(t => t.Key, t => t.ToList());
-            //    foreach (var kv in group)
-            //    {
-            //        var item = kv.Value.First();
-            //        PpecData.Add(new Display_PPEC_Data()
-            //        {
-            //            Icon = "\xef4a",
-            //            Title = kv.Key,
-            //            Content = $"适用领域：{item.ChipDesc}",
-            //            Tags = kv.Value.Select(t => t.Title).ToList(),
-            //            Type = item.Type,
-            //            PPEC = item.Ppec
-            //        });
-            //    }
-            //}
-            //SelectedPpec = PpecData.First();
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await InitData();
+            });
         }
 
         #endregion

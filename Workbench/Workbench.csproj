@@ -233,6 +233,8 @@
     <Compile Include="AvalonDock\PanesStyleSelector.cs" />
     <Compile Include="AvalonDock\PanesTemplateSelector.cs" />
     <Compile Include="Db\DbContext.cs" />
+    <Compile Include="Db\IService\ICpService.cs" />
+    <Compile Include="Db\Service\CpService.cs" />
     <Compile Include="Db\Tables\Chip.cs" />
     <Compile Include="Db\Tables\Register.cs" />
     <Compile Include="Db\Tables\RegisterBit.cs" />

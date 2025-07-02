@@ -16,7 +16,7 @@
             <Setter Property="Padding" Value="0,10"/>
         </Style>
     </UserControl.Resources>
-    <Grid Background="{DynamicResource TreeViewBackgroundColor}">
+    <Grid Background="{DynamicResource DarkDefaultBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -89,9 +89,10 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                                 <TextBlock Width="10"></TextBlock>
-                                <Button  Content="取消" Width="80" Height="30" Command="{Binding CloseCommand}"/>
+                                <Button  Content="取消" Width="80" Height="30" Command="{Binding CloseCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Style="{StaticResource ButtonPrimary}" Content="确认" Width="80" Height="30" Command="{Binding CreateCommand}"/>
+                                <Button Style="{StaticResource ButtonPrimary}" Content="确认" Width="80" Height="30" Command="{Binding CreateCommand}"
+                                        hc:IconElement.Geometry="{StaticResource SaveGeometry}" hc:IconElement.Width="13"/>
 
                             </StackPanel>
                         </Border>
