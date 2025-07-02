@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using PPEC.Communication;
 using PPEC.Communication.CAN;
 using PPEC.Communication.Enum;
+using PPEC.Communication.Model;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -16,6 +17,7 @@ using System.Windows.Forms;
 using Unity;
 using Workbench.Events;
 using Workbench.Models;
+using Workbench.Models.dw;
 using Workbench.Utils.Common;
 
 namespace Workbench.Utils
@@ -275,7 +277,7 @@ namespace Workbench.Utils
                 return;
             }
             await CreateMasterAsync(cachePpec);
-            
+
         }
 
         public void SetCurrentPpec(PpecProject ppec)
@@ -319,6 +321,59 @@ namespace Workbench.Utils
             throw new NotImplementedException();
         }
         #endregion
+
+        /// <summary>
+        /// 获取分类树结构
+        /// </summary>
+        /// <returns></returns>
+        internal List<SingleParamTree> GetChipCategoryTree()
+        {
+            var list = new List<SingleParamTree>();
+            var infos = CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).ToList();
+            var categories = infos.Select(t => t.Category).Distinct().ToList();
+            foreach (var category in categories)
+            {
+                list.Add(new SingleParamTree()
+                {
+                    Title = category,
+                    Children = GetSubCategory(category, infos)
+                });
+            }
+            return list;
+        }
+
+        private List<SingleParamTree> GetSubCategory(string category, List<RegisterAddrInfo> infos)
+        {
+            var list = new List<SingleParamTree>();
+
+            var subCategories = infos.Where(t => t.Category == category).Select(t => t.SubCategory).Distinct().ToList();
+            foreach (var subCategory in subCategories)
+            {
+                list.Add(new SingleParamTree()
+                {
+                    Title = subCategory,
+                    Children = GetRegister(subCategory, infos)
+                });
+            }
+
+            return list;
+        }
+
+        private List<SingleParamTree> GetRegister(string subCategory, List<RegisterAddrInfo> infos)
+        {
+            var list = new List<SingleParamTree>();
+
+            var registers = infos.Where(t => t.SubCategory == subCategory).Select(t => t.Name).Distinct().ToList();
+            foreach (var register in registers)
+            {
+                list.Add(new SingleParamTree()
+                {
+                    Title = register,
+                });
+            }
+
+            return list;
+        }
 
     }
 }

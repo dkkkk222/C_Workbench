@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PPEC.Communication.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,11 +7,45 @@ using System.Text;
 using System.Threading.Tasks;
 using Workbench.Models;
 using Workbench.Models.dw;
+using Workbench.Utils;
 
 namespace Workbench.ViewModels.dw
 {
     public class SingleParamsViewModel : AvaDocument
     {
+        private readonly ProjectManager _projectManager;
+        public SingleParamsViewModel(ProjectManager projectManager)
+        {
+            _projectManager = projectManager;
+        }
+
+        private string _treeKeyword;
+        public string TreeKeyword
+        {
+            get => _treeKeyword;
+            set
+            {
+                SetProperty(ref _treeKeyword, value);
+                SearchCategoryTree(value);
+            }
+        }
+
+        private void SearchCategoryTree(string keyword)
+        {
+            SingleParamTrees.Clear();
+            var source = _projectManager.GetChipCategoryTree();
+            if (string.IsNullOrEmpty(keyword))
+            {
+                SingleParamTrees.AddRange(source);
+            }
+            else
+            {
+                var searcher = new TreeSearcher();
+                var filteredResult = searcher.SearchInForest(source, keyword);
+                SingleParamTrees.AddRange(filteredResult);
+            }
+        }
+
         private ObservableCollection<SingleParamTree> _singleParamTrees = new ObservableCollection<SingleParamTree>();
         public ObservableCollection<SingleParamTree> SingleParamTrees
         {
@@ -42,60 +77,8 @@ namespace Workbench.ViewModels.dw
 
         public override void LoadData()
         {
-            SingleParamTrees.Add(new SingleParamTree()
-            {
-                Title = "基本保护设置",
-                Children = new List<SingleParamTree>()
-                {
-                    new SingleParamTree()
-                    {
-                        Title="功率控制1",
-                        Children=new List<SingleParamTree>()
-                        {
-                            new SingleParamTree(){Title="pwr1protect set1"},
-                            new SingleParamTree(){Title="pwr1protect set2"},
-                            new SingleParamTree(){Title="pwr1protect set3"}
-                        }
-                    },
-                    new SingleParamTree()
-                    {
-                        Title="功率控制2",
-                        Children=new List<SingleParamTree>()
-                        {
-                            new SingleParamTree(){Title="pwr1protect set1"},
-                            new SingleParamTree(){Title="pwr1protect set2"},
-                            new SingleParamTree(){Title="pwr1protect set3"}
-                        }
-                    }
-                }
-            });
-            SingleParamTrees.Add(new SingleParamTree()
-            {
-                Title = "ADC设置",
-                Children = new List<SingleParamTree>()
-                {
-                    new SingleParamTree()
-                    {
-                        Title="功率控制1",
-                        Children=new List<SingleParamTree>()
-                        {
-                            new SingleParamTree(){Title="pwr1protect set1"},
-                            new SingleParamTree(){Title="pwr1protect set2"},
-                            new SingleParamTree(){Title="pwr1protect set3"}
-                        }
-                    },
-                    new SingleParamTree()
-                    {
-                        Title="功率控制2",
-                        Children=new List<SingleParamTree>()
-                        {
-                            new SingleParamTree(){Title="pwr1protect set1"},
-                            new SingleParamTree(){Title="pwr1protect set2"},
-                            new SingleParamTree(){Title="pwr1protect set3"}
-                        }
-                    }
-                }
-            });
+            var tree = _projectManager.GetChipCategoryTree();
+            SingleParamTrees.AddRange(tree);
         }
     }
 }

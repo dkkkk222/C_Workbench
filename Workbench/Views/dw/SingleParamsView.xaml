@@ -35,15 +35,13 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <hc:SearchBar Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True"/>
+                <hc:SearchBar Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                    <hc:SearchBar.Text>
+                        <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
+                    </hc:SearchBar.Text>
+                </hc:SearchBar>
                 <Border Margin="0,5,0,0" Grid.Row="1">
                     <TreeView ItemsSource="{Binding SingleParamTrees}">
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource TreeViewItemBaseStyle}">
-                                <!-- 将TreeViewItem的IsExpanded属性绑定到数据模型的IsExpanded属性 -->
-                                <Setter Property="IsExpanded" Value="True" />
-                            </Style>
-                        </TreeView.ItemContainerStyle>
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <TextBlock Text="{Binding Title}"/>

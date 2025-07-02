@@ -282,6 +282,7 @@
     <Compile Include="Utils\ProjectManager.cs" />
     <Compile Include="Utils\RegionNames.cs" />
     <Compile Include="Utils\TextManager.cs" />
+    <Compile Include="Utils\TreeSearcher.cs" />
     <Compile Include="Utils\UtilsFunc.cs" />
     <Compile Include="Utils\WindowResizer.cs" />
     <Compile Include="Utils\WindowResizer2.cs" />
