@@ -34,7 +34,7 @@ namespace Workbench.ViewModels
                 ChipTypeSource.Add(new ValueName { Value = chip.Id, Name = chip.Name, Label = chip.FilePath });
             }
 
-            SelectChipType = ChipTypeSource.First();
+            SelectChipType = ChipTypeSource.FirstOrDefault();
         }
         #region Property
 

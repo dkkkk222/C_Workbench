@@ -12,7 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LinqToDB;
 using PPEC.Communication.DB.Model;
+using Workbench.Db;
+using Workbench.Db.Tables;
 using Workbench.ViewModels;
 
 namespace Workbench.Views
@@ -32,7 +35,7 @@ namespace Workbench.Views
 
         private void ChipManagerView_Loaded(object sender, RoutedEventArgs e)
         {
-            if(this.DataContext!=null)
+            if (this.DataContext != null)
             {
                 vm = this.DataContext as ChipManagerViewModel;
             }
@@ -50,25 +53,23 @@ namespace Workbench.Views
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            
+
             var tb = sender as FrameworkElement;
-            var chip = tb?.DataContext as smls_chip;
+            var chip = tb?.DataContext as Chip;
             if (chip == null) return;
             var result = MessageBox.Show($"确定要删除芯片：{chip.Name} 配置吗？", "确认删除",
-                                 MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if(result==MessageBoxResult.Yes)
+                                 MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
             {
-                var resultd = vm.DelChip(chip.Id).GetAwaiter();
-                if (resultd.GetResult() > 0)
+                using (var db = new DbContext())
                 {
-                    MessageBox.Show("删除成功!");
-                }
-                else
-                {
-                    MessageBox.Show("删除失败!");
+                    var res = db.Chips.Where(t => t.Id == chip.Id).Set(t => t.IsDeleted, "D").Update();
+                    MessageBox.Show(res > 0 ? "删除成功!" : "删除失败!");
+                    var viewModel = DataContext as ChipManagerViewModel;
+                    viewModel.InitChips().GetAwaiter();
                 }
             }
-            
+
         }
     }
 }

@@ -72,6 +72,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="AvalonDock, Version=4.60.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Dirkster.AvalonDock.4.60.0\lib\net40\AvalonDock.dll</HintPath>
     </Reference>
@@ -230,7 +233,10 @@
     <Compile Include="AvalonDock\PanesStyleSelector.cs" />
     <Compile Include="AvalonDock\PanesTemplateSelector.cs" />
     <Compile Include="Db\DbContext.cs" />
+    <Compile Include="Db\Tables\Chip.cs" />
     <Compile Include="Db\Tables\Register.cs" />
+    <Compile Include="Db\Tables\RegisterBit.cs" />
+    <Compile Include="Db\Tables\RegisterBitOption.cs" />
     <Compile Include="Events\AddedProjectEvent.cs" />
     <Compile Include="Events\CloseTabEvent.cs" />
     <Compile Include="Events\ConnectEvent.cs" />
@@ -258,6 +264,7 @@
     <Compile Include="Models\RecentFile.cs" />
     <Compile Include="Models\StaticUpgrade.cs" />
     <Compile Include="Models\ValueName.cs" />
+    <Compile Include="Profiles\RegisterProfile.cs" />
     <Compile Include="Utils\CommandHandler.cs" />
     <Compile Include="Utils\Common\CommEntity.cs" />
     <Compile Include="Utils\Common\HttpHelper.cs" />

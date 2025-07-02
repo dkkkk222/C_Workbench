@@ -1,37 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Prism.Mvvm;
-using static LinqToDB.Common.Configuration;
 
 namespace PPEC.Communication.Model
 {
-    public class RegisterAddrInfo:BindableBase
+    public class RegisterAddrInfo : BindableBase
     {
         public uint AddressDec { get; set; }     // 十进制地址
 
         public string _AddressHex;
         public string AddressHex
-        { 
-            get=> _AddressHex;
-            set=>SetProperty(ref _AddressHex,value);
+        {
+            get => _AddressHex;
+            set => SetProperty(ref _AddressHex, value);
         }  // 4 位 HEX 字符串
         public string Category { get; set; }    // 主分类
         public string SubCategory { get; set; } // 子分类
         public string Name { get; set; }        // 寄存器名称
         public string RW { get; set; }          // R/W
         public string _ResetValue;
-        public string ResetValue 
-        { 
-            get=> _ResetValue;
+        public string ResetValue
+        {
+            get => _ResetValue;
             set
             {
                 ResetDecValue = uint.Parse(value);
-                SetProperty(ref _ResetValue,value);
+                SetProperty(ref _ResetValue, value);
             }
-        }  
+        }
         public uint ResetDecValue { get; set; }  // 复位值
 
         public byte[] _Value;
@@ -40,10 +36,10 @@ namespace PPEC.Communication.Model
         /// </summary>
         public byte[] Value
         {
-            get=>_Value; 
+            get => _Value;
             set
             {
-                if(SetProperty(ref _Value,value))
+                if (SetProperty(ref _Value, value))
                 {
 
                     DecValue = BitConverter.ToUInt32(value, 0);
@@ -63,9 +59,9 @@ namespace PPEC.Communication.Model
             get => _DecValue;
             set
             {
-                if(SetProperty(ref _DecValue, value))
+                if (SetProperty(ref _DecValue, value))
                 {
-                    HexValue="0x" + value.ToString("X8");
+                    HexValue = "0x" + value.ToString("X8");
                 }
             }
         }
@@ -83,7 +79,7 @@ namespace PPEC.Communication.Model
             {
                 if (SetProperty(ref _HexValue, value))
                 {
-                    DecValue=Utility.ParseHexToUInt(value);
+                    DecValue = Utility.ParseHexToUInt(value);
                 }
             }
         }
@@ -101,7 +97,7 @@ namespace PPEC.Communication.Model
             }
         }
     }
-    public class BitField:BindableBase
+    public class BitField : BindableBase
     {
         public int StartBit { get; set; }   // 低位
         public int EndBit { get; set; }   // 高位
@@ -120,20 +116,20 @@ namespace PPEC.Communication.Model
         public uint _Value;
         public uint Value
         {
-            get=> _Value;
+            get => _Value;
             set
             {
-                if(SetProperty(ref _Value,value))
+                if (SetProperty(ref _Value, value))
                 {
-                    Result = Math.Round(double.Parse(FormParam.ParamA),2) * value + Math.Round(double.Parse(FormParam.ParamB),2);
+                    Result = Math.Round(double.Parse(FormParam.ParamA), 2) * value + Math.Round(double.Parse(FormParam.ParamB), 2);
                 }
             }
         }
         public double _Result;
         public double Result
         {
-            get=> _Result;
-            set 
+            get => _Result;
+            set
             {
                 SetProperty(ref _Result, value);
             }
@@ -152,8 +148,8 @@ namespace PPEC.Communication.Model
         public string ParamB { get; set; }
         public string UnitName { get; set; }
     }
-    public class RegisterMeta:BindableBase
+    public class RegisterMeta : BindableBase
     {
-        public RegisterAddrInfo AddrInfo { get; set; }       
+        public RegisterAddrInfo AddrInfo { get; set; }
     }
 }

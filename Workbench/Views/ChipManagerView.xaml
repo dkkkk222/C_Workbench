@@ -44,16 +44,16 @@
                 <StackPanel Margin="10">
                     <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="芯片名称 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
-                            <TextBlock Width="10"></TextBlock>
-                            <TextBox Text="{Binding ChipName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" Width="350" hc:InfoElement.Placeholder="请输入芯片名称"/>
+                            <TextBox Text="{Binding ChipName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" Width="350" 
+                                     hc:InfoElement.Placeholder="请输入芯片名称" hc:InfoElement.Title="芯片名称:" hc:InfoElement.Necessary="True"
+                                     hc:InfoElement.TitlePlacement="Left"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="文件路径 : " HorizontalAlignment="Center"  VerticalAlignment="Center"  Style="{DynamicResource TitleStyle}"/>
-                            <TextBlock Width="10"></TextBlock>
-                            <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入或选择文件路径"/>
+                            <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350" Style="{StaticResource TextBoxExtend}" 
+                                     hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="文件路径:" hc:InfoElement.Necessary="True"
+                                     hc:InfoElement.TitlePlacement="Left"/>
                             <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseCommand}">
                                 <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/open.svg" 
                                                Height="18"
@@ -82,9 +82,9 @@
                     VerticalAlignment="Center">
                         <!-- 使用样式 -->
                         <Button Width="80" Height="30" Content="取消" Command="{Binding CloseCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
-                        <TextBlock Width="10"></TextBlock>
+                        <!--<TextBlock Width="10"></TextBlock>
                         <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="新增" Command="{Binding AddCommand}" 
-                                hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:IconElement.Width="13"/>
+                                hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:IconElement.Width="13"/>-->
                         <TextBlock Width="10"></TextBlock>
                         <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="确认" Command="{Binding ComfirmCommand}" 
                                 hc:IconElement.Geometry="{StaticResource SaveGeometry}" hc:IconElement.Width="13"/>
@@ -108,8 +108,8 @@
                         <!-- 定义列 -->
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="芯片名称" Binding="{Binding Name}" Width="150" />
-                            <DataGridTextColumn Header="寄存器说明文件" Binding="{Binding FilePath}" Width="*" />
-
+                            <DataGridTextColumn Header="寄存器说明文件" Binding="{Binding FileName}" Width="*" />
+                            <DataGridTextColumn Header="日期" Binding="{Binding Datetime}" Width="*" />
                             <DataGridTemplateColumn Header="管理" Width="150" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -127,7 +127,7 @@
                                             </Button>-->
                                             <hc:UniformSpacingPanel Spacing="10">
                                                 <Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
-                                                <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}"/>
+                                                <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}" Click="Delete_Click"/>
                                             </hc:UniformSpacingPanel>
                                         </StackPanel>
                                     </DataTemplate>
@@ -140,5 +140,9 @@
             </Grid>
 
         </Border>
+        <Grid Visibility="{calc:Binding Loading,FalseToVisibility=Collapsed}">
+            <Border Background="{StaticResource DarkDefaultBrush}" Opacity=".5"></Border>
+            <hc:LoadingCircle/>
+        </Grid>
     </Grid>
 </UserControl>

@@ -10,14 +10,51 @@ namespace Workbench.Migrations
     [Migration(202507020935)]
     public class OnInitial : Migration
     {
-        public override void Down()
+        public override void Up()
         {
+            Create.Table("t_chip")
+                .WithColumn("id").AsString().PrimaryKey()
+                .WithColumn("name").AsString(64).NotNullable()
+                .WithColumn("file_name").AsString().NotNullable()
+                .WithColumn("datetime").AsString().NotNullable()
+                .WithColumn("is_deleted").AsString(2).NotNullable();
+            Create.Index("IX_t_chip_id").OnTable("t_chip").OnColumn("id").Ascending().WithOptions().Unique();
+
             Create.Table("t_register")
-                .WithColumn("id").AsString().PrimaryKey();
+                .WithColumn("id").AsString().PrimaryKey()
+                .WithColumn("chip_id").AsString().NotNullable()
+                .WithColumn("name").AsString().NotNullable()
+                .WithColumn("address_dec").AsInt32().NotNullable()
+                .WithColumn("address_hex").AsString().NotNullable()
+                .WithColumn("category").AsString().NotNullable()
+                .WithColumn("sub_category").AsString().NotNullable()
+                .WithColumn("rw").AsString().NotNullable()
+                .WithColumn("reset_value").AsString().NotNullable();
             Create.Index("IX_t_register_id").OnTable("t_register").OnColumn("id").Ascending().WithOptions().Unique();
+            Create.Index("IX_t_register_chip_id").OnTable("t_register").OnColumn("chip_id").Ascending();
+
+            Create.Table("t_register_bit")
+                .WithColumn("id").AsString().PrimaryKey()
+                .WithColumn("register_id").AsString().NotNullable()
+                .WithColumn("start_bit").AsInt32().NotNullable()
+                .WithColumn("end_bit").AsInt32().NotNullable()
+                .WithColumn("length").AsInt32().NotNullable()
+                .WithColumn("desc").AsString().Nullable()
+                .WithColumn("range_min").AsInt32().Nullable()
+                .WithColumn("range_max").AsInt32().Nullable();
+            Create.Index("IX_t_register_bit_id").OnTable("t_register_bit").OnColumn("id").Ascending().WithOptions().Unique();
+            Create.Index("IX_t_register_bit_register_id").OnTable("t_register_bit").OnColumn("register_id").Ascending();
+
+            Create.Table("t_register_bit_option")
+                .WithColumn("id").AsString().PrimaryKey()
+                .WithColumn("register_bit_id").AsString().NotNullable()
+                .WithColumn("value").AsInt32().NotNullable()
+                .WithColumn("display").AsString().NotNullable();
+            Create.Index("IX_t_register_bit_option_id").OnTable("t_register_bit_option").OnColumn("id").Ascending().WithOptions().Unique();
+            Create.Index("IX_t_register_bit_option_register_bit_id").OnTable("t_register_bit_option").OnColumn("register_bit_id");
         }
 
-        public override void Up()
+        public override void Down()
         {
         }
     }

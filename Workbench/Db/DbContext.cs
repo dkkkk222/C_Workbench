@@ -20,7 +20,9 @@ namespace Workbench.Db
             }
         }
 
+        public ITable<Chip> Chips => this.GetTable<Chip>();
         public ITable<Register> Registers => this.GetTable<Register>();
-
+        public ITable<RegisterBit> RegisterBits => this.GetTable<RegisterBit>();
+        public ITable<RegisterBitOption> RegisterBitOptions => this.GetTable<RegisterBitOption>();
     }
 }

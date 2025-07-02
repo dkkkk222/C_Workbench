@@ -25,7 +25,7 @@ namespace Workbench.ViewModels
         public string ExcelPath;
         public MainWindowViewModel(IContainerProvider containerProvider, IEventAggregator eventAggregator, FileHandler fileHandler, ProjectManager projectManager)
         {
-            MainServices = containerProvider.Resolve<MainServices>();
+            //MainServices = containerProvider.Resolve<MainServices>();
             _fileHandler = fileHandler;
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;

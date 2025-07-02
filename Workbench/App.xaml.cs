@@ -22,6 +22,8 @@ using FluentMigrator.Runner;
 using System.Reflection;
 using Workbench.Db;
 using System.Linq;
+using AutoMapper;
+using Workbench.Profiles;
 
 namespace Workbench
 {
@@ -85,7 +87,7 @@ namespace Workbench
                     // Add SQLite support to FluentMigrator
                     .AddSQLite()
                     // Set the connection string
-                    .WithGlobalConnectionString("Data Source=smls_vision.sqlite")
+                    .WithGlobalConnectionString("Data Source=database.sqlite")
                     // Define the assembly containing the migrations, maintenance migrations and other customizations
                     .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
                 // Enable logging to console in the FluentMigrator way
@@ -114,7 +116,12 @@ namespace Workbench
             containerRegistry.RegisterSingleton<ProjectManager>();
             containerRegistry.RegisterSingleton<FileHandler>();
             containerRegistry.RegisterSingleton<MainServices>();
-            containerRegistry.RegisterSingleton<SmlsContext>(() => new SmlsContext($@"Data Source={AppDomain.CurrentDomain.BaseDirectory}smls_vision.db;Version=3"));
+            //containerRegistry.RegisterSingleton<SmlsContext>(() => new SmlsContext($@"Data Source={AppDomain.CurrentDomain.BaseDirectory}smls_vision.db;Version=3"));
+            var configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<RegisterProfile>();
+            });
+            containerRegistry.RegisterInstance(configuration.CreateMapper());
         }
 
         private void RegisterViewAndViewModel(IContainerRegistry containerRegistry)
