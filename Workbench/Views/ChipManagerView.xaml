@@ -33,7 +33,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Border Grid.Column="1" Background="Transparent" Margin="4,0,0,0" CornerRadius="3">
+        <Border Grid.Column="1" Background="{StaticResource DarkDefaultBrush}" Margin="4,0,0,0" CornerRadius="3">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -44,16 +44,16 @@
                 <StackPanel Margin="10">
                     <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="工程名称 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
+                            <TextBlock Text="芯片名称 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource TitleStyle}"/>
                             <TextBlock Width="10"></TextBlock>
-                            <TextBox Text="{Binding ChipName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" Width="350" hc:InfoElement.Placeholder="请输入工程名称"/>
+                            <TextBox Text="{Binding ChipName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" Width="350" hc:InfoElement.Placeholder="请输入芯片名称"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="工程路径 : " HorizontalAlignment="Center"  VerticalAlignment="Center"  Style="{DynamicResource TitleStyle}"/>
+                            <TextBlock Text="文件路径 : " HorizontalAlignment="Center"  VerticalAlignment="Center"  Style="{DynamicResource TitleStyle}"/>
                             <TextBlock Width="10"></TextBlock>
-                            <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入或选择工程路径"/>
+                            <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入或选择文件路径"/>
                             <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseCommand}">
                                 <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/open.svg" 
                                                Height="18"
@@ -81,19 +81,21 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                         <!-- 使用样式 -->
-                        <Button Width="80" Height="30" Content="取消" Command="{Binding CloseCommand}"/>
+                        <Button Width="80" Height="30" Content="取消" Command="{Binding CloseCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
                         <TextBlock Width="10"></TextBlock>
-                        <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="新增" Command="{Binding AddCommand}"/>
+                        <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="新增" Command="{Binding AddCommand}" 
+                                hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:IconElement.Width="13"/>
                         <TextBlock Width="10"></TextBlock>
-                        <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="确认" Command="{Binding ComfirmCommand}"/>
+                        <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="确认" Command="{Binding ComfirmCommand}" 
+                                hc:IconElement.Geometry="{StaticResource SaveGeometry}" hc:IconElement.Width="13"/>
                     </StackPanel>
                 </Border>
-                <Border Grid.Row="2" Background="#fff" Padding="10">
+                <Border Grid.Row="2" Padding="10">
                     <DataGrid x:Name="DeviceDataGrid"
+                              Style="{StaticResource DataGrid.Small}"
                   AutoGenerateColumns="False"
                   HeadersVisibility="Column"
                   GridLinesVisibility="Horizontal"
-                  HorizontalGridLinesBrush="LightGray"
                   BorderThickness="0"
                   RowHeaderWidth="0"
                   CanUserResizeRows="False"
@@ -102,80 +104,36 @@
                   RowHeight="40"
                   CanUserAddRows="False"
                   ColumnHeaderHeight="40" IsReadOnly="True"
-ItemsSource="{Binding Chips,Mode=TwoWay}" SelectedItem="{Binding SelectedChip, Mode=TwoWay}">
+                              ItemsSource="{Binding Chips,Mode=TwoWay}" SelectedItem="{Binding SelectedChip, Mode=TwoWay}">
                         <!-- 定义列 -->
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="芯片名称" Binding="{Binding Name}" Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
-                            <DataGridTextColumn Header="寄存器说明文件" Binding="{Binding FilePath}" Width="*"  ElementStyle="{StaticResource FilePathCellStyle}"/>
+                            <DataGridTextColumn Header="芯片名称" Binding="{Binding Name}" Width="150" />
+                            <DataGridTextColumn Header="寄存器说明文件" Binding="{Binding FilePath}" Width="*" />
 
-                            <DataGridTemplateColumn Header="管理" Width="*" >
+                            <DataGridTemplateColumn Header="管理" Width="150" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                            <TextBlock Text="修改" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       Foreground="#306CBF"
-                                       Cursor="Hand"
-                                       Margin="0,0,16,0"
-                                       MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"/>
-
+                                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                            <!--<TextBlock Text="修改" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       Cursor="Hand" Margin="0,0,16,0" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"/>
                                             <TextBlock Width="10"></TextBlock>
                                             <Button Width="16"
-                                    Height="16"
-                                    Padding="0"
-                                    BorderThickness="0"
-                                    Background="Transparent"
-                                    Click="Delete_Click">
+                                                    Height="16"
+                                                    Padding="0"
+                                                    BorderThickness="0"
+                                                    Background="Transparent"
+                                                    Click="Delete_Click">
                                                 <TextBlock Text="&#xe690;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                            </Button>
+                                            </Button>-->
+                                            <hc:UniformSpacingPanel Spacing="10">
+                                                <Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
+                                                <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}"/>
+                                            </hc:UniformSpacingPanel>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
-
-                        <!-- 表头样式 -->
-                        <DataGrid.Resources>
-                            <!-- 透明掉单元格选中背景 -->
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"   Color="Transparent"/>
-                            <Style TargetType="DataGridRow">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="Black"/>
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="Foreground" Value="Black"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                            <!-- 列头样式 -->
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="Background"                Value="#F5F5F5"/>
-                                <Setter Property="BorderBrush"               Value="LightGray"/>
-                                <Setter Property="BorderThickness"           Value="0,0,0,1"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                <Setter Property="VerticalContentAlignment"   Value="Center"/>
-                                <Setter Property="FontWeight"                Value="Bold"/>
-                            </Style>
-                            <!-- 单元格样式 -->
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="BorderBrush"            Value="LightGray"/>
-                                <Setter Property="BorderThickness"        Value="0,0,0,1"/>
-                                <Setter Property="Padding"                Value="8,0"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Setter Property="Background"             Value="Transparent"/>
-                                <Setter Property="Foreground"             Value="Black"/>
-                                <Setter Property="FocusVisualStyle"       Value="{x:Null}"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="Foreground" Value="Black"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.Resources>
-                        <!-- 行样式 -->
 
                     </DataGrid>
                 </Border>

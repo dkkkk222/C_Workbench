@@ -5,6 +5,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,7 @@ namespace Workbench.ViewModels.Content.Sider
                     Projects.Add(project);
                     _projectManager.OpenedProjectList.Add(project);
                 }
+                UpdateHasProject();
             });
 
             _eventAggregator.GetEvent<RemoveProjectFromSiderEvent>().Subscribe((projectId) =>
@@ -50,6 +52,7 @@ namespace Workbench.ViewModels.Content.Sider
                     _eventAggregator.GetEvent<TreeViewSelectedEvent>().Publish(string.Empty);
                 }
                 _projectManager.OpenedProjectList = _projectManager.OpenedProjectList.Where(t => t.UID != projectId).ToList();
+                UpdateHasProject();
 
             });
 
@@ -63,6 +66,12 @@ namespace Workbench.ViewModels.Content.Sider
             });
         }
 
+        private void UpdateHasProject()
+        {
+            HasProject = Projects.Count > 0;
+        }
+
+
         #region Properties
 
         private ObservableCollection<PpecProject> _projects = new ObservableCollection<PpecProject>();
@@ -73,6 +82,13 @@ namespace Workbench.ViewModels.Content.Sider
             {
                 SetProperty(ref _projects, value);
             }
+        }
+
+        private bool _hasProject = false;
+        public bool HasProject
+        {
+            get => _hasProject;
+            set => SetProperty(ref _hasProject, value);
         }
 
         #endregion

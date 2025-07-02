@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Workbench.Views.Content.Sider"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="225">
@@ -14,14 +16,25 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Border Background="{DynamicResource ProjectManagementTitleBackground}" Height="24" CornerRadius="6,6,0,0">
+            <Border Background="{StaticResource DarkDefaultBrush}" Height="24" CornerRadius="6,6,0,0">
                 <TextBlock Text="工程管理" FontSize="14" 
                            Foreground="{DynamicResource PrimaryFontColor}"
                            VerticalAlignment="Center" 
                            Padding="5,0,0,0"/>
             </Border>
+            <Border Grid.Row="1" Visibility="{c:Binding !HasProject,FalseToVisibility=Collapsed}">
+                <StackPanel VerticalAlignment="Center">
+                    <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/无数据-copy.svg" 
+                                   Width="88"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center">
+                    </svgc:SvgViewbox>
+                    <Label Content="请创建或打开工程" FontSize="13" HorizontalAlignment="Center" Margin="0,8,0,0" Style="{StaticResource LabelDefault}"/>
+                </StackPanel>
+
+            </Border>
             <TreeView Grid.Row="1"  x:Name="treeView" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" 
-                      Style="{DynamicResource TreeViewStyle}"
+                      Style="{DynamicResource TreeViewStyle}" Visibility="{c:Binding HasProject,FalseToVisibility=Collapsed}"
                       SelectedItemChanged="treeView_SelectedItemChanged"
                       MouseDoubleClick="treeView_MouseDoubleClick"
                       MouseRightButtonDown="TreeView_MouseRightButtonDown"
@@ -43,6 +56,6 @@
                 </TreeView.ItemTemplate>
             </TreeView>
         </Grid>
-        
+
     </Border>
 </UserControl>
