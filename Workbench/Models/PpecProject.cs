@@ -15,11 +15,11 @@ namespace Workbench.Models
             get { return _name; }
             set { SetProperty(ref _name, value); }
         }
-        public ChipInfo _Chip;
+        private ChipInfo _chip;
         public ChipInfo Chip
         {
-            get { return _Chip; }
-            set { SetProperty(ref _Chip, value); }
+            get { return _chip; }
+            set { SetProperty(ref _chip, value); }
         }
         public string Path { get; set; }
         public string ProjectMark { get; set; }
@@ -46,7 +46,7 @@ namespace Workbench.Models
         }
 
 
-        public bool _isSelected = false;
+        private bool _isSelected = false;
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -99,7 +99,7 @@ namespace Workbench.Models
             get { return _channelMaster; }
             set { SetProperty(ref _channelMaster, value); }
         }
-        public GroundDevice _connectDevice;
+        private GroundDevice _connectDevice;
         public GroundDevice ConnectDevice
         {
             get { return _connectDevice; }

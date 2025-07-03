@@ -183,7 +183,8 @@ namespace Workbench.Utils
                 var projectStr = File.ReadAllText(filePath);
                 //更新最近文件列表中的时间
                 _fileHandler.UpdateRecentFileDatetime(projectStr);
-                _eventAggregator.GetEvent<AddedProjectEvent>().Publish(JsonHelper.DeserializeObject<PpecProject>(projectStr));
+                var project = JsonHelper.DeserializeObject<PpecProject>(projectStr);
+                _eventAggregator.GetEvent<AddedProjectEvent>().Publish(project);
                 return true;
             }
             else
@@ -354,18 +355,18 @@ namespace Workbench.Utils
                 {
                     Title = subCategory,
                     Type = SingleParamTreeType.SubCategory,
-                    Children = GetRegister(subCategory, infos)
+                    Children = GetRegister(category, subCategory, infos)
                 });
             }
 
             return list;
         }
 
-        private List<SingleParamTree> GetRegister(string subCategory, List<RegisterAddrInfo> infos)
+        private List<SingleParamTree> GetRegister(string category, string subCategory, List<RegisterAddrInfo> infos)
         {
             var list = new List<SingleParamTree>();
 
-            var registers = infos.Where(t => t.SubCategory == subCategory).Select(t => t.Name).Distinct().ToList();
+            var registers = infos.Where(t => t.Category == category && t.SubCategory == subCategory).Select(t => t.Name).Distinct().ToList();
             foreach (var register in registers)
             {
                 list.Add(new SingleParamTree()

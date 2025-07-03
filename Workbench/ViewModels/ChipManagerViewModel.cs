@@ -167,6 +167,7 @@ namespace Workbench.ViewModels
             {
                 _log.Error(ex.Message);
                 MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Loading = false;
             }
         }
 

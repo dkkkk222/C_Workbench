@@ -8,38 +8,38 @@ namespace PPEC.Communication.Model
     {
         public uint AddressDec { get; set; }     // 十进制地址
 
-        public string _AddressHex;
+        private string _addressHex;
         public string AddressHex
         {
-            get => _AddressHex;
-            set => SetProperty(ref _AddressHex, value);
+            get => _addressHex;
+            set => SetProperty(ref _addressHex, value);
         }  // 4 位 HEX 字符串
         public string Category { get; set; }    // 主分类
         public string SubCategory { get; set; } // 子分类
         public string Name { get; set; }        // 寄存器名称
         public string RW { get; set; }          // R/W
-        public string _ResetValue;
+        private string _resetValue;
         public string ResetValue
         {
-            get => _ResetValue;
+            get => _resetValue;
             set
             {
                 ResetDecValue = uint.Parse(value);
-                SetProperty(ref _ResetValue, value);
+                SetProperty(ref _resetValue, value);
             }
         }
         public uint ResetDecValue { get; set; }  // 复位值
 
-        public byte[] _Value;
+        private byte[] _value;
         /// <summary>
         /// 寄存器值
         /// </summary>
         public byte[] Value
         {
-            get => _Value;
+            get => _value;
             set
             {
-                if (SetProperty(ref _Value, value))
+                if (SetProperty(ref _value, value))
                 {
 
                     DecValue = BitConverter.ToUInt32(value, 0);
@@ -50,22 +50,22 @@ namespace PPEC.Communication.Model
 
             }
         }
-        public uint _DecValue = 0;
+        private uint _decValue = 0;
         /// <summary>
         /// 十进制值
         /// </summary>
         public uint DecValue
         {
-            get => _DecValue;
+            get => _decValue;
             set
             {
-                if (SetProperty(ref _DecValue, value))
+                if (SetProperty(ref _decValue, value))
                 {
                     HexValue = "0x" + value.ToString("X8");
                 }
             }
         }
-        public string _HexValue = "";
+        private string _hexValue = "";
         /// <summary>
         /// Hex值
         /// </summary>
@@ -73,27 +73,27 @@ namespace PPEC.Communication.Model
         {
             get
             {
-                return _HexValue;
+                return _hexValue;
             }
             set
             {
-                if (SetProperty(ref _HexValue, value))
+                if (SetProperty(ref _hexValue, value))
                 {
                     DecValue = Utility.ParseHexToUInt(value);
                 }
             }
         }
 
-        public List<BitField> _BitFields = new List<BitField>();
+        private List<BitField> _bitFields = new List<BitField>();
         /// <summary>
         /// 位值
         /// </summary>
         public List<BitField> BitFields
         {
-            get => _BitFields;
+            get => _bitFields;
             set
             {
-                SetProperty(ref _BitFields, value);
+                SetProperty(ref _bitFields, value);
             }
         }
     }
@@ -113,25 +113,25 @@ namespace PPEC.Communication.Model
         public string ExtraNote { get; set; } // “先写后清除”等操作提示
         public FormulaParam FormParam { get; set; }
 
-        public uint _Value;
+        private uint _value;
         public uint Value
         {
-            get => _Value;
+            get => _value;
             set
             {
-                if (SetProperty(ref _Value, value))
+                if (SetProperty(ref _value, value))
                 {
                     Result = Math.Round(double.Parse(FormParam.ParamA), 2) * value + Math.Round(double.Parse(FormParam.ParamB), 2);
                 }
             }
         }
-        public double _Result;
+        private double _result;
         public double Result
         {
-            get => _Result;
+            get => _result;
             set
             {
-                SetProperty(ref _Result, value);
+                SetProperty(ref _result, value);
             }
         }
 

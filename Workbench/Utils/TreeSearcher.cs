@@ -48,6 +48,7 @@ namespace Workbench.Utils
                 var newNode = new SingleParamTree()
                 {
                     Title = node.Title,
+                    Type = node.Type,
                     Children = node.Children
                 };
                 return newNode;
@@ -75,6 +76,7 @@ namespace Workbench.Utils
                 var newNode = new SingleParamTree()
                 {
                     Title = node.Title,
+                    Type = node.Type,
                     Children = filteredChildren
                 };
                 return newNode;

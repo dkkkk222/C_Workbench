@@ -259,7 +259,6 @@
     <Compile Include="Models\dw\Sequence.cs" />
     <Compile Include="Models\dw\SettingCategory.cs" />
     <Compile Include="Models\dw\SingleParamHistory.cs" />
-    <Compile Include="Models\dw\SingleParamRegisterInfo.cs" />
     <Compile Include="Models\dw\SingleParamTree.cs" />
     <Compile Include="Models\Pages\TreeVeiwModel.cs" />
     <Compile Include="Models\PpecProject.cs" />

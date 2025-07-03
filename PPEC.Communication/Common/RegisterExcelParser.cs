@@ -28,10 +28,11 @@ namespace PPEC.Communication.Common
                 {
                     var r = sheetAddr.GetRow(i); if (r == null) continue;
 
+                    var dec = uint.Parse(formatter.FormatCellValue(r.GetCell(0)));
                     var info = new RegisterAddrInfo
                     {
-                        AddressDec = uint.Parse(formatter.FormatCellValue(r.GetCell(0))),
-                        AddressHex = formatter.FormatCellValue(r.GetCell(1)).PadLeft(4, '0'),
+                        AddressDec = dec,
+                        AddressHex = dec.ToString("X4"),
                         Category = formatter.FormatCellValue(r.GetCell(2)),
                         SubCategory = formatter.FormatCellValue(r.GetCell(3)),
                         Name = formatter.FormatCellValue(r.GetCell(4)),

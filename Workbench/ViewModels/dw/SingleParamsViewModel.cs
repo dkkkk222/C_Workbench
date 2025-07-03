@@ -31,6 +31,13 @@ namespace Workbench.ViewModels.dw
             }
         }
 
+        private RegisterAddrInfo _currentRegister;
+        public RegisterAddrInfo CurrentRegister
+        {
+            get => _currentRegister;
+            set => SetProperty(ref _currentRegister, value);
+        }
+
         private void SearchCategoryTree(string keyword)
         {
             SingleParamTrees.Clear();
@@ -65,22 +72,13 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _historyData, value);
         }
 
-        private ObservableCollection<SingleParamRegisterInfo> _registerInfoList = new ObservableCollection<SingleParamRegisterInfo>()
-        {
-            new SingleParamRegisterInfo(){ Bit="631", Name="ADC驱动SPI单次传输使能",DataPull="0",DataPullResolve="禁止" },
-            new SingleParamRegisterInfo(){ Bit="b28-b26", Name="ADC驱动SPI时钟频率",DataPull="001",DataPullResolve="5Mhz" }
-        };
-        public ObservableCollection<SingleParamRegisterInfo> RegisterInfoList
-        {
-            get => _registerInfoList;
-            set => SetProperty(ref _registerInfoList, value);
-        }
-
         private DelegateCommand<SingleParamTree> _selectedItemChangedCommand;
         public DelegateCommand<SingleParamTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??
             (_selectedItemChangedCommand = new DelegateCommand<SingleParamTree>((param) =>
             {
-                if (param.Type != SingleParamTreeType.Register) return;
+                if (param == null || param.Type != SingleParamTreeType.Register) return;
+
+                CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
             }));
 
         public override void LoadData()

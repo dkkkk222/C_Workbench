@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Workbench.Views.dw"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:viewModels="clr-namespace:Workbench.ViewModels.dw"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:views="clr-namespace:Workbench.Views.dw"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              mc:Ignorable="d" 
@@ -68,7 +69,13 @@
                 <StackPanel>
                     <Border>
                         <Border Style="{StaticResource BorderTipPrimary}">
-                            <TextBlock Text="寄存器地址：DEC:164/HEX:00A4" FontSize="{StaticResource SubHeadFontSize}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="寄存器地址：DEC: " FontSize="{StaticResource SubHeadFontSize}"/>
+                                <TextBlock Text="{Binding CurrentRegister.AddressDec}" FontSize="{StaticResource SubHeadFontSize}"/>
+                                <TextBlock Text="/HEX: " FontSize="{StaticResource SubHeadFontSize}"/>
+                                <TextBlock Text="{Binding CurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
+                            </StackPanel>
+
                         </Border>
                     </Border>
                     <hc:Divider Padding="0" Margin="0,8"/>
@@ -83,13 +90,13 @@
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="数据DEC:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Text="" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入" Width="200"/>
+                                            <TextBox Text="{Binding CurrentRegister.AddressDec}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入" Width="200"/>
                                         </StackPanel>
                                     </Border>
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="数据HEX:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Text="" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入" Width="200"/>
+                                            <TextBox Text="{Binding CurrentRegister.AddressHex}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入" Width="200"/>
                                         </StackPanel>
                                     </Border>
                                 </hc:UniformSpacingPanel>
@@ -390,7 +397,7 @@
                         <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
                             <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
                         </Border>
-                        <DataGrid ItemsSource="{Binding RegisterInfoList}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                        <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                   CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
@@ -401,8 +408,22 @@
                                 </Style>
                             </DataGrid.ColumnHeaderStyle>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="位" Binding="{Binding Bit}" Width="*"/>
-                                <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="*"/>
+                                <DataGridTemplateColumn Header="位" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="b"/>
+                                                <TextBlock Text="{Binding EndBit}"/>
+                                                <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
+                                                    <TextBlock Text="-"/>
+                                                    <TextBlock Text="b"/>
+                                                    <TextBlock Text="{Binding StartBit}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*"/>
                                 <DataGridTextColumn Header="数据读取" Binding="{Binding DataPull}"  Width="*"/>
                                 <DataGridTextColumn Header="解析" Binding="{Binding DataPullResolve}"  Width="*"/>
                                 <DataGridTextColumn Header="数据下发" Binding="{Binding DataPush}"  Width="*"/>
