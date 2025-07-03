@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Prism.Commands;
+using Prism.Events;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
 
@@ -11,6 +14,14 @@ namespace Workbench.ViewModels.dw
 {
     public class BatchParamsViewModel : AvaDocument
     {
+        private readonly IEventAggregator _eventAggregator;
+
+        public BatchParamsViewModel(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
+
+        }
+
         private ObservableCollection<SettingCategory> _settingCategoryList = new ObservableCollection<SettingCategory>()
         {
             new SettingCategory{Label="ADC工作状态"}
@@ -41,6 +52,14 @@ namespace Workbench.ViewModels.dw
             get => _sequenceList;
             set => SetProperty(ref _sequenceList, value);
         }
+
+        private DelegateCommand _closeCommand;
+
+        public DelegateCommand CloseCommand =>
+            _closeCommand ?? (_closeCommand = new DelegateCommand(() =>
+            {
+                _eventAggregator.GetEvent<CloseTabEvent>().Publish(this.ContentId);
+            }));
 
         public override void LoadData()
         {

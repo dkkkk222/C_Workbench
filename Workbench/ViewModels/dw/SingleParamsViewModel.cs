@@ -1,8 +1,12 @@
 ﻿using Newtonsoft.Json;
+using PPEC.Communication;
 using PPEC.Communication.Model;
 using Prism.Commands;
+using Prism.Events;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
 using Workbench.Utils;
@@ -12,9 +16,12 @@ namespace Workbench.ViewModels.dw
     public class SingleParamsViewModel : AvaDocument
     {
         private readonly ProjectManager _projectManager;
-        public SingleParamsViewModel(ProjectManager projectManager)
+        private readonly IEventAggregator _eventAggregator;
+
+        public SingleParamsViewModel(ProjectManager projectManager, IEventAggregator eventAggregator)
         {
             _projectManager = projectManager;
+            _eventAggregator = eventAggregator;
             ReadWriteHistory = _projectManager.CurrentProject.ReadWriteHistory;
         }
 
@@ -105,6 +112,14 @@ namespace Workbench.ViewModels.dw
             };
             _projectManager.CurrentProject.ReadWriteHistory.Add(history);
         }));
+
+        private DelegateCommand _closeCommand;
+
+        public DelegateCommand CloseCommand =>
+            _closeCommand ?? (_closeCommand = new DelegateCommand(() =>
+            {
+                _eventAggregator.GetEvent<CloseTabEvent>().Publish(this.ContentId);
+            }));
 
         public override void LoadData()
         {

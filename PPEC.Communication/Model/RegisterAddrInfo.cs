@@ -109,7 +109,13 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _binaryStr, value);
         }
 
-        private ObservableCollection<ObservableCollection<BitOption>> _binaryArray = new ObservableCollection<ObservableCollection<BitOption>>();
+        private ObservableCollection<ObservableCollection<BitOption>> _binaryArray = new ObservableCollection<ObservableCollection<BitOption>>()
+        {
+            new ObservableCollection<BitOption>()
+            {
+
+            }
+        };
         /// <summary>
         /// 二进制数组
         /// </summary>
