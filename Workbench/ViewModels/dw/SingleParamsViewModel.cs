@@ -1,11 +1,8 @@
-﻿using PPEC.Communication.Model;
+﻿using Newtonsoft.Json;
+using PPEC.Communication.Model;
 using Prism.Commands;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Workbench.Models;
 using Workbench.Models.dw;
 using Workbench.Utils;
@@ -18,6 +15,7 @@ namespace Workbench.ViewModels.dw
         public SingleParamsViewModel(ProjectManager projectManager)
         {
             _projectManager = projectManager;
+            ReadWriteHistory = _projectManager.CurrentProject.ReadWriteHistory;
         }
 
         private string _treeKeyword;
@@ -61,15 +59,12 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _singleParamTrees, value);
         }
 
-        private ObservableCollection<SingleParamHistory> _historyData = new ObservableCollection<SingleParamHistory>()
+        private ObservableCollection<SingleParamHistory> _readWriteHistory = new ObservableCollection<SingleParamHistory>();
+
+        public ObservableCollection<SingleParamHistory> ReadWriteHistory
         {
-            new SingleParamHistory(){ ReadWrite="R", Address="0000" },
-            new SingleParamHistory(){ ReadWrite="W", Address="000C" }
-        };
-        public ObservableCollection<SingleParamHistory> HistoryData
-        {
-            get => _historyData;
-            set => SetProperty(ref _historyData, value);
+            get => _readWriteHistory;
+            set => SetProperty(ref _readWriteHistory, value);
         }
 
         private DelegateCommand<SingleParamTree> _selectedItemChangedCommand;
@@ -80,6 +75,36 @@ namespace Workbench.ViewModels.dw
 
                 CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
             }));
+
+        private DelegateCommand _readRegisterCommand;
+        public DelegateCommand ReadRegisterCommand => _readRegisterCommand ?? (_readRegisterCommand = new DelegateCommand(() =>
+        {
+            if (CurrentRegister == null)
+                return;
+            var history = new SingleParamHistory
+            {
+                ReadWrite = "R",
+                Address = CurrentRegister.AddressHex,
+                Hex = CurrentRegister.HexValue,
+                Binary = ""
+            };
+            _projectManager.CurrentProject.ReadWriteHistory.Add(history);
+        }));
+
+        private DelegateCommand _sendRegisterCommand;
+        public DelegateCommand SendRegisterCommand => _sendRegisterCommand ?? (_sendRegisterCommand = new DelegateCommand(() =>
+        {
+            if (CurrentRegister == null)
+                return;
+            var history = new SingleParamHistory
+            {
+                ReadWrite = "W",
+                Address = CurrentRegister.AddressHex,
+                Hex = CurrentRegister.HexValue,
+                Binary = ""
+            };
+            _projectManager.CurrentProject.ReadWriteHistory.Add(history);
+        }));
 
         public override void LoadData()
         {

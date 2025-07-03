@@ -1,8 +1,10 @@
-﻿using PPEC.Communication;
+﻿using Newtonsoft.Json;
+using PPEC.Communication;
 using PPEC.Communication.Interface;
 using PPEC.Communication.Model;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
+using Workbench.Models.dw;
 
 namespace Workbench.Models
 {
@@ -105,6 +107,16 @@ namespace Workbench.Models
             get { return _connectDevice; }
             set { SetProperty(ref _connectDevice, value); }
         }
+
+        private ObservableCollection<SingleParamHistory> _readWriteHistory = new ObservableCollection<SingleParamHistory>();
+
+        [JsonIgnore]
+        public ObservableCollection<SingleParamHistory> ReadWriteHistory
+        {
+            get => _readWriteHistory;
+            set => SetProperty(ref _readWriteHistory, value);
+        }
+
         internal void Disconnect()
         {
             Master.Stop();

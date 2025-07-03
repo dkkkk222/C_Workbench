@@ -50,7 +50,7 @@ namespace PPEC.Communication.Model
 
             }
         }
-        private uint _decValue = 0;
+        private uint _decValue;
         /// <summary>
         /// 十进制值
         /// </summary>
@@ -61,11 +61,11 @@ namespace PPEC.Communication.Model
             {
                 if (SetProperty(ref _decValue, value))
                 {
-                    HexValue = "0x" + value.ToString("X8");
+                    //_hexValue = "0x" + value.ToString("X8");
                 }
             }
         }
-        private string _hexValue = "";
+        private string _hexValue = "0x00000000";
         /// <summary>
         /// Hex值
         /// </summary>
@@ -79,7 +79,8 @@ namespace PPEC.Communication.Model
             {
                 if (SetProperty(ref _hexValue, value))
                 {
-                    DecValue = Utility.ParseHexToUInt(value);
+                    //var ui = Utility.ParseHexToUInt(value);
+                    //_decValue = ui;
                 }
             }
         }

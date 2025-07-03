@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PPEC.Communication;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Workbench.ViewModels.dw;
 
 namespace Workbench.Views.dw
 {
@@ -23,6 +13,33 @@ namespace Workbench.Views.dw
         public SingleParamsView()
         {
             InitializeComponent();
+        }
+
+        private void HexValueText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var text = textBox.Text;
+            var u = Utility.ParseHexToUInt(text);
+            var viewModel = DataContext as SingleParamsViewModel;
+            if (viewModel.CurrentRegister == null)
+                return;
+            if (viewModel.CurrentRegister.DecValue != u)
+            {
+                viewModel.CurrentRegister.DecValue = u;
+            }
+        }
+
+        private void DecValueText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var viewModel = DataContext as SingleParamsViewModel;
+            if (viewModel.CurrentRegister == null)
+                return;
+            var dec = viewModel.CurrentRegister.DecValue;
+            var ui = Utility.ParseHexToUInt(viewModel.CurrentRegister.HexValue);
+            if (dec != ui)
+            {
+                viewModel.CurrentRegister.HexValue = "0x" + dec.ToString("X8");
+            }
         }
     }
 }

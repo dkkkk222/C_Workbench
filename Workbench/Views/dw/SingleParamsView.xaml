@@ -90,13 +90,18 @@
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="数据DEC:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Text="{Binding CurrentRegister.AddressDec}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入" Width="200"/>
+                                            <hc:NumericUpDown x:Name="DecValueText" Width="200" Minimum="0" LostFocus="DecValueText_LostFocus">
+                                                <hc:NumericUpDown.Value>
+                                                    <Binding Path="CurrentRegister.DecValue" UpdateSourceTrigger="PropertyChanged"></Binding>
+                                                </hc:NumericUpDown.Value>
+                                            </hc:NumericUpDown>
                                         </StackPanel>
                                     </Border>
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="数据HEX:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Text="{Binding CurrentRegister.AddressHex}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入" Width="200"/>
+                                            <TextBox x:Name="HexValueText" Text="{Binding CurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" 
+                                                     hc:InfoElement.Placeholder="请输入" Width="200" LostFocus="HexValueText_LostFocus"/>
                                         </StackPanel>
                                     </Border>
                                 </hc:UniformSpacingPanel>
@@ -353,8 +358,10 @@
                                     </Border>
                                     <Border>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="80,5,0,0">
-                                            <Button Content="读 取" Style="{StaticResource ButtonPrimary}" Margin="0,0,15,0" Width="80" hc:IconElement.Geometry="{StaticResource ReadGeometry}"/>
-                                            <Button Content="下 发" Style="{StaticResource ButtonPrimary}" Width="80" hc:IconElement.Geometry="{StaticResource PushGeometry}"/>
+                                            <Button Content="读 取" Style="{StaticResource ButtonPrimary}" Margin="0,0,15,0" Width="80" 
+                                                    hc:IconElement.Geometry="{StaticResource ReadGeometry}" Command="{Binding ReadRegisterCommand}"/>
+                                            <Button Content="下 发" Style="{StaticResource ButtonPrimary}" Width="80" 
+                                                    hc:IconElement.Geometry="{StaticResource PushGeometry}" Command="{Binding SendRegisterCommand}"/>
                                         </StackPanel>
                                     </Border>
                                 </hc:UniformSpacingPanel>
@@ -369,8 +376,8 @@
                                     </hc:UniformSpacingPanel>
                                 </Border>
                                 <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0">
-                                    <DataGrid ItemsSource="{Binding HistoryData}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                              CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                                    <DataGrid ItemsSource="{Binding ReadWriteHistory}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                                              CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Height="280">
                                         <DataGrid.ColumnHeaderStyle>
                                             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
                                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>

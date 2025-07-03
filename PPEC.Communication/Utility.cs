@@ -265,7 +265,7 @@ namespace PPEC.Communication
         public static uint ParseHexToUInt(string hexString)
         {
             if (string.IsNullOrWhiteSpace(hexString))
-                throw new ArgumentException("输入不能为空");
+                return 0;
 
             // 去掉 "0x" 或 "0X" 前缀（如果有）
             if (hexString.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
