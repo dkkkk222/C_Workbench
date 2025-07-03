@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Prism.Mvvm;
 
 namespace PPEC.Communication.Model
@@ -97,6 +98,26 @@ namespace PPEC.Communication.Model
                 SetProperty(ref _bitFields, value);
             }
         }
+
+        private string _binaryStr;
+        /// <summary>
+        /// 二进制字符串
+        /// </summary>
+        public string BinaryStr
+        {
+            get => _binaryStr;
+            set => SetProperty(ref _binaryStr, value);
+        }
+
+        private ObservableCollection<ObservableCollection<BitOption>> _binaryArray = new ObservableCollection<ObservableCollection<BitOption>>();
+        /// <summary>
+        /// 二进制数组
+        /// </summary>
+        public ObservableCollection<ObservableCollection<BitOption>> BinaryArray
+        {
+            get => _binaryArray;
+            set => SetProperty(ref _binaryArray, value);
+        }
     }
     public class BitField : BindableBase
     {
@@ -137,10 +158,28 @@ namespace PPEC.Communication.Model
         }
 
     }
-    public class BitOption
+    public class BitOption : BindableBase
     {
-        public uint Value { get; set; }         // 对应数值（已右移到最低位）
-        public string Display { get; set; }     // 显示文本
+        private uint _value;
+
+        /// <summary>
+        /// 对应数值（已右移到最低位）
+        /// </summary>
+        public uint Value
+        {
+            get => _value;
+            set => SetProperty(ref _value, value);
+        }
+
+        private string _display;
+        /// <summary>
+        /// 显示文本
+        /// </summary>
+        public string Display
+        {
+            get => _display;
+            set => SetProperty(ref _display, value);
+        }
     }
     public class FormulaParam
     {

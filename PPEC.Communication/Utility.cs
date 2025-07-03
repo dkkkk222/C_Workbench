@@ -293,6 +293,30 @@ namespace PPEC.Communication
             // 格式化为 8 位大写十六进制
             return "0x" + val.ToString("X8");
         }
+
+        public static (string binaryString, IEnumerable<IEnumerable<BitOption>> binaryArray) ParseDecToBinary(uint dec)
+        {
+            string hexStr = Convert.ToString(dec, 2);
+            string hex = hexStr.PadLeft(32, '0');
+            return (hex, HexToBianaryArray(hex));
+        }
+
+        public static int BinaryToDec(string binaryStr)
+        {
+            int res = Convert.ToInt32(binaryStr, 2);
+            return res;
+        }
+
+        /// <summary>
+        /// 十六进制转32位二进制，分成4组
+        /// </summary>
+        /// <param name="hex">不包含"0x"</param>
+        /// <returns></returns>
+        public static IEnumerable<IEnumerable<BitOption>> HexToBianaryArray(string hex)
+        {
+            var arr = Enumerable.Range(0, 4).Select(t => hex.Substring(t * 8, 8).ToCharArray().Select(d => new BitOption { Value = uint.Parse(d.ToString()) }));
+            return arr;
+        }
     }
 
     public static class CloneHelper
