@@ -303,7 +303,7 @@ namespace PPEC.Communication
         }
 
         /// <summary>
-        /// 二进制字符串转十进制
+        /// 二进制字符串转十进制,不带"0x"
         /// </summary>
         /// <param name="binaryStr"></param>
         /// <returns></returns>
