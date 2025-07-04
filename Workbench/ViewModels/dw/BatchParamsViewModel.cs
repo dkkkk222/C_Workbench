@@ -9,41 +9,40 @@ using System.Threading.Tasks;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
+using Workbench.Utils;
 
 namespace Workbench.ViewModels.dw
 {
     public class BatchParamsViewModel : AvaDocument
     {
+        private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
 
-        public BatchParamsViewModel(IEventAggregator eventAggregator)
+        public BatchParamsViewModel(IEventAggregator eventAggregator, ProjectManager projectManager)
         {
+            _projectManager = projectManager;
             _eventAggregator = eventAggregator;
-
         }
 
-        private ObservableCollection<SettingCategory> _settingCategoryList = new ObservableCollection<SettingCategory>()
-        {
-            new SettingCategory{Label="ADC工作状态"}
-        };
-        public ObservableCollection<SettingCategory> SettingCategoryList
+        private ObservableCollection<ValueLabelOption> _settingCategoryList = new ObservableCollection<ValueLabelOption>();
+        public ObservableCollection<ValueLabelOption> SettingCategoryList
         {
             get => _settingCategoryList;
             set => SetProperty(ref _settingCategoryList, value);
         }
 
-        private SettingCategory _currentSettingCategory;
-        public SettingCategory CurrentSettingCategory
+        private ValueLabelOption _currentSettingCategory;
+        public ValueLabelOption CurrentSettingCategory
         {
             get => _currentSettingCategory;
             set => SetProperty(ref _currentSettingCategory, value);
         }
 
-        private ObservableCollection<SingleParamTree> _singleParamTrees = new ObservableCollection<SingleParamTree>();
-        public ObservableCollection<SingleParamTree> SingleParamTrees
+        private ObservableCollection<CategoryTree> _batchParamTrees = new ObservableCollection<CategoryTree>();
+        public ObservableCollection<CategoryTree> BatchParamTrees
         {
-            get => _singleParamTrees;
-            set => SetProperty(ref _singleParamTrees, value);
+            get => _batchParamTrees;
+            set => SetProperty(ref _batchParamTrees, value);
         }
 
         private ObservableCollection<Sequence> _sequenceList = new ObservableCollection<Sequence>();
@@ -51,6 +50,33 @@ namespace Workbench.ViewModels.dw
         {
             get => _sequenceList;
             set => SetProperty(ref _sequenceList, value);
+        }
+
+        private string _treeKeyword;
+        public string TreeKeyword
+        {
+            get => _treeKeyword;
+            set
+            {
+                SetProperty(ref _treeKeyword, value);
+                SearchCategoryTree(value);
+            }
+        }
+
+        private void SearchCategoryTree(string keyword)
+        {
+            BatchParamTrees.Clear();
+            var source = _projectManager.GetChipCategoryTree(CurrentSettingCategory.Value.ToString());
+            if (string.IsNullOrEmpty(keyword))
+            {
+                BatchParamTrees.AddRange(source);
+            }
+            else
+            {
+                var searcher = new TreeSearcher();
+                var filteredResult = searcher.SearchInForest(source, keyword);
+                BatchParamTrees.AddRange(filteredResult);
+            }
         }
 
         private DelegateCommand _closeCommand;
@@ -63,62 +89,24 @@ namespace Workbench.ViewModels.dw
 
         public override void LoadData()
         {
+            InitData();
+        }
+
+        private void InitData()
+        {
+            var categoryOptions = _projectManager.GetCategories().Select(t => new ValueLabelOption() { Value = t, Label = t });
+            SettingCategoryList.Clear();
+            SettingCategoryList.AddRange(categoryOptions);
             CurrentSettingCategory = SettingCategoryList.FirstOrDefault();
 
-            SingleParamTrees.Add(new SingleParamTree()
-            {
-                Title = "基本保护设置",
-                Children = new List<SingleParamTree>()
-                {
-                    new SingleParamTree()
-                    {
-                        Title="功率控制1",
-                        Children=new List<SingleParamTree>()
-                        {
-                            new SingleParamTree(){Title="pwr1protect set1"},
-                            new SingleParamTree(){Title="pwr1protect set2"},
-                            new SingleParamTree(){Title="pwr1protect set3"}
-                        }
-                    },
-                    new SingleParamTree()
-                    {
-                        Title="功率控制2",
-                        Children=new List<SingleParamTree>()
-                        {
-                            new SingleParamTree(){Title="pwr1protect set1"},
-                            new SingleParamTree(){Title="pwr1protect set2"},
-                            new SingleParamTree(){Title="pwr1protect set3"}
-                        }
-                    }
-                }
-            });
-            SingleParamTrees.Add(new SingleParamTree()
-            {
-                Title = "ADC设置",
-                Children = new List<SingleParamTree>()
-                {
-                    new SingleParamTree()
-                    {
-                        Title="功率控制1",
-                        Children=new List<SingleParamTree>()
-                        {
-                            new SingleParamTree(){Title="pwr1protect set1"},
-                            new SingleParamTree(){Title="pwr1protect set2"},
-                            new SingleParamTree(){Title="pwr1protect set3"}
-                        }
-                    },
-                    new SingleParamTree()
-                    {
-                        Title="功率控制2",
-                        Children=new List<SingleParamTree>()
-                        {
-                            new SingleParamTree(){Title="pwr1protect set1"},
-                            new SingleParamTree(){Title="pwr1protect set2"},
-                            new SingleParamTree(){Title="pwr1protect set3"}
-                        }
-                    }
-                }
-            });
+            //InitCategoryTree();
+        }
+
+        public void InitCategoryTree()
+        {
+            BatchParamTrees.Clear();
+            var trees = _projectManager.GetChipCategoryTree(CurrentSettingCategory.Value.ToString());
+            BatchParamTrees.AddRange(trees);
         }
     }
 }

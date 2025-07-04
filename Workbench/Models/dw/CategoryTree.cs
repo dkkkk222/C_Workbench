@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Workbench.Models.dw
 {
-    public class SingleParamTree
+    public class CategoryTree
     {
         public string Title { get; set; }
         public string Type { get; set; }
-        public List<SingleParamTree> Children { get; set; }
+        public List<CategoryTree> Children { get; set; }
     }
 
-    public class SingleParamTreeType
+    public class CategoryTreeType
     {
         public const string Category = "Category";
         public const string SubCategory = "SubCategory";

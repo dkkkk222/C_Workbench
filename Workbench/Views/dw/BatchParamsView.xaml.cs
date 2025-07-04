@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Workbench.ViewModels.dw;
 
 namespace Workbench.Views.dw
 {
@@ -23,6 +24,12 @@ namespace Workbench.Views.dw
         public BatchParamsView()
         {
             InitializeComponent();
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var viewModel = DataContext as BatchParamsViewModel;
+            viewModel.InitCategoryTree();
         }
     }
 }

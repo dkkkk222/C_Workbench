@@ -59,8 +59,8 @@ namespace Workbench.ViewModels.dw
             }
         }
 
-        private ObservableCollection<SingleParamTree> _singleParamTrees = new ObservableCollection<SingleParamTree>();
-        public ObservableCollection<SingleParamTree> SingleParamTrees
+        private ObservableCollection<CategoryTree> _singleParamTrees = new ObservableCollection<CategoryTree>();
+        public ObservableCollection<CategoryTree> SingleParamTrees
         {
             get => _singleParamTrees;
             set => SetProperty(ref _singleParamTrees, value);
@@ -74,11 +74,11 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _readWriteHistory, value);
         }
 
-        private DelegateCommand<SingleParamTree> _selectedItemChangedCommand;
-        public DelegateCommand<SingleParamTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??
-            (_selectedItemChangedCommand = new DelegateCommand<SingleParamTree>((param) =>
+        private DelegateCommand<CategoryTree> _selectedItemChangedCommand;
+        public DelegateCommand<CategoryTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??
+            (_selectedItemChangedCommand = new DelegateCommand<CategoryTree>((param) =>
             {
-                if (param == null || param.Type != SingleParamTreeType.Register) return;
+                if (param == null || param.Type != CategoryTreeType.Register) return;
 
                 CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
             }));

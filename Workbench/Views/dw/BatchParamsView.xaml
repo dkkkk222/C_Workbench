@@ -67,14 +67,18 @@
                             <Border>
                                 <StackPanel Orientation="Horizontal">
                                     <ComboBox ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
-                                      hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180" 
-                                      SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Label"></ComboBox>
+                                      hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180" SelectionChanged="ComboBox_SelectionChanged"
+                                      SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
                                     <hc:SearchBar Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" Margin="10,0,0,0"
-                                          Width="180"/>
+                                          Width="180">
+                                        <hc:SearchBar.Text>
+                                            <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
+                                        </hc:SearchBar.Text>
+                                    </hc:SearchBar>
                                 </StackPanel>
                             </Border>
                             <Border Background="{DynamicResource DarkDefaultBrush}" Padding="5" CornerRadius="5">
-                                <TreeView ItemsSource="{Binding SingleParamTrees}" Height="350">
+                                <TreeView ItemsSource="{Binding BatchParamTrees}" Height="350">
                                     <TreeView.ItemContainerStyle>
                                         <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource TreeViewItemBaseStyle}">
                                             <!-- 将TreeViewItem的IsExpanded属性绑定到数据模型的IsExpanded属性 -->

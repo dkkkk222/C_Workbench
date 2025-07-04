@@ -324,37 +324,42 @@ namespace Workbench.Utils
         #endregion
 
         /// <summary>
-        /// 获取分类树结构
+        /// 获取分类树
         /// </summary>
+        /// <param name="ctg">指定分类</param>
         /// <returns></returns>
-        internal List<SingleParamTree> GetChipCategoryTree()
+        internal List<CategoryTree> GetChipCategoryTree(string ctg = null)
         {
-            var list = new List<SingleParamTree>();
+            var list = new List<CategoryTree>();
             var infos = CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).ToList();
             var categories = infos.Select(t => t.Category).Distinct().ToList();
+            if (!string.IsNullOrEmpty(ctg))
+            {
+                categories = categories.Where(t => t == ctg).ToList();
+            }
             foreach (var category in categories)
             {
-                list.Add(new SingleParamTree()
+                list.Add(new CategoryTree()
                 {
                     Title = category,
-                    Type = SingleParamTreeType.Category,
+                    Type = CategoryTreeType.Category,
                     Children = GetSubCategory(category, infos)
                 });
             }
             return list;
         }
 
-        private List<SingleParamTree> GetSubCategory(string category, List<RegisterAddrInfo> infos)
+        private List<CategoryTree> GetSubCategory(string category, List<RegisterAddrInfo> infos)
         {
-            var list = new List<SingleParamTree>();
+            var list = new List<CategoryTree>();
 
             var subCategories = infos.Where(t => t.Category == category).Select(t => t.SubCategory).Distinct().ToList();
             foreach (var subCategory in subCategories)
             {
-                list.Add(new SingleParamTree()
+                list.Add(new CategoryTree()
                 {
                     Title = subCategory,
-                    Type = SingleParamTreeType.SubCategory,
+                    Type = CategoryTreeType.SubCategory,
                     Children = GetRegister(category, subCategory, infos)
                 });
             }
@@ -362,22 +367,30 @@ namespace Workbench.Utils
             return list;
         }
 
-        private List<SingleParamTree> GetRegister(string category, string subCategory, List<RegisterAddrInfo> infos)
+        private List<CategoryTree> GetRegister(string category, string subCategory, List<RegisterAddrInfo> infos)
         {
-            var list = new List<SingleParamTree>();
+            var list = new List<CategoryTree>();
 
             var registers = infos.Where(t => t.Category == category && t.SubCategory == subCategory).Select(t => t.Name).Distinct().ToList();
             foreach (var register in registers)
             {
-                list.Add(new SingleParamTree()
+                list.Add(new CategoryTree()
                 {
                     Title = register,
-                    Type = SingleParamTreeType.Register,
+                    Type = CategoryTreeType.Register,
                 });
             }
 
             return list;
         }
 
+        /// <summary>
+        /// 获取分类
+        /// </summary>
+        /// <returns></returns>
+        internal List<string> GetCategories()
+        {
+            return CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).Select(d => d.Category).Distinct().ToList();
+        }
     }
 }
