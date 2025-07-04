@@ -185,6 +185,25 @@
                     </Border>
                     <DataGrid ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
+                                <Setter Property="Tag" Value="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="165">
+                                            <MenuItem Header="删除" Command="{Binding Path=PlacementTarget.Tag.RemoveSequenceItemCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                      CommandParameter="{Binding}"/>
+                                            <MenuItem Header="复制" Command="{Binding Path=PlacementTarget.Tag.CopyCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                      CommandParameter="{Binding}"/>
+                                            <MenuItem Header="上移" Command="{Binding Path=PlacementTarget.Tag.MoveUpCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                      CommandParameter="{Binding}"/>
+                                            <MenuItem Header="下移" Command="{Binding Path=PlacementTarget.Tag.MoveDownCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                      CommandParameter="{Binding}"/>
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
                                 <Setter Property="HorizontalContentAlignment" Value="Left"/>

@@ -153,6 +153,42 @@ namespace Workbench.ViewModels.dw
             CurrentSequence.Items.Add(clone);
         }));
 
+        private DelegateCommand<RegisterAddrInfo> _removeSequenceItemCommand;
+        public DelegateCommand<RegisterAddrInfo> RemoveSequenceItemCommand => _removeSequenceItemCommand ?? (_removeSequenceItemCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
+        {
+            CurrentSequence.Items.Remove(param);
+        }));
+
+        private DelegateCommand<RegisterAddrInfo> _moveUpCommand;
+        public DelegateCommand<RegisterAddrInfo> MoveUpCommand => _moveUpCommand ?? (_moveUpCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
+        {
+            var index = CurrentSequence.Items.IndexOf(param);
+            if (index > 0)
+            {
+                CurrentSequence.Items.Remove(param);
+                CurrentSequence.Items.Insert(index - 1, param);
+            }
+        }));
+
+        private DelegateCommand<RegisterAddrInfo> _moveDownCommand;
+        public DelegateCommand<RegisterAddrInfo> MoveDownCommand => _moveDownCommand ?? (_moveDownCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
+        {
+            var index = CurrentSequence.Items.IndexOf(param);
+            if (index < CurrentSequence.Items.Count - 1)
+            {
+                CurrentSequence.Items.Remove(param);
+                CurrentSequence.Items.Insert(index + 1, param);
+            }
+        }));
+
+        private DelegateCommand<RegisterAddrInfo> _copyCommand;
+        public DelegateCommand<RegisterAddrInfo> CopyCommand => _copyCommand ?? (_copyCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
+        {
+            var clone = param.DeepClone();
+            clone.Id = Guid.NewGuid().ToString("N");
+            CurrentSequence.Items.Add(clone);
+        }));
+
         public override void LoadData()
         {
             InitData();

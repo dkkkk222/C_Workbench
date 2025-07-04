@@ -87,6 +87,8 @@ namespace Workbench.Views.dw
             if (dataGridRow == null) return;
 
             var rowDctx = dataGridRow.DataContext as RegisterAddrInfo;
+            if (rowDctx == null) return;
+
             string binaryStr = string.Join("", rowDctx.BinaryList.Select(t => t.Value));
             rowDctx.BinaryStr = binaryStr;
             uint dec = Utility.BinaryToDec(binaryStr);
@@ -118,6 +120,8 @@ namespace Workbench.Views.dw
             if (element == null) return;
 
             var rowDctx = element.DataContext as RegisterAddrInfo;
+            if (rowDctx == null) return;
+
             var dec = rowDctx.DecValue;
 
             rowDctx.HexValue = Utility.DecToHex(dec);
@@ -140,6 +144,7 @@ namespace Workbench.Views.dw
             if (element == null) return;
 
             var rowDctx = element.DataContext as RegisterAddrInfo;
+            if (rowDctx == null) return;
             var hex = rowDctx.HexValue;
 
             rowDctx.DecValue = Utility.ParseHexToUInt(hex);
