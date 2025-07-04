@@ -8,6 +8,13 @@ namespace PPEC.Communication.Model
 {
     public class RegisterAddrInfo : BindableBase
     {
+        private string _id;
+        public string Id
+        {
+            get => _id;
+            set => SetProperty(ref _id, value);
+        }
+
         public uint AddressDec { get; set; }     // 十进制地址
 
         private string _addressHex;
@@ -164,6 +171,47 @@ namespace PPEC.Communication.Model
         {
             get => _binaryArray;
             set => SetProperty(ref _binaryArray, value);
+        }
+
+        private ObservableCollection<BitOption> _binaryList = new ObservableCollection<BitOption>()
+        {
+            new BitOption{Value=0,Display="31"},
+            new BitOption{Value=0,Display="30"},
+            new BitOption{Value=0,Display="29"},
+            new BitOption{Value=0,Display="28"},
+            new BitOption{Value=0,Display="27"},
+            new BitOption{Value=0,Display="26"},
+            new BitOption{Value=0,Display="25"},
+            new BitOption{Value=0,Display="24"},
+            new BitOption{Value=0,Display="23"},
+            new BitOption{Value=0,Display="22"},
+            new BitOption{Value=0,Display="21"},
+            new BitOption{Value=0,Display="20"},
+            new BitOption{Value=0,Display="19"},
+            new BitOption{Value=0,Display="18"},
+            new BitOption{Value=0,Display="17"},
+            new BitOption{Value=0,Display="16"},
+            new BitOption{Value=0,Display="15"},
+            new BitOption{Value=0,Display="14"},
+            new BitOption{Value=0,Display="13"},
+            new BitOption{Value=0,Display="12"},
+            new BitOption{Value=0,Display="11"},
+            new BitOption{Value=0,Display="10"},
+            new BitOption{Value=0,Display="9"},
+            new BitOption{Value=0,Display="8"},
+            new BitOption{Value=0,Display="7"},
+            new BitOption{Value=0,Display="6"},
+            new BitOption{Value=0,Display="5"},
+            new BitOption{Value=0,Display="4"},
+            new BitOption{Value=0,Display="3"},
+            new BitOption{Value=0,Display="2"},
+            new BitOption{Value=0,Display="1"},
+            new BitOption{Value=0,Display="0"},
+        };
+        public ObservableCollection<BitOption> BinaryList
+        {
+            get => _binaryList;
+            set => SetProperty(ref _binaryList, value);
         }
     }
     public class BitField : BindableBase

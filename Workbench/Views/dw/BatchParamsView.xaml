@@ -183,7 +183,7 @@
                             </Border>
                         </DockPanel>
                     </Border>
-                    <DataGrid ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                    <DataGrid ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
@@ -194,7 +194,7 @@
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn  Header="发送顺序" Width="*">
+                            <DataGridTemplateColumn  Header="发送顺序" MinWidth="60">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock>
@@ -211,7 +211,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="地址(DEC/HEX)" Width="*">
+                            <DataGridTemplateColumn Header="地址(DEC/HEX)" Width="*" MinWidth="110">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -222,17 +222,17 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="名称" Binding="{Binding Name}"  Width="*"/>
-                            <DataGridTextColumn Header="分类" Binding="{Binding Category}"  Width="*"/>
-                            <DataGridTextColumn Header="子分类" Binding="{Binding SubCategory}"  Width="*"/>
-                            <DataGridTemplateColumn Header="数据(HEX)" Width="*">
+                            <DataGridTextColumn Header="名称" Binding="{Binding Name}"  Width="*" MinWidth="120"/>
+                            <DataGridTextColumn Header="分类" Binding="{Binding Category}"  Width="*" MinWidth="100"/>
+                            <DataGridTextColumn Header="子分类" Binding="{Binding SubCategory}"  Width="*" MinWidth="60"/>
+                            <DataGridTemplateColumn Header="数据(HEX)" Width="*" MinWidth="110">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBox Text="{Binding HexValue,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxExtend.Small}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="数据(DEC)" Width="*">
+                            <DataGridTemplateColumn Header="数据(DEC)" Width="*" MinWidth="110">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <hc:NumericUpDown Minimum="0" Style="{StaticResource NumericUpDownExtend.Small}">
@@ -243,7 +243,27 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="数据(Binary)" Binding="{Binding DataPushResolve}"  Width="*"/>
+                            <DataGridTemplateColumn Header="数据(Binary)" Width="*" MinWidth="648">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ItemsControl ItemsSource="{Binding BinaryList,Mode=TwoWay}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <TextBox Text="{Binding Value}" Style="{StaticResource TextBox.Small}"/>
+                                                        <TextBlock Text="{Binding Display}" HorizontalAlignment="Center" FontSize="9"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

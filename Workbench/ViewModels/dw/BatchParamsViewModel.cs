@@ -1,4 +1,5 @@
-﻿using PPEC.Communication.Model;
+﻿using Force.DeepCloner;
+using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
 using System;
@@ -147,7 +148,9 @@ namespace Workbench.ViewModels.dw
                 return;
             }
 
-            CurrentSequence.Items.Add(CurrentRegister);
+            var clone = CurrentRegister.DeepClone();
+            clone.Id = Guid.NewGuid().ToString("N");
+            CurrentSequence.Items.Add(clone);
         }));
 
         public override void LoadData()
