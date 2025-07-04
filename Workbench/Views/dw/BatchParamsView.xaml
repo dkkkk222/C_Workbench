@@ -45,7 +45,7 @@
                                 </DockPanel>
                             </Border>
                             <DataGrid ItemsSource="{Binding SequenceList}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
+                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" Height="346"
                                       SelectedItem="{Binding CurrentSequence}">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
@@ -59,7 +59,17 @@
                                     <DataGridTemplateColumn  Header="序列编号" Width="*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow},Converter={StaticResource RowIndexConverter}}"/>
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <!-- 使用 MultiBinding -->
+                                                        <MultiBinding Converter="{StaticResource RowIndexConverter}">
+                                                            <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
+                                                            <Binding />
+                                                            <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
+                                                            <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
@@ -187,7 +197,17 @@
                             <DataGridTemplateColumn  Header="发送顺序" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow},Converter={StaticResource RowIndexConverter}}"/>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <!-- 使用 MultiBinding -->
+                                                <MultiBinding Converter="{StaticResource RowIndexConverter}">
+                                                    <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
+                                                    <Binding />
+                                                    <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
+                                                    <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

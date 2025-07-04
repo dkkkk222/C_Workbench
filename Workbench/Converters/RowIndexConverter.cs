@@ -9,23 +9,27 @@ using System.Windows.Data;
 
 namespace Workbench.Converters
 {
-    public class RowIndexConverter : IValueConverter
+    public class RowIndexConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            // value 是传递过来的 DataGridRow 对象
-            if (value is DataGridRow row)
+            // values[0] 是数据项 (the item)
+            // values[1] 是 DataGrid 控件
+            if (values.Length < 2 || !(values[0] is object item) || !(values[1] is DataGrid grid))
             {
-                // GetIndex() 方法返回该行在 DataGrid 中的从0开始的索引
-                // 我们+1使其从1开始显示
-                return row.GetIndex() + 1;
+                return null;
             }
-            return string.Empty;
+
+            // 从 DataGrid 的 Items 集合中查找当前数据项的索引
+            int index = grid.Items.IndexOf(item);
+
+            // 如果找到了，返回 "索引 + 1"；否则返回空
+            return (index != -1) ? (index + 1).ToString() : string.Empty;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            // 不需要反向转换，所以抛出异常
+            // 不需要反向转换
             throw new NotImplementedException();
         }
     }
