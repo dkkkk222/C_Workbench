@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Prism.Mvvm;
 
 namespace PPEC.Communication.Model
@@ -113,7 +114,47 @@ namespace PPEC.Communication.Model
         {
             new ObservableCollection<BitOption>()
             {
-
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0}
+            },
+            new ObservableCollection<BitOption>()
+            {
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0}
+            },
+            new ObservableCollection<BitOption>()
+            {
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0}
+            },
+            new ObservableCollection<BitOption>()
+            {
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0},
+                new BitOption{Value=0}
             }
         };
         /// <summary>

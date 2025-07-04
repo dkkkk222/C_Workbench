@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -301,9 +302,14 @@ namespace PPEC.Communication
             return (hex, HexToBianaryArray(hex));
         }
 
-        public static int BinaryToDec(string binaryStr)
+        /// <summary>
+        /// 二进制字符串转十进制
+        /// </summary>
+        /// <param name="binaryStr"></param>
+        /// <returns></returns>
+        public static uint BinaryToDec(string binaryStr)
         {
-            int res = Convert.ToInt32(binaryStr, 2);
+            uint res = Convert.ToUInt32(binaryStr, 2);
             return res;
         }
 
@@ -316,6 +322,29 @@ namespace PPEC.Communication
         {
             var arr = Enumerable.Range(0, 4).Select(t => hex.Substring(t * 8, 8).ToCharArray().Select(d => new BitOption { Value = uint.Parse(d.ToString()) }));
             return arr;
+        }
+
+        public static string BinaryArrayToString(ObservableCollection<ObservableCollection<BitOption>> arr)
+        {
+            var sb = new StringBuilder();
+            foreach (var parent in arr)
+            {
+                foreach (var sub in parent)
+                {
+                    sb.Append(sub.Value);
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 十进制转8位十六进制，带"0x"
+        /// </summary>
+        /// <param name="dec"></param>
+        /// <returns></returns>
+        public static string DecToHex(uint dec)
+        {
+            return "0x" + dec.ToString("X8");
         }
     }
 

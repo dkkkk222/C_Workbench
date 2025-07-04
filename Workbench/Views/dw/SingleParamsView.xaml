@@ -120,7 +120,7 @@
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBox Text="{Binding Value}"/>
+                                                        <TextBox Text="{Binding Value}" TextChanged="BinaryTextBox_TextChanged" LostFocus="BinaryTextBox_LostFocus"/>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
@@ -160,32 +160,19 @@
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
-                                            <hc:Row Width="200">
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                            </hc:Row>
+                                            <ItemsControl ItemsSource="{Binding CurrentRegister.BinaryArray[1],Mode=TwoWay}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <UniformGrid Rows="1" Columns="8" Width="200"/>
+
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox Text="{Binding Value}" TextChanged="BinaryTextBox_TextChanged" LostFocus="BinaryTextBox_LostFocus"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
                                         </StackPanel>
                                     </Border>
                                     <Border>
@@ -222,32 +209,19 @@
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
-                                            <hc:Row Width="200">
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                            </hc:Row>
+                                            <ItemsControl ItemsSource="{Binding CurrentRegister.BinaryArray[2],Mode=TwoWay}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <UniformGrid Rows="1" Columns="8" Width="200"/>
+
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox Text="{Binding Value}" TextChanged="BinaryTextBox_TextChanged" LostFocus="BinaryTextBox_LostFocus"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
                                         </StackPanel>
                                     </Border>
                                     <Border>
@@ -284,32 +258,19 @@
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
-                                            <hc:Row Width="200">
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                                <hc:Col Span="3">
-                                                    <TextBox Text="0"/>
-                                                </hc:Col>
-                                            </hc:Row>
+                                            <ItemsControl ItemsSource="{Binding CurrentRegister.BinaryArray[3],Mode=TwoWay}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <UniformGrid Rows="1" Columns="8" Width="200"/>
+
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox Text="{Binding Value}" TextChanged="BinaryTextBox_TextChanged" LostFocus="BinaryTextBox_LostFocus"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
                                         </StackPanel>
                                     </Border>
                                     <Border>

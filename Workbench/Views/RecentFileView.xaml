@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:Workbench.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Padding="5" Background="{DynamicResource TreeViewBackgroundColor}">
+    <Border Padding="5" Background="{StaticResource DarkDefaultBrush}">
         <DataGrid x:Name="dataGrid" ItemsSource="{Binding RecentFiles}" AutoGenerateColumns="False"
                   IsReadOnly="True"
                   SelectionMode="Single"
@@ -19,9 +19,9 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="文件名" Binding="{Binding FileName}"/>
-                <DataGridTextColumn Header="文件路径" Width="*" Binding="{Binding DirPath}"/>
-                <DataGridTextColumn Header="最近时间" Binding="{Binding DateTimeStr}"/>
+                <DataGridTextColumn Header="文件名" Binding="{Binding FileName}" Width="180"/>
+                <DataGridTextColumn Header="文件路径" Binding="{Binding DirPath}" Width="*"/>
+                <DataGridTextColumn Header="最近时间" Binding="{Binding DateTimeStr}" Width="180"/>
             </DataGrid.Columns>
         </DataGrid>
     </Border>

@@ -125,6 +125,9 @@ namespace Workbench.ViewModels.dw
         {
             var tree = _projectManager.GetChipCategoryTree();
             SingleParamTrees.AddRange(tree);
+            CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo)
+                .FirstOrDefault(t => t.Name == tree[0].Children[0].Children[0].Title);
+
         }
     }
 }

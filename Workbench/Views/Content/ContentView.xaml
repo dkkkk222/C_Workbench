@@ -34,31 +34,31 @@
                                                DocumentPaneControlStyle="{DynamicResource DocumentPaneControlStyle}"
                                                ActiveContent="{Binding ActiveDocument,Mode=TwoWay}">
                         <avalonDock:DockingManager.DocumentContextMenu>
-                            <ContextMenu FontSize="14">
+                            <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="165">
                                 <MenuItem Header="关闭" Click="Close_Click" Foreground="{DynamicResource TitleBarColor}">
                                     <MenuItem.Icon>
-                                        <TextBlock Text="&#xe633;" 
+                                        <TextBlock Text="&#xe639;" 
                                                    Style="{DynamicResource ContextMenuStyle}"
                                                    FontFamily="{StaticResource Iconfont}"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="关闭其他" Click="CloseOthers_Click" Foreground="{DynamicResource TitleBarColor}">
                                     <MenuItem.Icon>
-                                        <TextBlock Text="&#xe634;" 
+                                        <TextBlock Text="&#xe63a;" 
                                                    Style="{DynamicResource ContextMenuStyle}"
                                                    FontFamily="{StaticResource Iconfont}"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="关闭左侧" Click="CloseLeft_Click" Foreground="{DynamicResource TitleBarColor}">
                                     <MenuItem.Icon>
-                                        <TextBlock Text="&#xe694;" 
+                                        <TextBlock Text="&#xe695;" 
                                                    Style="{DynamicResource ContextMenuStyle}"
                                                    FontFamily="{StaticResource Iconfont}"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="关闭右侧" Click="CloseRight_Click" Foreground="{DynamicResource TitleBarColor}">
                                     <MenuItem.Icon>
-                                        <TextBlock Text="&#xe693;" 
+                                        <TextBlock Text="&#xe694;" 
                                                    Style="{DynamicResource ContextMenuStyle}"
                                                    FontFamily="{StaticResource Iconfont}"/>
                                     </MenuItem.Icon>
