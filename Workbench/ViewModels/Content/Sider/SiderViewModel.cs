@@ -61,8 +61,7 @@ namespace Workbench.ViewModels.Content.Sider
                 if (tabProject == null)
                     return;
                 var project = Projects.FirstOrDefault(t => t.UID == tabProject.ProjectId);
-                var ppec = project.Children.FirstOrDefault(t => t.UID == tabProject.PPEC_Id);
-                ppec.Children.FirstOrDefault(t => t.UID == tabProject.UID).IsSelected = true;
+                project.Children.FirstOrDefault(t => t.UID == tabProject.UID).IsSelected = true;
             });
         }
 

@@ -1,11 +1,10 @@
-﻿using Prism.Commands;
+﻿using PPEC.Communication.Model;
+using Prism.Commands;
 using Prism.Events;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
@@ -22,6 +21,7 @@ namespace Workbench.ViewModels.dw
         {
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;
+            SequenceList = _projectManager.CurrentProject.Sequences;
         }
 
         private ObservableCollection<ValueLabelOption> _settingCategoryList = new ObservableCollection<ValueLabelOption>();
@@ -50,6 +50,34 @@ namespace Workbench.ViewModels.dw
         {
             get => _sequenceList;
             set => SetProperty(ref _sequenceList, value);
+        }
+
+        private Sequence _currentSequence;
+        public Sequence CurrentSequence
+        {
+            get => _currentSequence;
+            set => SetProperty(ref _currentSequence, value);
+        }
+
+        private RegisterAddrInfo _currentRegister;
+        public RegisterAddrInfo CurrentRegister
+        {
+            get => _currentRegister;
+            set => SetProperty(ref _currentRegister, value);
+        }
+
+        private bool _checkAll = false;
+        public bool CheckAll
+        {
+            get => _checkAll;
+            set
+            {
+                SetProperty(ref _checkAll, value);
+                foreach (var item in SequenceList)
+                {
+                    item.IsChecked = value;
+                }
+            }
         }
 
         private string _treeKeyword;
@@ -86,6 +114,41 @@ namespace Workbench.ViewModels.dw
             {
                 _eventAggregator.GetEvent<CloseTabEvent>().Publish(this.ContentId);
             }));
+
+        private DelegateCommand _addSequenceCommand;
+        public DelegateCommand AddSequenceCommand => _addSequenceCommand ?? (_addSequenceCommand = new DelegateCommand(() =>
+        {
+            SequenceList.Add(new Sequence
+            {
+                Id = Guid.NewGuid().ToString("N"),
+            });
+        }));
+
+        private DelegateCommand<CategoryTree> _selectedItemChangedCommand;
+        public DelegateCommand<CategoryTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??
+            (_selectedItemChangedCommand = new DelegateCommand<CategoryTree>((param) =>
+            {
+                if (param == null || param.Type != CategoryTreeType.Register) return;
+
+                CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
+            }));
+
+        private DelegateCommand _addRegisterToSequenceCommand;
+        public DelegateCommand AddRegisterToSequenceCommand => _addRegisterToSequenceCommand ?? (_addRegisterToSequenceCommand = new DelegateCommand(() =>
+        {
+            if (CurrentRegister == null)
+            {
+                MessageBox.Show("请选择寄存器", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (CurrentSequence == null)
+            {
+                MessageBox.Show("请选择序列", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            CurrentSequence.Items.Add(CurrentRegister);
+        }));
 
         public override void LoadData()
         {

@@ -117,6 +117,13 @@ namespace Workbench.Models
             set => SetProperty(ref _readWriteHistory, value);
         }
 
+        private ObservableCollection<Sequence> _sequences = new ObservableCollection<Sequence>();
+        public ObservableCollection<Sequence> Sequences
+        {
+            get => _sequences;
+            set => SetProperty(ref _sequences, value);
+        }
+
         internal void Disconnect()
         {
             Master.Stop();

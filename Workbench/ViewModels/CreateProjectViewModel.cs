@@ -146,16 +146,8 @@ namespace Workbench.ViewModels
                     Label = FileName,
                     Level = ProjectLevel.Project,
                     Chip = CreateChipInfo,
-                    Children = new ObservableCollection<PpecProject>() { new PpecProject()
+                    Children = new ObservableCollection<PpecProject>()
                     {
-                        UID = ppecId,
-                        Name =CreateChipInfo.ChipName,// SelectedPpec.PPEC,
-                        Icon = IconUnicode.PPEC,
-                        Label =CreateChipInfo.ChipName,//  SelectedPpec.PPEC,
-                        Level = ProjectLevel.PPEC,
-                        ProjectId = projectId,
-                        Children = new ObservableCollection<PpecProject>()
-                        {
                             new PpecProject()
                             {
                                 UID = Guid.NewGuid().ToString(),
@@ -186,8 +178,7 @@ namespace Workbench.ViewModels
                                 PPEC_Id = ppecId,
                                 ProjectId = projectId
                             }
-                        }
-                    }}
+                    }
                 };
 
                 var result = _projectManager.CreateProject(project);
