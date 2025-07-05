@@ -25,7 +25,7 @@ namespace PPEC.Communication
 
         private readonly byte _i2cAddr;            // I²C 专用
 
-        public GroundDevice(string id, ConnectPortType type, int baud=256000)
+        public GroundDevice(string id, ConnectPortType type, int baud = 256000)
         {
             _type = type;
             _ch = ChannelFactory.Create(type, id, baud);
@@ -61,7 +61,7 @@ namespace PPEC.Communication
             //{
             //    _rawQueue.Add(msg1);                
             //}
-           
+
         }
         public Task ConnectAsync() => _ch.ConnectAsync();
 
@@ -96,11 +96,12 @@ namespace PPEC.Communication
             }
         }
 
-        public Task WriteRegAsync(ushort reg, uint val)
+        public Task WriteRegAsync(ushort reg, uint val, byte[] byteVal = null)
         {
             switch (_type)
             {
                 case ConnectPortType.UART: return _ch.SendAsync(UartCommandBuilder.BuildWriteReg(reg, val));
+                case ConnectPortType.INV: return _ch.SendAsync(byteVal);
                 //case ConnectPortType.CAN: return _ch.SendAsync(CanBuilder.Write(reg, val, _i2cAddr));
                 //case ConnectPortType.I2C: return _ch.SendAsync(I2cBuilder.Write(reg, val));
                 default: throw new NotSupportedException();
@@ -160,7 +161,7 @@ namespace PPEC.Communication
     {
         private readonly ConcurrentDictionary<string, GroundDevice> _devs = new ConcurrentDictionary<string, GroundDevice>();
 
-        public async Task AddDeviceAsync(string port, ConnectPortType type,int baud)
+        public async Task AddDeviceAsync(string port, ConnectPortType type, int baud)
         {
             var dev = new GroundDevice(port, type, baud);
             await dev.ConnectAsync();

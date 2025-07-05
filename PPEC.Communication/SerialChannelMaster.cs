@@ -24,7 +24,7 @@ namespace PPEC.Communication
 
         public event EventHandler<ReadOnlyMemory<byte>> BytesReceived;
         public event EventHandler<Exception> ChannelFaulted;
-        public INVProtocolHandler ipro=null;
+        public INVProtocolHandler ipro = null;
         public event EventHandler<IUartMessage> MessageParsed;   // 暴露给上层
         public SerialCommChannel(string port, int baud = 115200)
         {
@@ -47,9 +47,16 @@ namespace PPEC.Communication
         public Task ConnectAsync(CancellationToken token = default)
         {
             if (IsConnected) return Task.CompletedTask;
+            try
+            {
+                _sp.Open();
+                return Task.Delay(50, token);   // 让驱动/MCU 稳定
+            }
+            catch (Exception e)
+            {
+                return Task.Delay(50, token);
+            }
 
-            _sp.Open();
-            return Task.Delay(50, token);   // 让驱动/MCU 稳定
         }
 
         public Task DisconnectAsync()
@@ -212,7 +219,7 @@ namespace PPEC.Communication
         public event EventHandler<Exception> ChannelFaulted;
         public event EventHandler<IUartMessage> MessageParsed;
 
-        public CanCommChannel(uint channelIndex=0)
+        public CanCommChannel(uint channelIndex = 0)
         {
             _channelIndex = channelIndex;
 

@@ -9,7 +9,7 @@ namespace PPEC.Communication.Model
 {
     public class INVProtocolHandler : IProtocolHandler, IDisposable
     {
-        private const int FrameLen = 16;          // = 帧头2 + 数据12 + CRC2
+        private const int FrameLen = 6;          // = 帧头2 + 数据12 + CRC2
         private const byte Head1 = 0x55;
         private const byte Head2 = 0xAA;
 
@@ -17,9 +17,9 @@ namespace PPEC.Communication.Model
         private bool _disposed;
 
         public event EventHandler<IUartMessage> MessageParsed;
-        private const int BufSize = 64 * 1024;
+        private const int BufSize = 65536;
         private readonly byte[] _buf = new byte[BufSize];
-        public void Feed1(ReadOnlySpan<byte> raw)
+        public void Feed(ReadOnlySpan<byte> raw)
         {
             if (raw.IsEmpty) return;
 
@@ -38,23 +38,32 @@ namespace PPEC.Communication.Model
             while (true)
             {
                 // 找头
-                while (idx + 1 < _len && (_buf[idx] != Head1 || _buf[idx + 1] != Head2))
-                    idx++;
+                //while (idx + 1 < _len && (_buf[idx] != Head1 || _buf[idx + 1] != Head2))
+                //    idx++;
+                int headPos = _buf.AsSpan(idx, _len - idx)
+                      .IndexOf(stackalloc byte[] { Head1, Head2 });
 
+                if (headPos < 0)
+                {
+                    // 缓冲里已经没有新帧头——> 把 idx 移到尾部，待会儿整体前移
+                    idx = _len;
+                    break;
+                }
+                idx += headPos;
                 // 剩余长度是否够一帧
                 if (_len - idx < FrameLen) break;
-                
+
                 // CRC / 解析 …
                 //ParseFrame(idx);
                 var msg = new InvRealtimeMessage
                 {
                     Vout = ReadInt16BE(_buf, idx + 2),// BitConverter.ToUInt16(_buf, idx + 2),
                     Iout = ReadInt16BE(_buf, idx + 4),// BitConverter.ToUInt16(_buf, idx + 4),
-                    Phase = ReadInt16BE(_buf, idx + 6),// BitConverter.ToUInt16(_buf, idx + 6),
-                    PI = ReadInt16BE(_buf, idx + 8),//BitConverter.ToUInt16(_buf, idx + 8),
-                    FreqVout = ReadInt16BE(_buf, idx + 10),// BitConverter.ToUInt16(_buf, idx + 10),
-                    FreqIout = ReadInt16BE(_buf, idx + 12),//BitConverter.ToUInt16(_buf, idx + 12),
-                    TempValue = ReadInt16BE(_buf, idx + 14),// BitConverter.ToUInt16(_buf, idx + 14),
+                    //Phase = ReadInt16BE(_buf, idx + 6),// BitConverter.ToUInt16(_buf, idx + 6),
+                    //PI = ReadInt16BE(_buf, idx + 8),//BitConverter.ToUInt16(_buf, idx + 8),
+                    //FreqVout = ReadInt16BE(_buf, idx + 10),// BitConverter.ToUInt16(_buf, idx + 10),
+                    //FreqIout = ReadInt16BE(_buf, idx + 12),//BitConverter.ToUInt16(_buf, idx + 12),
+                    //TempValue = ReadInt16BE(_buf, idx + 14),// BitConverter.ToUInt16(_buf, idx + 14),
                     Timestamp = DateTime.Now
                 };
                 MessageParsed?.Invoke(this, msg);
@@ -70,7 +79,7 @@ namespace PPEC.Communication.Model
         }
 
         /// <summary>上层收到串口原始字节后直接调用</summary>
-        public void Feed(ReadOnlySpan<byte> raw)
+        public void Feedold(ReadOnlySpan<byte> raw)
         {
             if (_disposed || raw.IsEmpty) return;
 
@@ -106,11 +115,11 @@ namespace PPEC.Communication.Model
                 {
                     Vout = ReadInt16BE(_buf, idx + 2),// BitConverter.ToUInt16(_buf, idx + 2),
                     Iout = ReadInt16BE(_buf, idx + 4),// BitConverter.ToUInt16(_buf, idx + 4),
-                    Phase = ReadInt16BE(_buf, idx + 6),// BitConverter.ToUInt16(_buf, idx + 6),
-                    PI = ReadInt16BE(_buf, idx + 8),//BitConverter.ToUInt16(_buf, idx + 8),
-                    FreqVout = ReadInt16BE(_buf, idx + 10),// BitConverter.ToUInt16(_buf, idx + 10),
-                    FreqIout = ReadInt16BE(_buf, idx + 12),//BitConverter.ToUInt16(_buf, idx + 12),
-                    TempValue = ReadInt16BE(_buf, idx + 14),// BitConverter.ToUInt16(_buf, idx + 14),
+                    //Phase = ReadInt16BE(_buf, idx + 6),// BitConverter.ToUInt16(_buf, idx + 6),
+                    //PI = ReadInt16BE(_buf, idx + 8),//BitConverter.ToUInt16(_buf, idx + 8),
+                    //FreqVout = ReadInt16BE(_buf, idx + 10),// BitConverter.ToUInt16(_buf, idx + 10),
+                    //FreqIout = ReadInt16BE(_buf, idx + 12),//BitConverter.ToUInt16(_buf, idx + 12),
+                    //TempValue = ReadInt16BE(_buf, idx + 14),// BitConverter.ToUInt16(_buf, idx + 14),
                     Timestamp = DateTime.Now
                 };
                 MessageParsed?.Invoke(this, msg);

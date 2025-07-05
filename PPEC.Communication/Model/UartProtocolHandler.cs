@@ -17,7 +17,7 @@ namespace PPEC.Communication.Model
     /// <summary>
     /// 帧解析
     /// </summary>
-    public sealed class UartProtocolHandler: IProtocolHandler
+    public sealed class UartProtocolHandler : IProtocolHandler
     {
         public event EventHandler<IUartMessage> MessageParsed;
         private readonly List<byte> _buf = new List<byte>(1024);
@@ -219,5 +219,7 @@ namespace PPEC.Communication.Model
             return buf;
         }
     }
+
+
     #endregion
 }

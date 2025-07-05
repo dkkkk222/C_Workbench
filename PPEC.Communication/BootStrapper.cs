@@ -34,7 +34,6 @@ namespace PPEC.Communication
             _containerRegistry.Register(typeof(ITransform<int>), c => ParameterFactory.CreateTransformInt());
             _containerRegistry.Register(typeof(ITransform<short>), c => ParameterFactory.CreateTransformShort());
             _containerRegistry.Register(typeof(ITransform<decimal>), c => ParameterFactory.CreateTransformDecimal());
-
             _containerRegistry.RegisterSingleton(typeof(ITopologyConfig), typeof(TopologyConfig_86CA3A), TopologyId.PPEC86CA3A.ToString());
             _containerRegistry.RegisterSingleton(typeof(ITopologyConfig), typeof(TopologyConfig_86CA3B), TopologyId.PPEC86CA3B.ToString());
 

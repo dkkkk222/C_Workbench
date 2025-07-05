@@ -266,7 +266,7 @@ namespace PPEC.Communication
         public static uint ParseHexToUInt(string hexString)
         {
             if (string.IsNullOrWhiteSpace(hexString))
-                return 0;
+                throw new ArgumentException("输入不能为空");
 
             // 去掉 "0x" 或 "0X" 前缀（如果有）
             if (hexString.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
@@ -345,6 +345,35 @@ namespace PPEC.Communication
         public static string DecToHex(uint dec)
         {
             return "0x" + dec.ToString("X8");
+        }
+        public static byte[] CreatePacket(ushort channel1, ushort channel2)
+        {
+            byte[] packet = new byte[6];
+            packet[0] = 0x55;       // 固定头
+            packet[1] = 0x02;       // 功能码
+
+            // Big-Endian：先放高字节，再放低字节
+            packet[2] = (byte)(channel1 >> 8);    // channel1 高字节
+            packet[3] = (byte)(channel1 & 0xFF);  // channel1 低字节
+
+            packet[4] = (byte)(channel2 >> 8);    // channel2 高字节
+            packet[5] = (byte)(channel2 & 0xFF);  // channel2 低字节
+
+            return packet;
+        }
+        public static byte[] CreatePacketLE(ushort channel1, ushort channel2)
+        {
+            byte[] packet = new byte[6];
+            packet[0] = 0x55;  // 固定头
+            packet[1] = 0x02;  // 功能码
+
+            // 低位先放，再放高位
+            packet[2] = (byte)(channel1 & 0xFF);
+            packet[3] = (byte)(channel1 >> 8);
+            packet[4] = (byte)(channel2 & 0xFF);
+            packet[5] = (byte)(channel2 >> 8);
+
+            return packet;
         }
     }
 
