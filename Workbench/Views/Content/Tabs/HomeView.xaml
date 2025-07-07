@@ -4,181 +4,198 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:homeTitle="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Border Background="{DynamicResource HomeBackgroundColor}" Padding="40,20">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border Background="Transparent">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="300"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Border>
-                            <StackPanel>
-                                <TextBlock Text="欢迎使用!" FontSize="26" 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0">
+                    <TextBlock Text="欢迎使用!" FontSize="26" 
                                            Foreground="{DynamicResource PrimaryFontColor}"
                                            Margin="0,0,0,25"/>
-                                <homeTitle:HomeTitle Title="快速开始"/>
-                                <Border Style="{DynamicResource QuickStartBorderStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xe620;" FontFamily="{StaticResource Iconfont}" 
+                </Border>
+                <Border Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <homeTitle:HomeTitle Title="快速开始"/>
+                            <Border HorizontalAlignment="Left">
+                                <hc:UniformSpacingPanel Orientation="Vertical" Spacing="20">
+                                    <Border Background="{StaticResource SecondaryRegionBrush}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
+                                        <hc:UniformSpacingPanel Spacing="10" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xe620;" FontFamily="{StaticResource Iconfont}" 
+                                                           Foreground="{DynamicResource PrimaryFontColor}"
+                                                           FontSize="32" VerticalAlignment="Center"/>
+                                            <Border>
+                                                <TextBlock FontSize="18" VerticalAlignment="Center">
+                                                    <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding NewProjectCommand}">
+                                                        新 建 工 程
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </Border>
+                                        </hc:UniformSpacingPanel>
+                                    </Border>
+                                    <Border Background="{StaticResource SecondaryRegionBrush}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
+                                        <hc:UniformSpacingPanel Spacing="10" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xe60a;" FontFamily="{StaticResource Iconfont}" 
+                                                           Foreground="{DynamicResource PrimaryFontColor}"
+                                                           FontSize="32" VerticalAlignment="Center"/>
+                                            <Border>
+                                                <TextBlock FontSize="18" VerticalAlignment="Center">
+                                                    <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding OpenProjectCommand}">
+                                                        打 开 工 程
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </Border>
+                                        </hc:UniformSpacingPanel>
+                                    </Border>
+                                    <Border Background="{StaticResource SecondaryRegionBrush}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
+                                        <hc:UniformSpacingPanel Spacing="10" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xe615;" FontFamily="{StaticResource Iconfont}" 
+                                                           Foreground="{DynamicResource PrimaryFontColor}"
+                                                           FontSize="32" VerticalAlignment="Center"/>
+                                            <Border>
+                                                <TextBlock FontSize="18" VerticalAlignment="Center">
+                                                    <Hyperlink Style="{DynamicResource HyperlinkStyle}">
+                                                        查 找 例 子
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </Border>
+                                        </hc:UniformSpacingPanel>
+                                    </Border>
+                                    <Border Background="{StaticResource SecondaryRegionBrush}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
+                                        <hc:UniformSpacingPanel Spacing="10" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xe623;" FontFamily="{StaticResource Iconfont}" 
+                                                           Foreground="{DynamicResource PrimaryFontColor}"
+                                                           FontSize="32" VerticalAlignment="Center"/>
+                                            <Border>
+                                                <TextBlock FontSize="18" VerticalAlignment="Center">
+                                                    <Hyperlink Style="{DynamicResource HyperlinkStyle}">
+                                                        更 多 信 息
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </Border>
+                                        </hc:UniformSpacingPanel>
+                                    </Border>
+                                </hc:UniformSpacingPanel>
+                            </Border>
+                            <!--<Border Style="{DynamicResource QuickStartBorderStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xe620;" FontFamily="{StaticResource Iconfont}" 
                                                    Foreground="{DynamicResource PrimaryFontColor}"
                                                    FontSize="20"/>
-                                        <TextBlock Style="{DynamicResource QuickStartStyle}">
+                                    <TextBlock Style="{DynamicResource QuickStartStyle}">
                                         <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding NewProjectCommand}">
                                             新建工程
                                         </Hyperlink>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </Border>
-                                <Border Style="{DynamicResource QuickStartBorderStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xe60a;" FontFamily="{StaticResource Iconfont}" 
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{DynamicResource QuickStartBorderStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xe60a;" FontFamily="{StaticResource Iconfont}" 
                                                    Foreground="{DynamicResource PrimaryFontColor}"
                                                    FontSize="20"/>
-                                        <TextBlock Style="{DynamicResource QuickStartStyle}">
+                                    <TextBlock Style="{DynamicResource QuickStartStyle}">
                                         <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding OpenProjectCommand}">
                                             打开工程
                                         </Hyperlink>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </Border>
-                                <Border Style="{DynamicResource QuickStartBorderStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xe615;" FontFamily="{StaticResource Iconfont}" 
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{DynamicResource QuickStartBorderStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xe615;" FontFamily="{StaticResource Iconfont}" 
                                                    Foreground="{DynamicResource PrimaryFontColor}"
                                                    FontSize="20"/>
-                                        <TextBlock Style="{DynamicResource QuickStartStyle}">
+                                    <TextBlock Style="{DynamicResource QuickStartStyle}">
                                         <Hyperlink Style="{DynamicResource HyperlinkStyle}">
                                             查找例子
                                         </Hyperlink>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </Border>
-                                <Border Style="{DynamicResource QuickStartBorderStyle}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xe623;" FontFamily="{StaticResource Iconfont}" 
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{DynamicResource QuickStartBorderStyle}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xe623;" FontFamily="{StaticResource Iconfont}" 
                                                    Foreground="{DynamicResource PrimaryFontColor}"
                                                    FontSize="20"/>
-                                        <TextBlock Style="{DynamicResource QuickStartStyle}">
+                                    <TextBlock Style="{DynamicResource QuickStartStyle}">
                                         <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding OpenWebPageCommand}"
                                                    CommandParameter="http://www.senmuleishi.com">
                                             更多信息
                                         </Hyperlink>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Row="1" Background="Transparent" Padding="0,0,10,0">
-                            <StackPanel>
-                                <homeTitle:HomeTitle Title="最近工程"/>
-                                <ItemsControl ItemsSource="{Binding RecentFiles}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Margin="0,0,0,15">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock FontSize="14" VerticalAlignment="Center">
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>-->
+                        </StackPanel>
+                        <hc:Divider Grid.Column="1"/>
+                        <Border Grid.Column="2" Background="Transparent" Padding="0,0,10,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel>
+                                    <homeTitle:HomeTitle Title="最近工程"/>
+                                    <ItemsControl ItemsSource="{Binding RecentFiles}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Margin="0,0,0,15">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock FontSize="14" VerticalAlignment="Center">
                                                         <Hyperlink Style="{StaticResource HyperlinkStyle}" 
                                                                    Command="{Binding Path=DataContext.OpenRecentFileCommand,RelativeSource={ RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}"
                                                                    CommandParameter="{Binding}">
                                                             <TextBlock Text="{Binding FileName}"/>
                                                         </Hyperlink>
                                                     </TextBlock>
-                                                    <TextBlock Text="{Binding DirPath}" FontSize="13" 
+                                                        <TextBlock Text="{Binding DirPath}" FontSize="13" 
                                                                Foreground="{DynamicResource PrimaryFontColor}"
                                                                Margin="20,0,0,0"
                                                                TextTrimming="WordEllipsis"
                                                                VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
 
-                                <Border Margin="0,10,0,0">
-                                    <TextBlock FontSize="14">
-                                    <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding ShowRecentFileViewCommand}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="更多>>"/>
-                                        </StackPanel>
-                                    </Hyperlink>
-                                </TextBlock>
-                                </Border>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                </Border>
-                <Border Grid.Column="1" Background="Transparent">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="300"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <!--<Border>
-                            <StackPanel>
-                                <homeTitle:HomeTitle Title="新闻动态"/>
-                                <Border>
+                                    <Border Margin="0,10,0,0">
+                                        <TextBlock FontSize="14">
+                                                <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding ShowRecentFileViewCommand}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="更多>>"/>
+                                                    </StackPanel>
+                                                </Hyperlink>
+                                            </TextBlock>
+                                    </Border>
+                                </StackPanel>
+                                <Border Grid.Row="1" Background="Transparent">
                                     <StackPanel>
-                                        <TextBlock Style="{DynamicResource NewsItemStyle}">
-                                        <Hyperlink Style="{DynamicResource HyperlinkStyle}"
-                                                   Command="{Binding OpenWebPageCommand}"
-                                                   CommandParameter="http://www.senmuleishi.com/productinfo/1693245.html">
-                                            芯品上新 | PPEC-86CA3MC2电源控制芯片，适用于车载电源、服务器电源、充电桩、储能系统、光伏制氢...
-                                        </Hyperlink>
-                                        </TextBlock>
-                                        <TextBlock Text="PPEC-86CA3MC2 是森木磊石自主研发的PPEC数字控制核心系列产品中一款集成了升降压（Buck/Boost）和LLC拓扑的电源控制芯片。"
-                                               Style="{DynamicResource NewsItemContentStyle}"/>
-                                        <TextBlock Style="{DynamicResource NewsItemContentStyle}" Text="2024年4月30日"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Margin="0,20,0,0">
-                                    <StackPanel>
-                                        <TextBlock Style="{DynamicResource NewsItemStyle}">
-                                        <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding OpenWebPageCommand}"
-                                                   CommandParameter="http://www.senmuleishi.com/newsinfo/7130549.html">
-                                            多电机仿真篇 | 六相永磁同步电机实时仿真应用
-                                        </Hyperlink>
-                                        </TextBlock>
-                                        <TextBlock Text="在交流电气传动领域，三相电机及其调速系统应用广泛。对于调速传动功率需求的日益增大，常通过提高电压、增大电流实现。但受限于功率开关器件的耐压耐流值，需采用多电平技术或开关器件串并联技术来实现大功率三相变频调速。"
-                                               Style="{DynamicResource NewsItemContentStyle}"/>
-                                        <TextBlock Style="{DynamicResource NewsItemContentStyle}" Text="2024年4月26日"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Margin="0,20,0,0">
-                                    <TextBlock FontSize="14">
-                                    <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding OpenWebPageCommand}"
-                                               CommandParameter="http://www.senmuleishi.com">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="更多>>"/>
-                                        </StackPanel>
-                                    </Hyperlink>
-                                </TextBlock>
-                                </Border>
-                            </StackPanel>
-                        </Border>-->
-                        <Border Grid.Row="0" Background="Transparent">
-                            <StackPanel>
-                                <homeTitle:HomeTitle Title="产品介绍"/>
-                                <ItemsControl ItemsSource="{Binding Introduces}" IsEnabled="True">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Margin="0,0,0,8" BorderThickness="0,0,0,1" BorderBrush="#A6A6A6" Padding="0,0,0,15">
-                                                <StackPanel>
-                                                    <Border>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Icon,Converter={StaticResource StringToIconConverter}}" 
+                                        <homeTitle:HomeTitle Title="产品介绍"/>
+                                        <ItemsControl ItemsSource="{Binding Introduces}" IsEnabled="True">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="0,0,0,8" BorderThickness="0,0,0,1" BorderBrush="#A6A6A6" Padding="0,0,0,15">
+                                                        <StackPanel>
+                                                            <Border>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="{Binding Icon,Converter={StaticResource StringToIconConverter}}" 
                                                                        FontFamily="{StaticResource Iconfont}" 
                                                                        Foreground="{DynamicResource PrimaryFontColor}"
                                                                        FontSize="20" 
                                                                        VerticalAlignment="Center"/>
-                                                            <TextBlock FontSize="14" 
+                                                                    <TextBlock FontSize="14" 
                                                                        Margin="10,0,0,0"
                                                                        VerticalAlignment="Center">
                                                                 <Hyperlink Style="{DynamicResource HyperlinkStyle}" 
@@ -187,19 +204,21 @@
                                                                     <TextBlock Text="{Binding Title}"/>
                                                                 </Hyperlink>
                                                             </TextBlock>
-                                                        </StackPanel>
-                                                    </Border>
-                                                    <Border Margin="0,3,0,0">
-                                                        <TextBlock Text="{Binding Description}" TextTrimming="CharacterEllipsis" 
+                                                                </StackPanel>
+                                                            </Border>
+                                                            <Border Margin="0,3,0,0">
+                                                                <TextBlock Text="{Binding Description}" TextTrimming="CharacterEllipsis" 
                                                                    Foreground="{DynamicResource PrimaryFontColor}"
                                                                    FontSize="13"/>
+                                                            </Border>
+                                                        </StackPanel>
                                                     </Border>
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
                         </Border>
                     </Grid>
                 </Border>
