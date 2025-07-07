@@ -1,10 +1,9 @@
 ﻿using PPEC.Communication.Model;
-using System;
-using System.Collections.Generic;
+using Prism.Commands;
+using Prism.Events;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Workbench.Events;
 using Workbench.Models;
 using Workbench.Utils;
 
@@ -13,11 +12,12 @@ namespace Workbench.ViewModels.dw
     public class WatchViewModel : AvaDocument
     {
         private readonly ProjectManager _projectManager;
+        private readonly IEventAggregator _eventAggregator;
 
-        public WatchViewModel(ProjectManager projectManager)
+        public WatchViewModel(IEventAggregator eventAggregator, ProjectManager projectManager)
         {
             _projectManager = projectManager;
-
+            _eventAggregator = eventAggregator;
         }
 
         private string _addressKeyword;
@@ -48,6 +48,27 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _categoryRegisters, value);
         }
 
+        private RegisterAddrInfo _currentRegister;
+        public RegisterAddrInfo CurrentRegister
+        {
+            get => _currentRegister;
+            set => SetProperty(ref _currentRegister, value);
+        }
+
+        private DelegateCommand _closeCommand;
+
+        public override DelegateCommand CloseCommand =>
+            _closeCommand ?? (_closeCommand = new DelegateCommand(() =>
+            {
+                _eventAggregator.GetEvent<CloseTabEvent>().Publish(this.ContentId);
+            }));
+
+        private DelegateCommand _searchCommand;
+        public DelegateCommand SearchCommand => _searchCommand ?? (_searchCommand = new DelegateCommand(() =>
+        {
+            LoadRegisters();
+        }));
+
         public override void LoadData()
         {
             InitData();
@@ -74,6 +95,14 @@ namespace Workbench.ViewModels.dw
             }
             CategoryRegisters.Clear();
             CategoryRegisters.AddRange(categoryFliter);
+            if (categoryFliter.Any())
+            {
+                CurrentRegister = categoryFliter[0];
+            }
+            else
+            {
+                CurrentRegister = null;
+            }
         }
     }
 }

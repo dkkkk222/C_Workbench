@@ -337,6 +337,8 @@
     <Compile Include="Migrations\OnInitial.cs" />
     <Compile Include="Models\AppConfig.cs" />
     <Compile Include="Models\AvaDocument.cs" />
+    <Compile Include="Models\BBLLCCANItem.cs" />
+    <Compile Include="Models\BBLLCCANPort.cs" />
     <Compile Include="Models\ComConnectType.cs" />
     <Compile Include="Models\Consts\CAN_Port.cs" />
     <Compile Include="Models\ContextMenuItem.cs" />

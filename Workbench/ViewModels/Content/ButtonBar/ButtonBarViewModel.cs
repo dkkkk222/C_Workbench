@@ -32,6 +32,9 @@ namespace Workbench.ViewModels.Content.ButtonBar
             EventListeners();
             PortList.AddRange(SerialPortHelper.GetPortNames());
             SerialPortName = PortList.FirstOrDefault();
+
+            //CAN口默认值
+            SelectedCAN = _cANList.FirstOrDefault();
         }
 
         private void EventListeners()
@@ -161,6 +164,26 @@ namespace Workbench.ViewModels.Content.ButtonBar
         {
             get => _isSelectedProject;
             set => SetProperty(ref _isSelectedProject, value);
+        }
+
+        private ObservableCollection<BBLLCCANItem> _cANList = CommEntity.BBLLCCANList;
+        public ObservableCollection<BBLLCCANItem> CANList
+        {
+            get => _cANList;
+            set => SetProperty(ref _cANList, value);
+        }
+
+        private BBLLCCANItem _selectedCAN;
+        public BBLLCCANItem SelectedCAN
+        {
+            get => _selectedCAN;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                    ppec.PortName = value?.Name;
+                SetProperty(ref _selectedCAN, value);
+            }
         }
 
         #endregion

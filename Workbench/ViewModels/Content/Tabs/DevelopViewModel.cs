@@ -47,7 +47,7 @@ namespace Workbench.ViewModels.Content.Tabs
 
         private DelegateCommand _closeCommand;
 
-        public DelegateCommand CloseCommand =>
+        public override DelegateCommand CloseCommand =>
             _closeCommand ?? (_closeCommand = new DelegateCommand(() =>
             {
                 _eventAggregator.GetEvent<CloseTabEvent>().Publish(this.ContentId);

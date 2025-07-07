@@ -1,9 +1,6 @@
-﻿using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Prism.Commands;
+using Prism.Mvvm;
+using Workbench.Events;
 
 namespace Workbench.Models
 {
@@ -50,5 +47,7 @@ namespace Workbench.Models
         /// 触发这个方法的时机在ContentViewModel中
         /// </summary>
         public abstract void LoadData();
+
+        public abstract DelegateCommand CloseCommand { get; }
     }
 }

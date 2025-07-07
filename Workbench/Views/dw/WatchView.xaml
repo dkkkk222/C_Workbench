@@ -6,12 +6,17 @@
              xmlns:local="clr-namespace:Workbench.Views.dw"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+             xmlns:cvt="clr-namespace:Workbench.Converters"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
+    </UserControl.Resources>
     <Border Background="#fafafa" Padding="8">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -27,14 +32,14 @@
                                           hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180"
                                           SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
                                 <TextBox Text="{Binding AddressKeyword}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="地址：" 
-                                         hc:InfoElement.TitlePlacement="Left" Width="180" hc:InfoElement.Placeholder="请输入关键字检索"
-                                         hc:InfoElement.ShowClearButton="True"/>
-                                <Button Style="{StaticResource ButtonPrimary}" Content="搜索" hc:IconElement.Geometry="{StaticResource SearchGeometry}" hc:IconElement.Width="14"/>
+                                         hc:InfoElement.TitlePlacement="Left" Width="180" hc:InfoElement.Placeholder="请输入关键字检索"/>
+                                <Button Style="{StaticResource ButtonPrimary}" Content="搜索" hc:IconElement.Geometry="{StaticResource SearchGeometry}" 
+                                        hc:IconElement.Width="14" Command="{Binding SearchCommand}"/>
                             </hc:UniformSpacingPanel>
                         </Border>
                         <DataGrid ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" Height="346"
-                                      SelectedItem="{Binding CurrentSequence}">
+                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" Height="315"
+                                      SelectedItem="{Binding CurrentRegister}">
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
                                     <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -53,14 +58,14 @@
                                 <DataGridTemplateColumn Header="记录时间" Width="Auto">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <hc:UniformSpacingPanel Spacing="3">
+                                            <StackPanel Orientation="Horizontal">
                                                 <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Width="80">
                                                     <hc:NumericUpDown.Value>
                                                         <Binding Path="RecordTime" UpdateSourceTrigger="PropertyChanged"/>
                                                     </hc:NumericUpDown.Value>
                                                 </hc:NumericUpDown>
-                                                <TextBlock Text="秒" VerticalAlignment="Center"/>
-                                            </hc:UniformSpacingPanel>
+                                                <TextBlock Text="秒" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                            </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -100,8 +105,8 @@
                     <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
                         <TextBlock Text="数据详情" FontSize="{StaticResource SubHeadFontSize}"/>
                     </Border>
-                    <DataGrid ItemsSource="{Binding SequenceList}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" Height="346"
+                    <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
                                       SelectedItem="{Binding CurrentSequence}">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
@@ -112,11 +117,54 @@
                             </Style>
                         </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="序号" Width="*"/>
-                            <DataGridTextColumn Header="名称" Width="*"/>
-                            <DataGridTextColumn Header="源寄存器地址" Width="*"/>
-                            <DataGridTextColumn Header="寄存器地址" Width="*"/>
-                            <DataGridTextColumn Header="解析范围" Width="*"/>
+                            <DataGridTemplateColumn  Header="序号" Width="50">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <!-- 使用 MultiBinding -->
+                                                <MultiBinding Converter="{StaticResource RowIndexConverter}">
+                                                    <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
+                                                    <Binding />
+                                                    <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
+                                                    <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"/>
+                            <DataGridTemplateColumn Header="源寄存器地址" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=DataContext.CurrentRegister.AddressHex,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="寄存器地址" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=DataContext.CurrentRegister.AddressDec,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="解析范围" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="b"/>
+                                            <TextBlock Text="{Binding EndBit}"/>
+                                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
+                                                <TextBlock Text="-"/>
+                                                <TextBlock Text="b"/>
+                                                <TextBlock Text="{Binding StartBit}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <!--<DataGridTemplateColumn Binding="{Binding Path=DataContext.CurrentRegister.AddressHex,RelativeSource={RelativeSource AncestorType=UserControl}}" Header="解析要求" Width="*"/>-->
                             <DataGridTextColumn Header="解析要求" Width="*"/>
                             <DataGridTextColumn Header="解析结果" Width="*"/>
                             <DataGridTextColumn Header="单位" Width="*"/>

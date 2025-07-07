@@ -82,13 +82,13 @@
                                       IsEnabled="{calc:Binding !IsConnected}"
                                       Visibility="{calc:Binding IsModbusSelected,FalseToVisibility=Collapsed}"/>
                             <!-- CAN口 -->
-                            <!--<ComboBox Width="120" ItemsSource="{Binding CANList}"
+                            <ComboBox Width="120" ItemsSource="{Binding CANList}" Style="{StaticResource ComboBoxExtend.Small}"
                                       SelectedItem="{Binding SelectedCAN,Mode=TwoWay}"
                                       DisplayMemberPath="Name"
                                       SelectedValuePath="Value"
                                       Height="22"
                                       IsEnabled="{calc:Binding !IsConnected}"
-                                      Visibility="{calc:Binding !IsModbusSelected,FalseToVisibility=Collapsed}"/>-->
+                                      Visibility="{calc:Binding !IsModbusSelected,FalseToVisibility=Collapsed}"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
