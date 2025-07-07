@@ -320,7 +320,8 @@
                                 <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
                                     <hc:UniformSpacingPanel Spacing="15">
                                         <TextBlock Text="历史数据" FontSize="14"/>
-                                        <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource CustomDownload}"/>
+                                        <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                                Command="{Binding HistoryDownloadCommand}"/>
                                     </hc:UniformSpacingPanel>
                                 </Border>
                                 <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0">
@@ -335,9 +336,9 @@
                                             </Style>
                                         </DataGrid.ColumnHeaderStyle>
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="读/写" Binding="{Binding ReadWrite}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="*"/>
-                                            <DataGridTextColumn Header="地址" Binding="{Binding Address}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="*"/>
-                                            <DataGridTextColumn Header="数据(HEX)" Binding="{Binding Hex}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="*"/>
+                                            <DataGridTextColumn Header="读/写" Binding="{Binding ReadWrite}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="100"/>
+                                            <DataGridTextColumn Header="地址" Binding="{Binding Address}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="120"/>
+                                            <DataGridTextColumn Header="数据(HEX)" Binding="{Binding Hex}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="120"/>
                                             <DataGridTextColumn Header="数据(Binary)" Binding="{Binding Binary}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="*"/>
                                         </DataGrid.Columns>
                                     </DataGrid>

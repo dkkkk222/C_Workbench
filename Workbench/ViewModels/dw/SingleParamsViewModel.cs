@@ -1,11 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using log4net;
+using Newtonsoft.Json;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using PPEC.Communication;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
@@ -17,6 +22,7 @@ namespace Workbench.ViewModels.dw
     {
         private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
+        private static readonly ILog _log = LogManager.GetLogger(typeof(SingleParamsViewModel));
 
         public SingleParamsViewModel(ProjectManager projectManager, IEventAggregator eventAggregator)
         {
@@ -93,7 +99,7 @@ namespace Workbench.ViewModels.dw
                 ReadWrite = "R",
                 Address = CurrentRegister.AddressHex,
                 Hex = CurrentRegister.HexValue,
-                Binary = ""
+                Binary = string.IsNullOrEmpty(CurrentRegister.BinaryStr) ? string.Concat(CurrentRegister.BinaryList.Select(t => t.Value.ToString())) : CurrentRegister.BinaryStr
             };
             _projectManager.CurrentProject.ReadWriteHistory.Add(history);
         }));
@@ -108,7 +114,7 @@ namespace Workbench.ViewModels.dw
                 ReadWrite = "W",
                 Address = CurrentRegister.AddressHex,
                 Hex = CurrentRegister.HexValue,
-                Binary = ""
+                Binary = string.IsNullOrEmpty(CurrentRegister.BinaryStr) ? string.Concat(CurrentRegister.BinaryList.Select(t => t.Value.ToString())) : CurrentRegister.BinaryStr
             };
             _projectManager.CurrentProject.ReadWriteHistory.Add(history);
         }));
@@ -120,6 +126,66 @@ namespace Workbench.ViewModels.dw
             {
                 _eventAggregator.GetEvent<CloseTabEvent>().Publish(this.ContentId);
             }));
+
+        private DelegateCommand _historyDownloadCommand;
+        public DelegateCommand HistoryDownloadCommand => _historyDownloadCommand ?? (_historyDownloadCommand = new DelegateCommand(() =>
+        {
+            if (!ReadWriteHistory.Any())
+            {
+                MessageBox.Show("无历史数据", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            var fbd = new FolderBrowserDialog();
+            fbd.Description = "请选择保存路径";
+            var result = fbd.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                var path = fbd.SelectedPath;
+                HistoryToExcel(path);
+            }
+        }));
+
+        private void HistoryToExcel(string path)
+        {
+            try
+            {
+                var workbook = new XSSFWorkbook();
+                var sheet = workbook.CreateSheet("Sheet1");
+                var headerRow = sheet.CreateRow(0);
+                string[] headerColumns = new string[] { "读/写", "地址", "数据(HEX)", "数据(Binary)" };
+                for (int i = 0; i < 4; i++)
+                {
+                    headerRow.CreateCell(i).SetCellValue(headerColumns[i]);
+                }
+
+                int startRow = 1;
+                foreach (var history in ReadWriteHistory)
+                {
+                    var row = sheet.CreateRow(startRow);
+                    row.CreateCell(0).SetCellValue(history.ReadWrite);
+                    row.CreateCell(1).SetCellValue(history.Address);
+                    row.CreateCell(2).SetCellValue(history.Hex);
+                    row.CreateCell(3).SetCellValue(history.Binary);
+                }
+                sheet.AutoSizeColumn(0);
+                sheet.AutoSizeColumn(1);
+                sheet.AutoSizeColumn(2);
+                sheet.AutoSizeColumn(3);
+
+                string fileName = "寄存器操作历史数据.xlsx";
+                string filePath = Path.Combine(path, fileName);
+                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    workbook.Write(fs);
+                }
+                MessageBox.Show("下载成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+                MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         public override void LoadData()
         {
