@@ -65,7 +65,7 @@ namespace Workbench.ViewModels.Content
                 }
                 else if (treeNodeProject.Level == ProjectLevel.Debug)
                 {
-                    var debugViewModel = _container.Resolve<DebugViewModel>();
+                    var debugViewModel = _container.Resolve<WatchViewModel>();
                     debugViewModel.Title = treeNodeProject.Label;
                     debugViewModel.IsActive = true;
                     debugViewModel.ContentId = treeNodeProject.UID;

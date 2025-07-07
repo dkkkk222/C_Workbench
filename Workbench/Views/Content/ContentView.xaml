@@ -109,6 +109,11 @@
                                         <dwViews:BatchParamsView/>
                                     </DataTemplate>
                                 </pane:PanesTemplateSelector.BatchParamsViewTemplate>
+                                <pane:PanesTemplateSelector.WatchViewTemplate>
+                                    <DataTemplate>
+                                        <dwViews:WatchView/>
+                                    </DataTemplate>
+                                </pane:PanesTemplateSelector.WatchViewTemplate>
                             </pane:PanesTemplateSelector>
 
                         </avalonDock:DockingManager.LayoutItemTemplateSelector>
@@ -159,6 +164,15 @@
                                         <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}"/>
                                     </Style>
                                 </pane:PanesStyleSelector.BatchParamsStyle>
+                                <pane:PanesStyleSelector.WatchStyle>
+                                    <Style TargetType="{x:Type avalonDock:LayoutItem}">
+                                        <Setter Property="Title" Value="{Binding Model.Title}"/>
+                                        <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}"/>
+                                        <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                                        <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
+                                        <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}"/>
+                                    </Style>
+                                </pane:PanesStyleSelector.WatchStyle>
                             </pane:PanesStyleSelector>
                         </avalonDock:DockingManager.LayoutItemContainerStyleSelector>
 

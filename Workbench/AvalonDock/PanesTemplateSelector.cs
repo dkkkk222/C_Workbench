@@ -38,6 +38,12 @@ namespace Workbench.AvalonDock
             set;
         }
 
+        public DataTemplate WatchViewTemplate
+        {
+            get;
+            set;
+        }
+
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container)
         {
             var itemAsLayoutContent = item as LayoutContent;
@@ -59,6 +65,11 @@ namespace Workbench.AvalonDock
             if (item is BatchParamsViewModel)
             {
                 return BatchParamsViewTemplate;
+            }
+
+            if (item is WatchViewModel)
+            {
+                return WatchViewTemplate;
             }
 
             return base.SelectTemplate(item, container);

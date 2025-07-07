@@ -213,6 +213,26 @@ namespace PPEC.Communication.Model
             get => _binaryList;
             set => SetProperty(ref _binaryList, value);
         }
+
+        private int _recordTime = 1;
+        /// <summary>
+        /// 记录时间
+        /// </summary>
+        public int RecordTime
+        {
+            get => _recordTime;
+            set => SetProperty(ref _recordTime, value);
+        }
+
+        private bool _isAddToPlot;
+        /// <summary>
+        /// 是否添加到波形
+        /// </summary>
+        public bool IsAddToPlot
+        {
+            get => _isAddToPlot;
+            set => SetProperty(ref _isAddToPlot, value);
+        }
     }
     public class BitField : BindableBase
     {

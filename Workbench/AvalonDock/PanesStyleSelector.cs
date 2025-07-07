@@ -38,6 +38,12 @@ namespace Workbench.AvalonDock
             set;
         }
 
+        public Style WatchStyle
+        {
+            get;
+            set;
+        }
+
         public override System.Windows.Style SelectStyle(object item, System.Windows.DependencyObject container)
         {
             if (item is HomeViewModel)
@@ -54,6 +60,9 @@ namespace Workbench.AvalonDock
 
             if (item is BatchParamsViewModel)
                 return BatchParamsStyle;
+
+            if (item is WatchViewModel)
+                return WatchStyle;
 
             return base.SelectStyle(item, container);
         }

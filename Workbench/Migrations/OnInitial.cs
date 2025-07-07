@@ -1,9 +1,15 @@
-﻿using FluentMigrator;
+﻿using AutoMapper;
+using FluentMigrator;
+using PPEC.Communication.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Workbench.Db.Tables;
+using static ScottPlot.Generate;
 
 namespace Workbench.Migrations
 {
@@ -52,6 +58,67 @@ namespace Workbench.Migrations
                 .WithColumn("display").AsString().NotNullable();
             Create.Index("IX_t_register_bit_option_id").OnTable("t_register_bit_option").OnColumn("id").Ascending().WithOptions().Unique();
             Create.Index("IX_t_register_bit_option_register_bit_id").OnTable("t_register_bit_option").OnColumn("register_bit_id");
+
+            string fileName = "B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类.xlsx";
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            var excelData = new RegisterExcelParser().Parse(filePath);
+
+            string chipId = Guid.NewGuid().ToString("N");
+            Insert.IntoTable("t_chip").Row(new
+            {
+                id = chipId,
+                name = "ChipA",
+                is_deleted = "A",
+                file_name = fileName,
+                datetime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+            });
+
+            foreach (var meta in excelData)
+            {
+                string registerId = Guid.NewGuid().ToString("N");
+
+                Insert.IntoTable("t_register").Row(new
+                {
+                    id = registerId,
+                    chip_id = chipId,
+                    name = meta.AddrInfo.Name,
+                    address_dec = meta.AddrInfo.AddressDec,
+                    address_hex = meta.AddrInfo.AddressHex,
+                    category = meta.AddrInfo.Category,
+                    sub_category = meta.AddrInfo.SubCategory,
+                    rw = meta.AddrInfo.RW,
+                    reset_value = meta.AddrInfo.ResetValue
+                });
+
+                foreach (var bf in meta.AddrInfo.BitFields)
+                {
+                    string registerBitId = Guid.NewGuid().ToString("N");
+
+                    Insert.IntoTable("t_register_bit").Row(new
+                    {
+                        id = registerBitId,
+                        register_id = registerId,
+                        start_bit = bf.StartBit,
+                        end_bit = bf.EndBit,
+                        length = bf.Length,
+                        desc = bf.Desc,
+                        range_min = bf.RangeMin,
+                        range_max = bf.RangeMax
+                    });
+
+                    foreach (var option in bf.Options)
+                    {
+                        Insert.IntoTable("t_register_bit_option").Row(new
+                        {
+                            id = Guid.NewGuid().ToString("N"),
+                            register_bit_id = registerBitId,
+                            value = option.Value,
+                            display = option.Display
+                        });
+                    }
+                }
+
+            }
         }
 
         public override void Down()
