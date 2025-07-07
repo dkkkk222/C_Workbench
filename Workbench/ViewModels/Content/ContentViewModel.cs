@@ -10,6 +10,7 @@ using System.Linq;
 using Unity;
 using Workbench.Events;
 using Workbench.Models;
+using Workbench.Utils;
 using Workbench.Utils.Common;
 using Workbench.ViewModels.Content.Tabs;
 using Workbench.ViewModels.dw;
@@ -21,10 +22,13 @@ namespace Workbench.ViewModels.Content
     {
         private readonly IUnityContainer _container;
         private readonly IEventAggregator _eventAggregator;
-        public ContentViewModel(IUnityContainer container, IEventAggregator eventAggregator, IRegionManager regionManager)
+        private ProjectManager _projectManager;
+        public ContentViewModel(IUnityContainer container, IEventAggregator eventAggregator, IRegionManager regionManager, ProjectManager projectManager)
         {
             _container = container;
             _eventAggregator = eventAggregator;
+            _projectManager = projectManager;
+
             var homeViewModel = container.Resolve<HomeViewModel>();
             homeViewModel.Title = "首页";
 
@@ -46,7 +50,7 @@ namespace Workbench.ViewModels.Content
                 if (treeNodeProject.Level == ProjectLevel.SingleParams)
                 {
                     var singleParamsViewModel = _container.Resolve<SingleParamsViewModel>();
-                    singleParamsViewModel.Title = treeNodeProject.Label;
+                    singleParamsViewModel.Title = getTabLabel(treeNodeProject);
                     singleParamsViewModel.IsActive = true;
                     singleParamsViewModel.ContentId = treeNodeProject.UID;
                     singleParamsViewModel.Project = treeNodeProject;
@@ -56,7 +60,7 @@ namespace Workbench.ViewModels.Content
                 else if (treeNodeProject.Level == ProjectLevel.BatchParams)
                 {
                     var batchParamsViewModel = _container.Resolve<BatchParamsViewModel>();
-                    batchParamsViewModel.Title = treeNodeProject.Label;
+                    batchParamsViewModel.Title = getTabLabel(treeNodeProject);
                     batchParamsViewModel.IsActive = true;
                     batchParamsViewModel.ContentId = treeNodeProject.UID;
                     batchParamsViewModel.Project = treeNodeProject;
@@ -66,7 +70,7 @@ namespace Workbench.ViewModels.Content
                 else if (treeNodeProject.Level == ProjectLevel.Debug)
                 {
                     var debugViewModel = _container.Resolve<WatchViewModel>();
-                    debugViewModel.Title = treeNodeProject.Label;
+                    debugViewModel.Title = getTabLabel(treeNodeProject);
                     debugViewModel.IsActive = true;
                     debugViewModel.ContentId = treeNodeProject.UID;
                     debugViewModel.Project = treeNodeProject;
@@ -89,6 +93,12 @@ namespace Workbench.ViewModels.Content
                     Documents.Remove(item);
                 }
             });
+        }
+
+        private string getTabLabel(PpecProject treeNodeProject)
+        {
+            var project = _projectManager.OpenedProjectList.FirstOrDefault(t => t.UID == treeNodeProject.ProjectId);
+            return $"{treeNodeProject.Label}-{project.Label}";
         }
 
         private ObservableCollection<AvaDocument> _documents;
