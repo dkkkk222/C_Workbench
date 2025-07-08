@@ -1,10 +1,17 @@
 ﻿using Newtonsoft.Json;
+using NPOI.Util;
 using PPEC.Communication;
+using PPEC.Communication.Enum;
 using PPEC.Communication.Interface;
 using PPEC.Communication.Model;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Workbench.Communication;
 using Workbench.Models.dw;
+using Workbench.Utils;
 
 namespace Workbench.Models
 {
@@ -124,10 +131,53 @@ namespace Workbench.Models
             set => SetProperty(ref _sequences, value);
         }
 
+        private GroundDevice _groundService;
+        public GroundDevice GroundDevice
+        {
+            get => _groundService;
+            set => SetProperty(ref _groundService, value);
+        }
+
         internal void Disconnect()
         {
             Master.Stop();
             IsTrueConnected = false;
+        }
+
+        internal async Task ConnectAsync()
+        {
+            switch (CommunicationType)
+            {
+                case Constants.Modbus:
+                    await ConnectSerialPort();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private async Task ConnectSerialPort()
+        {
+            var service = new SerialPortService();
+            service.Connect(PortName);
+
+            var bytes = Utility.HexToBytes("D28C000AFFFFFFFFFFFFFF000AFF0003017050A9");
+            await service.SendAsync(bytes);
+            service.DataParser += (byte[] data) =>
+            {
+                string hex = Utility.ToHexString(data);
+
+                byte[] addressBytes = new byte[2];
+                Array.Copy(data, 16, addressBytes, 0, 2);
+                string addressHex = Utility.ToHexString(addressBytes);
+
+                byte[] dataBytes = new byte[4];
+                Array.Copy(data, 18, dataBytes, 0, 4);
+                string dataStr = Utility.ToHexString(dataBytes);
+                var decValue = Utility.ParseHexToUInt(dataStr);
+
+                return (addressHex, decValue); ;
+            };
         }
     }
 }

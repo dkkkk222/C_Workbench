@@ -168,6 +168,12 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NModbus, Version=3.0.81.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NModbus.3.0.81\lib\net46\NModbus.dll</HintPath>
+    </Reference>
+    <Reference Include="NModbus.Serial, Version=3.0.81.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NModbus.Serial.3.0.81\lib\net46\NModbus.Serial.dll</HintPath>
+    </Reference>
     <Reference Include="NPOI.Core, Version=2.7.3.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.7.3\lib\netstandard2.0\NPOI.Core.dll</HintPath>
     </Reference>
@@ -315,6 +321,8 @@
     </ApplicationDefinition>
     <Compile Include="AvalonDock\PanesStyleSelector.cs" />
     <Compile Include="AvalonDock\PanesTemplateSelector.cs" />
+    <Compile Include="Communication\IBaseCommService.cs" />
+    <Compile Include="Communication\SerialPortService.cs" />
     <Compile Include="Converters\RowIndexConverter.cs" />
     <Compile Include="Db\DbContext.cs" />
     <Compile Include="Db\IService\ICpService.cs" />

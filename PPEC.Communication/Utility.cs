@@ -192,6 +192,16 @@ namespace PPEC.Communication
             return bytes;
         }
 
+        public static string ToHexString(byte[] bytes)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in bytes)
+            {
+                sb.Append(b.ToString("X2"));
+            }
+            return sb.ToString();
+        }
+
         /// <summary>
         ///     Calculate Longitudinal Redundancy Check.
         /// </summary>

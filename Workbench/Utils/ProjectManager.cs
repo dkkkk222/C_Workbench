@@ -74,14 +74,15 @@ namespace Workbench.Utils
         /// <returns></returns>
         public PpecProject GetCachePPEC()
         {
-            if (CurrentProject == null)
-                return null;
-            var project = OpenedProjectList.FirstOrDefault(t => t.UID == CurrentProject.UID);
-            if (project != null)
-            {
-                return project.Children.FirstOrDefault(t => t.UID == CurrentPPEC?.UID);
-            }
-            return null;
+            //if (CurrentProject == null)
+            //    return null;
+            //var project = OpenedProjectList.FirstOrDefault(t => t.UID == CurrentProject.UID);
+            //if (project != null)
+            //{
+            //    return project.Children.FirstOrDefault(t => t.UID == CurrentPPEC?.UID);
+            //}
+            //return null;
+            return CurrentProject;
         }
 
 

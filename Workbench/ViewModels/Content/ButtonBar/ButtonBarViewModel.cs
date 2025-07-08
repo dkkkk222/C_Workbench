@@ -252,7 +252,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
         {
             var ppec = _projectManager.GetCachePPEC();
             ppec.PortName = SerialPortName;
-            await _projectManager.ConnectAsync(ppec);
+            await ppec.ConnectAsync();
         }
 
         #endregion
