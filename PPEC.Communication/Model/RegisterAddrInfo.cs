@@ -27,6 +27,10 @@ namespace PPEC.Communication.Model
         public string SubCategory { get; set; } // 子分类
         public string Name { get; set; }        // 寄存器名称
         public string RW { get; set; }          // R/W
+
+        public bool AllowRead => RW.Contains("R");
+        public bool AllowWrite => RW.Contains("W");
+
         private string _resetValue;
         public string ResetValue
         {

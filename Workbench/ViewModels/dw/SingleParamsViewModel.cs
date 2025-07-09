@@ -10,6 +10,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Workbench.Events;
 using Workbench.Models;
@@ -90,33 +92,74 @@ namespace Workbench.ViewModels.dw
             }));
 
         private DelegateCommand _readRegisterCommand;
-        public DelegateCommand ReadRegisterCommand => _readRegisterCommand ?? (_readRegisterCommand = new DelegateCommand(() =>
+        public DelegateCommand ReadRegisterCommand => _readRegisterCommand ?? (_readRegisterCommand = new DelegateCommand(async () =>
         {
             if (CurrentRegister == null)
                 return;
-            var history = new SingleParamHistory
+
+            var currentProject = _projectManager.CurrentProject;
+
+            if (!currentProject.IsConnecting)
             {
-                ReadWrite = "R",
-                Address = CurrentRegister.AddressHex,
-                Hex = CurrentRegister.HexValue,
-                Binary = string.IsNullOrEmpty(CurrentRegister.BinaryStr) ? string.Concat(CurrentRegister.BinaryList.Select(t => t.Value.ToString())) : CurrentRegister.BinaryStr
-            };
-            _projectManager.CurrentProject.ReadWriteHistory.Add(history);
+                MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            await Task.Run(async () =>
+            {
+                var calcResult = UtilsFunc.GetReadCommandByAddress(CurrentRegister.AddressHex, currentProject.CommunicationType);
+                await currentProject.CommService.SendAsync(calcResult.bytes);
+
+                Thread.Sleep(TimeSpan.FromMilliseconds(500));
+                var read = currentProject.CommService.Read(CurrentRegister.AddressHex);
+                if (read.HasValue)
+                {
+                    var history = new SingleParamHistory
+                    {
+                        ReadWrite = "R",
+                        Address = CurrentRegister.AddressHex,
+                        Hex = Utility.DecToHex(read.Value),
+                        Binary = (Utility.ParseDecToBinary(read.Value)).binaryString
+                    };
+                    await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        _projectManager.CurrentProject.ReadWriteHistory.Add(history);
+                    });
+                }
+            });
         }));
 
         private DelegateCommand _sendRegisterCommand;
-        public DelegateCommand SendRegisterCommand => _sendRegisterCommand ?? (_sendRegisterCommand = new DelegateCommand(() =>
+        public DelegateCommand SendRegisterCommand => _sendRegisterCommand ?? (_sendRegisterCommand = new DelegateCommand(async () =>
         {
             if (CurrentRegister == null)
                 return;
-            var history = new SingleParamHistory
+
+            var currentProject = _projectManager.CurrentProject;
+
+            if (!currentProject.IsConnecting)
             {
-                ReadWrite = "W",
-                Address = CurrentRegister.AddressHex,
-                Hex = CurrentRegister.HexValue,
-                Binary = string.IsNullOrEmpty(CurrentRegister.BinaryStr) ? string.Concat(CurrentRegister.BinaryList.Select(t => t.Value.ToString())) : CurrentRegister.BinaryStr
-            };
-            _projectManager.CurrentProject.ReadWriteHistory.Add(history);
+                MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            await Task.Run(async () =>
+            {
+                var calcResult = UtilsFunc.GetWriteCommandByAddress(CurrentRegister.AddressHex, currentProject.CommunicationType, CurrentRegister.DecValue);
+                await currentProject.CommService.SendAsync(calcResult.bytes);
+                var history = new SingleParamHistory
+                {
+                    ReadWrite = "W",
+                    Address = CurrentRegister.AddressHex,
+                    Hex = CurrentRegister.HexValue,
+                    Binary = string.IsNullOrEmpty(CurrentRegister.BinaryStr) ? string.Concat(CurrentRegister.BinaryList.Select(t => t.Value.ToString())) : CurrentRegister.BinaryStr
+                };
+                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    _projectManager.CurrentProject.ReadWriteHistory.Add(history);
+                });
+
+            });
         }));
 
         private DelegateCommand _closeCommand;

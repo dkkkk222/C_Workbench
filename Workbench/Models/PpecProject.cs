@@ -70,7 +70,14 @@ namespace Workbench.Models
             set { SetProperty(ref _children, value); }
         }
 
-        private string _communicationType;
+        private bool _isConnecting = false;
+        public bool IsConnecting
+        {
+            get => _isConnecting;
+            set => SetProperty(ref _isConnecting, value);
+        }
+
+        private string _communicationType = Constants.SERIAL_PORT;
 
         /// <summary>
         /// 通讯方式
@@ -142,6 +149,7 @@ namespace Workbench.Models
             if (CommService != null)
             {
                 CommService.Close();
+                IsConnecting = false;
             }
         }
 
@@ -149,7 +157,7 @@ namespace Workbench.Models
         {
             switch (CommunicationType)
             {
-                case Constants.Modbus:
+                case Constants.SERIAL_PORT:
                     return await ConnectSerialPort();
                 default:
                     break;
@@ -188,11 +196,13 @@ namespace Workbench.Models
             if (!res.HasValue)
             {
                 MessageBox.Show("板卡连接异常，请检查", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                IsConnecting = false;
                 return false;
             }
             else
             {
                 IsTrueConnected = CommService.IsConnected;
+                IsConnecting = true;
                 return true;
             }
         }

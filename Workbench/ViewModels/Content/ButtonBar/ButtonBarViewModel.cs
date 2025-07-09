@@ -54,7 +54,14 @@ namespace Workbench.ViewModels.Content.ButtonBar
             _eventAggregator.GetEvent<TreeViewSelectedEvent>().Subscribe((treeItemLevel) =>
             {
                 IsSelectedProject = true;
-
+                //显示按钮栏的同时，将PPEC的通讯方式和端口绑定到按钮栏
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                {
+                    SelectedCommunicationType = string.IsNullOrEmpty(ppec.CommunicationType) ? Constants.SERIAL_PORT : ppec.CommunicationType;
+                    if (ppec.CommunicationType == Constants.SERIAL_PORT && !string.IsNullOrEmpty(ppec.PortName))
+                        SerialPortName = ppec.PortName;
+                }
                 //if (!string.IsNullOrEmpty(treeItemLevel) && treeItemLevel != ProjectLevel.Project)
                 //{
                 //    IsSelectedProject = true;
@@ -120,21 +127,21 @@ namespace Workbench.ViewModels.Content.ButtonBar
             }
         }
 
-        private ObservableCollection<string> _communicationTypeList = new ObservableCollection<string> { Constants.Modbus, Constants.CAN };
+        private ObservableCollection<string> _communicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN };
         public ObservableCollection<string> CommunicationTypeList
         {
             get => _communicationTypeList;
             set => SetProperty(ref _communicationTypeList, value);
         }
 
-        private string _selectedCommunicationType = Constants.Modbus;
+        private string _selectedCommunicationType = Constants.SERIAL_PORT;
         public string SelectedCommunicationType
         {
             get => _selectedCommunicationType;
             set
             {
-                IsModbusSelected = value == Constants.Modbus;
-                PortTitle = value == Constants.Modbus ? Constants.SERIAL_PORT : Constants.CAN_PORT;
+                IsModbusSelected = value == Constants.SERIAL_PORT;
+                PortTitle = value == Constants.SERIAL_PORT ? Constants.SERIAL_PORT : Constants.CAN_PORT;
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                     ppec.CommunicationType = value;

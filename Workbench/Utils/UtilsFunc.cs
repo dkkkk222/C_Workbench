@@ -10,6 +10,7 @@ using PPEC.Communication.Enum;
 using PPEC.Communication;
 using System.Threading;
 using Workbench.SerialAsistant.Utils;
+using PPEC.Communication.Model;
 
 namespace Workbench.Utils
 {
@@ -208,6 +209,42 @@ namespace Workbench.Utils
                     }
                 }
             }
+        }
+
+        public static (byte[] bytes, string hexStr) GetReadCommandByAddress(string addressHex, string commType)
+        {
+            switch (commType)
+            {
+                case Constants.Modbus:
+                    return GetReadCommandUsart(addressHex);
+                default:
+                    return ([], string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// 根据寄存器十六进制地址获取读命令
+        /// </summary>
+        /// <param name="currentRegister"></param>
+        /// <returns></returns>
+        private static (byte[] bytes, string hexStr) GetReadCommandUsart(string addressHex)
+        {
+            string crc16 = Crc16CcittFalse.Calculate(addressHex);
+            //D28C000AFFFFFFFFFFFFFF000AFF0003017050A9
+            string command = $"D28C000AFFFFFFFFFFFFFF000AFF0002{addressHex}{crc16}";
+            var data = Utility.HexToBytes(command);
+
+            return (data, command);
+        }
+
+        internal static (byte[] bytes, string hexStr) GetWriteCommandByAddress(string addressHex, string communicationType, uint data)
+        {
+            string hex = Utility.DecToHex(data, false);
+            string crc16 = Crc16CcittFalse.Calculate(addressHex + hex);
+            string command = $"D28C000AFFFFFFFFFFFFFF000FFF0006{addressHex}{hex}{crc16}";
+            var b = Utility.HexToBytes(command);
+            return (b, command);
+
         }
     }
 }

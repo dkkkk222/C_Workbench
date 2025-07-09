@@ -352,9 +352,12 @@ namespace PPEC.Communication
         /// </summary>
         /// <param name="dec"></param>
         /// <returns></returns>
-        public static string DecToHex(uint dec)
+        public static string DecToHex(uint dec, bool withPrefix = true)
         {
-            return "0x" + dec.ToString("X8");
+            if (withPrefix)
+                return "0x" + dec.ToString("X8");
+            else
+                return dec.ToString("X8");
         }
         public static byte[] CreatePacket(ushort channel1, ushort channel2)
         {

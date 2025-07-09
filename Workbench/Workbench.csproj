@@ -368,6 +368,7 @@
     <Compile Include="Utils\Common\ProjectLevel.cs" />
     <Compile Include="Utils\Common\SerialPortHelper.cs" />
     <Compile Include="Utils\Constants.cs" />
+    <Compile Include="Utils\Crc16CcittFalse.cs" />
     <Compile Include="Utils\FileHandler.cs" />
     <Compile Include="Utils\IgnorePropertyContractResolver.cs" />
     <Compile Include="Utils\JsonHelper.cs" />
