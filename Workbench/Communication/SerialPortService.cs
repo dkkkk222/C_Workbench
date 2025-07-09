@@ -82,7 +82,7 @@ namespace Workbench.Communication
                 await _serialPort.BaseStream.WriteAsync(data, 0, data.Length);
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -107,11 +107,6 @@ namespace Workbench.Communication
                     {
                         var tuple = DataParser.Invoke(buffer);
                         ReceiveCache.AddOrUpdate(tuple.key, tuple.value, (key, oldValue) => tuple.value);
-                        //foreach (var kvp in parsedResult)
-                        //{
-                        //    // AddOrUpdate是线程安全的操作
-                        //    ReceiveCache.AddOrUpdate(kvp.Key, kvp.Value, (key, oldValue) => kvp.Value);
-                        //}
                     }
                 }
             }
@@ -124,6 +119,13 @@ namespace Workbench.Communication
         public void Dispose()
         {
             Close();
+        }
+
+        public uint? Read(string hexAddress)
+        {
+            bool res = ReceiveCache.TryGetValue(hexAddress, out object value);
+            if (!res) return null;
+            return (uint)value;
         }
     }
 }

@@ -12,5 +12,7 @@ namespace Workbench.Communication
         bool IsConnected { get; }
         void Connect(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits);
         Task<bool> SendAsync(byte[] data);
+        uint? Read(string hexAddress);
+        void Close();
     }
 }

@@ -53,27 +53,28 @@ namespace Workbench.ViewModels.Content.ButtonBar
 
             _eventAggregator.GetEvent<TreeViewSelectedEvent>().Subscribe((treeItemLevel) =>
             {
-                if (!string.IsNullOrEmpty(treeItemLevel) && treeItemLevel != ProjectLevel.Project)
-                {
-                    IsSelectedProject = true;
-                    //显示按钮栏的同时，将PPEC的通讯方式和端口绑定到按钮栏
-                    var ppec = _projectManager.GetCachePPEC();
-                    if (ppec != null)
-                    {
-                        SelectedCommunicationType = string.IsNullOrEmpty(ppec.CommunicationType) ? Constants.Modbus : ppec.CommunicationType;
-                        if (ppec.CommunicationType == Constants.Modbus && !string.IsNullOrEmpty(ppec.PortName))
-                            SerialPortName = ppec.PortName;
-                    }
-                }
-                else
-                    IsSelectedProject = false;
+                IsSelectedProject = true;
+
+                //if (!string.IsNullOrEmpty(treeItemLevel) && treeItemLevel != ProjectLevel.Project)
+                //{
+                //    IsSelectedProject = true;
+                //    //显示按钮栏的同时，将PPEC的通讯方式和端口绑定到按钮栏
+                //    var ppec = _projectManager.GetCachePPEC();
+                //    if (ppec != null)
+                //    {
+                //        SelectedCommunicationType = string.IsNullOrEmpty(ppec.CommunicationType) ? Constants.Modbus : ppec.CommunicationType;
+                //        if (ppec.CommunicationType == Constants.Modbus && !string.IsNullOrEmpty(ppec.PortName))
+                //            SerialPortName = ppec.PortName;
+                //    }
+                //}
+                //else
+                //    IsSelectedProject = false;
             }, ThreadOption.UIThread);
 
             _eventAggregator.GetEvent<CurrentPpecChangedEvent>().Subscribe((ppec) =>
             {
                 if (ppec == null)
                     return;
-                IsConnected = ppec.IsTrueConnected;
                 SerialPortName = ppec.PortName ?? PortList.FirstOrDefault();
             });
 
@@ -95,7 +96,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 UtilsFunc.ChangeTheme(value);
             }
         }
-        private bool _isConnected = false;
+        private bool _isConnected;
         public bool IsConnected
         {
             get => _isConnected;
@@ -230,6 +231,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 ppec.Disconnect();
                 _projectManager.SetCurrentPpec(ppec);
+                IsConnected = false;
             }));
 
         private DelegateCommand _connectCommand;
@@ -250,9 +252,17 @@ namespace Workbench.ViewModels.Content.ButtonBar
 
         private async Task OnConnectionAsync()
         {
-            var ppec = _projectManager.GetCachePPEC();
-            ppec.PortName = SerialPortName;
-            await ppec.ConnectAsync();
+            try
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                ppec.PortName = SerialPortName;
+                bool result = await ppec.ConnectAsync();
+                IsConnected = result;
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         #endregion

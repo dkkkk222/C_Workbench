@@ -1,14 +1,13 @@
 ﻿using Newtonsoft.Json;
-using NPOI.Util;
 using PPEC.Communication;
-using PPEC.Communication.Enum;
 using PPEC.Communication.Interface;
 using PPEC.Communication.Model;
 using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Workbench.Communication;
 using Workbench.Models.dw;
 using Workbench.Utils;
@@ -131,38 +130,39 @@ namespace Workbench.Models
             set => SetProperty(ref _sequences, value);
         }
 
-        private GroundDevice _groundService;
-        public GroundDevice GroundDevice
+        private IBaseCommService _commService;
+        public IBaseCommService CommService
         {
-            get => _groundService;
-            set => SetProperty(ref _groundService, value);
+            get => _commService;
+            set => SetProperty(ref _commService, value);
         }
 
         internal void Disconnect()
         {
-            Master.Stop();
-            IsTrueConnected = false;
+            if (CommService != null)
+            {
+                CommService.Close();
+            }
         }
 
-        internal async Task ConnectAsync()
+        internal async Task<bool> ConnectAsync()
         {
             switch (CommunicationType)
             {
                 case Constants.Modbus:
-                    await ConnectSerialPort();
-                    break;
+                    return await ConnectSerialPort();
                 default:
                     break;
             }
+            return true;
         }
 
-        private async Task ConnectSerialPort()
+        private async Task<bool> ConnectSerialPort()
         {
             var service = new SerialPortService();
+            //连接串口
             service.Connect(PortName);
-
-            var bytes = Utility.HexToBytes("D28C000AFFFFFFFFFFFFFF000AFF0003017050A9");
-            await service.SendAsync(bytes);
+            //接收数据解析规则
             service.DataParser += (byte[] data) =>
             {
                 string hex = Utility.ToHexString(data);
@@ -178,6 +178,23 @@ namespace Workbench.Models
 
                 return (addressHex, decValue); ;
             };
+
+            CommService = service;
+
+            var bytes = Utility.HexToBytes("D28C000AFFFFFFFFFFFFFF000AFF0003017050A9");
+            await CommService.SendAsync(bytes);
+            Thread.Sleep(TimeSpan.FromMilliseconds(500));
+            var res = CommService.Read("0170");
+            if (!res.HasValue)
+            {
+                MessageBox.Show("板卡连接异常，请检查", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            else
+            {
+                IsTrueConnected = CommService.IsConnected;
+                return true;
+            }
         }
     }
 }

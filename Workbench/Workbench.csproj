@@ -334,6 +334,7 @@
     <Compile Include="Events\AddedProjectEvent.cs" />
     <Compile Include="Events\CloseTabEvent.cs" />
     <Compile Include="Events\ConnectEvent.cs" />
+    <Compile Include="Events\ConnectionChangeEvent.cs" />
     <Compile Include="Events\CurrentPpecChangedEvent.cs" />
     <Compile Include="Events\DoubleClickTreeNodeEvent.cs" />
     <Compile Include="Events\RefreshRecentFileEvent.cs" />
