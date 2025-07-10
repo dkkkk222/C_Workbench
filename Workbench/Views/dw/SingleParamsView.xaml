@@ -47,11 +47,11 @@
                     <hc:UniformSpacingPanel Spacing="8" Orientation="Vertical" Margin="0,10">
                         <hc:UniformSpacingPanel Orientation="Horizontal">
                             <TextBlock Text="按名称排列：" FontSize="14"/>
-                            <CheckBox/>
+                            <CheckBox IsChecked="{Binding IsOrderByName}"/>
                         </hc:UniformSpacingPanel>
                         <hc:UniformSpacingPanel Orientation="Horizontal">
                             <TextBlock Text="按地址排列：" FontSize="14"/>
-                            <CheckBox/>
+                            <CheckBox IsChecked="{Binding IsOrderByAddress}" Command="{Binding CheckboxChangeCommand}"/>
                         </hc:UniformSpacingPanel>
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
@@ -70,7 +70,14 @@
                         </i:Interaction.Triggers>
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                <TextBlock Text="{Binding Title}"/>
+                                <StackPanel>
+                                    <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}"/>
+                                    <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
+                                        <TextBlock Text="{Binding AddressHex}"/>
+                                        <TextBlock Text=" : "/>
+                                        <TextBlock Text="{Binding Title}"/>
+                                    </StackPanel>
+                                </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
@@ -359,7 +366,7 @@
                                         <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
                                     </hc:UniformSpacingPanel>
                                 </Border>
-                                <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0" Height="320" VerticalAlignment="Top">
+                                <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0" Height="385" VerticalAlignment="Top">
                                     <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                   CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False">
                                         <DataGrid.ColumnHeaderStyle>

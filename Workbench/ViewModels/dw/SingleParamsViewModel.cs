@@ -40,8 +40,22 @@ namespace Workbench.ViewModels.dw
             set
             {
                 SetProperty(ref _treeKeyword, value);
-                SearchCategoryTree(value);
+                SearchCategoryTree(value, IsOrderByAddress);
             }
+        }
+
+        private bool _isOrderByName = true;
+        public bool IsOrderByName
+        {
+            get => _isOrderByName;
+            set => SetProperty(ref _isOrderByName, value);
+        }
+
+        private bool _isOrderByAddress = true;
+        public bool IsOrderByAddress
+        {
+            get => _isOrderByAddress;
+            set => SetProperty(ref _isOrderByAddress, value);
         }
 
         private RegisterAddrInfo _currentRegister;
@@ -51,10 +65,10 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _currentRegister, value);
         }
 
-        private void SearchCategoryTree(string keyword)
+        private void SearchCategoryTree(string keyword, bool isOrderByAddress = true)
         {
             SingleParamTrees.Clear();
-            var source = _projectManager.GetChipCategoryTree();
+            var source = _projectManager.GetChipCategoryTree(isOrderByAddress: isOrderByAddress);
             if (string.IsNullOrEmpty(keyword))
             {
                 SingleParamTrees.AddRange(source);
@@ -91,6 +105,12 @@ namespace Workbench.ViewModels.dw
                 CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
                 SetCurrentRegisterValue(0);
             }));
+
+        private DelegateCommand _checkboxChangeCommand;
+        public DelegateCommand CheckboxChangeCommand => _checkboxChangeCommand ?? (_checkboxChangeCommand = new DelegateCommand(() =>
+        {
+            SearchCategoryTree(TreeKeyword, IsOrderByAddress);
+        }));
 
         private DelegateCommand _readRegisterCommand;
         public DelegateCommand ReadRegisterCommand => _readRegisterCommand ?? (_readRegisterCommand = new DelegateCommand(async () =>

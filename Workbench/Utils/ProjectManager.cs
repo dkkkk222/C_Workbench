@@ -329,7 +329,7 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="ctg">指定分类</param>
         /// <returns></returns>
-        internal List<CategoryTree> GetChipCategoryTree(string ctg = null, string address = null)
+        internal List<CategoryTree> GetChipCategoryTree(string ctg = null, string address = null, bool isOrderByAddress = true)
         {
             var list = new List<CategoryTree>();
             var infos = CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).ToList();
@@ -349,13 +349,13 @@ namespace Workbench.Utils
                 {
                     Title = category,
                     Type = CategoryTreeType.Category,
-                    Children = GetSubCategory(category, infos)
+                    Children = GetSubCategory(category, infos, isOrderByAddress)
                 });
             }
             return list;
         }
 
-        private List<CategoryTree> GetSubCategory(string category, List<RegisterAddrInfo> infos)
+        private List<CategoryTree> GetSubCategory(string category, List<RegisterAddrInfo> infos, bool isOrderByAddress)
         {
             var list = new List<CategoryTree>();
 
@@ -366,18 +366,23 @@ namespace Workbench.Utils
                 {
                     Title = subCategory,
                     Type = CategoryTreeType.SubCategory,
-                    Children = GetRegister(category, subCategory, infos)
+                    Children = GetRegister(category, subCategory, infos, isOrderByAddress)
                 });
             }
 
             return list;
         }
 
-        private List<CategoryTree> GetRegister(string category, string subCategory, List<RegisterAddrInfo> infos)
+        private List<CategoryTree> GetRegister(string category, string subCategory, List<RegisterAddrInfo> infos, bool isOrderByAddress)
         {
             var list = new List<CategoryTree>();
 
             var registers = infos.Where(t => t.Category == category && t.SubCategory == subCategory).ToList();
+            if (isOrderByAddress)
+            {
+                registers = registers.OrderBy(t => t.AddressDec).ToList();
+            }
+
             foreach (var register in registers)
             {
                 list.Add(new CategoryTree()

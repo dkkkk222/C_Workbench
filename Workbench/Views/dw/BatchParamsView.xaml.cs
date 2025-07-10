@@ -28,12 +28,6 @@ namespace Workbench.Views.dw
             InitializeComponent();
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var viewModel = DataContext as BatchParamsViewModel;
-            viewModel.InitCategoryTree();
-        }
-
         private void BinaryTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             // 1. 获取事件发送者，并转换为TextBox

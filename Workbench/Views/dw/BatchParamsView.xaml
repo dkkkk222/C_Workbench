@@ -18,288 +18,301 @@
         </DataTemplate>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
     </UserControl.Resources>
-    <Border Padding="8">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Border>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Margin="0,0,15,0">
-                        <DockPanel LastChildFill="True">
-                            <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                                <DockPanel LastChildFill="True">
-                                    <TextBlock Text="序列管理列表" FontSize="{StaticResource SubHeadFontSize}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-                                    <Border>
-                                        <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
-                                            <Button Content="新增序列" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Width="224" Background="#fafafa" Padding="8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
+                    <Border Style="{StaticResource BorderTipPrimary}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>
+                        </StackPanel>
+                    </Border>
+                    <hc:UniformSpacingPanel Spacing="8" Orientation="Vertical" Margin="0,10">
+                        <hc:UniformSpacingPanel Orientation="Horizontal">
+                            <TextBlock Text="按名称排列：" FontSize="14"/>
+                            <CheckBox IsChecked="{Binding IsOrderByName}"/>
+                        </hc:UniformSpacingPanel>
+                        <hc:UniformSpacingPanel Orientation="Horizontal">
+                            <TextBlock Text="按地址排列：" FontSize="14"/>
+                            <CheckBox IsChecked="{Binding IsOrderByAddress}" Command="{Binding CheckboxChangeCommand}"/>
+                        </hc:UniformSpacingPanel>
+                    </hc:UniformSpacingPanel>
+                </hc:UniformSpacingPanel>
+                <hc:SearchBar Grid.Row="1" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                    <hc:SearchBar.Text>
+                        <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
+                    </hc:SearchBar.Text>
+                </hc:SearchBar>
+                <Border Margin="0,5,0,0" Grid.Row="2">
+                    <TreeView ItemsSource="{Binding SingleParamTrees}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedItemChanged">
+                                <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 
+                                 CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=TreeView}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                <StackPanel>
+                                    <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}"/>
+                                    <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
+                                        <TextBlock Text="{Binding AddressHex}"/>
+                                        <TextBlock Text=" : "/>
+                                        <TextBlock Text="{Binding Title}"/>
+                                    </StackPanel>
+                                </StackPanel>                            
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Padding="8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Margin="0,0,15,0">
+                            <DockPanel LastChildFill="True">
+                                <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                    <DockPanel LastChildFill="True">
+                                        <TextBlock Text="序列管理列表" FontSize="{StaticResource SubHeadFontSize}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                                        <Border>
+                                            <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
+                                                <Button Content="新增序列" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                                     Command="{Binding AddSequenceCommand}"/>
-                                            <Button Content="批量下发" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AllGeometry}"/>
-                                        </hc:UniformSpacingPanel>
-                                    </Border>
-                                </DockPanel>
-                            </Border>
-                            <DataGrid ItemsSource="{Binding SequenceList}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                                                <Button Content="批量下发" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AllGeometry}"/>
+                                            </hc:UniformSpacingPanel>
+                                        </Border>
+                                    </DockPanel>
+                                </Border>
+                                <DataGrid ItemsSource="{Binding SequenceList}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                       CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" Height="346"
                                       SelectedItem="{Binding CurrentSequence}">
-                                <DataGrid.ColumnHeaderStyle>
-                                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
-                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        <Setter Property="FontSize" Value="13"/>
-                                        <Setter Property="Margin" Value="0,0,0,5"/>
-                                    </Style>
-                                </DataGrid.ColumnHeaderStyle>
-                                <DataGrid.Columns>
-                                    <DataGridTemplateColumn  Header="序列编号" Width="*">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock>
-                                                    <TextBlock.Text>
-                                                        <!-- 使用 MultiBinding -->
-                                                        <MultiBinding Converter="{StaticResource RowIndexConverter}">
-                                                            <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
-                                                            <Binding />
-                                                            <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
-                                                            <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="序列名称" Width="*" MinWidth="100">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBox Text="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Placeholder="请输入名称"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="参数下发数量" Binding="{Binding ParamPushNum}"  Width="*" IsReadOnly="True"/>
-                                    <DataGridTemplateColumn Header="参数下发间隔(us)"  Width="*" MinWidth="80">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Minimum="1" DecimalPlaces="0">
-                                                    <hc:NumericUpDown.Value>
-                                                        <Binding Path="ParamPushInterval" UpdateSourceTrigger="PropertyChanged"></Binding>
-                                                    </hc:NumericUpDown.Value>
-                                                </hc:NumericUpDown>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="下发" Width="*" MinWidth="70">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Button Style="{StaticResource ButtonInfo.Small}" Content="下发" HorizontalAlignment="Left"
-                                                        hc:IconElement.Geometry="{StaticResource PushGeometry}"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="下发状态" Width="*">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Label Content="未开始" Style="{StaticResource LabelDefault.Small}" HorizontalAlignment="Stretch"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Width="*">
-                                        <DataGridTemplateColumn.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="选择"/>
-                                                <CheckBox IsChecked="{Binding Path=DataContext.CheckAll,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                          Margin="5,0,0,0"/>
-                                            </StackPanel>
-                                        </DataGridTemplateColumn.Header>
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay}" HorizontalAlignment="Left"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </DockPanel>
-                    </Border>
-                    <Border Grid.Column="1">
-                        <hc:UniformSpacingPanel Spacing="5" Orientation="Vertical">
-                            <Border>
-                                <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5" HorizontalAlignment="Stretch">
-                                    <hc:SearchBar Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字">
-                                        <hc:SearchBar.Text>
-                                            <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
-                                        </hc:SearchBar.Text>
-                                    </hc:SearchBar>
-                                    <hc:UniformSpacingPanel Spacing="5">
-                                        <ComboBox ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
-                                              hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180" SelectionChanged="ComboBox_SelectionChanged"
-                                              SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                                        <ComboBox ItemsSource="{Binding AddressList}" Style="{StaticResource ComboBoxExtend}"
-                                              hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="180" SelectionChanged="ComboBox_SelectionChanged"
-                                              SelectedItem="{Binding CurrentAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                                    </hc:UniformSpacingPanel>
-
-                                </hc:UniformSpacingPanel>
-                            </Border>
-                            <Border Background="{DynamicResource DarkDefaultBrush}" Padding="5" CornerRadius="5">
-                                <TreeView ItemsSource="{Binding BatchParamTrees}" Height="318">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="SelectedItemChanged">
-                                            <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 
-                                                                   CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=TreeView}}" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                    <TreeView.ItemContainerStyle>
-                                        <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource TreeViewItemBaseStyle}">
-                                            <!-- 将TreeViewItem的IsExpanded属性绑定到数据模型的IsExpanded属性 -->
-                                            <Setter Property="IsExpanded" Value="True" />
+                                    <DataGrid.ColumnHeaderStyle>
+                                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
+                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="Margin" Value="0,0,0,5"/>
                                         </Style>
-                                    </TreeView.ItemContainerStyle>
-                                    <TreeView.ItemTemplate>
-                                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                            <StackPanel>
-                                                <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}"/>
-                                                <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
-                                                    <TextBlock Text="{Binding AddressHex}"/>
-                                                    <TextBlock Text=" : "/>
-                                                    <TextBlock Text="{Binding Title}"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </HierarchicalDataTemplate>
-                                    </TreeView.ItemTemplate>
-                                </TreeView>
-                            </Border>
-                        </hc:UniformSpacingPanel>
-                    </Border>
-
-                </Grid>
-            </Border>
-            <hc:Divider Grid.Row="1" Margin="0,8"/>
-            <Border Grid.Row="2">
-                <DockPanel LastChildFill="True">
-                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                        <DockPanel LastChildFill="True">
-                            <hc:UniformSpacingPanel  DockPanel.Dock="Left" Spacing="5">
-                                <TextBlock Text="序列配置详情:" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding CurrentSequence.Name}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                            </hc:UniformSpacingPanel>
-                            <Border>
-                                <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
-                                    <Button Content="添加到序列" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
-                                            Command="{Binding AddRegisterToSequenceCommand}"/>
-                                </hc:UniformSpacingPanel>
-                            </Border>
-                        </DockPanel>
-                    </Border>
-                    <DataGrid ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"
-                              CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
-                                <Setter Property="Tag" Value="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                <Setter Property="ContextMenu">
-                                    <Setter.Value>
-                                        <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="165">
-                                            <MenuItem Header="删除" Command="{Binding Path=PlacementTarget.Tag.RemoveSequenceItemCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                      CommandParameter="{Binding}"/>
-                                            <MenuItem Header="复制" Command="{Binding Path=PlacementTarget.Tag.CopyCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                      CommandParameter="{Binding}"/>
-                                            <MenuItem Header="上移" Command="{Binding Path=PlacementTarget.Tag.MoveUpCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                      CommandParameter="{Binding}"/>
-                                            <MenuItem Header="下移" Command="{Binding Path=PlacementTarget.Tag.MoveDownCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                      CommandParameter="{Binding}"/>
-                                        </ContextMenu>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </DataGrid.RowStyle>
-                        <DataGrid.ColumnHeaderStyle>
-                            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
-                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Setter Property="FontSize" Value="13"/>
-                                <Setter Property="Margin" Value="0,0,0,5"/>
-                            </Style>
-                        </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn  Header="发送顺序" MinWidth="60">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <!-- 使用 MultiBinding -->
-                                                <MultiBinding Converter="{StaticResource RowIndexConverter}">
-                                                    <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
-                                                    <Binding />
-                                                    <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
-                                                    <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="地址" Width="*" MinWidth="110">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding AddressHex}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="名称" Binding="{Binding Name}"  Width="*" MinWidth="120"/>
-                            <DataGridTextColumn Header="分类" Binding="{Binding Category}"  Width="*" MinWidth="100"/>
-                            <DataGridTextColumn Header="子分类" Binding="{Binding SubCategory}"  Width="*" MinWidth="60"/>
-                            <DataGridTemplateColumn Header="数据(HEX)" Width="*" MinWidth="110">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBox Text="{Binding HexValue,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxExtend.Small}"
-                                                 LostFocus="HexValueText_LostFocus"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="数据(DEC)" Width="*" MinWidth="110">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <hc:NumericUpDown Minimum="0" Style="{StaticResource NumericUpDownExtend.Small}" LostFocus="DecValueText_LostFocus">
-                                            <hc:NumericUpDown.Value>
-                                                <Binding Path="DecValue" UpdateSourceTrigger="PropertyChanged"/>
-                                            </hc:NumericUpDown.Value>
-                                        </hc:NumericUpDown>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="数据(Binary)" Width="*" MinWidth="648">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ItemsControl ItemsSource="{Binding BinaryList,Mode=TwoWay}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel Orientation="Horizontal"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
+                                    </DataGrid.ColumnHeaderStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTemplateColumn  Header="序列编号" Width="*">
+                                            <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel Orientation="Vertical">
-                                                        <TextBox Text="{Binding Value}" Style="{StaticResource TextBox.Small}" TextChanged="BinaryTextBox_TextChanged" LostFocus="BinaryTextBox_LostFocus"/>
-                                                        <TextBlock Text="{Binding Display}" HorizontalAlignment="Center" FontSize="9"/>
-                                                    </StackPanel>
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <!-- 使用 MultiBinding -->
+                                                            <MultiBinding Converter="{StaticResource RowIndexConverter}">
+                                                                <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
+                                                                <Binding />
+                                                                <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
+                                                                <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
                                                 </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </DockPanel>
-            </Border>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="序列名称" Width="*" MinWidth="100">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Text="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Placeholder="请输入名称"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="参数下发数量" Binding="{Binding ParamPushNum}"  Width="*" IsReadOnly="True"/>
+                                        <DataGridTemplateColumn Header="参数下发间隔(us)"  Width="*" MinWidth="80">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Minimum="1" DecimalPlaces="0">
+                                                        <hc:NumericUpDown.Value>
+                                                            <Binding Path="ParamPushInterval" UpdateSourceTrigger="PropertyChanged"></Binding>
+                                                        </hc:NumericUpDown.Value>
+                                                    </hc:NumericUpDown>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="下发" Width="*" MinWidth="70">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Style="{StaticResource ButtonInfo.Small}" Content="下发" HorizontalAlignment="Left"
+                                                        hc:IconElement.Geometry="{StaticResource PushGeometry}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="下发状态" Width="*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Label Content="未开始" Style="{StaticResource LabelDefault.Small}" HorizontalAlignment="Stretch"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Width="*">
+                                            <DataGridTemplateColumn.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="选择"/>
+                                                    <CheckBox IsChecked="{Binding Path=DataContext.CheckAll,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                          Margin="5,0,0,0"/>
+                                                </StackPanel>
+                                            </DataGridTemplateColumn.Header>
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay}" HorizontalAlignment="Left"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DockPanel>
+                        </Border>
+                        <Border Grid.Column="1">
+                        </Border>
 
-        </Grid>
-    </Border>
+                    </Grid>
+                </Border>
+                <hc:Divider Grid.Row="1" Margin="0,8"/>
+                <Border Grid.Row="2">
+                    <DockPanel LastChildFill="True">
+                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                            <DockPanel LastChildFill="True">
+                                <hc:UniformSpacingPanel  DockPanel.Dock="Left" Spacing="5">
+                                    <TextBlock Text="序列配置详情:" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding CurrentSequence.Name}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                </hc:UniformSpacingPanel>
+                                <Border>
+                                    <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
+                                        <Button Content="添加到序列" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                            Command="{Binding AddRegisterToSequenceCommand}"/>
+                                    </hc:UniformSpacingPanel>
+                                </Border>
+                            </DockPanel>
+                        </Border>
+                        <DataGrid ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"
+                              CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
+                                    <Setter Property="Tag" Value="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="165">
+                                                <MenuItem Header="删除" Command="{Binding Path=PlacementTarget.Tag.RemoveSequenceItemCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                      CommandParameter="{Binding}"/>
+                                                <MenuItem Header="复制" Command="{Binding Path=PlacementTarget.Tag.CopyCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                      CommandParameter="{Binding}"/>
+                                                <MenuItem Header="上移" Command="{Binding Path=PlacementTarget.Tag.MoveUpCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                      CommandParameter="{Binding}"/>
+                                                <MenuItem Header="下移" Command="{Binding Path=PlacementTarget.Tag.MoveDownCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                      CommandParameter="{Binding}"/>
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn  Header="发送顺序" MinWidth="60">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <!-- 使用 MultiBinding -->
+                                                    <MultiBinding Converter="{StaticResource RowIndexConverter}">
+                                                        <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
+                                                        <Binding />
+                                                        <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
+                                                        <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="地址" Width="*" MinWidth="110">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding AddressHex}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="名称" Binding="{Binding Name}"  Width="*" MinWidth="120"/>
+                                <DataGridTextColumn Header="分类" Binding="{Binding Category}"  Width="*" MinWidth="100"/>
+                                <DataGridTextColumn Header="子分类" Binding="{Binding SubCategory}"  Width="*" MinWidth="60"/>
+                                <DataGridTemplateColumn Header="数据(HEX)" Width="*" MinWidth="110">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding HexValue,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxExtend.Small}"
+                                                 LostFocus="HexValueText_LostFocus"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="数据(DEC)" Width="*" MinWidth="110">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <hc:NumericUpDown Minimum="0" Style="{StaticResource NumericUpDownExtend.Small}" LostFocus="DecValueText_LostFocus">
+                                                <hc:NumericUpDown.Value>
+                                                    <Binding Path="DecValue" UpdateSourceTrigger="PropertyChanged"/>
+                                                </hc:NumericUpDown.Value>
+                                            </hc:NumericUpDown>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="数据(Binary)" Width="*" MinWidth="648">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ItemsControl ItemsSource="{Binding BinaryList,Mode=TwoWay}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Vertical">
+                                                            <TextBox Text="{Binding Value}" Style="{StaticResource TextBox.Small}" TextChanged="BinaryTextBox_TextChanged" LostFocus="BinaryTextBox_LostFocus"/>
+                                                            <TextBlock Text="{Binding Display}" HorizontalAlignment="Center" FontSize="9"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </Border>
+
+            </Grid>
+        </Border>
+
+    </Grid>
 </UserControl>

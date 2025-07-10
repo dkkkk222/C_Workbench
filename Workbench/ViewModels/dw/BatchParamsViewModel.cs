@@ -25,13 +25,6 @@ namespace Workbench.ViewModels.dw
             SequenceList = _projectManager.CurrentProject.Sequences;
         }
 
-        private ObservableCollection<ValueLabelOption> _settingCategoryList = new ObservableCollection<ValueLabelOption>();
-        public ObservableCollection<ValueLabelOption> SettingCategoryList
-        {
-            get => _settingCategoryList;
-            set => SetProperty(ref _settingCategoryList, value);
-        }
-
         private ValueLabelOption _currentSettingCategory;
         public ValueLabelOption CurrentSettingCategory
         {
@@ -39,39 +32,21 @@ namespace Workbench.ViewModels.dw
             set
             {
                 SetProperty(ref _currentSettingCategory, value);
-                GetAddressList(value.Value.ToString());
             }
         }
 
-        private void GetAddressList(string category)
+        private bool _isOrderByName = true;
+        public bool IsOrderByName
         {
-            AddressList.Clear();
-            var list = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).Where(t => t.Category == category).ToList();
-            if (list.Any())
-            {
-                var options = list.Select(t => new ValueLabelOption { Value = t.AddressHex, Label = $"{t.AddressHex} : {t.Name}" });
-                AddressList.AddRange(options);
-            }
+            get => _isOrderByName;
+            set => SetProperty(ref _isOrderByName, value);
         }
 
-        private ObservableCollection<ValueLabelOption> _addressList = new ObservableCollection<ValueLabelOption>();
-        public ObservableCollection<ValueLabelOption> AddressList
+        private bool _isOrderByAddress = true;
+        public bool IsOrderByAddress
         {
-            get => _addressList;
-            set => SetProperty(ref _addressList, value);
-        }
-
-        private ValueLabelOption _currentAddress;
-        public ValueLabelOption CurrentAddress
-        {
-            get => _currentAddress;
-            set => SetProperty(ref _currentAddress, value);
-        }
-        private ObservableCollection<CategoryTree> _batchParamTrees = new ObservableCollection<CategoryTree>();
-        public ObservableCollection<CategoryTree> BatchParamTrees
-        {
-            get => _batchParamTrees;
-            set => SetProperty(ref _batchParamTrees, value);
+            get => _isOrderByAddress;
+            set => SetProperty(ref _isOrderByAddress, value);
         }
 
         private ObservableCollection<Sequence> _sequenceList = new ObservableCollection<Sequence>();
@@ -79,6 +54,28 @@ namespace Workbench.ViewModels.dw
         {
             get => _sequenceList;
             set => SetProperty(ref _sequenceList, value);
+        }
+
+        private DelegateCommand _checkboxChangeCommand;
+        public DelegateCommand CheckboxChangeCommand => _checkboxChangeCommand ?? (_checkboxChangeCommand = new DelegateCommand(() =>
+        {
+            SearchCategoryTree(TreeKeyword, IsOrderByAddress);
+        }));
+
+        private void SearchCategoryTree(string keyword, bool isOrderByAddress = true)
+        {
+            SingleParamTrees.Clear();
+            var source = _projectManager.GetChipCategoryTree(isOrderByAddress: isOrderByAddress);
+            if (string.IsNullOrEmpty(keyword))
+            {
+                SingleParamTrees.AddRange(source);
+            }
+            else
+            {
+                var searcher = new TreeSearcher();
+                var filteredResult = searcher.SearchInForest(source, keyword);
+                SingleParamTrees.AddRange(filteredResult);
+            }
         }
 
         private Sequence _currentSequence;
@@ -116,24 +113,15 @@ namespace Workbench.ViewModels.dw
             set
             {
                 SetProperty(ref _treeKeyword, value);
-                SearchCategoryTree(value);
+                SearchCategoryTree(value, IsOrderByAddress);
             }
         }
 
-        private void SearchCategoryTree(string keyword)
+        private ObservableCollection<CategoryTree> _singleParamTrees = new ObservableCollection<CategoryTree>();
+        public ObservableCollection<CategoryTree> SingleParamTrees
         {
-            BatchParamTrees.Clear();
-            var source = _projectManager.GetChipCategoryTree(CurrentSettingCategory.Value.ToString(), CurrentAddress?.Value.ToString());
-            if (string.IsNullOrEmpty(keyword))
-            {
-                BatchParamTrees.AddRange(source);
-            }
-            else
-            {
-                var searcher = new TreeSearcher();
-                var filteredResult = searcher.SearchInForest(source, keyword);
-                BatchParamTrees.AddRange(filteredResult);
-            }
+            get => _singleParamTrees;
+            set => SetProperty(ref _singleParamTrees, value);
         }
 
         private DelegateCommand _closeCommand;
@@ -219,24 +207,10 @@ namespace Workbench.ViewModels.dw
 
         public override void LoadData()
         {
-            InitData();
-        }
-
-        private void InitData()
-        {
-            var categoryOptions = _projectManager.GetCategories().Select(t => new ValueLabelOption() { Value = t, Label = t });
-            SettingCategoryList.Clear();
-            SettingCategoryList.AddRange(categoryOptions);
-            CurrentSettingCategory = SettingCategoryList.FirstOrDefault();
-
-            //InitCategoryTree();
-        }
-
-        public void InitCategoryTree()
-        {
-            BatchParamTrees.Clear();
-            var trees = _projectManager.GetChipCategoryTree(CurrentSettingCategory.Value.ToString(), CurrentAddress?.Value.ToString());
-            BatchParamTrees.AddRange(trees);
+            var tree = _projectManager.GetChipCategoryTree();
+            SingleParamTrees.AddRange(tree);
+            CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo)
+                .FirstOrDefault(t => t.Name == tree[0].Children[0].Children[0].Title);
         }
     }
 }
