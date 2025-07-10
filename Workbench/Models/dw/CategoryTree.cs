@@ -11,6 +11,8 @@ namespace Workbench.Models.dw
     {
         public string Title { get; set; }
         public string Type { get; set; }
+        public string AddressHex { get; set; }
+        public string AddressDec { get; set; }
         public List<CategoryTree> Children { get; set; }
     }
 

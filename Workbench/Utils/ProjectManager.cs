@@ -141,7 +141,7 @@ namespace Workbench.Utils
             {
                 Directory.CreateDirectory(dirPath);
             }
-            var filePath = Path.Combine(dirPath, fileName + ".ppec");
+            var filePath = Path.Combine(dirPath, fileName + ".sdpc");
             using (StreamWriter writer = new StreamWriter(filePath, false))
             {
                 writer.WriteLine(JsonHelper.SerializeObject(project, new JsonSerializerSettings()
@@ -160,7 +160,7 @@ namespace Workbench.Utils
         {
             var content = string.Empty;
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Files (*.ppec)|*.ppec|All Files (*.*)|*.*";
+            openFileDialog.Filter = "Files (*.sdpc)|*.sdpc|All Files (*.*)|*.*";
             openFileDialog.InitialDirectory = _fileHandler.GetDefaultFilePath();
             if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return false;
@@ -178,7 +178,7 @@ namespace Workbench.Utils
 
         internal bool OpenRecentFile(RecentFile recentFile)
         {
-            var filePath = Path.Combine(recentFile.DirPath, recentFile.FileName + ".ppec");
+            var filePath = Path.Combine(recentFile.DirPath, recentFile.FileName + ".sdpc");
             if (File.Exists(filePath))
             {
                 var projectStr = File.ReadAllText(filePath);
@@ -219,7 +219,7 @@ namespace Workbench.Utils
             var saveFileDialog = new Microsoft.Win32.SaveFileDialog()
             {
                 Title = "另存为",
-                Filter = "Files (*.ppec)|*.ppec|All Files (*.*)|*.*"
+                Filter = "Files (*.sdpc)|*.sdpc|All Files (*.*)|*.*"
             };
             if (saveFileDialog.ShowDialog() != true) return;
             var fileName = saveFileDialog.FileName;
@@ -329,15 +329,20 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="ctg">指定分类</param>
         /// <returns></returns>
-        internal List<CategoryTree> GetChipCategoryTree(string ctg = null)
+        internal List<CategoryTree> GetChipCategoryTree(string ctg = null, string address = null)
         {
             var list = new List<CategoryTree>();
             var infos = CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).ToList();
-            var categories = infos.Select(t => t.Category).Distinct().ToList();
             if (!string.IsNullOrEmpty(ctg))
             {
-                categories = categories.Where(t => t == ctg).ToList();
+                infos = infos.Where(t => t.Category == ctg).ToList();
             }
+            if (!string.IsNullOrEmpty(address))
+            {
+                infos = infos.Where(t => t.AddressHex == address).ToList();
+            }
+            var categories = infos.Select(t => t.Category).Distinct().ToList();
+
             foreach (var category in categories)
             {
                 list.Add(new CategoryTree()
@@ -372,13 +377,15 @@ namespace Workbench.Utils
         {
             var list = new List<CategoryTree>();
 
-            var registers = infos.Where(t => t.Category == category && t.SubCategory == subCategory).Select(t => t.Name).Distinct().ToList();
+            var registers = infos.Where(t => t.Category == category && t.SubCategory == subCategory).ToList();
             foreach (var register in registers)
             {
                 list.Add(new CategoryTree()
                 {
-                    Title = register,
+                    Title = register.Name,
                     Type = CategoryTreeType.Register,
+                    AddressDec = register.AddressDec.ToString(),
+                    AddressHex = register.AddressHex
                 });
             }
 

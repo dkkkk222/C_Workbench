@@ -97,7 +97,7 @@ namespace Workbench.Utils
         {
             var content = string.Empty;
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Files (*.ppec)|*.ppec|All Files (*.*)|*.*";
+            openFileDialog.Filter = "Files (*.sdpc)|*.sdpc|All Files (*.*)|*.*";
             openFileDialog.InitialDirectory = GetDefaultFilePath();
             if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return content;
@@ -116,7 +116,7 @@ namespace Workbench.Utils
         internal string OpenRecentFile(RecentFile recentFile)
         {
             var content = string.Empty;
-            var filePath = Path.Combine(recentFile.DirPath, recentFile.FileName + ".ppec");
+            var filePath = Path.Combine(recentFile.DirPath, recentFile.FileName + ".adpc");
             if (File.Exists(filePath))
             {
                 var projectStr = File.ReadAllText(filePath);
@@ -154,7 +154,7 @@ namespace Workbench.Utils
             {
                 Directory.CreateDirectory(dirPath);
             }
-            var filePath = Path.Combine(dirPath, fileName + ".ppec");
+            var filePath = Path.Combine(dirPath, fileName + ".sdpc");
             using (StreamWriter writer = new StreamWriter(filePath, false))
             {
                 // 序列化为json字符串，属性首字母小写，驼峰式命名
@@ -197,7 +197,7 @@ namespace Workbench.Utils
             var saveFileDialog = new Microsoft.Win32.SaveFileDialog()
             {
                 Title = "另存为",
-                Filter = "Files (*.ppec)|*.ppec|All Files (*.*)|*.*"
+                Filter = "Files (*.sdpc)|*.sdpc|All Files (*.*)|*.*"
             };
             if (saveFileDialog.ShowDialog() != true) return;
             var fileName = saveFileDialog.FileName;
@@ -247,7 +247,7 @@ namespace Workbench.Utils
             _fileHandler.SaveRecentFiles(recentFiles);
 
             //删除原来的工程文件
-            var filePath = Path.Combine(project.Path, oldName + ".ppec");
+            var filePath = Path.Combine(project.Path, oldName + ".sdpc");
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);

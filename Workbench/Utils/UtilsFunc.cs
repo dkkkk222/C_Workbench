@@ -246,5 +246,64 @@ namespace Workbench.Utils
             return (b, command);
 
         }
+
+        public static PpecProject FindNodeDfs(PpecProject root, string targetUid)
+        {
+            if (root == null) return null;
+            if (root.UID == targetUid) return root;
+
+            foreach (var child in root.Children)
+            {
+                PpecProject foundNode = FindNodeDfs(child, targetUid);
+                if (foundNode != null)
+                {
+                    return foundNode;
+                }
+            }
+            return null;
+        }
+
+        public static PpecProject FindNodeDfs(List<PpecProject> nodeList, string targetUid)
+        {
+            if (nodeList == null) return null;
+
+            // 遍历列表中的每个根节点
+            foreach (var rootNode in nodeList)
+            {
+                // 对每个根节点启动递归搜索
+                var foundNode = FindRecursive(rootNode, targetUid);
+                if (foundNode != null)
+                {
+                    // 一旦找到，立即返回
+                    return foundNode;
+                }
+            }
+
+            // 遍历完所有树都未找到
+            return null;
+        }
+
+        private static PpecProject FindRecursive(PpecProject currentNode, string targetUid)
+        {
+            if (currentNode == null) return null;
+
+            // 检查当前节点
+            if (currentNode.UID == targetUid)
+            {
+                return currentNode;
+            }
+
+            // 递归搜索所有子节点
+            foreach (var child in currentNode.Children)
+            {
+                var foundInChild = FindRecursive(child, targetUid);
+                if (foundInChild != null)
+                {
+                    return foundInChild;
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -151,28 +151,41 @@ namespace Workbench.ViewModels
                             new PpecProject()
                             {
                                 UID = Guid.NewGuid().ToString(),
-                                Name = "单参数",
-                                Label = "单参数",
-                                Level = ProjectLevel.SingleParams,
+                                Name = "参数配置",
+                                Label = "参数配置",
+                                Level = ProjectLevel.Project,
                                 Icon = IconUnicode.Develop,
                                 PPEC_Id = ppecId,
-                                ProjectId = projectId
-                            },
-                            new PpecProject()
-                            {
-                                UID = Guid.NewGuid().ToString(),
-                                Name = "批量参数",
-                                Label = "批量参数",
-                                Level = ProjectLevel.BatchParams,
-                                Icon = IconUnicode.Develop,
-                                PPEC_Id = ppecId,
-                                ProjectId = projectId
+                                ProjectId = projectId,
+                                Children=new ObservableCollection<PpecProject>()
+                                {
+                                    new PpecProject()
+                                    {
+                                        UID = Guid.NewGuid().ToString(),
+                                        Name = "单参数",
+                                        Label = "单参数",
+                                        Level = ProjectLevel.SingleParams,
+                                        Icon = IconUnicode.Develop,
+                                        PPEC_Id = ppecId,
+                                        ProjectId = projectId
+                                    },
+                                    new PpecProject()
+                                    {
+                                        UID = Guid.NewGuid().ToString(),
+                                        Name = "批量参数",
+                                        Label = "批量参数",
+                                        Level = ProjectLevel.BatchParams,
+                                        Icon = IconUnicode.Develop,
+                                        PPEC_Id = ppecId,
+                                        ProjectId = projectId
+                                    },
+                                }
                             },
                             new PpecProject()
                             {
                                 UID = Guid.NewGuid().ToString(),
                                 Name = "状态监测",
-                                Label = "状态监测",
+                                Label = "状态监控",
                                 Level = ProjectLevel.Debug,
                                 Icon = IconUnicode.Debug,
                                 PPEC_Id = ppecId,

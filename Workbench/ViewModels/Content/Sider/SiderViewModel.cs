@@ -61,7 +61,9 @@ namespace Workbench.ViewModels.Content.Sider
                 if (tabProject == null)
                     return;
                 var project = Projects.FirstOrDefault(t => t.UID == tabProject.ProjectId);
-                project.Children.FirstOrDefault(t => t.UID == tabProject.UID).IsSelected = true;
+                var page = UtilsFunc.FindNodeDfs(project, tabProject.UID);
+                if (page != null)
+                    page.IsSelected = true;
             });
         }
 

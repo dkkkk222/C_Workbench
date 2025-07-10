@@ -11,7 +11,15 @@ namespace Workbench.Models.dw
         public string ReadWrite { get; set; }
         public string Address { get; set; }
         public string Hex { get; set; }
-        public string Binary { get; set; }
+        public string Name { get; set; }
+        public string State { get; set; }
+        public string Datetime { get; set; }
 
+    }
+
+    public class SingleParamHistoryState
+    {
+        public const string Normal = "正常";
+        public const string Error = "错误";
     }
 }

@@ -331,17 +331,19 @@
                                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Height="280">
                                         <DataGrid.ColumnHeaderStyle>
                                             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
-                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                 <Setter Property="FontSize" Value="13"/>
                                                 <Setter Property="Margin" Value="0,0,0,5"/>
                                             </Style>
                                         </DataGrid.ColumnHeaderStyle>
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="读/写" Binding="{Binding ReadWrite}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="100"/>
-                                            <DataGridTextColumn Header="地址" Binding="{Binding Address}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="120"/>
-                                            <DataGridTextColumn Header="数据(HEX)" Binding="{Binding Hex}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="120"/>
-                                            <DataGridTextColumn Header="数据(Binary)" Binding="{Binding Binary}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="*"/>
+                                            <DataGridTextColumn Header="读/写" Binding="{Binding ReadWrite}"  Width="70"/>
+                                            <DataGridTextColumn Header="地址" Binding="{Binding Address}"  Width="80"/>
+                                            <DataGridTextColumn Header="名称" Binding="{Binding Name}"  Width="*"/>
+                                            <DataGridTextColumn Header="数据(HEX)" Binding="{Binding Hex}"  Width="120"/>
+                                            <DataGridTextColumn Header="状态" Binding="{Binding State}"  Width="80"/>
+                                            <DataGridTextColumn Header="操作时间" Binding="{Binding Datetime}"  Width="*"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Border>
@@ -391,7 +393,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="解析"  Width="100">
+                                <DataGridTemplateColumn Header="配置"  Width="100">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"

@@ -9,6 +9,7 @@
              xmlns:views="clr-namespace:Workbench.Views.dw"
              xmlns:cvt="clr-namespace:Workbench.Converters"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -128,20 +129,25 @@
                     <Border Grid.Column="1">
                         <hc:UniformSpacingPanel Spacing="5" Orientation="Vertical">
                             <Border>
-                                <StackPanel Orientation="Horizontal">
-                                    <ComboBox ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
-                                      hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180" SelectionChanged="ComboBox_SelectionChanged"
-                                      SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                                    <hc:SearchBar Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" Margin="10,0,0,0"
-                                          Width="180">
+                                <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5" HorizontalAlignment="Stretch">
+                                    <hc:SearchBar Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字">
                                         <hc:SearchBar.Text>
                                             <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
                                         </hc:SearchBar.Text>
                                     </hc:SearchBar>
-                                </StackPanel>
+                                    <hc:UniformSpacingPanel Spacing="5">
+                                        <ComboBox ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
+                                              hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180" SelectionChanged="ComboBox_SelectionChanged"
+                                              SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
+                                        <ComboBox ItemsSource="{Binding AddressList}" Style="{StaticResource ComboBoxExtend}"
+                                              hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="180" SelectionChanged="ComboBox_SelectionChanged"
+                                              SelectedItem="{Binding CurrentAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
+                                    </hc:UniformSpacingPanel>
+
+                                </hc:UniformSpacingPanel>
                             </Border>
                             <Border Background="{DynamicResource DarkDefaultBrush}" Padding="5" CornerRadius="5">
-                                <TreeView ItemsSource="{Binding BatchParamTrees}" Height="350">
+                                <TreeView ItemsSource="{Binding BatchParamTrees}" Height="318">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectedItemChanged">
                                             <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 
@@ -156,7 +162,14 @@
                                     </TreeView.ItemContainerStyle>
                                     <TreeView.ItemTemplate>
                                         <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                            <TextBlock Text="{Binding Title}"/>
+                                            <StackPanel>
+                                                <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}"/>
+                                                <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
+                                                    <TextBlock Text="{Binding AddressHex}"/>
+                                                    <TextBlock Text=" : "/>
+                                                    <TextBlock Text="{Binding Title}"/>
+                                                </StackPanel>
+                                            </StackPanel>
                                         </HierarchicalDataTemplate>
                                     </TreeView.ItemTemplate>
                                 </TreeView>

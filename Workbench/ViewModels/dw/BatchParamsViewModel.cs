@@ -36,9 +36,37 @@ namespace Workbench.ViewModels.dw
         public ValueLabelOption CurrentSettingCategory
         {
             get => _currentSettingCategory;
-            set => SetProperty(ref _currentSettingCategory, value);
+            set
+            {
+                SetProperty(ref _currentSettingCategory, value);
+                GetAddressList(value.Value.ToString());
+            }
         }
 
+        private void GetAddressList(string category)
+        {
+            AddressList.Clear();
+            var list = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).Where(t => t.Category == category).ToList();
+            if (list.Any())
+            {
+                var options = list.Select(t => new ValueLabelOption { Value = t.AddressHex, Label = $"{t.AddressHex} : {t.Name}" });
+                AddressList.AddRange(options);
+            }
+        }
+
+        private ObservableCollection<ValueLabelOption> _addressList = new ObservableCollection<ValueLabelOption>();
+        public ObservableCollection<ValueLabelOption> AddressList
+        {
+            get => _addressList;
+            set => SetProperty(ref _addressList, value);
+        }
+
+        private ValueLabelOption _currentAddress;
+        public ValueLabelOption CurrentAddress
+        {
+            get => _currentAddress;
+            set => SetProperty(ref _currentAddress, value);
+        }
         private ObservableCollection<CategoryTree> _batchParamTrees = new ObservableCollection<CategoryTree>();
         public ObservableCollection<CategoryTree> BatchParamTrees
         {
@@ -95,7 +123,7 @@ namespace Workbench.ViewModels.dw
         private void SearchCategoryTree(string keyword)
         {
             BatchParamTrees.Clear();
-            var source = _projectManager.GetChipCategoryTree(CurrentSettingCategory.Value.ToString());
+            var source = _projectManager.GetChipCategoryTree(CurrentSettingCategory.Value.ToString(), CurrentAddress?.Value.ToString());
             if (string.IsNullOrEmpty(keyword))
             {
                 BatchParamTrees.AddRange(source);
@@ -207,7 +235,7 @@ namespace Workbench.ViewModels.dw
         public void InitCategoryTree()
         {
             BatchParamTrees.Clear();
-            var trees = _projectManager.GetChipCategoryTree(CurrentSettingCategory.Value.ToString());
+            var trees = _projectManager.GetChipCategoryTree(CurrentSettingCategory.Value.ToString(), CurrentAddress?.Value.ToString());
             BatchParamTrees.AddRange(trees);
         }
     }

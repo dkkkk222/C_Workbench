@@ -36,7 +36,9 @@ namespace Workbench.Utils
             }
 
             // 检查当前节点是否匹配。
-            bool selfMatches = node.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase);
+            bool selfMatches = node.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase)
+                || node.AddressDec.Contains(keyword, StringComparison.OrdinalIgnoreCase)
+                || node.AddressHex.Contains(keyword, StringComparison.OrdinalIgnoreCase);
 
             // 如果当前节点匹配，我们就不需要再对子节点进行过滤了。
             // 直接返回一个包含所有原始子树的节点副本。
@@ -49,6 +51,8 @@ namespace Workbench.Utils
                 {
                     Title = node.Title,
                     Type = node.Type,
+                    AddressDec = node.AddressDec,
+                    AddressHex = node.AddressHex,
                     Children = node.Children
                 };
                 return newNode;
@@ -77,6 +81,8 @@ namespace Workbench.Utils
                 {
                     Title = node.Title,
                     Type = node.Type,
+                    AddressDec = node.AddressDec,
+                    AddressHex = node.AddressHex,
                     Children = filteredChildren
                 };
                 return newNode;

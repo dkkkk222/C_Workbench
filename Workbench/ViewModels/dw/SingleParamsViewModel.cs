@@ -89,6 +89,7 @@ namespace Workbench.ViewModels.dw
                 if (param == null || param.Type != CategoryTreeType.Register) return;
 
                 CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
+                SetCurrentRegisterValue(0);
             }));
 
         private DelegateCommand _readRegisterCommand;
@@ -114,12 +115,15 @@ namespace Workbench.ViewModels.dw
                 var read = currentProject.CommService.Read(CurrentRegister.AddressHex);
                 if (read.HasValue)
                 {
+                    SetCurrentRegisterValue(read.Value);
                     var history = new SingleParamHistory
                     {
                         ReadWrite = "R",
                         Address = CurrentRegister.AddressHex,
                         Hex = Utility.DecToHex(read.Value),
-                        Binary = (Utility.ParseDecToBinary(read.Value)).binaryString
+                        Name = CurrentRegister.Name,
+                        State = "正常",
+                        Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                     };
                     await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                     {
@@ -128,6 +132,17 @@ namespace Workbench.ViewModels.dw
                 }
             });
         }));
+
+        private void SetCurrentRegisterValue(uint value)
+        {
+            CurrentRegister.DecValue = value;
+            CurrentRegister.HexValue = Utility.DecToHex(value);
+            var tpl = Utility.ParseDecToBinary(value);
+            CurrentRegister.BinaryStr = tpl.binaryString;
+            var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
+            CurrentRegister.BinaryArray.Clear();
+            CurrentRegister.BinaryArray.AddRange(list);
+        }
 
         private DelegateCommand _sendRegisterCommand;
         public DelegateCommand SendRegisterCommand => _sendRegisterCommand ?? (_sendRegisterCommand = new DelegateCommand(async () =>
@@ -152,11 +167,15 @@ namespace Workbench.ViewModels.dw
                     ReadWrite = "W",
                     Address = CurrentRegister.AddressHex,
                     Hex = CurrentRegister.HexValue,
-                    Binary = string.IsNullOrEmpty(CurrentRegister.BinaryStr) ? string.Concat(CurrentRegister.BinaryList.Select(t => t.Value.ToString())) : CurrentRegister.BinaryStr
+                    Name = CurrentRegister.Name,
+                    State = "正常",
+                    Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                 };
                 await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     _projectManager.CurrentProject.ReadWriteHistory.Add(history);
+                    SetCurrentRegisterValue(0);
+
                 });
 
             });
@@ -195,8 +214,8 @@ namespace Workbench.ViewModels.dw
                 var workbook = new XSSFWorkbook();
                 var sheet = workbook.CreateSheet("Sheet1");
                 var headerRow = sheet.CreateRow(0);
-                string[] headerColumns = new string[] { "读/写", "地址", "数据(HEX)", "数据(Binary)" };
-                for (int i = 0; i < 4; i++)
+                string[] headerColumns = new string[] { "读/写", "地址", "名称", "数据(HEX)", "状态", "操作时间" };
+                for (int i = 0; i < headerColumns.Length; i++)
                 {
                     headerRow.CreateCell(i).SetCellValue(headerColumns[i]);
                 }
@@ -207,13 +226,17 @@ namespace Workbench.ViewModels.dw
                     var row = sheet.CreateRow(startRow);
                     row.CreateCell(0).SetCellValue(history.ReadWrite);
                     row.CreateCell(1).SetCellValue(history.Address);
-                    row.CreateCell(2).SetCellValue(history.Hex);
-                    row.CreateCell(3).SetCellValue(history.Binary);
+                    row.CreateCell(2).SetCellValue(history.Name);
+                    row.CreateCell(3).SetCellValue(history.Hex);
+                    row.CreateCell(4).SetCellValue(history.State);
+                    row.CreateCell(5).SetCellValue(history.Datetime);
+
                 }
-                sheet.AutoSizeColumn(0);
-                sheet.AutoSizeColumn(1);
-                sheet.AutoSizeColumn(2);
-                sheet.AutoSizeColumn(3);
+
+                for (int i = 0; i < headerColumns.Length; i++)
+                {
+                    sheet.AutoSizeColumn(i);
+                }
 
                 string fileName = "寄存器操作历史数据.xlsx";
                 string filePath = Path.Combine(path, fileName);
