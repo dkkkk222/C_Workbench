@@ -49,7 +49,6 @@
                                 </Style>
                             </DataGrid.ColumnHeaderStyle>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding AddressDec}" Header="寄存器地址(DEC)" Width="*"/>
                                 <DataGridTextColumn Binding="{Binding AddressHex}" Header="寄存器地址(HEX)" Width="*"/>
                                 <DataGridTextColumn Binding="{Binding Category}" Header="分类" Width="*"/>
                                 <DataGridTextColumn Binding="{Binding SubCategory}" Header="子分类" Width="*"/>
@@ -84,6 +83,13 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Header="添加到波形" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsAddToPlot,Mode=TwoWay}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="添加到解析" Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <CheckBox IsChecked="{Binding IsAddToPlot,Mode=TwoWay}"/>
@@ -139,13 +145,6 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=DataContext.CurrentRegister.AddressHex,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="寄存器地址" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Path=DataContext.CurrentRegister.AddressDec,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
