@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Workbench.Db.Tables;
+using Workbench.Utils;
 using static ScottPlot.Generate;
 
 namespace Workbench.Migrations
@@ -61,7 +62,7 @@ namespace Workbench.Migrations
 
             string fileName = "B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类.xlsx";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-            var excelData = new RegisterExcelParser().Parse(filePath);
+            var excelData = new RegisterExcelResolve().Parse(filePath);
 
             string chipId = Guid.NewGuid().ToString("N");
             Insert.IntoTable("t_chip").Row(new

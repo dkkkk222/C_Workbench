@@ -9,6 +9,7 @@
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:views="clr-namespace:Workbench.Views.dw"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:behaviors="clr-namespace:Workbench.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -378,7 +379,7 @@
                                             </Style>
                                         </DataGrid.ColumnHeaderStyle>
                                         <DataGrid.Columns>
-                                            <DataGridTemplateColumn Header="位" Width="*">
+                                            <DataGridTemplateColumn Header="位" Width="*" MinWidth="80">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal">
@@ -393,21 +394,34 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*"/>
-                                            <DataGridTextColumn Header="数据读取" Binding="{Binding DataPull}"  Width="*"/>
-                                            <DataGridTextColumn Header="解析" Binding="{Binding DataPullResolve}"  Width="*"/>
-                                            <DataGridTemplateColumn Header="数据下发" Width="100" >
+                                            <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="100"/>
+                                            <DataGridTextColumn Header="数据读取" Binding="{Binding ReadBinary}"  Width="*" MinWidth="150"/>
+                                            <DataGridTextColumn Header="解析" Binding="{Binding DataPullResolve}"  Width="*" MinWidth="100"/>
+                                            <DataGridTemplateColumn Header="数据下发" Width="*" MinWidth="100" >
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <TextBox Style="{StaticResource TextBoxExtend.Small}" HorizontalAlignment="Stretch"/>
+                                                        <StackPanel Orientation="Vertical">
+                                                            <TextBox Style="{StaticResource TextBoxExtend.Small}" HorizontalAlignment="Stretch" hc:InfoElement.Placeholder="请输入"
+                                                                     MaxLength="{Binding Length}" Text="{Binding WriteBinary}"
+                                                                     behaviors:InputMaskBehavior.IsBinaryOnly="True"
+                                                                     Visibility="{c:Binding 'RangeMin==null',FalseToVisibility=Collapsed}"/>
+                                                            <hc:NumericUpDown Minimum="{Binding RangeMin}" Maximum="{Binding RangeMax}"
+                                                                              Style="{StaticResource NumericUpDownExtend.Small}"
+                                                                              hc:InfoElement.Placeholder="请输入"
+                                                                              Visibility="{c:Binding 'RangeMin!=null and RangeMax!=null',FalseToVisibility=Collapsed}">
+                                                                <hc:NumericUpDown.Value>
+                                                                    <Binding Path="WriteBinary" UpdateSourceTrigger="PropertyChanged"/>
+                                                                </hc:NumericUpDown.Value>
+                                                            </hc:NumericUpDown>
+                                                        </StackPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Header="配置"  Width="100">
+                                            <DataGridTemplateColumn Header="配置"  Width="*" MinWidth="100">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"
-                                                      DisplayMemberPath="Display" SelectedValuePath="Value"
+                                                      DisplayMemberPath="Display" SelectedValuePath="Value" hc:InfoElement.Placeholder="请选择"
                                                       Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>

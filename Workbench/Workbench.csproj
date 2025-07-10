@@ -321,6 +321,7 @@
     </ApplicationDefinition>
     <Compile Include="AvalonDock\PanesStyleSelector.cs" />
     <Compile Include="AvalonDock\PanesTemplateSelector.cs" />
+    <Compile Include="Behaviors\InputMaskBehavior.cs" />
     <Compile Include="Communication\IBaseCommService.cs" />
     <Compile Include="Communication\SerialPortService.cs" />
     <Compile Include="Converters\RowIndexConverter.cs" />
@@ -376,6 +377,7 @@
     <Compile Include="Utils\Pinia.cs" />
     <Compile Include="Utils\ProjectManager.cs" />
     <Compile Include="Utils\RegionNames.cs" />
+    <Compile Include="Utils\RegisterExcelResolve.cs" />
     <Compile Include="Utils\TextManager.cs" />
     <Compile Include="Utils\TreeSearcher.cs" />
     <Compile Include="Utils\UtilsFunc.cs" />

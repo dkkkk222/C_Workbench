@@ -285,6 +285,7 @@ namespace PPEC.Communication
             // 转为 uint（支持最大 0xFFFFFFFF）
             return Convert.ToUInt32(hexString, 16);
         }
+
         /// <summary>
         /// 将任意合法的 Hex 字符串格式化为 0x 前缀 + 8位大写十六进制字符串
         /// </summary>
@@ -387,6 +388,72 @@ namespace PPEC.Communication
             packet[5] = (byte)(channel2 >> 8);
 
             return packet;
+        }
+
+        /// <summary>
+        /// 从一个表示32位数据的二进制字符串中提取子串。
+        /// 该方法假定字符串从左到右代表从 bit31 到 bit0。
+        /// </summary>
+        /// <param name="binaryString">长度为32的二进制源字符串。</param>
+        /// <param name="bitIndex">要开始提取的比特位索引 (有效范围 31 到 0)。</param>
+        /// <param name="length">要提取的比特位数（子串长度）。</param>
+        /// <returns>提取出的二进制子字符串。</returns>
+        /// <exception cref="ArgumentException">当输入字符串无效或请求范围越界时抛出。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">当索引或长度参数超出有效范围时抛出。</exception>
+        internal static string GetBitRange(string binaryString, int bitIndex, int length)
+        {
+            // 1. 输入验证
+            if (string.IsNullOrEmpty(binaryString) || binaryString.Length != 32)
+            {
+                throw new ArgumentException("输入字符串必须是长度为32的非空字符串。", nameof(binaryString));
+            }
+
+            if (bitIndex < 0 || bitIndex > 31)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bitIndex), "比特位索引必须在 0 到 31 之间。");
+            }
+
+            if (length <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length), "长度必须大于 0。");
+            }
+
+            // 检查请求的范围是否有效 (例如，从 bit 5 开始取 10 位是不可能的，因为会低于 bit 0)
+            if (bitIndex - length + 1 < 0)
+            {
+                throw new ArgumentException($"从 bit {bitIndex} 开始获取 {length} 位的请求超出了有效范围（最低为 bit 0）。");
+            }
+
+            // 2. 核心逻辑：将比特位索引转换为C#字符串索引
+            // bit31 -> index 0
+            // bit30 -> index 1
+            // ...
+            // bit0  -> index 31
+            // 公式: stringIndex = 31 - bitIndex
+            int startIndex = 31 - bitIndex;
+
+            // 3. 使用C#的 Substring 方法提取子串
+            return binaryString.Substring(startIndex, length);
+        }
+
+        public static uint? HexToUint(string hex)
+        {
+            if (string.IsNullOrWhiteSpace(hex))
+                throw new ArgumentException("输入不能为空");
+
+            // 去掉 "0x" 或 "0X" 前缀（如果有）
+            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                hex = hex.Substring(2);
+
+            try
+            {
+                // 转为 uint（支持最大 0xFFFFFFFF）
+                return Convert.ToUInt32(hex, 16);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 

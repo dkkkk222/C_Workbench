@@ -118,7 +118,17 @@ namespace PPEC.Communication.Model
         public string BinaryStr
         {
             get => _binaryStr;
-            set => SetProperty(ref _binaryStr, value);
+            set
+            {
+                SetProperty(ref _binaryStr, value);
+                foreach (var bf in BitFields)
+                {
+                    if (string.IsNullOrEmpty(value))
+                        bf.ReadBinary = string.Empty;
+                    else
+                        bf.ReadBinary = Utility.GetBitRange(value, bf.EndBit, bf.Length);
+                }
+            }
         }
 
         private ObservableCollection<ObservableCollection<BitOption>> _binaryArray = new ObservableCollection<ObservableCollection<BitOption>>()
@@ -244,7 +254,17 @@ namespace PPEC.Communication.Model
         public int EndBit { get; set; }   // 高位
         public int Length => EndBit - StartBit + 1;//位长度
 
+        public string Name { get; set; }
+
         public string Desc { get; set; }
+
+
+        private string _fieldType;
+        public string FieldType
+        {
+            get => _fieldType;
+            set => SetProperty(ref _fieldType, value);
+        }
 
         /* 以下为新字段 —— 任选其一有值 */
         public List<BitOption> Options { get; set; } = new List<BitOption>(); // 离散取值
@@ -276,6 +296,25 @@ namespace PPEC.Communication.Model
             }
         }
 
+        private string _readBinary;
+        /// <summary>
+        /// 数据读取
+        /// </summary>
+        public string ReadBinary
+        {
+            get => _readBinary;
+            set => SetProperty(ref _readBinary, value);
+        }
+
+        private string _writeBinary;
+        /// <summary>
+        /// 数据下发
+        /// </summary>
+        public string WriteBinary
+        {
+            get => _writeBinary;
+            set => SetProperty(ref _writeBinary, value);
+        }
     }
     public class BitOption : BindableBase
     {
@@ -299,6 +338,8 @@ namespace PPEC.Communication.Model
             get => _display;
             set => SetProperty(ref _display, value);
         }
+
+        public string Key { get; set; }
     }
     public class FormulaParam
     {

@@ -155,13 +155,7 @@ namespace Workbench.ViewModels.dw
 
         private void SetCurrentRegisterValue(uint value)
         {
-            CurrentRegister.DecValue = value;
-            CurrentRegister.HexValue = Utility.DecToHex(value);
-            var tpl = Utility.ParseDecToBinary(value);
-            CurrentRegister.BinaryStr = tpl.binaryString;
-            var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
-            CurrentRegister.BinaryArray.Clear();
-            CurrentRegister.BinaryArray.AddRange(list);
+            _projectManager.SetRegisterValue(CurrentRegister.Name, value);
         }
 
         private DelegateCommand _sendRegisterCommand;

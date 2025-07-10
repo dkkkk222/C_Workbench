@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 
 namespace PPEC.Communication.Common
@@ -126,11 +127,20 @@ namespace PPEC.Communication.Common
                 return bf;
             }
             // ==== 4. 连续范围 —— 形如 “000-111” ====
-            if (Regex.IsMatch(remark, @"^[01]+\s*-\s*[01]+$"))
+            //if (Regex.IsMatch(remark, @"^[01]+\s*-\s*[01]+$"))
+            //{
+            //    var parts = remark.Split('-');
+            //    bf.RangeMin = Convert.ToUInt32(parts[0], 2);
+            //    bf.RangeMax = Convert.ToUInt32(parts[1], 2);
+            //    return bf;
+            //}
+            if (remark.Contains("-"))
             {
                 var parts = remark.Split('-');
-                bf.RangeMin = Convert.ToUInt32(parts[0], 2);
-                bf.RangeMax = Convert.ToUInt32(parts[1], 2);
+                bf.RangeMin = Utility.HexToUint(parts[0]);
+                bf.RangeMax = Utility.HexToUint(parts[1]);
+                bf.Options.Clear();
+                bf.FieldType = FieldType.Range;
                 return bf;
             }
 
@@ -149,6 +159,7 @@ namespace PPEC.Communication.Common
                     Value = val,         // 右移到最低位 >> lo
                     Display = txt
                 });
+                bf.FieldType = FieldType.Option;
             }
 
             // ==== 6. 额外操作提示 ====

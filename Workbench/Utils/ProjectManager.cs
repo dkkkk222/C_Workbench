@@ -405,5 +405,17 @@ namespace Workbench.Utils
         {
             return CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).Select(d => d.Category).Distinct().ToList();
         }
+
+        internal void SetRegisterValue(string registerName, uint value)
+        {
+            var register = CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == registerName);
+            register.DecValue = value;
+            register.HexValue = Utility.DecToHex(value);
+            var tpl = Utility.ParseDecToBinary(value);
+            register.BinaryStr = tpl.binaryString;
+            var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
+            register.BinaryArray.Clear();
+            register.BinaryArray.AddRange(list);
+        }
     }
 }
