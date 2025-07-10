@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentMigrator;
 using PPEC.Communication.Common;
+using PPEC.Communication.Enum;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,6 +48,7 @@ namespace Workbench.Migrations
                 .WithColumn("end_bit").AsInt32().NotNullable()
                 .WithColumn("length").AsInt32().NotNullable()
                 .WithColumn("desc").AsString().Nullable()
+                .WithColumn("field_type").AsString().Nullable()
                 .WithColumn("range_min").AsInt32().Nullable()
                 .WithColumn("range_max").AsInt32().Nullable();
             Create.Index("IX_t_register_bit_id").OnTable("t_register_bit").OnColumn("id").Ascending().WithOptions().Unique();
@@ -104,7 +106,8 @@ namespace Workbench.Migrations
                         length = bf.Length,
                         desc = bf.Desc,
                         range_min = bf.RangeMin,
-                        range_max = bf.RangeMax
+                        range_max = bf.RangeMax,
+                        field_type = bf.FieldType
                     });
 
                     foreach (var option in bf.Options)

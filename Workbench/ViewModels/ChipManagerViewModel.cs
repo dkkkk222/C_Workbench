@@ -111,7 +111,7 @@ namespace Workbench.ViewModels
         {
             try
             {
-                var excelData = new RegisterExcelParser().Parse(FilePath);
+                var excelData = new RegisterExcelResolve().Parse(FilePath);
 
                 string chipId = Guid.NewGuid().ToString("N");
                 var chip = new Chip()

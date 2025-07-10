@@ -38,6 +38,9 @@ namespace Workbench.Db.Tables
         [Column("desc")]
         public string Desc { get; set; }
 
+        [Column("field_type")]
+        public string FieldType { get; set; }
+
         /// <summary>
         /// 连续范围最小值
         /// </summary>
