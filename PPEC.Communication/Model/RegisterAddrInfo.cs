@@ -112,10 +112,11 @@ namespace PPEC.Communication.Model
             }
         }
 
-        private string _binaryStr;
+        private string _binaryStr = string.Concat(Enumerable.Range(0, 32).Select(t => "0"));
         /// <summary>
         /// 二进制字符串
         /// </summary>
+        [JsonIgnore]
         public string BinaryStr
         {
             get => _binaryStr;
@@ -182,6 +183,7 @@ namespace PPEC.Communication.Model
         /// <summary>
         /// 二进制数组
         /// </summary>
+        [JsonIgnore]
         public ObservableCollection<ObservableCollection<BitOption>> BinaryArray
         {
             get => _binaryArray;
@@ -223,6 +225,8 @@ namespace PPEC.Communication.Model
             new BitOption{Value=0,Display="1"},
             new BitOption{Value=0,Display="0"},
         };
+
+        [JsonIgnore]
         public ObservableCollection<BitOption> BinaryList
         {
             get => _binaryList;
@@ -316,7 +320,7 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _readBinary, value);
         }
 
-        private string _writeBinary;
+        private string _writeBinary = "";
         /// <summary>
         /// 数据下发
         /// </summary>
@@ -328,6 +332,7 @@ namespace PPEC.Communication.Model
         }
 
         private string _selectedValue;
+        [JsonIgnore]
         public string SelectedValue
         {
             get => _selectedValue;

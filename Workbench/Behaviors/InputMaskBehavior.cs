@@ -42,12 +42,19 @@ namespace Workbench.Behaviors
                 // 如果属性设置为 true, 则挂接事件
                 textBox.PreviewTextInput += TextBox_PreviewTextInput;
                 DataObject.AddPastingHandler(textBox, TextBox_Pasting);
+
+                // 【推荐】新增此行：禁用输入法
+                InputMethod.SetIsInputMethodEnabled(textBox, false);
             }
             else
             {
                 // 如果属性设置为 false, 则移除事件，防止内存泄漏
                 textBox.PreviewTextInput -= TextBox_PreviewTextInput;
                 DataObject.RemovePastingHandler(textBox, TextBox_Pasting);
+
+                // 【推荐】新增此行：恢复输入法默认行为
+                // 使用 ClearValue 比设置为 true 更好，因为它会恢复到继承的或默认的值
+                textBox.ClearValue(InputMethod.IsInputMethodEnabledProperty);
             }
         }
 

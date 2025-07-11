@@ -226,12 +226,16 @@ namespace Workbench.ViewModels.dw
         {
             var bnr = Utility.HexToBinaryStringLarge(param.SelectedValue, param.Length);
             param.WriteBinary = bnr;
-            var bs = CurrentRegister.BinaryStr;
-            var str = Utility.ReplaceBitsInString(bs, param.EndBit, param.StartBit, bnr);
-            var dec = Utility.BinaryToDec(str);
-            _projectManager.SetRegisterValue(param.Name, dec);
-
+            UpdateBinaryString(param.Name, param.EndBit, param.StartBit, bnr);
         }));
+
+        internal void UpdateBinaryString(string name, int endBit, int startBit, string replaceStr)
+        {
+            var bs = CurrentRegister.BinaryStr;
+            var str = Utility.ReplaceBitsInString(bs, endBit, startBit, replaceStr);
+            var dec = Utility.BinaryToDec(str);
+            _projectManager.SetRegisterValue(name, dec);
+        }
 
         private void HistoryToExcel(string path)
         {

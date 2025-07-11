@@ -405,6 +405,7 @@
                                                                      MaxLength="{Binding Length}" Text="{Binding WriteBinary}"
                                                                      behaviors:InputMaskBehavior.IsBinaryOnly="True"
                                                                      IsReadOnly="{c:Binding 'Options.Count>0'}"
+                                                                     LostFocus="TextBox_LostFocus"
                                                                      Visibility="{c:Binding 'RangeMin==null',FalseToVisibility=Collapsed}"/>
                                                             <hc:NumericUpDown Minimum="{Binding RangeMin}" Maximum="{Binding RangeMax}"
                                                                               Style="{StaticResource NumericUpDownExtend.Small}"

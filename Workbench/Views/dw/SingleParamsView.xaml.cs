@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Workbench.Utils;
 using Workbench.ViewModels.dw;
 
 namespace Workbench.Views.dw
@@ -131,6 +132,25 @@ namespace Workbench.Views.dw
             if (hex != viewModel.CurrentRegister.HexValue)
             {
                 viewModel.CurrentRegister.HexValue = hex;
+            }
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            var bf = fe.DataContext as BitField;
+
+            var viewModel = DataContext as SingleParamsViewModel;
+            if (viewModel.CurrentRegister == null)
+                return;
+
+            var tbx = sender as TextBox;
+            var text = tbx.Text;
+            if (!string.IsNullOrEmpty(text))
+            {
+                var result = text.PadLeft(bf.Length, '0');
+                bf.WriteBinary = result;
+                viewModel.UpdateBinaryString(bf.Name, bf.EndBit, bf.StartBit, result);
             }
         }
     }
