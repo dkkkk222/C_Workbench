@@ -339,7 +339,20 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _display, value);
         }
 
-        public string Key { get; set; }
+        private string _key;
+        public string Key
+        {
+            get => _key;
+            set => SetProperty(ref _key, value);
+        }
+
+        private string _label;
+        public string Label
+        {
+            get => _label;
+            set => SetProperty(ref _label, value);
+        }
+
     }
     public class FormulaParam
     {

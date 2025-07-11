@@ -58,6 +58,8 @@ namespace Workbench.Migrations
                 .WithColumn("id").AsString().PrimaryKey()
                 .WithColumn("register_bit_id").AsString().NotNullable()
                 .WithColumn("value").AsInt32().NotNullable()
+                .WithColumn("key").AsString().NotNullable()
+                .WithColumn("label").AsString().Nullable()
                 .WithColumn("display").AsString().NotNullable();
             Create.Index("IX_t_register_bit_option_id").OnTable("t_register_bit_option").OnColumn("id").Ascending().WithOptions().Unique();
             Create.Index("IX_t_register_bit_option_register_bit_id").OnTable("t_register_bit_option").OnColumn("register_bit_id");
@@ -117,6 +119,8 @@ namespace Workbench.Migrations
                             id = Guid.NewGuid().ToString("N"),
                             register_bit_id = registerBitId,
                             value = option.Value,
+                            key = option.Key,
+                            label = option.Label,
                             display = option.Display
                         });
                     }

@@ -22,5 +22,11 @@ namespace Workbench.Db.Tables
 
         [Column("display", CanBeNull = false)]
         public string Display { get; set; }
+
+        [Column("key", CanBeNull = false)]
+        public string Key { get; set; }
+
+        [Column("label", CanBeNull = true)]
+        public string Label { get; set; }
     }
 }

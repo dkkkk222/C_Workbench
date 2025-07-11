@@ -106,7 +106,8 @@ namespace Workbench.Utils
                         options.Add(new BitOption
                         {
                             Key = arr[0],
-                            Display = arr[1]
+                            Display = $"{arr[0]}:{arr[1]}",
+                            Label = arr[1]
                         });
                     }
                 }
