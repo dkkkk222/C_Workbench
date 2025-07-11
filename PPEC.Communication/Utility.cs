@@ -455,6 +455,103 @@ namespace PPEC.Communication
                 return null;
             }
         }
+
+        private static readonly Dictionary<char, string> HexToBinaryMap = new Dictionary<char, string>
+        {
+            { '0', "0000" }, { '1', "0001" }, { '2', "0010" }, { '3', "0011" },
+            { '4', "0100" }, { '5', "0101" }, { '6', "0110" }, { '7', "0111" },
+            { '8', "1000" }, { '9', "1001" }, { 'A', "1010" }, { 'B', "1011" },
+            { 'C', "1100" }, { 'D', "1101" }, { 'E', "1110" }, { 'F', "1111" }
+        };
+
+        public static string HexToBinaryStringLarge(string hex, int desiredLength)
+        {
+            if (hex.StartsWith("0x"))
+            {
+                hex = hex.Substring(2, hex.Length - 2);
+            }
+            if (string.IsNullOrEmpty(hex))
+            {
+                return new string('0', desiredLength);
+            }
+
+            // 使用 StringBuilder 以获得更好的性能
+            StringBuilder binaryBuilder = new StringBuilder(hex.Length * 4);
+
+            foreach (char c in hex.ToUpper())
+            {
+                if (HexToBinaryMap.TryGetValue(c, out string binaryChunk))
+                {
+                    binaryBuilder.Append(binaryChunk);
+                }
+                else
+                {
+                    throw new FormatException($"输入的字符串 '{hex}' 包含无效的十六进制字符 '{c}'。");
+                }
+            }
+
+            string fullBinary = binaryBuilder.ToString();
+
+            // 根据期望长度进行调整
+            if (fullBinary.Length > desiredLength)
+            {
+                // 如果生成的二进制比期望的长，从右侧截取（取低位）
+                return fullBinary.Substring(fullBinary.Length - desiredLength);
+            }
+            else if (fullBinary.Length < desiredLength)
+            {
+                // 如果生成的二进制比期望的短，在左侧补 '0'
+                return fullBinary.PadLeft(desiredLength, '0');
+            }
+            else
+            {
+                return fullBinary;
+            }
+        }
+
+        /// <summary>
+        /// 替换32位二进制字符串中指定范围的位。
+        /// 位索引从左到右，从 bit31 递减到 bit0。
+        /// </summary>
+        /// <param name="originalBinaryString">原始的32位二进制字符串。</param>
+        /// <param name="startBit">要替换的起始位（例如 31）。</param>
+        /// <param name="endBit">要替换的结束位（例如 24）。</param>
+        /// <param name="replacementBits">用于替换的二进制字符串。</param>
+        /// <returns>替换后的新二进制字符串。</returns>
+        /// <exception cref="ArgumentException">当输入参数无效时抛出。</exception>
+        public static string ReplaceBitsInString(string originalBinaryString, int startBit, int endBit, string replacementBits)
+        {
+            // 1. 输入验证
+            if (string.IsNullOrEmpty(originalBinaryString) || originalBinaryString.Length != 32)
+            {
+                throw new ArgumentException("原始二进制字符串必须是32位。", nameof(originalBinaryString));
+            }
+            if (startBit < endBit || startBit > 31 || endBit < 0)
+            {
+                throw new ArgumentException("位范围无效。startBit 必须大于等于 endBit，且范围在 31 到 0 之间。", nameof(startBit));
+            }
+
+            int length = startBit - endBit + 1;
+            if (replacementBits.Length != length)
+            {
+                throw new ArgumentException($"替换字符串的长度应为 {length}，但实际为 {replacementBits.Length}。", nameof(replacementBits));
+            }
+
+            // 2. 计算在字符串中的索引和长度
+            // bit31 对应 index 0
+            // bit30 对应 index 1
+            // ...
+            // bit0  对应 index 31
+            // 所以，bit N 对应的 index 是 31 - N
+            int startIndex = 31 - startBit;
+
+            // 3. 使用 StringBuilder 执行替换
+            StringBuilder sb = new StringBuilder(originalBinaryString);
+            sb.Remove(startIndex, length);
+            sb.Insert(startIndex, replacementBits);
+
+            return sb.ToString();
+        }
     }
 
     public static class CloneHelper
@@ -483,11 +580,11 @@ namespace PPEC.Communication
                             EndBit = bf.EndBit,
                             Desc = bf.Desc,
                             ExtraNote = bf.ExtraNote,
-                            Options = bf.Options?.Select(opt => new BitOption
-                            {
-                                Value = opt.Value,
-                                Display = opt.Display
-                            }).ToList(),
+                            //Options = bf.Options?.Select(opt => new BitOption
+                            //{
+                            //    Value = opt.Value,
+                            //    Display = opt.Display
+                            //}).ToList(),
                             RangeMin = bf.RangeMin,
                             RangeMax = bf.RangeMax,
                             FormParam = bf.FormParam == null ? null : new FormulaParam

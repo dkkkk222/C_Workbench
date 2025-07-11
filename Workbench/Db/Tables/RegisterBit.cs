@@ -14,6 +14,9 @@ namespace Workbench.Db.Tables
         [Column("id", CanBeNull = false)]
         public string Id { get; set; }
 
+        [Column("name", CanBeNull = false)]
+        public string Name { get; set; }
+
         [Column("register_id", CanBeNull = false)]
         public string RegisterId { get; set; }
 

@@ -44,6 +44,7 @@ namespace Workbench.Migrations
             Create.Table("t_register_bit")
                 .WithColumn("id").AsString().PrimaryKey()
                 .WithColumn("register_id").AsString().NotNullable()
+                .WithColumn("name").AsString().NotNullable()
                 .WithColumn("start_bit").AsInt32().NotNullable()
                 .WithColumn("end_bit").AsInt32().NotNullable()
                 .WithColumn("length").AsInt32().NotNullable()
@@ -109,7 +110,8 @@ namespace Workbench.Migrations
                         desc = bf.Desc,
                         range_min = bf.RangeMin,
                         range_max = bf.RangeMax,
-                        field_type = bf.FieldType
+                        field_type = bf.FieldType,
+                        name = bf.Name
                     });
 
                     foreach (var option in bf.Options)

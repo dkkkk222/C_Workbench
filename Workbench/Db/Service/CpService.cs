@@ -3,6 +3,7 @@ using LinqToDB;
 using PPEC.Communication.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace Workbench.Db.Service
                         var bitField = _mapper.Map<BitField>(rgb);
 
                         var registerBitOptions = await db.RegisterBitOptions.Where(t => t.RegisterBitId == rgb.Id).ToListAsync();
-                        var bitOptions = _mapper.Map<List<BitOption>>(registerBitOptions);
+                        var bitOptions = _mapper.Map<ObservableCollection<BitOption>>(registerBitOptions);
                         bitField.Options = bitOptions;
 
                         bitFields.Add(bitField);

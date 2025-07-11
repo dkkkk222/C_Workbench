@@ -404,6 +404,7 @@
                                                             <TextBox Style="{StaticResource TextBoxExtend.Small}" HorizontalAlignment="Stretch" hc:InfoElement.Placeholder="请输入"
                                                                      MaxLength="{Binding Length}" Text="{Binding WriteBinary}"
                                                                      behaviors:InputMaskBehavior.IsBinaryOnly="True"
+                                                                     IsReadOnly="{c:Binding 'Options.Count>0'}"
                                                                      Visibility="{c:Binding 'RangeMin==null',FalseToVisibility=Collapsed}"/>
                                                             <hc:NumericUpDown Minimum="{Binding RangeMin}" Maximum="{Binding RangeMax}"
                                                                               Style="{StaticResource NumericUpDownExtend.Small}"
@@ -421,7 +422,8 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"
-                                                                  DisplayMemberPath="Display" SelectedValuePath="Value" hc:InfoElement.Placeholder="请选择"
+                                                                  DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择"
+                                                                  SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                                                   Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}"
                                                                   >
                                                             <i:Interaction.Triggers>

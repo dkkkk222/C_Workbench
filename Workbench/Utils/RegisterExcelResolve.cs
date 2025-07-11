@@ -6,6 +6,7 @@ using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -92,9 +93,9 @@ namespace Workbench.Utils
             return (min, max);
         }
 
-        private List<BitOption> GetFieldOptions(string remark)
+        private ObservableCollection<BitOption> GetFieldOptions(string remark)
         {
-            var options = new List<BitOption>();
+            var options = new ObservableCollection<BitOption>();
             if (remark.Contains(":") && remark.Contains(";"))
             {
                 var group = remark.Split(';');

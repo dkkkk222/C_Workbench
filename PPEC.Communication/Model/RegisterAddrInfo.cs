@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Newtonsoft.Json;
 using Prism.Mvvm;
 
 namespace PPEC.Communication.Model
@@ -267,7 +268,15 @@ namespace PPEC.Communication.Model
         }
 
         /* 以下为新字段 —— 任选其一有值 */
-        public List<BitOption> Options { get; set; } = new List<BitOption>(); // 离散取值
+        //public List<BitOption> Options { get; set; } = new List<BitOption>();
+
+        private ObservableCollection<BitOption> _options = new ObservableCollection<BitOption>();
+        public ObservableCollection<BitOption> Options
+        {
+            get => _options;
+            set => SetProperty(ref _options, value);
+        }
+
         public uint? RangeMin { get; set; }   // 连续范围最小值
         public uint? RangeMax { get; set; }   // 连续范围最大值
 
@@ -300,6 +309,7 @@ namespace PPEC.Communication.Model
         /// <summary>
         /// 数据读取
         /// </summary>
+        [JsonIgnore]
         public string ReadBinary
         {
             get => _readBinary;
@@ -310,10 +320,18 @@ namespace PPEC.Communication.Model
         /// <summary>
         /// 数据下发
         /// </summary>
+        [JsonIgnore]
         public string WriteBinary
         {
             get => _writeBinary;
             set => SetProperty(ref _writeBinary, value);
+        }
+
+        private string _selectedValue;
+        public string SelectedValue
+        {
+            get => _selectedValue;
+            set => SetProperty(ref _selectedValue, value);
         }
     }
     public class BitOption : BindableBase
