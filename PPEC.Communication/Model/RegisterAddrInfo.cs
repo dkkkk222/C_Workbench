@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
+using PPEC.Communication.Enum;
 using Prism.Mvvm;
 
 namespace PPEC.Communication.Model
@@ -262,6 +263,10 @@ namespace PPEC.Communication.Model
         public string Name { get; set; }
 
         public string Desc { get; set; }
+
+
+        [JsonIgnore]
+        public bool IsTextbox => FieldType == PPEC.Communication.Enum.FieldType.None;
 
 
         private string _fieldType;

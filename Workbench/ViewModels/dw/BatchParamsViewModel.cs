@@ -141,6 +141,11 @@ namespace Workbench.ViewModels.dw
             });
         }));
 
+        private DelegateCommand<Sequence> _sendCommand;
+        public DelegateCommand<Sequence> SendCommand => _sendCommand ?? (_sendCommand = new DelegateCommand<Sequence>((param) =>
+        {
+        }));
+
         private DelegateCommand<CategoryTree> _selectedItemChangedCommand;
         public DelegateCommand<CategoryTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??
             (_selectedItemChangedCommand = new DelegateCommand<CategoryTree>((param) =>

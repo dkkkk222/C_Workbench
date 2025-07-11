@@ -67,5 +67,19 @@ namespace Workbench.Models.dw
             set => SetProperty(ref _items, value);
         }
 
+        private bool _isUploading = false;
+        public bool IsUploading
+        {
+            get => _isUploading;
+            set => SetProperty(ref _isUploading, value);
+        }
+
+        private int _progress = 0;
+        public int Progress
+        {
+            get => _progress;
+            set => SetProperty(ref _progress, value);
+        }
+
     }
 }

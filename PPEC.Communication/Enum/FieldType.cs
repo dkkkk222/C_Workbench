@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PPEC.Communication.Enum
 {
-    public class FieldType
+    public static class FieldType
     {
         public const string Range = "Range";
         public const string Option = "Option";
