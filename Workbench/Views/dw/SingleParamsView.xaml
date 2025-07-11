@@ -421,8 +421,16 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"
-                                                      DisplayMemberPath="Display" SelectedValuePath="Value" hc:InfoElement.Placeholder="请选择"
-                                                      Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}"/>
+                                                                  DisplayMemberPath="Display" SelectedValuePath="Value" hc:InfoElement.Placeholder="请选择"
+                                                                  Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}"
+                                                                  >
+                                                            <i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="SelectionChanged">
+                                                                    <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                                                           CommandParameter="{Binding}" />
+                                                                </i:EventTrigger>
+                                                            </i:Interaction.Triggers>
+                                                        </ComboBox>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>

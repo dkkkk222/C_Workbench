@@ -221,6 +221,12 @@ namespace Workbench.ViewModels.dw
             }
         }));
 
+        private DelegateCommand<object> _optionChangeCommand;
+        public DelegateCommand<object> OptionChangeCommand => _optionChangeCommand ?? (_optionChangeCommand = new DelegateCommand<object>((param) =>
+        {
+
+        }));
+
         private void HistoryToExcel(string path)
         {
             try
