@@ -379,7 +379,7 @@
                                             </Style>
                                         </DataGrid.ColumnHeaderStyle>
                                         <DataGrid.Columns>
-                                            <DataGridTemplateColumn Header="位" Width="*" MinWidth="80">
+                                            <DataGridTemplateColumn Header="位" Width="*" MinWidth="60">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal">
@@ -394,9 +394,9 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="100"/>
-                                            <DataGridTextColumn Header="数据读取" Binding="{Binding ReadBinary}"  Width="*" MinWidth="150"/>
-                                            <DataGridTextColumn Header="解析" Binding="{Binding DataPullResolve}"  Width="*" MinWidth="100"/>
+                                            <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150"/>
+                                            <DataGridTextColumn Header="数据读取" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100"/>
+                                            <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="100"/>
                                             <DataGridTemplateColumn Header="数据下发" Width="*" MinWidth="100" >
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
@@ -410,6 +410,7 @@
                                                             <hc:NumericUpDown Minimum="{Binding RangeMin}" Maximum="{Binding RangeMax}"
                                                                               Style="{StaticResource NumericUpDownExtend.Small}"
                                                                               hc:InfoElement.Placeholder="请输入"
+                                                                              LostFocus="NumericUpDown_LostFocus"
                                                                               Visibility="{c:Binding 'RangeMin!=null and RangeMax!=null',FalseToVisibility=Collapsed}">
                                                                 <hc:NumericUpDown.Value>
                                                                     <Binding Path="WriteBinary" UpdateSourceTrigger="PropertyChanged"/>

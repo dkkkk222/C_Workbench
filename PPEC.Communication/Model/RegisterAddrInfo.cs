@@ -338,6 +338,14 @@ namespace PPEC.Communication.Model
             get => _selectedValue;
             set => SetProperty(ref _selectedValue, value);
         }
+
+        private string _resolveStr;
+        [JsonIgnore]
+        public string ResolveStr
+        {
+            get => _resolveStr;
+            set => SetProperty(ref _resolveStr, value);
+        }
     }
     public class BitOption : BindableBase
     {

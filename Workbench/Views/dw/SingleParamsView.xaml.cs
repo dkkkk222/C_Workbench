@@ -153,5 +153,25 @@ namespace Workbench.Views.dw
                 viewModel.UpdateBinaryString(bf.Name, bf.EndBit, bf.StartBit, result);
             }
         }
+
+        private void NumericUpDown_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            var bf = fe.DataContext as BitField;
+
+            var viewModel = DataContext as SingleParamsViewModel;
+            if (viewModel.CurrentRegister == null)
+                return;
+
+            var tbx = sender as HandyControl.Controls.NumericUpDown;
+            var value = (int)tbx.Value;
+            var text = Utility.DecToFixedWidthBinary(value, bf.Length);
+            if (!string.IsNullOrEmpty(text))
+            {
+                //var result = text.PadLeft(bf.Length, '0');
+                //bf.WriteBinary = result;
+                viewModel.UpdateBinaryString(bf.Name, bf.EndBit, bf.StartBit, text);
+            }
+        }
     }
 }

@@ -416,6 +416,30 @@ namespace Workbench.Utils
             var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
             register.BinaryArray.Clear();
             register.BinaryArray.AddRange(list);
+
+            ResolveBitFields(register);
+        }
+
+        private void ResolveBitFields(RegisterAddrInfo register)
+        {
+            foreach (var bf in register.BitFields)
+            {
+                if (bf.FieldType == FieldType.Option)
+                {
+                    var hex = Utility.BinaryToHex(bf.ReadBinary);
+                    var option = bf.Options.FirstOrDefault(t => t.Key == hex);
+                    if (option != null)
+                    {
+                        bf.ResolveStr = option.Label;
+                    }
+                }
+                else if (bf.FieldType == FieldType.Range)
+                {
+                    //将二进制转成十进制
+                    var dec = Utility.BinaryToDec(bf.ReadBinary);
+                    bf.ResolveStr = dec.ToString();
+                }
+            }
         }
     }
 }

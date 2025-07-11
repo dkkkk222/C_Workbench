@@ -552,6 +552,29 @@ namespace PPEC.Communication
 
             return sb.ToString();
         }
+
+        public static string BinaryToHex(string binaryString, bool isPrefix = true)
+        {
+            int intValue = Convert.ToInt32(binaryString, 2); // 二进制转十进制整数
+            if (isPrefix)
+                return "0x" + intValue.ToString("X");
+            else
+                return intValue.ToString("X8");
+        }
+
+        public static string DecToFixedWidthBinary(int decimalNum, int bitWidth)
+        {
+            // 处理负数：转换为补码形式
+            if (decimalNum < 0)
+            {
+                // 计算补码（通过位宽偏移量）
+                int twoComplement = (1 << bitWidth) + decimalNum;
+                return Convert.ToString(twoComplement, 2).PadLeft(bitWidth, '0');
+            }
+
+            // 正数直接转换并补零
+            return Convert.ToString(decimalNum, 2).PadLeft(bitWidth, '0');
+        }
     }
 
     public static class CloneHelper
