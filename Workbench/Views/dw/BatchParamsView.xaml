@@ -99,12 +99,13 @@
                                             <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
                                                 <Button Content="新增序列" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                                     Command="{Binding AddSequenceCommand}"/>
-                                                <Button Content="批量下发" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AllGeometry}"/>
+                                                <Button Content="批量下发" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AllGeometry}"
+                                                        Command="{Binding BatchSendCommand}"/>
                                             </hc:UniformSpacingPanel>
                                         </Border>
                                     </DockPanel>
                                 </Border>
-                                <DataGrid ItemsSource="{Binding SequenceList}" AutoGenerateColumns="False"
+                                <DataGrid ItemsSource="{Binding SequenceList}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                       CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" Height="346"
                                       SelectedItem="{Binding CurrentSequence}">
                                     <DataGrid.ColumnHeaderStyle>
@@ -137,15 +138,15 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBox Text="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
-                                                             Style="{StaticResource TextBoxExtend}" hc:InfoElement.Placeholder="请输入名称"/>
+                                                             Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Placeholder="请输入名称"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTextColumn Header="参数下发数量" Binding="{Binding ParamPushNum}"  Width="*" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="参数下发数量" Binding="{Binding Items.Count}"  Width="*" IsReadOnly="True"/>
                                         <DataGridTemplateColumn Header="参数下发间隔(us)"  Width="*" MinWidth="80">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend}" Minimum="1" DecimalPlaces="0">
+                                                    <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Minimum="1" DecimalPlaces="0">
                                                         <hc:NumericUpDown.Value>
                                                             <Binding Path="ParamPushInterval" UpdateSourceTrigger="PropertyChanged"></Binding>
                                                         </hc:NumericUpDown.Value>
@@ -153,34 +154,27 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="下发" Width="*" MinWidth="70">
+                                        <DataGridTemplateColumn Header="下发" Width="*" MinWidth="50">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <hc:ProgressButton Progress="{Binding Progress}"
-                                                                       IsChecked="{Binding IsUploading}"
-                                                                       HorizontalAlignment="Stretch"
-                                                                       hc:IconElement.Geometry="{StaticResource PushGeometry}"
-                                                                       Command="{Binding DataContext.SendCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                       CommandParameter="{Binding}"
-                                                                       Content="下发">
-                                                        <hc:ProgressButton.Style>
-                                                            <Style TargetType="hc:ProgressButton" BasedOn="{StaticResource ProgressButtonInfo}">
-                                                                <Style.Triggers>
-                                                                    <!-- 当 IsChecked=True 时，显示“上传中” -->
-                                                                    <Trigger Property="IsChecked" Value="True">
-                                                                        <Setter Property="Content" Value="正在下发..."/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </hc:ProgressButton.Style>
-                                                    </hc:ProgressButton>
+                                                    <Button Style="{StaticResource ButtonInfo.Small}"
+                                                            Content="下发"
+                                                            Command="{Binding DataContext.SendCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"
+                                                            HorizontalAlignment="Left"
+                                                            hc:IconElement.Geometry="{StaticResource PushGeometry}"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="下发状态" Width="*">
+                                        <DataGridTemplateColumn Header="下发状态" Width="*" MinWidth="180">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <Label Content="未开始" Style="{StaticResource LabelDefault}" HorizontalAlignment="Stretch"/>
+                                                    <hc:UniformSpacingPanel Orientation="Horizontal" Spacing="5">
+                                                        <ProgressBar Style="{StaticResource ProgressBarWarning}" Value="{Binding Progress,Mode=TwoWay}" Width="100"/>
+                                                        <Border>
+                                                            <TextBlock Text="{Binding Statement}" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </hc:UniformSpacingPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -286,7 +280,7 @@
                                 <DataGridTemplateColumn Header="数据(HEX)" Width="*" MinWidth="110">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBox Text="{Binding HexValue,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxExtend.Small}"
+                                            <TextBox Text="{Binding HexValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxExtend.Small}"
                                                  LostFocus="HexValueText_LostFocus"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>

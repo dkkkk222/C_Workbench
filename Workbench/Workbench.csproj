@@ -351,6 +351,7 @@
     <Compile Include="Models\BBLLCCANPort.cs" />
     <Compile Include="Models\ComConnectType.cs" />
     <Compile Include="Models\Consts\CAN_Port.cs" />
+    <Compile Include="Models\Consts\SequenceStatement.cs" />
     <Compile Include="Models\ContextMenuItem.cs" />
     <Compile Include="Models\dw\Sequence.cs" />
     <Compile Include="Models\dw\SingleParamHistory.cs" />

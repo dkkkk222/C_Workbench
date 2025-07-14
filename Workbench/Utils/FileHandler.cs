@@ -186,6 +186,8 @@ namespace Workbench.Utils
         {
             var recentFiles = GetRecentFiles();
             var project = JsonHelper.DeserializeObject<PpecProject>(projectStr);
+            if (project == null)
+                return;
             var recentFile = recentFiles.FirstOrDefault(t => t.UID == project.UID);
             recentFile.DateTime = DateTime.Now;
             SaveRecentFiles(recentFiles);

@@ -5,6 +5,8 @@ using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Workbench.Events;
 using Workbench.Models;
@@ -142,9 +144,44 @@ namespace Workbench.ViewModels.dw
         }));
 
         private DelegateCommand<Sequence> _sendCommand;
-        public DelegateCommand<Sequence> SendCommand => _sendCommand ?? (_sendCommand = new DelegateCommand<Sequence>((param) =>
+        public DelegateCommand<Sequence> SendCommand => _sendCommand ?? (_sendCommand = new DelegateCommand<Sequence>(async (param) =>
         {
+            if (!_projectManager.CurrentProject.IsConnecting)
+            {
+                MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            await Task.Run(async () =>
+            {
+                await SendSequence(param);
+            });
         }));
+
+        private DelegateCommand _batchSendCommand;
+        public DelegateCommand BatchSendCommand => _batchSendCommand ?? (_batchSendCommand = new DelegateCommand(async () =>
+        {
+            foreach (var seq in SequenceList.Where(t => t.IsChecked))
+            {
+                await Task.Run(async () =>
+                {
+                    await SendSequence(seq);
+                });
+            }
+        }));
+
+        private async Task SendSequence(Sequence param)
+        {
+            var currentProject = _projectManager.CurrentProject;
+            param.CompletedNum = 0;
+            Thread.Sleep(1000);
+            foreach (var register in param.Items)
+            {
+                var calcResult = UtilsFunc.GetWriteCommandByAddress(register.AddressHex, currentProject.CommunicationType, register.DecValue);
+                await currentProject.CommService.SendAsync(calcResult.bytes);
+                param.CompletedNum += 1;
+                Thread.Sleep(TimeSpan.FromMilliseconds(2));
+            }
+        }
 
         private DelegateCommand<CategoryTree> _selectedItemChangedCommand;
         public DelegateCommand<CategoryTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??

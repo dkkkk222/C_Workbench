@@ -1,6 +1,8 @@
-﻿using PPEC.Communication.Model;
+﻿using Newtonsoft.Json;
+using PPEC.Communication.Model;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
+using Workbench.Models.Consts;
 
 namespace Workbench.Models.dw
 {
@@ -20,16 +22,6 @@ namespace Workbench.Models.dw
             set => SetProperty(ref _name, value);
         }
 
-        private int _paramPushNum = 0;
-        /// <summary>
-        /// 参数下发数量
-        /// </summary>
-        public int ParamPushNum
-        {
-            get => _paramPushNum;
-            set => SetProperty(ref _paramPushNum, value);
-        }
-
         private int _paramPushInterval = 1;
         /// <summary>
         /// 参数下发间隔
@@ -40,15 +32,6 @@ namespace Workbench.Models.dw
             set => SetProperty(ref _paramPushInterval, value);
         }
 
-        private string _paramPushState;
-        /// <summary>
-        /// 下发状态
-        /// </summary>
-        public string ParamPushState
-        {
-            get => _paramPushState;
-            set => SetProperty(ref _paramPushState, value);
-        }
 
         private bool _isChecked = false;
         public bool IsChecked
@@ -67,19 +50,34 @@ namespace Workbench.Models.dw
             set => SetProperty(ref _items, value);
         }
 
-        private bool _isUploading = false;
-        public bool IsUploading
+        private int _completedNum = 0;
+        public int CompletedNum
         {
-            get => _isUploading;
-            set => SetProperty(ref _isUploading, value);
+            get => _completedNum;
+            set
+            {
+                SetProperty(ref _completedNum, value);
+                Progress = (int)((double)_completedNum / _items.Count * 100);
+            }
         }
 
         private int _progress = 0;
         public int Progress
         {
             get => _progress;
-            set => SetProperty(ref _progress, value);
+            set
+            {
+                SetProperty(ref _progress, value);
+                Statement = value == 100 ? SequenceStatement.Completed : value == 0 ? SequenceStatement.None : SequenceStatement.Doing;
+            }
         }
 
+
+        private string _statement = SequenceStatement.None;
+        public string Statement
+        {
+            get => _statement;
+            set => SetProperty(ref _statement, value);
+        }
     }
 }

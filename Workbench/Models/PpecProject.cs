@@ -71,6 +71,7 @@ namespace Workbench.Models
         }
 
         private bool _isConnecting = false;
+        [JsonIgnore]
         public bool IsConnecting
         {
             get => _isConnecting;
@@ -92,6 +93,7 @@ namespace Workbench.Models
         /// <summary>
         /// 端口
         /// </summary>
+        [JsonIgnore]
         public string PortName
         {
             get { return _portName; }
@@ -115,6 +117,7 @@ namespace Workbench.Models
             set { SetProperty(ref _channelMaster, value); }
         }
         private GroundDevice _connectDevice;
+        [JsonIgnore]
         public GroundDevice ConnectDevice
         {
             get { return _connectDevice; }
@@ -138,6 +141,7 @@ namespace Workbench.Models
         }
 
         private IBaseCommService _commService;
+        [JsonIgnore]
         public IBaseCommService CommService
         {
             get => _commService;
