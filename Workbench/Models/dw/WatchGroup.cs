@@ -1,5 +1,7 @@
-﻿using PPEC.Communication.Model;
+﻿using Newtonsoft.Json;
+using PPEC.Communication.Model;
 using Prism.Mvvm;
+using ScottPlot.WPF;
 using System.Collections.ObjectModel;
 
 namespace Workbench.Models.dw
@@ -33,5 +35,9 @@ namespace Workbench.Models.dw
             get { return _tableColumns; }
             set { SetProperty(ref _tableColumns, value); }
         }
+
+        [JsonIgnore]
+        public WpfPlot PlotControl { get; } = new WpfPlot();
+
     }
 }

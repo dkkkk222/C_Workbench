@@ -5,6 +5,7 @@ using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Forms;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
@@ -85,6 +86,22 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand SearchCommand => _searchCommand ?? (_searchCommand = new DelegateCommand(() =>
         {
             LoadRegisters();
+        }));
+
+        private DelegateCommand<RegisterAddrInfo> _beginRecordCommand;
+        public DelegateCommand<RegisterAddrInfo> BeginRecordCommand => _beginRecordCommand ?? (_beginRecordCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
+        {
+            //if (!_projectManager.CurrentProject.IsConnecting)
+            //{
+            //    MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //    return;
+            //}
+            var tab = WatchGroups.FirstOrDefault(t => t.Id == param.TableId);
+            if (tab == null) return;
+            double[] dataX = { 1, 2, 3, 4, 5 };
+            double[] dataY = Enumerable.Range(0, 100).OrderBy(d => new Random().Next()).Select(x => (double)x).Take(5).ToArray<double>();
+            tab.PlotControl.Plot.Add.Scatter(dataX, dataY);
+            tab.PlotControl.Refresh();
         }));
 
         private DelegateCommand _addWatchGroupCommand;

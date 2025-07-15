@@ -73,7 +73,9 @@
                                 <DataGridTemplateColumn Header="开始" Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Content="开始记录" Style="{StaticResource ButtonInfo.Small}" HorizontalAlignment="Left"/>
+                                            <Button Content="开始记录" Style="{StaticResource ButtonInfo.Small}" HorizontalAlignment="Left"
+                                                    Command="{Binding Path=DataContext.BeginRecordCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -236,7 +238,7 @@
                                                 <TextBlock Text="状态监测图" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </Border>
                                             <Border Margin="0,5,0,0">
-                                                <sp:WpfPlot x:Name="WpfPlot1"/>
+                                                <ContentControl Content="{Binding PlotControl,Mode=OneTime}"/>
                                             </Border>
                                         </DockPanel>
                                     </Grid>
