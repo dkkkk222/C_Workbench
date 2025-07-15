@@ -94,13 +94,28 @@ namespace Workbench.ViewModels.dw
             WatchGroups.Add(new WatchGroup()
             {
                 Id = Guid.NewGuid().ToString("N"),
-                Header = $"表{WatchGroups.Count + 1}"
+                Header = $"表{WatchGroups.Count + 1}",
+                TableColumns = InitTableColumns()
             });
             if (CurrentTab == null)
             {
                 CurrentTab = WatchGroups.Last();
             }
         }));
+
+        private ObservableCollection<TableColumn> InitTableColumns()
+        {
+            var target = new ObservableCollection<TableColumn>();
+            string[] arr = new string[] { "序号", "名称", "源寄存器地址", "解析范围", "解析要求", "解析结果", "单位", "添加到监测图" };
+            for (int i = 0; i < arr.Length; i++)
+            {
+                target.Add(new TableColumn()
+                {
+                    Name = arr[i],
+                });
+            }
+            return target;
+        }
 
         private DelegateCommand<RegisterAddrInfo> _tableChangeCommand;
         public DelegateCommand<RegisterAddrInfo> TableChangeCommand => _tableChangeCommand ?? (_tableChangeCommand = new DelegateCommand<RegisterAddrInfo>((param) =>

@@ -9,6 +9,7 @@
              xmlns:cvt="clr-namespace:Workbench.Converters"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:utils="clr-namespace:Workbench.Utils"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -142,11 +143,35 @@
                                         </Grid.ColumnDefinitions>
                                         <DockPanel LastChildFill="True" Grid.Column="0">
                                             <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                                                <TextBlock Text="状态监测表" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Left" Text="状态监测表" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                                    <hc:SplitButton DockPanel.Dock="Right" Content="列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
+                                                        <hc:SplitButton.DropDownContent>
+                                                            <ItemsControl ItemsSource="{Binding TableColumns}">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5"/>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Border Padding="8,0">
+                                                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                                        </Border>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </hc:SplitButton.DropDownContent>
+                                                    </hc:SplitButton>
+                                                </DockPanel>
                                             </Border>
                                             <DataGrid ItemsSource="{Binding BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                                       CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
-                                                      SelectedItem="{Binding CurrentSequence}">
+                                                      SelectedItem="{Binding CurrentSequence}"
+                                                      x:Name="MyDataGrid">
+                                                <DataGrid.Resources>
+                                                    <utils:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
+                                                </DataGrid.Resources>
                                                 <DataGrid.ColumnHeaderStyle>
                                                     <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
                                                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -156,7 +181,10 @@
                                                     </Style>
                                                 </DataGrid.ColumnHeaderStyle>
                                                 <DataGrid.Columns>
-                                                    <DataGridTemplateColumn  Header="序号" Width="50">
+                                                    <DataGridTemplateColumn  Header="序号" Width="50" Visibility="{Binding 
+                                                        Source={StaticResource DataContextProxy},
+                                                        Path=Data.TableColumns[0].IsChecked,
+                                                        Converter={StaticResource Boolean2VisibilityConverter}}">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock>
@@ -170,15 +198,18 @@
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
-                                                    <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"/>
-                                                    <DataGridTemplateColumn Header="源寄存器地址" Width="*">
+                                                    <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"
+                                                                        Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"/>
+                                                    <DataGridTemplateColumn Header="源寄存器地址" Width="*"
+                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding Path=DataContext.CurrentRegister.AddressHex,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
-                                                    <DataGridTemplateColumn Header="解析范围" Width="*">
+                                                    <DataGridTemplateColumn Header="解析范围" Width="*"
+                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <StackPanel Orientation="Horizontal">
@@ -193,10 +224,10 @@
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
-                                                    <DataGridTextColumn Header="解析要求" Width="*"/>
-                                                    <DataGridTextColumn Header="解析结果" Width="*"/>
-                                                    <DataGridTextColumn Header="单位" Width="*"/>
-                                                    <DataGridTextColumn Header="添加到监测图" Width="*"/>
+                                                    <DataGridTextColumn Header="解析要求" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"/>
+                                                    <DataGridTextColumn Header="解析结果" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"/>
+                                                    <DataGridTextColumn Header="单位" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"/>
+                                                    <DataGridTextColumn Header="添加到监测图" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"/>
                                                 </DataGrid.Columns>
                                             </DataGrid>
                                         </DockPanel>

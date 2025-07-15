@@ -26,5 +26,12 @@ namespace Workbench.Models.dw
             get { return _bitFields; }
             set { SetProperty(ref _bitFields, value); }
         }
+
+        private ObservableCollection<TableColumn> _tableColumns = new ObservableCollection<TableColumn>();
+        public ObservableCollection<TableColumn> TableColumns
+        {
+            get { return _tableColumns; }
+            set { SetProperty(ref _tableColumns, value); }
+        }
     }
 }

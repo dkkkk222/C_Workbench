@@ -356,6 +356,7 @@
     <Compile Include="Models\dw\Sequence.cs" />
     <Compile Include="Models\dw\SingleParamHistory.cs" />
     <Compile Include="Models\dw\CategoryTree.cs" />
+    <Compile Include="Models\dw\TableColumn.cs" />
     <Compile Include="Models\dw\WatchGroup.cs" />
     <Compile Include="Models\Pages\TreeVeiwModel.cs" />
     <Compile Include="Models\PpecProject.cs" />
@@ -364,6 +365,7 @@
     <Compile Include="Models\ValueLabelOption.cs" />
     <Compile Include="Models\ValueName.cs" />
     <Compile Include="Profiles\RegisterProfile.cs" />
+    <Compile Include="Utils\BindingProxy.cs" />
     <Compile Include="Utils\CommandHandler.cs" />
     <Compile Include="Utils\Common\CommEntity.cs" />
     <Compile Include="Utils\Common\HttpHelper.cs" />
