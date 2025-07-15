@@ -22,6 +22,20 @@ namespace Workbench.Models.dw
             set { SetProperty(ref _header, value); }
         }
 
+        private string _tableName = "状态监测表";
+        public string TableName
+        {
+            get { return _tableName; }
+            set { SetProperty(ref _tableName, value); }
+        }
+
+        private string _chartName = "状态监测图";
+        public string ChartName
+        {
+            get { return _chartName; }
+            set { SetProperty(ref _chartName, value); }
+        }
+
         private ObservableCollection<BitField> _bitFields = new ObservableCollection<BitField>();
         public ObservableCollection<BitField> BitFields
         {

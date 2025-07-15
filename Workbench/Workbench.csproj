@@ -401,6 +401,7 @@
     <Compile Include="ViewModels\dw\WatchViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RecentFileViewModel.cs" />
+    <Compile Include="ViewModels\RenameViewModel.cs" />
     <Compile Include="Views\ChipManagerView.xaml.cs">
       <DependentUpon>ChipManagerView.xaml</DependentUpon>
     </Compile>
@@ -443,6 +444,9 @@
     <Compile Include="Views\RecentFileView.xaml.cs">
       <DependentUpon>RecentFileView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\RenameView.xaml.cs">
+      <DependentUpon>RenameView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Windows\ChipManagerWindow.xaml.cs">
       <DependentUpon>ChipManagerWindow.xaml</DependentUpon>
     </Compile>
@@ -456,6 +460,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Views\Windows\RenameWindow.xaml.cs">
+      <DependentUpon>RenameWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\RenameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\RenameWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Resource Include="Resource\Icons\CustomIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

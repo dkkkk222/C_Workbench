@@ -2,6 +2,7 @@
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,6 +11,8 @@ using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
 using Workbench.Utils;
+using Workbench.Views;
+using Workbench.Views.Windows;
 
 namespace Workbench.ViewModels.dw
 {
@@ -17,10 +20,12 @@ namespace Workbench.ViewModels.dw
     {
         private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IDialogService _dialogService;
 
-        public WatchViewModel(IEventAggregator eventAggregator, ProjectManager projectManager)
+        public WatchViewModel(IEventAggregator eventAggregator, ProjectManager projectManager, IDialogService dialogService)
         {
             _projectManager = projectManager;
+            _dialogService = dialogService;
             _eventAggregator = eventAggregator;
             WatchGroups = _projectManager.CurrentProject.WatchGroups;
         }
@@ -118,6 +123,15 @@ namespace Workbench.ViewModels.dw
             {
                 CurrentTab = WatchGroups.Last();
             }
+        }));
+
+        private DelegateCommand<string> _renameCommand;
+        public DelegateCommand<string> RenameCommand => _renameCommand ?? (_renameCommand = new DelegateCommand<string>((param) =>
+        {
+            _dialogService.Show(nameof(RenameView), new DialogParameters(), r =>
+            {
+
+            }, nameof(RenameWindow));
         }));
 
         private ObservableCollection<TableColumn> InitTableColumns()

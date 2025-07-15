@@ -146,8 +146,14 @@
                                         <DockPanel LastChildFill="True" Grid.Column="0">
                                             <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
                                                 <DockPanel>
-                                                    <TextBlock DockPanel.Dock="Left" Text="状态监测表" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                                    <hc:SplitButton DockPanel.Dock="Right" Content="列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
+                                                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                                        <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
+                                                                Margin="5,0,0,0" 
+                                                                Command="{Binding Path=DataContext.RenameCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                CommandParameter="Table"/>
+                                                    </StackPanel>
+                                                    <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
                                                         <hc:SplitButton.DropDownContent>
                                                             <ItemsControl ItemsSource="{Binding TableColumns}">
                                                                 <ItemsControl.ItemsPanel>
@@ -235,7 +241,7 @@
                                         </DockPanel>
                                         <DockPanel LastChildFill="True" Grid.Column="1" Margin="15,0,0,0">
                                             <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                                                <TextBlock Text="状态监测图" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </Border>
                                             <Border Margin="0,5,0,0">
                                                 <ContentControl Content="{Binding PlotControl,Mode=OneTime}"/>

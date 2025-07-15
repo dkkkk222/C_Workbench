@@ -140,6 +140,8 @@ namespace Workbench
             containerRegistry.RegisterDialog<ChipManagerView, ChipManagerViewModel>();
             containerRegistry.RegisterDialogWindow<RecentFileWindow>(nameof(RecentFileWindow));
             containerRegistry.RegisterDialog<RecentFileView, RecentFileViewModel>();
+            containerRegistry.RegisterDialogWindow<RenameWindow>(nameof(RenameWindow));
+            containerRegistry.RegisterDialog<RenameView, RenameViewModel>();
         }
 
         private void CatchException()
