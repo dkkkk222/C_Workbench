@@ -140,6 +140,13 @@ namespace Workbench.Models
             set => SetProperty(ref _sequences, value);
         }
 
+        private ObservableCollection<WatchGroup> _watchGroups = new ObservableCollection<WatchGroup>();
+        public ObservableCollection<WatchGroup> WatchGroups
+        {
+            get => _watchGroups;
+            set => SetProperty(ref _watchGroups, value);
+        }
+
         private IBaseCommService _commService;
         [JsonIgnore]
         public IBaseCommService CommService

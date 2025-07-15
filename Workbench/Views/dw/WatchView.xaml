@@ -8,6 +8,7 @@
              xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
              xmlns:cvt="clr-namespace:Workbench.Converters"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -23,7 +24,7 @@
             <Border Grid.Row="0">
                 <DockPanel LastChildFill="True">
                     <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                        <TextBlock Text="数据列表" FontSize="{StaticResource SubHeadFontSize}"/>
+                        <TextBlock Text="监控数据配置" FontSize="{StaticResource SubHeadFontSize}"/>
                     </Border>
                     <StackPanel Orientation="Vertical">
                         <Border Margin="0,8,0,0">
@@ -38,7 +39,7 @@
                             </hc:UniformSpacingPanel>
                         </Border>
                         <DataGrid ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" Height="315"
+                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="245" IsReadOnly="True"
                                       SelectedItem="{Binding CurrentRegister}">
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
@@ -82,20 +83,31 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="添加到波形" Width="*">
+                                <DataGridTemplateColumn Header="添加到数据监测表" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox ItemsSource="{Binding Path=DataContext.WatchGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      Style="{StaticResource ComboBoxExtend.Small}"
+                                                      DisplayMemberPath="Header"
+                                                      SelectedValue="{Binding TableId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      SelectedValuePath="Id">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="SelectionChanged">
+                                                        <i:InvokeCommandAction Command="{Binding DataContext.TableChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                                               CommandParameter="{Binding}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <!--<DataGridTemplateColumn Header="添加到解析" Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <CheckBox IsChecked="{Binding IsAddToPlot,Mode=TwoWay}"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="添加到解析" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox IsChecked="{Binding IsAddToPlot,Mode=TwoWay}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                </DataGridTemplateColumn>-->
                             </DataGrid.Columns>
                         </DataGrid>
                     </StackPanel>
@@ -103,82 +115,106 @@
             </Border>
             <hc:Divider Grid.Row="1" Margin="0,5"/>
             <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <DockPanel LastChildFill="True" Grid.Column="0">
-                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                        <TextBlock Text="数据详情" FontSize="{StaticResource SubHeadFontSize}"/>
-                    </Border>
-                    <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
-                                      SelectedItem="{Binding CurrentSequence}">
-                        <DataGrid.ColumnHeaderStyle>
-                            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
-                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Setter Property="FontSize" Value="13"/>
-                                <Setter Property="Margin" Value="0,0,0,5"/>
-                            </Style>
-                        </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn  Header="序号" Width="50">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <!-- 使用 MultiBinding -->
-                                                <MultiBinding Converter="{StaticResource RowIndexConverter}">
-                                                    <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
-                                                    <Binding />
-                                                    <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
-                                                    <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"/>
-                            <DataGridTemplateColumn Header="源寄存器地址" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Path=DataContext.CurrentRegister.AddressHex,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="解析范围" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="b"/>
-                                            <TextBlock Text="{Binding EndBit}"/>
-                                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
-                                                <TextBlock Text="-"/>
-                                                <TextBlock Text="b"/>
-                                                <TextBlock Text="{Binding StartBit}"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <!--<DataGridTemplateColumn Binding="{Binding Path=DataContext.CurrentRegister.AddressHex,RelativeSource={RelativeSource AncestorType=UserControl}}" Header="解析要求" Width="*"/>-->
-                            <DataGridTextColumn Header="解析要求" Width="*"/>
-                            <DataGridTextColumn Header="解析结果" Width="*"/>
-                            <DataGridTextColumn Header="单位" Width="*"/>
-                            <DataGridTextColumn Header="添加到监控" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </DockPanel>
-                <DockPanel LastChildFill="True" Grid.Column="1" Margin="15,0,0,0">
-                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                        <TextBlock Text="数据监控图表" FontSize="{StaticResource SubHeadFontSize}"/>
-                    </Border>
-                    <Border>
-                        <sp:WpfPlot x:Name="WpfPlot1"/>
-                    </Border>
-                </DockPanel>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0">
+                    <Button Content="增加数据监测表" Style="{StaticResource ButtonPrimary}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                            HorizontalAlignment="Left" hc:IconElement.Width="14"
+                            Command="{Binding AddWatchGroupCommand}"/>
+                </Border>
+                <Border Grid.Row="1">
+                    <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" IsDraggable="True" 
+                                   ItemsSource="{Binding WatchGroups}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}">
+                        <TabControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Header}"/>
+                            </DataTemplate>
+                        </TabControl.ItemTemplate>
+                        <TabControl.ContentTemplate>
+                            <DataTemplate>
+                                <Border Padding="5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <DockPanel LastChildFill="True" Grid.Column="0">
+                                            <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                                <TextBlock Text="状态监测表" FontSize="{StaticResource SubHeadFontSize}"/>
+                                            </Border>
+                                            <DataGrid ItemsSource="{Binding BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
+                                                      SelectedItem="{Binding CurrentSequence}">
+                                                <DataGrid.ColumnHeaderStyle>
+                                                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
+                                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                        <Setter Property="FontSize" Value="13"/>
+                                                        <Setter Property="Margin" Value="0,0,0,5"/>
+                                                    </Style>
+                                                </DataGrid.ColumnHeaderStyle>
+                                                <DataGrid.Columns>
+                                                    <DataGridTemplateColumn  Header="序号" Width="50">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock>
+                                                                    <TextBlock.Text>
+                                                                        <MultiBinding Converter="{StaticResource RowIndexConverter}">
+                                                                            <Binding />
+                                                                            <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
+                                                                        </MultiBinding>
+                                                                    </TextBlock.Text>
+                                                                </TextBlock>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                    <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"/>
+                                                    <DataGridTemplateColumn Header="源寄存器地址" Width="*">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding Path=DataContext.CurrentRegister.AddressHex,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                    <DataGridTemplateColumn Header="解析范围" Width="*">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="b"/>
+                                                                    <TextBlock Text="{Binding EndBit}"/>
+                                                                    <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
+                                                                        <TextBlock Text="-"/>
+                                                                        <TextBlock Text="b"/>
+                                                                        <TextBlock Text="{Binding StartBit}"/>
+                                                                    </StackPanel>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                    <DataGridTextColumn Header="解析要求" Width="*"/>
+                                                    <DataGridTextColumn Header="解析结果" Width="*"/>
+                                                    <DataGridTextColumn Header="单位" Width="*"/>
+                                                    <DataGridTextColumn Header="添加到监测图" Width="*"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </DockPanel>
+                                        <DockPanel LastChildFill="True" Grid.Column="1" Margin="15,0,0,0">
+                                            <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                                <TextBlock Text="状态监测图" FontSize="{StaticResource SubHeadFontSize}"/>
+                                            </Border>
+                                            <Border Margin="0,5,0,0">
+                                                <sp:WpfPlot x:Name="WpfPlot1"/>
+                                            </Border>
+                                        </DockPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </TabControl.ContentTemplate>
+                    </hc:TabControl>
+                </Border>
+
             </Grid>
         </Grid>
     </Border>

@@ -356,6 +356,7 @@
     <Compile Include="Models\dw\Sequence.cs" />
     <Compile Include="Models\dw\SingleParamHistory.cs" />
     <Compile Include="Models\dw\CategoryTree.cs" />
+    <Compile Include="Models\dw\WatchGroup.cs" />
     <Compile Include="Models\Pages\TreeVeiwModel.cs" />
     <Compile Include="Models\PpecProject.cs" />
     <Compile Include="Models\RecentFile.cs" />

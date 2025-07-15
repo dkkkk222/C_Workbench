@@ -113,6 +113,13 @@ namespace PPEC.Communication.Model
             }
         }
 
+        private string _tableId;
+        public string TableId
+        {
+            get => _tableId;
+            set => SetProperty(ref _tableId, value);
+        }
+
         private string _binaryStr = string.Concat(Enumerable.Range(0, 32).Select(t => "0"));
         /// <summary>
         /// 二进制字符串

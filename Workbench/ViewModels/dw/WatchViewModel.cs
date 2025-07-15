@@ -1,10 +1,13 @@
-﻿using PPEC.Communication.Model;
+﻿using Force.DeepCloner;
+using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Workbench.Events;
 using Workbench.Models;
+using Workbench.Models.dw;
 using Workbench.Utils;
 
 namespace Workbench.ViewModels.dw
@@ -18,6 +21,7 @@ namespace Workbench.ViewModels.dw
         {
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;
+            WatchGroups = _projectManager.CurrentProject.WatchGroups;
         }
 
         private string _addressKeyword;
@@ -25,6 +29,20 @@ namespace Workbench.ViewModels.dw
         {
             get => _addressKeyword;
             set => SetProperty(ref _addressKeyword, value);
+        }
+
+        private ObservableCollection<WatchGroup> _watchGroups = new ObservableCollection<WatchGroup>();
+        public ObservableCollection<WatchGroup> WatchGroups
+        {
+            get => _watchGroups;
+            set => SetProperty(ref _watchGroups, value);
+        }
+
+        private WatchGroup _currentTab;
+        public WatchGroup CurrentTab
+        {
+            get => _currentTab;
+            set => SetProperty(ref _currentTab, value);
         }
 
         private ObservableCollection<ValueLabelOption> _settingCategoryList = new ObservableCollection<ValueLabelOption>();
@@ -69,6 +87,45 @@ namespace Workbench.ViewModels.dw
             LoadRegisters();
         }));
 
+        private DelegateCommand _addWatchGroupCommand;
+        public DelegateCommand AddWatchGroupCommand => _addWatchGroupCommand ?? (_addWatchGroupCommand = new DelegateCommand(() =>
+        {
+
+            WatchGroups.Add(new WatchGroup()
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                Header = $"表{WatchGroups.Count + 1}"
+            });
+            if (CurrentTab == null)
+            {
+                CurrentTab = WatchGroups.Last();
+            }
+        }));
+
+        private DelegateCommand<RegisterAddrInfo> _tableChangeCommand;
+        public DelegateCommand<RegisterAddrInfo> TableChangeCommand => _tableChangeCommand ?? (_tableChangeCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
+        {
+            //清除原tab中的数据
+            var groups = WatchGroups.Where(t => t.BitFields.Any(t => t.Name == param.Name));
+            foreach (var group in groups)
+            {
+                var remain = group.BitFields.Where(t => t.Name != param.Name).ToList();
+                group.BitFields.Clear();
+                group.BitFields.AddRange(remain);
+            }
+
+            //找到Tab
+            var tab = WatchGroups.FirstOrDefault(t => t.Id == param.TableId);
+            if (tab == null)
+                return;
+            //遍历寄存器下的BitField
+            param.BitFields.ForEach(bf =>
+            {
+                var clone = bf.DeepClone();
+                tab.BitFields.Add(clone);
+            });
+        }));
+
         public override void LoadData()
         {
             InitData();
@@ -82,6 +139,9 @@ namespace Workbench.ViewModels.dw
             CurrentSettingCategory = SettingCategoryList.FirstOrDefault();
 
             LoadRegisters();
+
+            if (CurrentTab == null)
+                CurrentTab = WatchGroups.FirstOrDefault();
         }
 
         private void LoadRegisters()
