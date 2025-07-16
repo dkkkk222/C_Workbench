@@ -305,5 +305,30 @@ namespace Workbench.Utils
 
             return null;
         }
+        public static double GetValueForFormula(FormulaEnum formula,double paramA,double paramB,uint value )
+        {
+            double result = 1 * value;
+            if (formula == FormulaEnum.None)
+            {
+                return result;
+            }
+                
+            switch(formula)
+            {
+                case FormulaEnum.Add:
+                    result = paramA * value + paramB;
+                    break;
+                case FormulaEnum.Sub:
+                    result = paramA * value - paramB;
+                    break;
+                case FormulaEnum.Mul:
+                    result = paramA * value * paramB;
+                    break;
+                case FormulaEnum.Exc:
+                    result = paramA * value / paramB;
+                    break;
+            }
+            return result;
+        }
     }
 }

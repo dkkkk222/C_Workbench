@@ -185,6 +185,7 @@
     <Compile Include="Enum\AddressName.cs" />
     <Compile Include="Enum\AgreementType.cs" />
     <Compile Include="Enum\FieldType.cs" />
+    <Compile Include="Enum\FormulaEnum.cs" />
     <Compile Include="Enum\LoggingLevel.cs" />
     <Compile Include="Enum\PortType.cs" />
     <Compile Include="Enum\RegisterLimit.cs" />

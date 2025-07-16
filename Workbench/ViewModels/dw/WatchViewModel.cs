@@ -96,6 +96,9 @@ namespace Workbench.ViewModels.dw
         }));
 
         private DelegateCommand<RegisterAddrInfo> _beginRecordCommand;
+        /// <summary>
+        /// 开始记录
+        /// </summary>
         public DelegateCommand<RegisterAddrInfo> BeginRecordCommand => _beginRecordCommand ?? (_beginRecordCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
         {
             //if (!_projectManager.CurrentProject.IsConnecting)

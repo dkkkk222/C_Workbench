@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
+using PPEC.Communication.Common;
 using PPEC.Communication.Enum;
 using Prism.Mvvm;
 
@@ -298,7 +299,7 @@ namespace PPEC.Communication.Model
         public uint? RangeMax { get; set; }   // 连续范围最大值
 
         public string ExtraNote { get; set; } // “先写后清除”等操作提示
-        public FormulaParam FormParam { get; set; }
+        public FormulaParam FormParam { get; set; } = new FormulaParam();
 
         private uint _value;
         public uint Value
@@ -308,7 +309,8 @@ namespace PPEC.Communication.Model
             {
                 if (SetProperty(ref _value, value))
                 {
-                    Result = Math.Round(double.Parse(FormParam.ParamA), 2) * value + Math.Round(double.Parse(FormParam.ParamB), 2);
+                    Result = UtilHelper.GetValueForFormula(FormParam.ParamSymbol, FormParam.ParamA, FormParam.ParamB, value);
+                    //Result = FormParam.ParamA * value + FormParam.ParamB;
                 }
             }
         }
@@ -398,11 +400,54 @@ namespace PPEC.Communication.Model
         }
 
     }
-    public class FormulaParam
+    public class FormulaParam:BindableBase
     {
         public string ParamName { get; set; }
-        public string ParamA { get; set; }
-        public string ParamB { get; set; }
+        /// <summary>
+        /// 参数a
+        /// </summary>
+        public double ParamA { get; set; }
+        /// <summary>
+        /// 参数b
+        /// </summary>
+        public double ParamB { get; set; }
+        public string _ParamC;
+        /// <summary>
+        /// 符号参数+，-，*，/
+        /// </summary>
+        public string ParamC 
+        { 
+            get=> _ParamC;
+            set
+            {
+                switch(value)
+                {
+                    case "0":
+                        ParamSymbol = FormulaEnum.None;
+                        break;
+                    case "+":
+                        ParamSymbol = FormulaEnum.Add;
+                        break;
+                    case "-":
+                        ParamSymbol = FormulaEnum.Sub;
+                        break;
+                    case "*":
+                        ParamSymbol = FormulaEnum.Mul;
+                        break;
+                    case "/":
+                        ParamSymbol = FormulaEnum.Exc;
+                        break;
+                    default:
+                        ParamSymbol = FormulaEnum.None;
+                        break;
+                }
+                SetProperty(ref _ParamC, value);
+            }
+        }
+        /// <summary>
+        /// 符号枚举+，-，*，/
+        /// </summary>
+        public FormulaEnum ParamSymbol { get; set; }
         public string UnitName { get; set; }
     }
     public class RegisterMeta : BindableBase

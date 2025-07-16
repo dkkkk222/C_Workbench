@@ -558,6 +558,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="database1.sqlite">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SDPC_workbench软件数据监控表_zby0715.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Resource Include="Resource\Images\SVG\无数据-copy.svg" />
     <Resource Include="Resource\Images\SVG\open.svg" />
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using PPEC.Communication.Enum;
 
 namespace PPEC.Communication.Common
 {
@@ -41,6 +42,31 @@ namespace PPEC.Communication.Common
                 }
             }
             return crc;
+        }
+        public static double GetValueForFormula(FormulaEnum formula, double paramA, double paramB, uint value)
+        {
+            double result = 1 * value;
+            if (formula == FormulaEnum.None)
+            {
+                return result;
+            }
+
+            switch (formula)
+            {
+                case FormulaEnum.Add:
+                    result = paramA * value + paramB;
+                    break;
+                case FormulaEnum.Sub:
+                    result = paramA * value - paramB;
+                    break;
+                case FormulaEnum.Mul:
+                    result = paramA * value * paramB;
+                    break;
+                case FormulaEnum.Exc:
+                    result = paramA * value / paramB;
+                    break;
+            }
+            return result;
         }
     }
 

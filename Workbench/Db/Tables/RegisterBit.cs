@@ -55,5 +55,20 @@ namespace Workbench.Db.Tables
         /// </summary>
         [Column("range_max")]
         public uint? RangeMax { get; set; }
+
+        [Column("param_a")]
+        public string ParamA { get; set; }
+
+        [Column("param_b")]
+        public string ParamB { get; set; }
+
+        [Column("param_c")]
+        public string ParamC { get; set; }
+
+        [Column("param_unit")]
+        public string UnitName { get; set; }
+
+        [Column("formula_show")]
+        public string ParamName { get; set; }
     }
 }

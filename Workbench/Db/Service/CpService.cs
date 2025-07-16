@@ -45,6 +45,14 @@ namespace Workbench.Db.Service
                     {
                         var bitField = _mapper.Map<BitField>(rgb);
 
+                        #region 公式计算赋值
+                        bitField.FormParam.ParamA = double.Parse(rgb.ParamA);
+                        bitField.FormParam.ParamB = double.Parse(rgb.ParamB);
+                        bitField.FormParam.ParamC = rgb.ParamC;
+                        bitField.FormParam.ParamName = rgb.ParamName;
+                        bitField.FormParam.UnitName = rgb.UnitName;
+                        #endregion
+
                         var registerBitOptions = await db.RegisterBitOptions.Where(t => t.RegisterBitId == rgb.Id).ToListAsync();
                         var bitOptions = _mapper.Map<ObservableCollection<BitOption>>(registerBitOptions);
                         bitField.Options = bitOptions;

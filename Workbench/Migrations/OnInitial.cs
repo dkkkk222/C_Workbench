@@ -51,7 +51,12 @@ namespace Workbench.Migrations
                 .WithColumn("desc").AsString().Nullable()
                 .WithColumn("field_type").AsString().Nullable()
                 .WithColumn("range_min").AsInt32().Nullable()
-                .WithColumn("range_max").AsInt32().Nullable();
+                .WithColumn("range_max").AsInt32().Nullable()
+                .WithColumn("param_a").AsString().Nullable()
+                .WithColumn("param_b").AsString().Nullable()
+                .WithColumn("param_c").AsString().Nullable()
+                .WithColumn("param_unit").AsString().Nullable()
+                .WithColumn("formula_show").AsString().Nullable();
             Create.Index("IX_t_register_bit_id").OnTable("t_register_bit").OnColumn("id").Ascending().WithOptions().Unique();
             Create.Index("IX_t_register_bit_register_id").OnTable("t_register_bit").OnColumn("register_id").Ascending();
 
@@ -66,9 +71,12 @@ namespace Workbench.Migrations
             Create.Index("IX_t_register_bit_option_register_bit_id").OnTable("t_register_bit_option").OnColumn("register_bit_id");
 
             string fileName = "B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类.xlsx";
+            string SDPCfileName = "SDPC_workbench软件数据监控表_zby0715.xlsx";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-            var excelData = new RegisterExcelResolve().Parse(filePath);
-
+            string SDPCfilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileName);
+            RegisterExcelResolve registerExcelResolve = new RegisterExcelResolve();
+            var excelData = registerExcelResolve.Parse(filePath);
+            var excelSDPCData = registerExcelResolve.SDPCParse(SDPCfilePath, excelData);
             string chipId = Guid.NewGuid().ToString("N");
             Insert.IntoTable("t_chip").Row(new
             {
@@ -111,7 +119,12 @@ namespace Workbench.Migrations
                         range_min = bf.RangeMin,
                         range_max = bf.RangeMax,
                         field_type = bf.FieldType,
-                        name = bf.Name
+                        name = bf.Name,
+                        param_a=bf.FormParam.ParamA,
+                        param_b = bf.FormParam.ParamB,
+                        param_c = bf.FormParam.ParamC,
+                        param_unit=bf.FormParam.UnitName,
+                        formula_show=bf.FormParam.ParamName
                     });
 
                     foreach (var option in bf.Options)

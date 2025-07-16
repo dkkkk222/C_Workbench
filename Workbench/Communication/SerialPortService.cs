@@ -41,7 +41,7 @@ namespace Workbench.Communication
                     WriteTimeout = 500,
                     Encoding = Encoding.UTF8
                 };
-
+                _serialPort.DataReceived -= OnDataReceived;
                 _serialPort.DataReceived += OnDataReceived;
                 _serialPort.Open();
             }
