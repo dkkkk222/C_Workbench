@@ -252,6 +252,12 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _recordTime, value);
         }
 
+        private bool _isStartRecord = false;
+        public bool IsStartRecord
+        {
+            get => _isStartRecord;
+            set => SetProperty(ref _isStartRecord, value);
+        }
         private bool _isAddToPlot;
         /// <summary>
         /// 是否添加到波形
@@ -332,7 +338,14 @@ namespace PPEC.Communication.Model
         public string ReadBinary
         {
             get => _readBinary;
-            set => SetProperty(ref _readBinary, value);
+            set
+            {
+                if(SetProperty(ref _readBinary, value))
+                {
+                    Value=Utility.BinStringToUInt16(value);
+                }
+                
+            } 
         }
 
         private string _writeBinary = "";

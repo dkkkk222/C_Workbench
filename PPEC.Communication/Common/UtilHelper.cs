@@ -46,7 +46,7 @@ namespace PPEC.Communication.Common
         public static double GetValueForFormula(FormulaEnum formula, double paramA, double paramB, uint value)
         {
             double result = 1 * value;
-            if (formula == FormulaEnum.None)
+            if (paramA == 0)
             {
                 return result;
             }
@@ -64,6 +64,9 @@ namespace PPEC.Communication.Common
                     break;
                 case FormulaEnum.Exc:
                     result = paramA * value / paramB;
+                    break;
+                case FormulaEnum.None:
+                    result = result * paramA;
                     break;
             }
             return result;

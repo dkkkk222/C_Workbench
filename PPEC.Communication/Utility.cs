@@ -575,6 +575,32 @@ namespace PPEC.Communication
             // 正数直接转换并补零
             return Convert.ToString(decimalNum, 2).PadLeft(bitWidth, '0');
         }
+
+        /// <summary>
+        /// 将 1–32 位的二进制字符串转换为 UInt16，
+        /// 若结果超出 0–65535 则抛出 OverflowException。
+        /// </summary>
+        public static ushort BinStringToUInt16(string bin)
+        {
+            if (string.IsNullOrWhiteSpace(bin))
+                throw new ArgumentException("输入不能为空", nameof(bin));
+
+            // 去掉空格、前缀 0b/0B
+            bin = bin.Trim().Replace(" ", "");
+            if (bin.StartsWith("0b", StringComparison.OrdinalIgnoreCase))
+                bin = bin.Substring(2);
+
+            // 只允许 0/1
+            if (bin.Any(c => c != '0' && c != '1'))
+                throw new FormatException("只能包含字符 0 和 1");
+
+            // 先按 32 位解析，再判断是否超限
+            uint value32 = Convert.ToUInt32(bin, 2);
+            if (value32 > ushort.MaxValue)
+                throw new OverflowException($"数值 {value32} 超出 UInt16 范围");
+
+            return (ushort)value32;
+        }
     }
 
     public static class CloneHelper

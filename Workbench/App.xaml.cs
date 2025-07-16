@@ -26,6 +26,7 @@ using AutoMapper;
 using Workbench.Profiles;
 using Workbench.Db.IService;
 using Workbench.Db.Service;
+using Workbench.ViewModels.dw;
 
 namespace Workbench
 {
@@ -118,6 +119,7 @@ namespace Workbench
             containerRegistry.RegisterSingleton<ProjectManager>();
             containerRegistry.RegisterSingleton<FileHandler>();
             containerRegistry.RegisterSingleton<MainServices>();
+            //containerRegistry.RegisterSingleton<WatchViewModel>();
             containerRegistry.RegisterSingleton<ICpService, CpService>();
             //containerRegistry.RegisterSingleton<SmlsContext>(() => new SmlsContext($@"Data Source={AppDomain.CurrentDomain.BaseDirectory}smls_vision.db;Version=3"));
             var configuration = new MapperConfiguration(cfg =>

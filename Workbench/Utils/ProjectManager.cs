@@ -406,6 +406,12 @@ namespace Workbench.Utils
             return CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).Select(d => d.Category).Distinct().ToList();
         }
 
+        public RegisterAddrInfo GetRegisterValue(string registerName)
+        {
+            var register=CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.AddressHex == registerName);
+            return register;
+        }
+
         internal void SetRegisterValue(string registerName, uint value)
         {
             var register = CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == registerName);

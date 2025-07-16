@@ -208,6 +208,7 @@ namespace Workbench.Models
             {
                 MessageBox.Show("板卡连接异常，请检查", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 IsConnecting = false;
+                service.Close();
                 return false;
             }
             else

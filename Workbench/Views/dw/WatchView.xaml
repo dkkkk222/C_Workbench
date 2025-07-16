@@ -14,6 +14,10 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
+        <Style x:Key="CenterCellStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
     </UserControl.Resources>
     <Border Background="#fafafa" Padding="8">
         <Grid>
@@ -27,93 +31,96 @@
                     <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
                         <TextBlock Text="监控数据配置" FontSize="{StaticResource SubHeadFontSize}"/>
                     </Border>
-                    <StackPanel Orientation="Vertical">
-                        <Border Margin="0,8,0,0">
-                            <hc:UniformSpacingPanel Spacing="20" Orientation="Horizontal">
-                                <ComboBox ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
-                                          hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180"
-                                          SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                                <TextBox Text="{Binding AddressKeyword}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="地址：" 
-                                         hc:InfoElement.TitlePlacement="Left" Width="180" hc:InfoElement.Placeholder="请输入关键字检索"/>
-                                <Button Style="{StaticResource ButtonPrimary}" Content="搜索" hc:IconElement.Geometry="{StaticResource SearchGeometry}" 
-                                        hc:IconElement.Width="14" Command="{Binding SearchCommand}"/>
-                            </hc:UniformSpacingPanel>
-                        </Border>
-                        <DataGrid ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="245" IsReadOnly="True"
-                                      SelectedItem="{Binding CurrentRegister}">
-                            <DataGrid.ColumnHeaderStyle>
-                                <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                    <Setter Property="FontSize" Value="13"/>
-                                    <Setter Property="Margin" Value="0,0,0,5"/>
-                                </Style>
-                            </DataGrid.ColumnHeaderStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding AddressHex}" Header="寄存器地址(HEX)" Width="*"/>
-                                <DataGridTextColumn Binding="{Binding Category}" Header="分类" Width="*"/>
-                                <DataGridTextColumn Binding="{Binding SubCategory}" Header="子分类" Width="*"/>
-                                <DataGridTextColumn Binding="{Binding Name}" Header="寄存器名称" Width="*"/>
-                                <DataGridTextColumn Binding="{Binding HexValue}" Header="数据(HEX)" Width="*"/>
-                                <DataGridTemplateColumn Header="记录时间" Width="Auto">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Width="80">
-                                                    <hc:NumericUpDown.Value>
-                                                        <Binding Path="RecordTime" UpdateSourceTrigger="PropertyChanged"/>
-                                                    </hc:NumericUpDown.Value>
-                                                </hc:NumericUpDown>
-                                                <TextBlock Text="秒" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="开始" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="开始记录" Style="{StaticResource ButtonInfo.Small}" HorizontalAlignment="Left"
-                                                    Command="{Binding Path=DataContext.BeginRecordCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="停止" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="停止记录" Style="{StaticResource ButtonWarning.Small}" HorizontalAlignment="Left"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="添加到数据监测表" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ComboBox ItemsSource="{Binding Path=DataContext.WatchGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                      Style="{StaticResource ComboBoxExtend.Small}"
-                                                      DisplayMemberPath="Header"
-                                                      SelectedValue="{Binding TableId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                      SelectedValuePath="Id">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="SelectionChanged">
-                                                        <i:InvokeCommandAction Command="{Binding DataContext.TableChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                                               CommandParameter="{Binding}" />
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </ComboBox>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <!--<DataGridTemplateColumn Header="添加到解析" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox IsChecked="{Binding IsAddToPlot,Mode=TwoWay}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>-->
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </StackPanel>
+                    <!--<StackPanel Orientation="Vertical">-->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Border Margin="0,8,0,0" Grid.Row="0">
+                                <hc:UniformSpacingPanel Spacing="20" Orientation="Horizontal">
+                                    <ComboBox ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
+                   hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180"
+                   SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
+                                    <TextBox Text="{Binding AddressKeyword}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="地址：" 
+                  hc:InfoElement.TitlePlacement="Left" Width="180" hc:InfoElement.Placeholder="请输入关键字检索"/>
+                                    <Button Style="{StaticResource ButtonPrimary}" Content="搜索" hc:IconElement.Geometry="{StaticResource SearchGeometry}" 
+                 hc:IconElement.Width="14" Command="{Binding SearchCommand}"/>
+                                </hc:UniformSpacingPanel>
+                            </Border>
+                        <DataGrid  MaxHeight="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+               CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="245" IsReadOnly="True"
+               SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="FontSize" Value="13"/>
+                                        <Setter Property="Margin" Value="0,0,0,5"/>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding AddressHex}" Header="寄存器地址(HEX)" Width="*"/>
+                                    <DataGridTextColumn Binding="{Binding Category}" Header="分类" Width="*"/>
+                                    <DataGridTextColumn Binding="{Binding SubCategory}" Header="子分类" Width="*"/>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="寄存器名称" Width="*"/>
+                                    <DataGridTextColumn Binding="{Binding HexValue}" Header="数据(HEX)" Width="*"/>
+                                    <DataGridTemplateColumn Header="记录时间" Width="Auto">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Width="80">
+                                                        <hc:NumericUpDown.Value>
+                                                            <Binding Path="RecordTime" UpdateSourceTrigger="PropertyChanged"/>
+                                                        </hc:NumericUpDown.Value>
+                                                    </hc:NumericUpDown>
+                                                    <TextBlock Text="秒" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="开始" Width="*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="开始记录" Style="{StaticResource ButtonInfo.Small}" HorizontalAlignment="Left"  IsEnabled="{c:Binding !IsStartRecord}"
+                             Command="{Binding Path=DataContext.BeginRecordCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                             CommandParameter="{Binding}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="停止" Width="*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="停止记录" Style="{StaticResource ButtonWarning.Small}" HorizontalAlignment="Left"  IsEnabled="{c:Binding IsStartRecord}"
+                              Command="{Binding Path=DataContext.StopRecordCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                              CommandParameter="{Binding}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="添加到数据监测表" Width="*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox ItemsSource="{Binding Path=DataContext.WatchGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                               Style="{StaticResource ComboBoxExtend.Small}"
+                               DisplayMemberPath="Header"
+                               SelectedValue="{Binding TableId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                               SelectedValuePath="Id">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="SelectionChanged">
+                                                            <i:InvokeCommandAction Command="{Binding DataContext.TableChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding}" />
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </ComboBox>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                       
+                       
+                    <!--</StackPanel>-->
                 </DockPanel>
             </Border>
             <hc:Divider Grid.Row="1" Margin="0,5"/>
@@ -182,20 +189,20 @@
                                                 </DataGrid.Resources>
                                                 <DataGrid.ColumnHeaderStyle>
                                                     <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
-                                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                         <Setter Property="FontSize" Value="13"/>
                                                         <Setter Property="Margin" Value="0,0,0,5"/>
                                                     </Style>
                                                 </DataGrid.ColumnHeaderStyle>
                                                 <DataGrid.Columns>
-                                                    <DataGridTemplateColumn  Header="序号" Width="50" Visibility="{Binding 
+                                                    <DataGridTemplateColumn  Header="序号" Width="45" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[0].IsChecked,
                                                         Converter={StaticResource Boolean2VisibilityConverter}}">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
-                                                                <TextBlock>
+                                                                <TextBlock HorizontalAlignment="Center">
                                                                     <TextBlock.Text>
                                                                         <MultiBinding Converter="{StaticResource RowIndexConverter}">
                                                                             <Binding />
@@ -207,20 +214,20 @@
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
                                                     <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"
-                                                                        Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"/>
-                                                    <DataGridTemplateColumn Header="源寄存器地址" Width="*"
+                                                                        Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                    <DataGridTemplateColumn Header="源寄存器地址" Width="95"
                                                                             Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
-                                                                <TextBlock Text="{Binding AddressHexName}"/>
+                                                                <TextBlock HorizontalAlignment="Center" Text="{Binding AddressHexName}"/>
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
-                                                    <DataGridTemplateColumn Header="解析范围" Width="*"
+                                                    <DataGridTemplateColumn Header="解析范围" Width="75"
                                                                             Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
-                                                                <StackPanel Orientation="Horizontal">
+                                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                                                     <TextBlock Text="b"/>
                                                                     <TextBlock Text="{Binding EndBit}"/>
                                                                     <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
@@ -232,19 +239,30 @@
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
-                                                    <DataGridTemplateColumn Header="解析要求" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                    <DataGridTemplateColumn Header="解析要求" Width="85" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
-                                                                <StackPanel Orientation="Horizontal">
+                                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                                                     <TextBlock Text="{Binding FormParam.ParamName}"/>
                                                                 </StackPanel>
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
-                                                    <DataGridTextColumn Header="解析结果" Binding="{Binding Result}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"/>
-                                                    <DataGridTextColumn Header="单位" Binding="{Binding FormParam.UnitName}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"></DataGridTextColumn>
-                                                    <DataGridTextColumn Header="添加到监测图" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}"/>
+                                                    <DataGridTextColumn Header="解析结果" Binding="{Binding Result}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                    <DataGridTextColumn Header="原始值(Dec)" Binding="{Binding Value}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                    <DataGridTextColumn Header="原始值(Bit)" Binding="{Binding ReadBinary}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                    <DataGridTextColumn Header="单位"  Binding="{Binding FormParam.UnitName}" Width="50" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
+                                                    <DataGridTemplateColumn Header="添加到监测图" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel HorizontalAlignment="Center">
+                                                                    <CheckBox></CheckBox>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
                                                 </DataGrid.Columns>
+                                                
                                             </DataGrid>
                                         </DockPanel>
                                         <DockPanel LastChildFill="True" Grid.Column="1" Margin="15,0,0,0">
