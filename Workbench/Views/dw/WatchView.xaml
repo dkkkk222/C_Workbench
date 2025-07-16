@@ -150,7 +150,7 @@
                                                         <TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
                                                         <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
                                                                 Margin="5,0,0,0" 
-                                                                Command="{Binding Path=DataContext.RenameCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                Command="{Binding RenameCommand}"
                                                                 CommandParameter="Table"/>
                                                     </StackPanel>
                                                     <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
@@ -212,7 +212,7 @@
                                                                             Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
-                                                                <TextBlock Text="{Binding Path=DataContext.CurrentRegister.AddressHex,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                                <TextBlock Text="{Binding AddressHexName}"/>
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>
                                                     </DataGridTemplateColumn>
@@ -241,7 +241,13 @@
                                         </DockPanel>
                                         <DockPanel LastChildFill="True" Grid.Column="1" Margin="15,0,0,0">
                                             <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                                                <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                    <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
+                                                            Margin="5,0,0,0" 
+                                                            Command="{Binding RenameCommand}"
+                                                            CommandParameter="Chart"/>
+                                                </StackPanel>
                                             </Border>
                                             <Border Margin="0,5,0,0">
                                                 <ContentControl Content="{Binding PlotControl,Mode=OneTime}"/>

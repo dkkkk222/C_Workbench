@@ -14,14 +14,14 @@
         </Grid.RowDefinitions>
         <hc:Row Margin="0,20,0,0">
             <hc:Col Span="16" Offset="4">
-                <TextBox Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="名称："
+                <TextBox Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="名称：" Text="{Binding ShowName,Mode=TwoWay}"
                  hc:InfoElement.TitlePlacement="Left" hc:InfoElement.Placeholder="请输入" hc:InfoElement.ShowClearButton="True"/>
             </hc:Col>
         </hc:Row>
         <Border Grid.Row="1">
             <hc:UniformSpacingPanel Spacing="15" Height="60" HorizontalAlignment="Center">
-                <Button Style="{StaticResource ButtonDefault}" Content="取消" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
-                <Button Style="{StaticResource ButtonPrimary}" Content="确定" hc:IconElement.Geometry="{StaticResource SaveGeometry}"/>
+                <Button Style="{StaticResource ButtonDefault}" Content="取消" Command="{Binding CancelCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
+                <Button Style="{StaticResource ButtonPrimary}" Content="确定" Command="{Binding ComfirCommand}" hc:IconElement.Geometry="{StaticResource SaveGeometry}"/>
 
             </hc:UniformSpacingPanel>
         </Border>

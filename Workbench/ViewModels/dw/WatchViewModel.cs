@@ -4,6 +4,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Services.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,6 +14,7 @@ using Workbench.Models.dw;
 using Workbench.Utils;
 using Workbench.Views;
 using Workbench.Views.Windows;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Workbench.ViewModels.dw
 {
@@ -113,7 +115,7 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand AddWatchGroupCommand => _addWatchGroupCommand ?? (_addWatchGroupCommand = new DelegateCommand(() =>
         {
 
-            WatchGroups.Add(new WatchGroup()
+            WatchGroups.Add(new WatchGroup(_dialogService)
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Header = $"表{WatchGroups.Count + 1}",
@@ -123,15 +125,6 @@ namespace Workbench.ViewModels.dw
             {
                 CurrentTab = WatchGroups.Last();
             }
-        }));
-
-        private DelegateCommand<string> _renameCommand;
-        public DelegateCommand<string> RenameCommand => _renameCommand ?? (_renameCommand = new DelegateCommand<string>((param) =>
-        {
-            _dialogService.Show(nameof(RenameView), new DialogParameters(), r =>
-            {
-
-            }, nameof(RenameWindow));
         }));
 
         private ObservableCollection<TableColumn> InitTableColumns()
@@ -167,7 +160,8 @@ namespace Workbench.ViewModels.dw
             //遍历寄存器下的BitField
             param.BitFields.ForEach(bf =>
             {
-                var clone = bf.DeepClone();
+                var clone = JsonHelper.DeepClone(bf);
+                clone.AddressHexName = param.AddressHex;
                 tab.BitFields.Add(clone);
             });
         }));

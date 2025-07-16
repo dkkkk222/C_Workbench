@@ -271,6 +271,7 @@ namespace PPEC.Communication.Model
 
         public string Desc { get; set; }
 
+        public string AddressHexName { get; set; }
 
         [JsonIgnore]
         public bool IsTextbox => FieldType == PPEC.Communication.Enum.FieldType.None;

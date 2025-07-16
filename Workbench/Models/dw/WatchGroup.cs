@@ -1,13 +1,22 @@
 ﻿using Newtonsoft.Json;
 using PPEC.Communication.Model;
+using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using ScottPlot.WPF;
 using System.Collections.ObjectModel;
+using Workbench.Views;
+using Workbench.Views.Windows;
 
 namespace Workbench.Models.dw
 {
     public class WatchGroup : BindableBase
     {
+        private readonly IDialogService _dialogService;
+        public WatchGroup(IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+        }
         private string _id;
         public string Id
         {
@@ -52,6 +61,30 @@ namespace Workbench.Models.dw
 
         [JsonIgnore]
         public WpfPlot PlotControl { get; } = new WpfPlot();
+
+        private DelegateCommand<string> _renameCommand;
+        public DelegateCommand<string> RenameCommand => _renameCommand ?? (_renameCommand = new DelegateCommand<string>((param) =>
+        {
+            IDialogParameters dialogParameters = new DialogParameters();
+            dialogParameters.Add("NameType", param);
+            _dialogService.Show(nameof(RenameView), dialogParameters, r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+                    var NameType = r.Parameters.GetValue<string>("NameType");
+                    var ShowName = r.Parameters.GetValue<string>("ShowName");
+                    if (NameType == "Table")
+                    {
+                        TableName = ShowName;
+                    }
+                    if (NameType == "Chart")
+                    {
+                        ChartName = ShowName;
+                    }
+                    
+                }
+            }, nameof(RenameWindow));
+        }));
 
     }
 }
