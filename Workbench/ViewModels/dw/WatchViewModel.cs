@@ -214,6 +214,16 @@ namespace Workbench.ViewModels.dw
                 var remain = group.BitFields.Where(t => t.Name != param.Name).ToList();
                 group.BitFields.Clear();
                 group.BitFields.AddRange(remain);
+
+                var labels=group.WpfPlotControl.Plot.GetPlottables();
+                foreach(var lengLabel in labels)
+                {
+                    if(lengLabel is Scatter sc)
+                    {
+                        sc.IsVisible = false;
+                    }
+                }
+                group.WpfPlotControl.Refresh();
             }
 
             //找到Tab

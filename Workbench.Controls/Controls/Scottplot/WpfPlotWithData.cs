@@ -19,7 +19,7 @@ namespace Workbench.Controls.Controls.Scottplot
         private double _stepPerPoint;      // 每个点的增量（以 OADate 为单位）
 
         private static string PlotFont = "Noto Sans TC";
-        public const int MaxPointCount = 500;
+        public int MaxPointCount = 500;
         private static Regex LabelReg = new Regex(@"(?<=:)\d+(\.\d+)?", RegexOptions.Compiled);
         public string Label;
         public bool IsUpdate { get; set; } = true;
@@ -60,7 +60,7 @@ namespace Workbench.Controls.Controls.Scottplot
             //Plot.Legend.BackgroundColor = Color.FromHex("#404040");
             //Plot.Legend.FontColor = Color.FromHex("#d7d7d7");
             //Plot.Legend.OutlineColor = Color.FromHex("#d7d7d7");
-
+            MaxPointCount = defaultXCount;
             xs = Enumerable.Range(0, defaultXCount).Select(i => (double)i).ToList();
             Refresh();
             DeviceIP = deviceIP;
@@ -113,6 +113,21 @@ namespace Workbench.Controls.Controls.Scottplot
             IsUpdate = true;
         }
         #endregion
+
+        public void SetXYLimit(int MaxX = 5000, int MinX = 0, int MaxY = 300, int MinY = -300)
+        {
+            if (MinX < MaxX && MaxX > MinX)
+            {
+                Plot.Axes.SetLimits(left: MinX, right: MaxX);
+            }
+            if (MinY < MaxY && MaxY > MinY)
+            {
+                Plot.Axes.SetLimits(bottom: MinY, top: MaxY);
+                //this.Plot.YAxis.SetSizeLimit(MinY, MaxY);
+            }
+
+            Refresh();
+        }
 
         public void Init(int i, Plot Plot, DateTime start)
         {
@@ -194,28 +209,15 @@ namespace Workbench.Controls.Controls.Scottplot
                 return;
             if (ListY.ContainsKey(name))
             {
-                //_currentX += _stepPerPoint;    // 在上一个基础上加步长
-                //xs.Add(_currentX);
-              
-
                 var listDouble = ListY[name];
 
                 listDouble.Add(value);
-             
                 if (listDouble.Count > MaxPointCount)
                 {
                     int excessCount = listDouble.Count - MaxPointCount;
                     listDouble.RemoveRange(0, excessCount);  // 移除最前面多余的数
-
-                    var addX = xs.Max(x => x) + 1;
-                    xs.Add(addX);
-                    xs.RemoveRange(0, excessCount);
-              
-                    //double xMax = xs.Max(x=>x);
-                    //double xMin = xs.Min(x => x);
-                    //Plot.Axes.SetLimitsX(xMin, xMax);
                 }
-                
+
 
             }
         }
@@ -230,13 +232,17 @@ namespace Workbench.Controls.Controls.Scottplot
                 return;
             try
             {
-                double xMax = xs.Max(x=>x);
-                double xMin = xs.Min(x => x);
-                Plot.Axes.SetLimitsX(xMin, xMax);
-                 
+                if (isAuto)
+                {
+                    //Plot.Axes.AutoScale(true);
+                    //if (xs != null && xs.Count > 1 && xs.First() < xs.Last())
+                    //    Plot.Axes.SetLimitsX(xs.First(), xs.Last());
+                }
+                else
+                {
 
-                // 自动缩放 Y 轴
-                Plot.Axes.AutoScaleY();
+                    //Plot.Axes.AutoScaleX();
+                }
                 Refresh();
             }
             catch (Exception ex)

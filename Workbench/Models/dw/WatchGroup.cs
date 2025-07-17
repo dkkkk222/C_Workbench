@@ -49,6 +49,34 @@ namespace Workbench.Models.dw
             set { SetProperty(ref _chartName, value); }
         }
 
+        #region ChartPropety
+        public int chart1MaxX = 5000;
+        public int Chart1MaxX
+        {
+            get => chart1MaxX;
+            set => SetProperty(ref chart1MaxX, value);
+        }
+        public int chart1MinX = 0;
+        public int Chart1MinX
+        {
+            get => chart1MinX;
+            set => SetProperty(ref chart1MinX, value);
+        }
+
+        public int chart1MaxY = 300;
+        public int Chart1MaxY
+        {
+            get => chart1MaxY;
+            set => SetProperty(ref chart1MaxY, value);
+        }
+        public int chart1MinY = -300;
+        public int Chart1MinY
+        {
+            get => chart1MinY;
+            set => SetProperty(ref chart1MinY, value);
+        }
+        #endregion
+
         private ObservableCollection<BitField> _bitFields = new ObservableCollection<BitField>();
         public ObservableCollection<BitField> BitFields
         {
@@ -65,8 +93,13 @@ namespace Workbench.Models.dw
 
         //[JsonIgnore]
         //public WpfPlot PlotControl { get; } = new WpfPlot();
+        private WpfPlotSteamBase wpfPlotControl = new WpfPlotSteamBase("监测图", "X", "Y", yMin: -30, yMax: 30, defaultXCount: 5000);
         [JsonIgnore]
-        public WpfPlotSteamBase WpfPlotControl { get; set; } = new WpfPlotSteamBase("监测图","X","Y",yMin:-30,yMax:30);
+        public WpfPlotSteamBase WpfPlotControl 
+        { 
+            get=> wpfPlotControl;
+            set=>SetProperty(ref wpfPlotControl,value); 
+        } 
 
         private DelegateCommand<string> _renameCommand;
         public DelegateCommand<string> RenameCommand => _renameCommand ?? (_renameCommand = new DelegateCommand<string>((param) =>
@@ -121,6 +154,15 @@ namespace Workbench.Models.dw
                     legLabel.IsVisible = true;
                 }
             }
+        }
+
+        private DelegateCommand<object> _settingChartLimitCommand;
+        public DelegateCommand<object> SettingChartLimitCommand =>
+            _settingChartLimitCommand ?? (_settingChartLimitCommand = new DelegateCommand<object>(SettingChartLimit));
+
+        private void SettingChartLimit(object o)
+        {
+            WpfPlotControl.SetXYLimit(MaxX: Chart1MaxX,MinX:Chart1MinX,MaxY:Chart1MaxY,MinY:Chart1MinY);
         }
     }
 }
