@@ -1,8 +1,10 @@
 ﻿using Force.DeepCloner;
+using NPOI.SS.Formula.Functions;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Services.Dialogs;
+using ScottPlot.Plottables;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,6 +28,7 @@ namespace Workbench.ViewModels.dw
         private readonly IEventAggregator _eventAggregator;
         private readonly IDialogService _dialogService;
         public int RefreshInterval = 500;//UI更新间隔
+        public System.Timers.Timer _timer = new System.Timers.Timer();
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
         public WatchViewModel(IEventAggregator eventAggregator, ProjectManager projectManager, IDialogService dialogService)
@@ -36,6 +39,9 @@ namespace Workbench.ViewModels.dw
             WatchGroups = _projectManager.CurrentProject.WatchGroups;
             pms=new ParameterMonitorService(3) { CurrentProject= _projectManager.CurrentProject };
             pms.Enable();
+
+            _timer.Interval = 1; // 设置触发间隔
+            _timer.Elapsed += Timer_Tick; // 设置触发事件
         }
 
         #region Property
@@ -54,11 +60,13 @@ namespace Workbench.ViewModels.dw
                 {
                     if(value)
                     {
+                        _timer.Start();
                         pms.Enable();
                         StartUiLoop(RefreshInterval);
                     }
                     else
                     {
+                        _timer.Stop();
                         pms.Disable();
                         StopUiLoopAsync().ConfigureAwait(false);                       
                     }
@@ -152,12 +160,7 @@ namespace Workbench.ViewModels.dw
             }
             pms.StartRecord(param,TimeSpan.FromSeconds(param.RecordTime));
             param.IsStartRecord = true;
-            //var tab = WatchGroups.FirstOrDefault(t => t.Id == param.TableId);
-            //if (tab == null) return;
-            //double[] dataX = { 1, 2, 3, 4, 5 };
-            //double[] dataY = Enumerable.Range(0, 100).OrderBy(d => new Random().Next()).Select(x => (double)x).Take(5).ToArray<double>();
-            //tab.PlotControl.Plot.Add.Scatter(dataX, dataY);
-            //tab.PlotControl.Refresh();
+            //StartUiLoop(RefreshInterval);
         }));
         private DelegateCommand<RegisterAddrInfo> _stopRecordCommand;
         public DelegateCommand<RegisterAddrInfo> StopRecordCommand => _stopRecordCommand ?? (_stopRecordCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
@@ -222,6 +225,7 @@ namespace Workbench.ViewModels.dw
             {
                 var clone = JsonHelper.DeepClone(bf);
                 clone.AddressHexName = param.AddressHex;
+                clone.AddressId = param.Id;
                 tab.BitFields.Add(clone);
             });
         }));
@@ -262,7 +266,10 @@ namespace Workbench.ViewModels.dw
                 {
                     await UpdateGroupAsync(group, token);
                 }
-
+                //if (pms._watching.Count == 0)
+                //{
+                //    await StopUiLoopAsync();
+                //}
                 // 补偿延时
                 var remain = periodMs - (int)sw.ElapsedMilliseconds;
                 if (remain > 0)
@@ -276,10 +283,6 @@ namespace Workbench.ViewModels.dw
             {
                 foreach (var field in group.BitFields)
                 {
-                    var unitValue = _projectManager.CurrentProject.CommService?.Read(field.AddressHexName);
-                    if (unitValue == null)
-                        continue;
-                    _projectManager.SetRegisterValue(field.Name, unitValue.Value);
                     var newValue = _projectManager.GetRegisterValue(field.AddressHexName);
                     if (newValue == null)
                         continue;
@@ -290,10 +293,50 @@ namespace Workbench.ViewModels.dw
                         field.Result = newField.Result;
                         field.ReadBinary = newField.ReadBinary;
                         field.Value = newField.Value;
-                    }
-                        
-                }
 
+                        group.WpfPlotControl.RefreshData(true);                        
+                    }                        
+                }
+            });
+        }
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    foreach (var group in WatchGroups.ToArray())
+                    {
+                        foreach (var field in group.BitFields)
+                        {
+                            var unitValue = _projectManager.CurrentProject.CommService?.Read(field.AddressHexName);
+                            if (unitValue == null)
+                                continue;
+                            _projectManager.SetRegisterValue(field.Name, unitValue.Value);
+                            var newValue = _projectManager.GetRegisterValue(field.AddressHexName);
+                            if (newValue == null)
+                                continue;
+                            var newField = newValue.BitFields
+                                                 .FirstOrDefault(x => x.StartBit == field.StartBit);
+                            if (newField != null)
+                            {
+                                if (field.IsSelected)
+                                {
+                                    if (pms._watching.ContainsKey(field.AddressId))
+                                    {
+                                        //更新波形数据
+                                        group.WpfPlotControl.UpdateData(field.Desc, field.Result);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                       
+                }
+                catch(Exception ex)
+                {
+
+                }
             });
         }
         #endregion

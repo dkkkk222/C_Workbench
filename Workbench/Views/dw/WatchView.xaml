@@ -10,6 +10,7 @@
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:utils="clr-namespace:Workbench.Utils"
+             xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -256,7 +257,7 @@
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <StackPanel HorizontalAlignment="Center">
-                                                                    <CheckBox></CheckBox>
+                                                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding DataContext.AddToChartCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" />
                                                                 </StackPanel>
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>
@@ -276,7 +277,8 @@
                                                 </StackPanel>
                                             </Border>
                                             <Border Margin="0,5,0,0">
-                                                <ContentControl Content="{Binding PlotControl,Mode=OneTime}"/>
+                                                <ContentControl Content="{Binding WpfPlotControl,Mode=OneTime}"/>
+                                                
                                             </Border>
                                         </DockPanel>
                                     </Grid>

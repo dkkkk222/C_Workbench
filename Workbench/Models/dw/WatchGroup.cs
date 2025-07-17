@@ -3,8 +3,12 @@ using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using ScottPlot.Plottables;
 using ScottPlot.WPF;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Workbench.Controls.Controls.Scottplot;
 using Workbench.Views;
 using Workbench.Views.Windows;
 
@@ -59,8 +63,10 @@ namespace Workbench.Models.dw
             set { SetProperty(ref _tableColumns, value); }
         }
 
+        //[JsonIgnore]
+        //public WpfPlot PlotControl { get; } = new WpfPlot();
         [JsonIgnore]
-        public WpfPlot PlotControl { get; } = new WpfPlot();
+        public WpfPlotSteamBase WpfPlotControl { get; set; } = new WpfPlotSteamBase("监测图","X","Y",yMin:-30,yMax:30);
 
         private DelegateCommand<string> _renameCommand;
         public DelegateCommand<string> RenameCommand => _renameCommand ?? (_renameCommand = new DelegateCommand<string>((param) =>
@@ -86,5 +92,35 @@ namespace Workbench.Models.dw
             }, nameof(RenameWindow));
         }));
 
+        private DelegateCommand<BitField> _addToChartCommand;
+        public DelegateCommand<BitField> AddToChartCommand =>
+            _addToChartCommand ?? (_addToChartCommand = new DelegateCommand<BitField>(OnAddToChart));
+
+        private void OnAddToChart(BitField field)
+        {
+            if (field == null) return;
+
+            var matched=BitFields.FirstOrDefault(f => f.AddressHexName == field.AddressHexName&&f.StartBit==field.StartBit);
+
+            var plotConfig = WpfPlotControl.Plot.GetPlottables();
+            var legLabel = plotConfig.Where(x => (x as Scatter).LegendText.Equals(field.Desc)).FirstOrDefault();
+            
+            if (legLabel == null)
+            {
+                //添加通道信息到波形图
+                WpfPlotControl.AddSignalData(field.Desc);
+            }
+            else
+            {
+                if (!field.IsSelected)
+                {
+                    legLabel.IsVisible = false;
+                }
+                else
+                {
+                    legLabel.IsVisible = true;
+                }
+            }
+        }
     }
 }

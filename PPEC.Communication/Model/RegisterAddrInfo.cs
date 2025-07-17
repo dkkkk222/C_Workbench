@@ -274,6 +274,7 @@ namespace PPEC.Communication.Model
         public int EndBit { get; set; }   // 高位
         public int Length => EndBit - StartBit + 1;//位长度
 
+        public string AddressId { get; set; }
         public string Name { get; set; }
 
         public string Desc { get; set; }
@@ -316,7 +317,6 @@ namespace PPEC.Communication.Model
                 if (SetProperty(ref _value, value))
                 {
                     Result = UtilHelper.GetValueForFormula(FormParam.ParamSymbol, FormParam.ParamA, FormParam.ParamB, value);
-                    //Result = FormParam.ParamA * value + FormParam.ParamB;
                 }
             }
         }
@@ -373,6 +373,14 @@ namespace PPEC.Communication.Model
         {
             get => _resolveStr;
             set => SetProperty(ref _resolveStr, value);
+        }
+
+        private bool _isSelected;
+        [JsonIgnore]
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
         }
     }
     public class BitOption : BindableBase
