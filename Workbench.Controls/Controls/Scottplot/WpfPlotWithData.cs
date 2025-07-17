@@ -196,18 +196,27 @@ namespace Workbench.Controls.Controls.Scottplot
             {
                 //_currentX += _stepPerPoint;    // 在上一个基础上加步长
                 //xs.Add(_currentX);
+              
 
                 var listDouble = ListY[name];
 
                 listDouble.Add(value);
-                //var addX= xs.Max(x => x)+1;
-                //xs.Add(addX);
+             
                 if (listDouble.Count > MaxPointCount)
                 {
                     int excessCount = listDouble.Count - MaxPointCount;
                     listDouble.RemoveRange(0, excessCount);  // 移除最前面多余的数
-                    //xs.RemoveRange(0, excessCount);
+
+                    var addX = xs.Max(x => x) + 1;
+                    xs.Add(addX);
+                    xs.RemoveRange(0, excessCount);
+              
+                    //double xMax = xs.Max(x=>x);
+                    //double xMin = xs.Min(x => x);
+                    //Plot.Axes.SetLimitsX(xMin, xMax);
                 }
+                
+
             }
         }
         
@@ -221,17 +230,13 @@ namespace Workbench.Controls.Controls.Scottplot
                 return;
             try
             {
-                if (isAuto)
-                {
-                    Plot.Axes.AutoScale(true);
-                    if (xs != null && xs.Count > 1 && xs.First() < xs.Last())
-                        Plot.Axes.SetLimitsX(xs.First(), xs.Last());
-                }
-                else
-                {
+                double xMax = xs.Max(x=>x);
+                double xMin = xs.Min(x => x);
+                Plot.Axes.SetLimitsX(xMin, xMax);
+                 
 
-                    Plot.Axes.AutoScaleX();
-                }
+                // 自动缩放 Y 轴
+                Plot.Axes.AutoScaleY();
                 Refresh();
             }
             catch (Exception ex)
