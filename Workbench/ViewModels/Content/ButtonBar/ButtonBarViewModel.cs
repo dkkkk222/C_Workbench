@@ -272,6 +272,11 @@ namespace Workbench.ViewModels.Content.ButtonBar
             try
             {
                 var ppec = _projectManager.GetCachePPEC();
+                if(ppec==null)
+                {
+                    MessageBox.Show("请选择工程后再连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 ppec.PortName = SerialPortName;
                 bool result = await ppec.ConnectAsync();
                 IsConnected = result;

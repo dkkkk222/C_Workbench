@@ -85,6 +85,36 @@ namespace Workbench.Utils
             return CurrentProject;
         }
 
+        /// <summary>
+        /// 移除工程
+        /// </summary>
+        /// <param name="project"></param>
+        public async Task RemoveProject(PpecProject project)
+        {
+            if(CurrentProject.UID== project.UID)//移除当前工程，先要断开连接
+            {
+                await AsyncDisConnect();
+                RemoveTabAndProject(project);
+            }
+            else
+            {
+                RemoveTabAndProject(project);
+            }
+            
+        }
+        public void RemoveTabAndProject(PpecProject project)
+        {
+            _eventAggregator.GetEvent<RemovePpecEvent>().Publish(project.Children[0].PPEC_Id);
+            _eventAggregator.GetEvent<RemoveProjectFromSiderEvent>().Publish(project.UID);
+            var removProject = OpenedProjectList.FirstOrDefault(x => x.UID == project.UID);
+            OpenedProjectList.Remove(removProject);
+        }
+        private async Task AsyncDisConnect()
+        {
+            _eventAggregator.GetEvent<CloseConnectEvent>().Publish();
+            await Task.Delay(200);
+            CurrentProject.Disconnect();
+        }
 
         /// <summary>
         /// 创建工程

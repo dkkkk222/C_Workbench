@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Workbench.Events;
 using Workbench.Models;
+using Workbench.Models.Consts;
 using Workbench.Utils;
 using Workbench.Utils.Common;
 using Workbench.ViewModels.Content.Sider;
@@ -43,12 +44,27 @@ namespace Workbench.Views.Content.Sider
             var seletectedItem = treeView.SelectedItem as PpecProject;
             var source = (FrameworkElement)e.OriginalSource;
             var nodeData = source.DataContext as PpecProject;
-            if (nodeData == null) return;
+            var viewModel = DataContext as SiderViewModel;
+            if (nodeData == null)
+            {
+                viewModel.SaveProjectName = ConstString.SaveProjectNameDefault;
+                viewModel.DelProjectName = ConstString.DelProjectNameDefault;
+                return;
+            }
+
+            var projectInfo = viewModel.Projects.FirstOrDefault(t => t.UID == nodeData.ProjectId);
+            viewModel.RightSelectProject = projectInfo;//右键选中的工程
 
             if (nodeData.Level == ProjectLevel.Project)
                 ShowProjectContextMenu(nodeData);
             else if (nodeData.Level == ProjectLevel.PPEC)
                 ShowPPECContextMenu(nodeData);
+            else
+            {         
+                viewModel.SaveProjectName = ConstString.SaveProjectName + projectInfo.Name;
+                viewModel.DelProjectName = ConstString.RemoveProjectName + projectInfo.Name;
+                viewModel.RightSelectProject = projectInfo;
+            }
         }
 
         private void ShowPPECContextMenu(PpecProject nodeData)

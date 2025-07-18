@@ -25,9 +25,9 @@
                 <Button Style="{StaticResource ButtonBarStyle}" ToolTip="保存" Command="{Binding SaveProjectCommand}">
                     <TextBlock Text="&#xe627;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                 </Button>
-                <Button Style="{StaticResource ButtonBarStyle}" ToolTip="另存为" Command="{Binding SaveAsProjectCommand}">
+                <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="另存为" Command="{Binding SaveAsProjectCommand}">
                     <TextBlock Text="&#xe628;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                </Button>
+                </Button>-->
                 <StackPanel Orientation="Horizontal" Visibility="{calc:Binding IsSelectedProject,FalseToVisibility=Collapsed}">
                     <Border Style="{StaticResource VerticalSeparatorStyle}"/>
                     <Button Style="{StaticResource ButtonBarStyle}" 
@@ -44,11 +44,11 @@
                             IsEnabled="{Binding IsConnected}">
                         <TextBlock Text="&#xe64d;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                     </Button>
-                    <Button Style="{StaticResource ButtonBarStyle}" ToolTip="调试" IsEnabled="{Binding IsConnected}">
+                    <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="调试" IsEnabled="{Binding IsConnected}">
                         <TextBlock Text="&#xe671;" 
                                    FontFamily="{StaticResource Iconfont}" 
                                    Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>
+                    </Button>-->
                     <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="固化参数" IsEnabled="{Binding IsConnected}">
                         <TextBlock Text="&#xe60b;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                     </Button>-->

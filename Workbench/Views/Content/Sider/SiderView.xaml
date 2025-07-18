@@ -10,7 +10,15 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="225">
-    <Border Padding="0" Background="{DynamicResource PrimaryBackgroundColor}">
+    <UserControl.Resources>
+        <ContextMenu x:Key="CuContextMenu" Style="{StaticResource ContextMenu.Small}" Width="165">
+            <MenuItem Name="Create" Header="新建芯片" Command="{Binding NewProjectCommand}"/>
+            <MenuItem Name="Copy" Header="打开芯片" Command="{Binding OpenProjectCommand}"/>
+            <MenuItem Name="Delete" Header="{Binding DelProjectName}" Command="{Binding RemoveCurrentProjectCommand}"/>
+            <MenuItem Name="Save" Header="{Binding SaveProjectName}" Command="{Binding SaveProjectCommand}"/>
+        </ContextMenu>
+    </UserControl.Resources>
+    <Border Padding="0" Background="{DynamicResource PrimaryBackgroundColor}" ContextMenu="{StaticResource CuContextMenu}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -29,7 +37,7 @@
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center">
                     </svgc:SvgViewbox>
-                    <Label Content="请创建或打开工程" FontSize="13" HorizontalAlignment="Center" Margin="0,8,0,0" Style="{StaticResource LabelDefault}"/>
+                    <Label Content="请创建或打开芯片工程" FontSize="13" HorizontalAlignment="Center" Margin="0,8,0,0" Style="{StaticResource LabelDefault}"/>
                 </StackPanel>
 
             </Border>

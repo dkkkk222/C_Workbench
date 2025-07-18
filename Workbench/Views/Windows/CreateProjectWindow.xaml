@@ -13,7 +13,7 @@
     <comCtrl:NoTitleBarWindow.TitleBarContent>
         <comCtrl:TitleBar>
             <comCtrl:TitleBar.Title>
-                <TextBlock Text="新建工程" Style="{DynamicResource TitleBarStyle}"/>
+                <TextBlock Text="新建芯片工程" Style="{DynamicResource TitleBarStyle}"/>
             </comCtrl:TitleBar.Title>
         </comCtrl:TitleBar>
     </comCtrl:NoTitleBarWindow.TitleBarContent>
