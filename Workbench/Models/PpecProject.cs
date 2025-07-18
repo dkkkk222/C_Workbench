@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Workbench.Communication;
+using Workbench.Events;
 using Workbench.Models.dw;
 using Workbench.Utils;
 

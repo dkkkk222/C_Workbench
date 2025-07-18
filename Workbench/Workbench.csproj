@@ -333,6 +333,7 @@
     <Compile Include="Db\Tables\RegisterBit.cs" />
     <Compile Include="Db\Tables\RegisterBitOption.cs" />
     <Compile Include="Events\AddedProjectEvent.cs" />
+    <Compile Include="Events\CloseConnectEvent.cs" />
     <Compile Include="Events\CloseTabEvent.cs" />
     <Compile Include="Events\ConnectEvent.cs" />
     <Compile Include="Events\ConnectionChangeEvent.cs" />

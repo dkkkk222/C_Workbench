@@ -89,6 +89,10 @@ namespace Workbench.ViewModels.Content.ButtonBar
             {
                 await OnConnectionAsync();
             });
+            _eventAggregator.GetEvent<CloseConnectEvent>().Subscribe(() =>
+            {
+                IsConnected = false;
+            });
         }
 
         #region Properties
@@ -233,12 +237,9 @@ namespace Workbench.ViewModels.Content.ButtonBar
 
         private DelegateCommand _disconnectCommand;
         public DelegateCommand DisconnectCommand =>
-            _disconnectCommand ?? (_disconnectCommand = new DelegateCommand(() =>
+            _disconnectCommand ?? (_disconnectCommand = new DelegateCommand(async () =>
             {
-                var ppec = _projectManager.GetCachePPEC();
-                ppec.Disconnect();
-                _projectManager.SetCurrentPpec(ppec);
-                IsConnected = false;
+                await CloseConnect();
             }));
 
         private DelegateCommand _connectCommand;
@@ -252,6 +253,15 @@ namespace Workbench.ViewModels.Content.ButtonBar
 
         #region Methods
 
+        public async Task CloseConnect()
+        {
+            _eventAggregator.GetEvent<CloseConnectEvent>().Publish();
+            await Task.Delay(200);
+            var ppec = _projectManager.GetCachePPEC();
+            ppec.Disconnect();
+            _projectManager.SetCurrentPpec(ppec);
+            IsConnected = false;
+        }
         private void InitTheme()
         {
             IsDarkTheme = false;

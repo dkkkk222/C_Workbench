@@ -42,11 +42,11 @@ namespace Workbench.ViewModels.dw
 
             _timer.Interval = 1; // 设置触发间隔
             _timer.Elapsed += Timer_Tick; // 设置触发事件
+
+            EventListener();
         }
 
         #region Property
-
-        #endregion
         public bool _isActive = false;
         public new bool IsActive
         {
@@ -54,11 +54,11 @@ namespace Workbench.ViewModels.dw
             {
                 return _isActive;
             }
-            set 
-            { 
-                if(SetProperty(ref _isActive, value))
+            set
+            {
+                if (SetProperty(ref _isActive, value))
                 {
-                    if(value)
+                    if (value)
                     {
                         _timer.Start();
                         pms.Enable();
@@ -68,7 +68,7 @@ namespace Workbench.ViewModels.dw
                     {
                         _timer.Stop();
                         pms.Disable();
-                        StopUiLoopAsync().ConfigureAwait(false);                       
+                        StopUiLoopAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -129,6 +129,7 @@ namespace Workbench.ViewModels.dw
             get => _pms;
             set => SetProperty(ref _pms, value);
         }
+        #endregion
 
         private DelegateCommand _closeCommand;
 
@@ -350,10 +351,17 @@ namespace Workbench.ViewModels.dw
             });
         }
         #endregion
-
-
         public void Dispose() => _cts.Cancel();
 
+        public void EventListener()
+        {
+            _eventAggregator.GetEvent<CloseConnectEvent>().Subscribe(() =>
+            {
+                _timer.Stop();
+                pms.Disable();
+                StopUiLoopAsync().ConfigureAwait(false);
+            });
+        }
         #endregion
         public override void LoadData()
         {

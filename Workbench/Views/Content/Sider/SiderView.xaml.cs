@@ -4,6 +4,8 @@ using Prism.Services.Dialogs;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Workbench.Events;
@@ -83,6 +85,34 @@ namespace Workbench.Views.Content.Sider
         {
             var seletectedItem = treeView.SelectedItem as PpecProject;
             if (seletectedItem == null) return;
+
+            var viewModel = DataContext as SiderViewModel;
+            var selectProject = seletectedItem.ProjectId==null? seletectedItem:viewModel.Projects.FirstOrDefault(t => t.UID == seletectedItem.ProjectId);
+
+            if (_projectManager.CurrentProject!=null&&_projectManager.CurrentProject.IsConnecting&& _projectManager.CurrentProject?.UID!= selectProject.UID)
+            {
+                var result=MessageBox.Show("切换芯片后必须断开原有芯片连接,请确认是否断开!","确认",MessageBoxButton.YesNo,MessageBoxImage.Question);
+                if(result==MessageBoxResult.Yes)
+                {
+                    var closeResult=AsyncDisConnect().GetAwaiter();
+                    closeResult.OnCompleted(() =>
+                    {
+                        ChangeProject(seletectedItem, viewModel);
+                    });
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                ChangeProject(seletectedItem, viewModel);
+            }
+            
+        }
+        private void ChangeProject(PpecProject seletectedItem, SiderViewModel viewModel)
+        {
             if (seletectedItem.Level == ProjectLevel.Project)
             {
                 _projectManager.CurrentProject = seletectedItem;
@@ -91,16 +121,20 @@ namespace Workbench.Views.Content.Sider
             else if (seletectedItem.Level == ProjectLevel.PPEC)
             {
                 _projectManager.CurrentPPEC = seletectedItem;
-                var viewModel = DataContext as SiderViewModel;
                 _projectManager.CurrentProject = viewModel.Projects.FirstOrDefault(t => t.UID == seletectedItem.ProjectId);
             }
             else
             {
-                var viewModel = DataContext as SiderViewModel;
                 _projectManager.CurrentProject = viewModel.Projects.FirstOrDefault(t => t.UID == seletectedItem.ProjectId);
                 _projectManager.CurrentPPEC = _projectManager.CurrentProject.Children.FirstOrDefault(t => t.UID == seletectedItem.PPEC_Id);
             }
             _eventAggregator.GetEvent<TreeViewSelectedEvent>().Publish(seletectedItem.Level);
+        }
+        private async Task AsyncDisConnect()
+        {
+            _eventAggregator.GetEvent<CloseConnectEvent>().Publish();
+            await Task.Delay(200);
+            _projectManager.CurrentProject.Disconnect();
         }
 
         private void treeView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -110,6 +144,7 @@ namespace Workbench.Views.Content.Sider
                 return;
             if (seletectedItem.Level == ProjectLevel.Project || seletectedItem.Level == ProjectLevel.PPEC)
                 return;
+
             _eventAggregator.GetEvent<DoubleClickTreeNodeEvent>().Publish(seletectedItem);
         }
     }
