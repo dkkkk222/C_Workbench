@@ -50,9 +50,9 @@
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350" Style="{StaticResource TextBoxExtend}" 
-                                     hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="文件路径:" hc:InfoElement.Necessary="True"
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="372" Style="{StaticResource TextBoxExtend}"
+                                     hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="寄存器文件:" hc:InfoElement.Necessary="True"
                                      hc:InfoElement.TitlePlacement="Left"/>
                             <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseCommand}">
                                 <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/open.svg" 
@@ -74,7 +74,31 @@
                             </Button>
                         </StackPanel>
                     </Border>
-
+                    <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                            <TextBox Text="{Binding ParseFilePath,Mode=TwoWay}" Width="385" Style="{StaticResource TextBoxExtend}" 
+                 hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="解析要求文件:" hc:InfoElement.Necessary="True"
+                 hc:InfoElement.TitlePlacement="Left"/>
+                            <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseParseCommand}">
+                                <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/open.svg" 
+                           Height="18"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center">
+                                </svgc:SvgViewbox>
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#bee6fd"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
                 <Border Grid.Row="1">
                     <StackPanel Orientation="Horizontal"
@@ -126,7 +150,7 @@
                                                 <TextBlock Text="&#xe690;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                             </Button>-->
                                             <hc:UniformSpacingPanel Spacing="10">
-                                                <Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
+                                                <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
                                                 <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}" Click="Delete_Click"/>
                                             </hc:UniformSpacingPanel>
                                         </StackPanel>
@@ -141,8 +165,8 @@
 
         </Border>
         <Grid Visibility="{calc:Binding Loading,FalseToVisibility=Collapsed}">
-            <Border Background="{StaticResource DarkDefaultBrush}" Opacity=".5"></Border>
-            <hc:LoadingCircle/>
+            <!--<Border Background="{StaticResource DarkDefaultBrush}" Opacity=".5"></Border>-->
+            <!--<hc:LoadingCircle/>-->
         </Grid>
     </Grid>
 </UserControl>

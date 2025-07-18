@@ -46,8 +46,8 @@ namespace Workbench.Db.Service
                         var bitField = _mapper.Map<BitField>(rgb);
 
                         #region 公式计算赋值
-                        bitField.FormParam.ParamA = double.Parse(rgb.ParamA);
-                        bitField.FormParam.ParamB = double.Parse(rgb.ParamB);
+                        bitField.FormParam.ParamA = rgb.ParamA==null?1:double.Parse(rgb.ParamA);
+                        bitField.FormParam.ParamB = rgb.ParamB==null?0:double.Parse(rgb.ParamB);
                         bitField.FormParam.ParamC = rgb.ParamC;
                         bitField.FormParam.ParamName = rgb.ParamName;
                         bitField.FormParam.UnitName = rgb.UnitName;

@@ -14,6 +14,7 @@ using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using SixLabors.ImageSharp.ColorSpaces;
 using Workbench.Db;
 using Workbench.Db.Tables;
 using Workbench.Utils;
@@ -64,7 +65,12 @@ namespace Workbench.ViewModels
             get => _filePath;
             set => SetProperty(ref _filePath, value);
         }
-
+        private string _parseFilePath = "";
+        public string ParseFilePath
+        {
+            get => _parseFilePath;
+            set => SetProperty(ref _parseFilePath, value);
+        }
         #region Command
         public DelegateCommand AddCommand => new DelegateCommand(() =>
         {
@@ -82,10 +88,14 @@ namespace Workbench.ViewModels
 
             if (string.IsNullOrEmpty(FilePath))
             {
-                MessageBox.Show("请输入或选择文件路径", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("请输入或选择寄存器文件路径", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
+            if (string.IsNullOrEmpty(ParseFilePath))
+            {
+                MessageBox.Show("请输入或选择解析文件路径", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             using (var db = new DbContext())
             {
                 var check = await db.Chips.AnyAsync(t => t.Name == ChipName && t.IsDeleted == "A");
@@ -112,7 +122,7 @@ namespace Workbench.ViewModels
             try
             {
                 var excelData = new RegisterExcelResolve().Parse(FilePath);
-
+                var excelSDPCData = new RegisterExcelResolve().SDPCParse(ParseFilePath, excelData);
                 string chipId = Guid.NewGuid().ToString("N");
                 var chip = new Chip()
                 {
@@ -135,6 +145,10 @@ namespace Workbench.ViewModels
                         register.ChipId = chipId;
                         registers.Add(register);
 
+                        if(register.AddressDec==108)
+                        {
+                            string a = "";
+                        }
                         var registerBits = new List<RegisterBit>();
                         //bit field
                         foreach (var bf in meta.AddrInfo.BitFields)
@@ -143,6 +157,11 @@ namespace Workbench.ViewModels
                             string registerBitId = Guid.NewGuid().ToString("N");
                             registerBit.Id = registerBitId;
                             registerBit.RegisterId = registerId;
+                            registerBit.ParamA = bf.FormParam.ParamA.ToString();
+                            registerBit.ParamB = bf.FormParam.ParamB.ToString();
+                            registerBit.ParamC = bf.FormParam.ParamC;
+                            registerBit.ParamName = bf.FormParam.ParamName;
+                            registerBit.UnitName = bf.FormParam.UnitName;
                             registerBits.Add(registerBit);
 
                             var registerBitOptions = new List<RegisterBitOption>();
@@ -180,6 +199,12 @@ namespace Workbench.ViewModels
             var path = ChooseDirectory();
             if (!string.IsNullOrEmpty(path))
                 FilePath = path;
+        });
+        public DelegateCommand BrowseParseCommand => new DelegateCommand(() =>
+        {
+            var path = ChooseDirectory();
+            if (!string.IsNullOrEmpty(path))
+                ParseFilePath = path;
         });
         public string ChooseDirectory()
         {
@@ -219,6 +244,7 @@ namespace Workbench.ViewModels
             ChipId = 0;
             ChipName = "";
             FilePath = "";
+            ParseFilePath = "";
         }
         #endregion
 
