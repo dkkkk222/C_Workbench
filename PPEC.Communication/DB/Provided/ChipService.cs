@@ -20,7 +20,6 @@ namespace PPEC.Communication.DB.Provided
         {
             dbContext = db;
         }
-
         public async Task<List<smls_chip>> GetChip()
         {
             return await dbContext.GetTable<smls_chip>().ToListAsync();

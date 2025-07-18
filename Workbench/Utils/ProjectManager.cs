@@ -215,6 +215,15 @@ namespace Workbench.Utils
                 //更新最近文件列表中的时间
                 _fileHandler.UpdateRecentFileDatetime(projectStr);
                 var project = JsonHelper.DeserializeObject<PpecProject>(projectStr);
+                var isHaveChipType = InitDataStaticService.Instance.ChipTypeSource.FirstOrDefault(x=>x.Value.ToString()== project.Chip.ChipId);
+                if(isHaveChipType==null)
+                {
+                    var result = MessageBox.Show("该芯片类型不存在，从列表中删除！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _fileHandler.DeleteRecentFile(recentFile);
+                    //刷新页面最近列表
+                    _eventAggregator.GetEvent<RefreshRecentFileEvent>().Publish();
+                    return true;
+                }
                 _eventAggregator.GetEvent<AddedProjectEvent>().Publish(project);
                 return true;
             }

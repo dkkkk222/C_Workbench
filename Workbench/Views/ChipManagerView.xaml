@@ -42,17 +42,17 @@
                     <RowDefinition Height="40"></RowDefinition>
                 </Grid.RowDefinitions>
                 <StackPanel Margin="10">
-                    <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0">
+                    <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0" HorizontalAlignment="Center">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox Text="{Binding ChipName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" Width="350" 
-                                     hc:InfoElement.Placeholder="请输入芯片名称" hc:InfoElement.Title="芯片名称:" hc:InfoElement.Necessary="True"
+                                     hc:InfoElement.Placeholder="请输入芯片类型名称" hc:InfoElement.Title="芯片类型名称:" hc:InfoElement.Necessary="True"
                                      hc:InfoElement.TitlePlacement="Left"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                            <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="372" Style="{StaticResource TextBoxExtend}"
-                                     hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="寄存器文件:" hc:InfoElement.Necessary="True"
+                        <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                            <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="360" Style="{StaticResource TextBoxExtend}"
+                                     hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="寄存器说明文件:" hc:InfoElement.Necessary="True"
                                      hc:InfoElement.TitlePlacement="Left"/>
                             <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseCommand}">
                                 <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/open.svg" 
@@ -74,9 +74,9 @@
                             </Button>
                         </StackPanel>
                     </Border>
-                    <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
-                            <TextBox Text="{Binding ParseFilePath,Mode=TwoWay}" Width="385" Style="{StaticResource TextBoxExtend}" 
+                    <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center" Margin="5,0,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <TextBox Text="{Binding ParseFilePath,Mode=TwoWay}" Width="350" Style="{StaticResource TextBoxExtend}" 
                  hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="解析要求文件:" hc:InfoElement.Necessary="True"
                  hc:InfoElement.TitlePlacement="Left"/>
                             <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseParseCommand}">
