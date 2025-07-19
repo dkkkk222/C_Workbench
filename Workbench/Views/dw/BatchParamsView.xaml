@@ -188,7 +188,7 @@
                                             </DataGridTemplateColumn.Header>
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay}" HorizontalAlignment="Left"/>
+                                                    <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -308,7 +308,7 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Vertical">
-                                                            <TextBox Text="{Binding Value}" Style="{StaticResource TextBox.Small}" TextChanged="BinaryTextBox_TextChanged" LostFocus="BinaryTextBox_LostFocus"/>
+                                                            <TextBox Text="{Binding Value}" Style="{StaticResource TextBox.Small}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
                                                             <TextBlock Text="{Binding Display}" HorizontalAlignment="Center" FontSize="9"/>
                                                         </StackPanel>
                                                     </DataTemplate>

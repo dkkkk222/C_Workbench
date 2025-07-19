@@ -28,50 +28,71 @@ namespace Workbench.Views.dw
             InitializeComponent();
         }
 
-        private void BinaryTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        //private void BinaryTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    var textBox = sender as TextBox;
+        //    if (textBox == null) return;
+
+        //    textBox.TextChanged -= BinaryTextBox_TextChanged;
+
+        //    string input = textBox.Text;
+
+        //    // 从后往前找，找到最后一个 '0' 或 '1'
+        //    char finalChar = '0'; // 默认 fallback
+        //    bool found = false;
+
+        //    for (int i = input.Length - 1; i >= 0; i--)
+        //    {
+        //        if (input[i] == '0' || input[i] == '1')
+        //        {
+        //            finalChar = input[i];
+        //            found = true;
+        //            break;
+        //        }
+        //    }
+
+        //    // 如果没找到合法字符，设为 '0'
+        //    textBox.Text = found ? finalChar.ToString() : "0";
+
+        //    textBox.CaretIndex = 1; // 设置光标在末尾
+        //    textBox.TextChanged += BinaryTextBox_TextChanged;
+        //}
+        private void BinaryTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            // 1. 获取事件发送者，并转换为TextBox
             var textBox = sender as TextBox;
             if (textBox == null) return;
 
-            // 2. 获取当前的文本
-            string currentText = textBox.Text;
-
-            // 如果文本是空的，我们什么也不做
-            if (string.IsNullOrEmpty(currentText))
+            // ✅ 只允许输入 0 或 1
+            if (e.Text == "0" || e.Text == "1")
             {
-                return;
+                // 替换为当前输入字符
+                textBox.Text = e.Text;
+                textBox.CaretIndex = 1;
+            }
+            else 
+            {
+                textBox.Text=textBox.Text.Replace(e.Text, "");
             }
 
-            // 3. 检查文本是否只包含 '0' 和 '1'
-            bool isValid = true;
-            foreach (char c in currentText)
+                // ❗❗ 不管是不是合法字符，都标记为已处理（禁止系统自动插入）
+            e.Handled = true;
+        }
+        private void BinaryTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(string)))
             {
-                if (c != '0' && c != '1')
+                var pasteText = (string)e.DataObject.GetData(typeof(string));
+                if (pasteText == "0" || pasteText == "1")
                 {
-                    isValid = false;
-                    break; // 发现一个非法字符就足够了，跳出循环
+                    var textBox = sender as TextBox;
+                    textBox.Text = pasteText;
+                    textBox.CaretIndex = 1;
                 }
             }
 
-            // 4. 如果文本不合法，则执行修正操作
-            if (!isValid)
-            {
-                // !!! 关键步骤：避免无限循环 !!!
-                // a. 先取消订阅TextChanged事件
-                textBox.TextChanged -= BinaryTextBox_TextChanged;
-
-                // b. 将文本设置为"0"
-                textBox.Text = "0";
-
-                // c. 将光标移动到文本末尾，这是一种好的用户体验
-                textBox.CaretIndex = textBox.Text.Length;
-
-                // d. 重新订阅TextChanged事件
-                textBox.TextChanged += BinaryTextBox_TextChanged;
-            }
+            // 无论是否处理，禁止系统默认粘贴行为
+            e.CancelCommand();
         }
-
         private void BinaryTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             var textBox = sender as TextBox;
@@ -108,7 +129,7 @@ namespace Workbench.Views.dw
             }
         }
 
-        private void DecValueText_LostFocus(object sender, RoutedEventArgs e)
+        private async void DecValueText_LostFocus(object sender, RoutedEventArgs e)
         {
             var element = sender as FrameworkElement;
             if (element == null) return;
@@ -123,16 +144,31 @@ namespace Workbench.Views.dw
             var tuple = Utility.ParseDecToBinary(dec);
             rowDctx.BinaryStr = tuple.binaryString;
 
-            var charArr = tuple.binaryString.ToCharArray();
-            var length = charArr.Length;
-            rowDctx.BinaryList.Clear();
-            for (int i = 0; i < length; i++)
+            var newList = await Task.Run(() =>
             {
-                rowDctx.BinaryList.Add(new BitOption { Value = (uint)Char.GetNumericValue(charArr[i]), Display = (length - 1 - i).ToString() });
+                var charArr = tuple.binaryString.ToCharArray();
+                var length = charArr.Length;
+
+                var list = new List<BitOption>(length);
+                for (int i = 0; i < length; i++)
+                {
+                    list.Add(new BitOption
+                    {
+                        Value = (uint)Char.GetNumericValue(charArr[i]),
+                        Display = (length - 1 - i).ToString()
+                    });
+                }
+                return list;
+            });
+            rowDctx.BinaryList.Clear();
+            foreach (var item in newList)
+            {
+                rowDctx.BinaryList.Add(item);
             }
         }
 
-        private void HexValueText_LostFocus(object sender, RoutedEventArgs e)
+
+        private async void HexValueText_LostFocus(object sender, RoutedEventArgs e)
         {
             var element = sender as FrameworkElement;
             if (element == null) return;
@@ -146,12 +182,26 @@ namespace Workbench.Views.dw
             var tuple = Utility.ParseDecToBinary(rowDctx.DecValue);
             rowDctx.BinaryStr = tuple.binaryString;
 
-            var charArr = tuple.binaryString.ToCharArray();
-            var length = charArr.Length;
-            rowDctx.BinaryList.Clear();
-            for (int i = 0; i < length; i++)
+            var newList = await Task.Run(() =>
             {
-                rowDctx.BinaryList.Add(new BitOption { Value = (uint)Char.GetNumericValue(charArr[i]), Display = (length - 1 - i).ToString() });
+                var charArr = tuple.binaryString.ToCharArray();
+                var length = charArr.Length;
+
+                var list = new List<BitOption>(length);
+                for (int i = 0; i < length; i++)
+                {
+                    list.Add(new BitOption
+                    {
+                        Value = (uint)Char.GetNumericValue(charArr[i]),
+                        Display = (length - 1 - i).ToString()
+                    });
+                }
+                return list;
+            });
+            rowDctx.BinaryList.Clear();
+            foreach (var item in newList)
+            {
+                rowDctx.BinaryList.Add(item);
             }
         }
     }

@@ -110,7 +110,7 @@
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="分类:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"
+                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"  IsEnabled="False"
                                                      Text="{Binding CurrentRegister.Category}"/>
 
                                         </StackPanel>
@@ -118,7 +118,7 @@
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="名称:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"
+                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True" IsEnabled="False"
                                                      Text="{Binding CurrentRegister.Name}"/>
 
                                         </StackPanel>
@@ -126,7 +126,7 @@
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="地址:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"
+                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"  IsEnabled="False"
                                                      Text="{Binding CurrentRegister.AddressHex}"/>
 
                                         </StackPanel>

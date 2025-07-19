@@ -199,9 +199,18 @@ namespace Workbench.Utils
             if (File.Exists(filePath))
             {
                 content = File.ReadAllText(filePath);
+                var openProject = JsonHelper.DeserializeObject<PpecProject>(content);
+                var isHaveChipType = InitDataStaticService.Instance.ChipTypeSource.FirstOrDefault(x => x.Value.ToString() == openProject.Chip.ChipId);
+                if (isHaveChipType == null)
+                {
+                    var result = MessageBox.Show("该芯片类型不存在，无法打开！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                   
+                    return true;
+                }
                 //更新最近文件列表中的时间
                 _fileHandler.UpdateRecentFileDatetime(content);
-                _eventAggregator.GetEvent<AddedProjectEvent>().Publish(JsonHelper.DeserializeObject<PpecProject>(content));
+         
+                _eventAggregator.GetEvent<AddedProjectEvent>().Publish(openProject);
             }
             return true;
         }

@@ -37,7 +37,7 @@ namespace Workbench.ViewModels.dw
             _dialogService = dialogService;
             _eventAggregator = eventAggregator;
             WatchGroups = _projectManager.CurrentProject.WatchGroups;
-            pms=new ParameterMonitorService(3) { CurrentProject= _projectManager.CurrentProject };
+            pms=new ParameterMonitorService(10) { CurrentProject= _projectManager.CurrentProject };
             pms.Enable();
 
             _timer.Interval = 1; // 设置触发间隔
@@ -196,7 +196,7 @@ namespace Workbench.ViewModels.dw
                 {
                     Name = arr[i],
                 };
-                if(arr[i]== "原始值(Dec)")
+                if(arr[i]== "原始值(Dec)"|| arr[i] == "原始值(Bit)")
                 {
                     tab.IsChecked = false;
                 }
