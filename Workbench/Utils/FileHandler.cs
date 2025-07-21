@@ -189,7 +189,8 @@ namespace Workbench.Utils
             if (project == null)
                 return;
             var recentFile = recentFiles.FirstOrDefault(t => t.UID == project.UID);
-            recentFile.DateTime = DateTime.Now;
+            if(recentFile!=null)
+                recentFile.DateTime = DateTime.Now;
             SaveRecentFiles(recentFiles);
         }
 

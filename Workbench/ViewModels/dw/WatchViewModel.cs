@@ -189,7 +189,7 @@ namespace Workbench.ViewModels.dw
         private ObservableCollection<TableColumn> InitTableColumns()
         {
             var target = new ObservableCollection<TableColumn>();
-            string[] arr = new string[] { "序号", "名称", "源寄存器地址", "解析范围", "解析要求", "解析结果","原始值(Dec)","原始值(Bit)", "单位", "添加到监测图" };
+            string[] arr = new string[] { "序号", "名称", "寄存器地址(HEX)", "解析范围", "解析要求", "解析结果","原始值(Dec)","原始值(Bit)", "单位", "添加到监测图" };
             for (int i = 0; i < arr.Length; i++)
             {
                 var tab = new TableColumn()

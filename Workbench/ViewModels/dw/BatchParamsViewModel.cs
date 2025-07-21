@@ -137,9 +137,13 @@ namespace Workbench.ViewModels.dw
         private DelegateCommand _addSequenceCommand;
         public DelegateCommand AddSequenceCommand => _addSequenceCommand ?? (_addSequenceCommand = new DelegateCommand(() =>
         {
+            var indexS=SequenceList.Count()+1;
+            string nameS = "序列" + indexS;
+
             SequenceList.Add(new Sequence
             {
                 Id = Guid.NewGuid().ToString("N"),
+                Name= nameS
             });
         }));
 

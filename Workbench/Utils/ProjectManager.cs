@@ -291,6 +291,8 @@ namespace Workbench.Utils
                 project.Label = project.Name;
                 //生成新的uid
                 project.UID = Guid.NewGuid().ToString();
+                 
+                UpdateAllProjectIds(project, project.UID);
                 //更新最近文件列表
                 _fileHandler.AppendToRecentFile(project, saveAsFileProject?.UID);
                 //保存文件
@@ -302,6 +304,25 @@ namespace Workbench.Utils
             }
         }
 
+        public void UpdateAllProjectIds(PpecProject root, string newProjectId)
+        {
+            Stack<PpecProject> stack = new Stack<PpecProject>();
+            stack.Push(root);
+
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                current.ProjectId = newProjectId;
+
+                if (current.Children != null)
+                {
+                    foreach (var child in current.Children)
+                    {
+                        stack.Push(child);
+                    }
+                }
+            }
+        }
         internal string ChooseDirectory()
         {
             var path = string.Empty;

@@ -22,14 +22,19 @@ namespace Workbench.Models.dw
             set => SetProperty(ref _name, value);
         }
 
-        private int _paramPushInterval = 1;
+        private int _paramPushInterval = 5;
         /// <summary>
         /// 参数下发间隔
         /// </summary>
         public int ParamPushInterval
         {
             get => _paramPushInterval;
-            set => SetProperty(ref _paramPushInterval, value);
+            set
+            {
+                if (value < 5)
+                    value = 5;
+                SetProperty(ref _paramPushInterval, value);
+            }
         }
 
 

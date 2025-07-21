@@ -143,7 +143,7 @@
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
                                         <DataGridTextColumn Header="参数下发数量" Binding="{Binding Items.Count}"  Width="*" IsReadOnly="True"/>
-                                        <DataGridTemplateColumn Header="参数下发间隔(us)"  Width="*" MinWidth="80">
+                                        <DataGridTemplateColumn Header="参数下发间隔(ms)"  Width="*" MinWidth="80">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Minimum="1" DecimalPlaces="0">

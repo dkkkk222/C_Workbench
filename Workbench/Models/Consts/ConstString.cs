@@ -8,9 +8,9 @@ namespace Workbench.Models.Consts
 {
     public static class ConstString
     {
-        public const string SaveProjectName = "保存芯片:";
-        public const string RemoveProjectName = "移除芯片:";
-        public const string DelProjectNameDefault = "移除当前芯片信息";
-        public const string SaveProjectNameDefault = "保存当前芯片信息";
+        public const string SaveProjectName = "保存:";
+        public const string RemoveProjectName = "移除:";
+        public const string DelProjectNameDefault = "移除当前芯片";
+        public const string SaveProjectNameDefault = "保存当前芯片";
     }
 }

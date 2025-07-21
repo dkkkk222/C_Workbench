@@ -216,7 +216,7 @@
                                                     </DataGridTemplateColumn>
                                                     <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"
                                                                         Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                    <DataGridTemplateColumn Header="源寄存器地址" Width="95"
+                                                    <DataGridTemplateColumn Header="寄存器地址(HEX)" Width="Auto"
                                                                             Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                         <DataGridTemplateColumn.CellTemplate>
                                                             <DataTemplate>

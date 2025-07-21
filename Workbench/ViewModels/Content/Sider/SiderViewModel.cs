@@ -144,6 +144,17 @@ namespace Workbench.ViewModels.Content.Sider
                     System.Windows.Forms.MessageBox.Show("芯片:"+saveProject.Name+",保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }));
+
+        public DelegateCommand SaveAsProjectCommand => new DelegateCommand(() =>
+        {
+            if (RightSelectProject == null)
+            {
+                MessageBox.Show("请选择要保存的芯片!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                return;
+            }
+            _projectManager.SaveAsProject(RightSelectProject);
+        });
+
         #endregion
 
         #region Properties

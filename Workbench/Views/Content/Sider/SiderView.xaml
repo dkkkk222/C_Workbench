@@ -12,10 +12,9 @@
              d:DesignHeight="450" d:DesignWidth="225">
     <UserControl.Resources>
         <ContextMenu x:Key="CuContextMenu" Style="{StaticResource ContextMenu.Small}" Width="165">
-            <MenuItem Name="Create" Header="新建芯片" Command="{Binding NewProjectCommand}"/>
-            <MenuItem Name="Copy" Header="打开芯片" Command="{Binding OpenProjectCommand}"/>
-            <MenuItem Name="Delete" Header="{Binding DelProjectName}" Command="{Binding RemoveCurrentProjectCommand}"/>
             <MenuItem Name="Save" Header="{Binding SaveProjectName}" Command="{Binding SaveProjectCommand}"/>
+            <MenuItem Name="Delete" Header="{Binding DelProjectName}" Command="{Binding RemoveCurrentProjectCommand}"/>
+            <MenuItem Name="Copy" Header="另存为" Command="{Binding SaveAsProjectCommand}"/>
         </ContextMenu>
     </UserControl.Resources>
     <Border Padding="0" Background="{DynamicResource PrimaryBackgroundColor}" ContextMenu="{StaticResource CuContextMenu}">
