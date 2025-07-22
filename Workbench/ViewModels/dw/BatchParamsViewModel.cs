@@ -51,6 +51,50 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _isOrderByAddress, value);
         }
 
+        private ObservableCollection<ValueLabelOption> _settingCategoryList = new ObservableCollection<ValueLabelOption>();
+        public ObservableCollection<ValueLabelOption> SettingCategoryList
+        {
+            get => _settingCategoryList;
+            set => SetProperty(ref _settingCategoryList, value);
+        }
+
+        private ValueLabelOption _currentCategory;
+        public ValueLabelOption CurrentCategory
+        {
+            get => _currentCategory;
+            set
+            {
+                if (SetProperty(ref _currentCategory, value))
+                {
+                    CategoryAddressList.Clear();
+                    var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(value.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
+                    CategoryAddressList.AddRange(CategoryAddressListOptions);
+                    CategoryAddress = CategoryAddressList.FirstOrDefault();
+                }
+            }
+        }
+
+        private ObservableCollection<ValueLabelOption> _categoryAddressList = new ObservableCollection<ValueLabelOption>();
+        public ObservableCollection<ValueLabelOption> CategoryAddressList
+        {
+            get => _categoryAddressList;
+            set => SetProperty(ref _categoryAddressList, value);
+        }
+
+        private ValueLabelOption _categoryAddress;
+        public ValueLabelOption CategoryAddress
+        {
+            get => _categoryAddress;
+            set
+            {
+                if (SetProperty(ref _categoryAddress, value))
+                {
+                    if(value!=null)
+                        CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.AddressDec == (uint)value.Value);
+                }
+            }
+        }
+
         private ObservableCollection<Sequence> _sequenceList = new ObservableCollection<Sequence>();
         public ObservableCollection<Sequence> SequenceList
         {
@@ -257,6 +301,17 @@ namespace Workbench.ViewModels.dw
             SingleParamTrees.AddRange(tree);
             CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo)
                 .FirstOrDefault(t => t.Name == tree[0].Children[0].Children[0].Title);
+
+            var categoryOptions = _projectManager.GetCategories().Select(t => new ValueLabelOption() { Value = t, Label = t });
+            SettingCategoryList.Clear();
+            SettingCategoryList.AddRange(categoryOptions);
+            CurrentCategory = SettingCategoryList.FirstOrDefault();
+
+            CategoryAddressList.Clear();
+
+            var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(CurrentCategory.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
+            CategoryAddressList.AddRange(CategoryAddressListOptions);
+            CategoryAddress = CategoryAddressList.FirstOrDefault();
         }
     }
 }

@@ -475,6 +475,25 @@ namespace Workbench.Utils
             return CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).Select(d => d.Category).Distinct().ToList();
         }
 
+        /// <summary>
+        /// 根据分类获取寄存器信息
+        /// </summary>
+        /// <param name="Categorie"></param>
+        /// <returns></returns>
+        internal List<RegisterAddrInfo> GetRegisterForCategories(string Categorie)
+        {
+            var returnRegists= CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).Where(x=>x.Category== Categorie).ToList();
+            if (returnRegists == null)
+                return null;
+            returnRegists=returnRegists.OrderBy(x => x.AddressDec).ToList();
+            foreach(var addressStr in returnRegists)
+            {
+                addressStr.ShowAddressStr = addressStr.AddressHex + " : " + addressStr.Name;
+            }
+            return returnRegists;
+        }
+
+
         public RegisterAddrInfo GetRegisterValue(string registerName)
         {
             var register=CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.AddressHex == registerName);

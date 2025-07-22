@@ -3,6 +3,7 @@ using PPEC.Communication.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,7 +23,12 @@ namespace Workbench.Views.dw
         {
             InitializeComponent();
         }
-
+        private static readonly Regex _hexRegex = new Regex("^[0-9a-fA-F]+$",
+                                                    RegexOptions.Compiled);
+        private void HexBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !_hexRegex.IsMatch(e.Text);   // 只要有 1 个非法字符就拦截
+        }
         private void HexValueText_LostFocus(object sender, RoutedEventArgs e)
         {
             var textBox = sender as TextBox;

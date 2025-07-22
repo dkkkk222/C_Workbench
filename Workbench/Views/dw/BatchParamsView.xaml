@@ -23,9 +23,10 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="224" Background="#fafafa" Padding="8">
+        <Border Grid.Column="0" Width="324" Background="#fafafa" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -47,12 +48,22 @@
                         </hc:UniformSpacingPanel>
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
-                <hc:SearchBar Grid.Row="1" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                <StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
+                    <ComboBox Grid.Row="1"  ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
+hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="130"
+SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
+                    <TextBlock Width="10"></TextBlock>
+                    <ComboBox ItemsSource="{Binding CategoryAddressList}" Style="{StaticResource ComboBoxExtend}"
+hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="167"
+SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
+                </StackPanel>
+               
+                <hc:SearchBar Grid.Row="2" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
                     <hc:SearchBar.Text>
                         <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
                     </hc:SearchBar.Text>
                 </hc:SearchBar>
-                <Border Margin="0,5,0,0" Grid.Row="2">
+                <Border Margin="0,5,0,0" Grid.Row="3">
                     <TreeView ItemsSource="{Binding SingleParamTrees}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">

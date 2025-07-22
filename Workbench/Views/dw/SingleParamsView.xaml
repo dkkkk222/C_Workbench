@@ -145,7 +145,8 @@
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="数据HEX:" Style="{StaticResource ItemTitle}"/>
                                             <TextBox x:Name="HexValueText" Text="{Binding CurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" 
-                                                     hc:InfoElement.Placeholder="请输入" Width="200" LostFocus="HexValueText_LostFocus"/>
+                                                     hc:InfoElement.Placeholder="请输入" Width="200" LostFocus="HexValueText_LostFocus" 
+                                                                                    PreviewTextInput="HexBox_PreviewTextInput" />
                                         </StackPanel>
                                     </Border>
                                 </hc:UniformSpacingPanel>

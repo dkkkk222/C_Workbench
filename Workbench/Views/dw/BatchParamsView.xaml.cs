@@ -176,33 +176,41 @@ namespace Workbench.Views.dw
             var rowDctx = element.DataContext as RegisterAddrInfo;
             if (rowDctx == null) return;
             var hex = rowDctx.HexValue;
-
-            rowDctx.DecValue = Utility.ParseHexToUInt(hex);
-
-            var tuple = Utility.ParseDecToBinary(rowDctx.DecValue);
-            rowDctx.BinaryStr = tuple.binaryString;
-
-            var newList = await Task.Run(() =>
+            try
             {
-                var charArr = tuple.binaryString.ToCharArray();
-                var length = charArr.Length;
+                rowDctx.DecValue = Utility.ParseHexToUInt(hex);
 
-                var list = new List<BitOption>(length);
-                for (int i = 0; i < length; i++)
+                var tuple = Utility.ParseDecToBinary(rowDctx.DecValue);
+                rowDctx.BinaryStr = tuple.binaryString;
+
+                var newList = await Task.Run(() =>
                 {
-                    list.Add(new BitOption
+                    var charArr = tuple.binaryString.ToCharArray();
+                    var length = charArr.Length;
+
+                    var list = new List<BitOption>(length);
+                    for (int i = 0; i < length; i++)
                     {
-                        Value = (uint)Char.GetNumericValue(charArr[i]),
-                        Display = (length - 1 - i).ToString()
-                    });
+                        list.Add(new BitOption
+                        {
+                            Value = (uint)Char.GetNumericValue(charArr[i]),
+                            Display = (length - 1 - i).ToString()
+                        });
+                    }
+                    return list;
+                });
+                rowDctx.BinaryList.Clear();
+                foreach (var item in newList)
+                {
+                    rowDctx.BinaryList.Add(item);
                 }
-                return list;
-            });
-            rowDctx.BinaryList.Clear();
-            foreach (var item in newList)
-            {
-                rowDctx.BinaryList.Add(item);
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show("输入值异常");
+                return;
+            }
+                
         }
     }
 }

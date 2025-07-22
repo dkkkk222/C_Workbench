@@ -106,8 +106,32 @@ namespace Workbench.ViewModels.dw
         public ValueLabelOption CurrentSettingCategory
         {
             get => _currentSettingCategory;
-            set => SetProperty(ref _currentSettingCategory, value);
+            set
+            {
+                if(SetProperty(ref _currentSettingCategory, value))
+                {
+                    CategoryAddressList.Clear();
+                    var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(value.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
+                    CategoryAddressList.AddRange(CategoryAddressListOptions);
+                    CategoryAddress = CategoryAddressList.FirstOrDefault();
+                }               
+            } 
         }
+
+        private ObservableCollection<ValueLabelOption> _categoryAddressList = new ObservableCollection<ValueLabelOption>();
+        public ObservableCollection<ValueLabelOption> CategoryAddressList
+        {
+            get => _categoryAddressList;
+            set => SetProperty(ref _categoryAddressList, value);
+        }
+
+        private ValueLabelOption _categoryAddress;
+        public ValueLabelOption CategoryAddress
+        {
+            get => _categoryAddress;
+            set => SetProperty(ref _categoryAddress, value);
+        }
+
 
         private ObservableCollection<RegisterAddrInfo> _categoryRegisters = new ObservableCollection<RegisterAddrInfo>();
         public ObservableCollection<RegisterAddrInfo> CategoryRegisters

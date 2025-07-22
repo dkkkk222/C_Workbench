@@ -267,6 +267,12 @@ namespace PPEC.Communication.Model
             get => _isAddToPlot;
             set => SetProperty(ref _isAddToPlot, value);
         }
+        private string _showAddressStr="";
+        public string ShowAddressStr
+        {
+            get => _showAddressStr;
+            set => SetProperty(ref _showAddressStr, value);
+        }
     }
     public class BitField : BindableBase
     {
