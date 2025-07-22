@@ -209,6 +209,11 @@ namespace Workbench.ViewModels.dw
         private DelegateCommand _batchSendCommand;
         public DelegateCommand BatchSendCommand => _batchSendCommand ?? (_batchSendCommand = new DelegateCommand(async () =>
         {
+            if(!_projectManager.CurrentProject.IsConnecting)
+            {
+                MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             foreach (var seq in SequenceList.Where(t => t.IsChecked))
             {
                 await Task.Run(async () =>
