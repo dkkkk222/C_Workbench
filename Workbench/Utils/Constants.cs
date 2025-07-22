@@ -40,5 +40,9 @@ namespace Workbench.Utils
         //TextBox
         public const string TextBox = "TextBox";
 
+        public const string ConnectIcon = "\uE67e";
+        public const string DisConnectIcon = "\uE64d";
+        public const string ConnectStr = "连接";
+        public const string DisConnectStr = "断开";
     }
 }

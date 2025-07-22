@@ -31,35 +31,17 @@
                 <StackPanel Orientation="Horizontal" Visibility="{calc:Binding IsSelectedProject,FalseToVisibility=Collapsed}">
                     <Border Style="{StaticResource VerticalSeparatorStyle}"/>
                     <Button Style="{StaticResource ButtonBarStyle}" 
-                            ToolTip="连接" 
-                            Command="{Binding ConnectCommand}"
-                            IsEnabled="{calc:Binding !IsConnected}">
-                        <TextBlock Text="&#xe67e;" 
+                            ToolTip="{Binding ConnectStr,Mode=TwoWay}" 
+                            Command="{Binding ConnectCommand}">
+                        <TextBlock Text="{Binding ConnectIcon,Mode=TwoWay}" 
                                    FontFamily="{StaticResource Iconfont}" 
                                    Style="{StaticResource ButtonBarIconStyle}"/>
                     </Button>
-                    <Button Style="{StaticResource ButtonBarStyle}" 
+                    <!--<Button Style="{StaticResource ButtonBarStyle}" 
                             ToolTip="断开" 
                             Command="{Binding DisconnectCommand}"
                             IsEnabled="{Binding IsConnected}">
                         <TextBlock Text="&#xe64d;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>
-                    <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="调试" IsEnabled="{Binding IsConnected}">
-                        <TextBlock Text="&#xe671;" 
-                                   FontFamily="{StaticResource Iconfont}" 
-                                   Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>-->
-                    <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="固化参数" IsEnabled="{Binding IsConnected}">
-                        <TextBlock Text="&#xe60b;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>-->
-                    <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="下发参数" IsEnabled="{Binding IsConnected}">
-                        <TextBlock Text="&#xe62d;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>-->
-                    <!--<Button Style="{StaticResource ButtonBarStyle}" ToolTip="工程设置">
-                        <TextBlock Text="&#xe61c;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>
-                    <Button Style="{StaticResource ButtonBarStyle}" ToolTip="固件升级">
-                        <TextBlock Text="&#xe60f;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
                     </Button>-->
                     <Border Style="{StaticResource VerticalSeparatorStyle}"/>
                     <!-- 通讯方式 -->

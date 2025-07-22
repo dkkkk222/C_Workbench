@@ -36,7 +36,21 @@ namespace Workbench.ViewModels.Content.ButtonBar
             //CAN口默认值
             SelectedCAN = _cANList.FirstOrDefault();
         }
+        public string _connectStr = Constants.ConnectStr;
 
+        public string ConnectStr
+        {
+            get => _connectStr;
+            set => SetProperty(ref _connectStr, value);
+        }
+
+        public string _connectIcon = Constants.ConnectIcon;
+       
+        public string ConnectIcon
+        {
+            get => _connectIcon;
+            set => SetProperty(ref _connectIcon, value);
+        }
         private void EventListeners()
         {
             _eventAggregator.GetEvent<SerialPortAddRemoveEvent>().Subscribe(() =>
@@ -246,7 +260,19 @@ namespace Workbench.ViewModels.Content.ButtonBar
         public DelegateCommand ConnectCommand =>
             _connectCommand ?? (_connectCommand = new DelegateCommand(async () =>
             {
-                await OnConnectionAsync();
+                if(_projectManager.CurrentProject.IsConnecting)
+                {
+                    await CloseConnect();
+                    ConnectIcon = Constants.ConnectIcon;
+                    ConnectStr = Constants.ConnectStr;
+                }
+                else
+                {
+                    await OnConnectionAsync();
+                    ConnectIcon = Constants.DisConnectIcon;
+                    ConnectStr = Constants.DisConnectStr;
+                }
+                    
             }));
 
         #endregion
