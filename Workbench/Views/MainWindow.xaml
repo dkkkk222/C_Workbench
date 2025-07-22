@@ -70,6 +70,11 @@
                                     <TextBlock Text="&#xe7a9;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
+                            <MenuItem Header="芯片手册" Click="ShowChipPDFCommand_Click" Style="{DynamicResource MenuItemStyle}" >
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xe6f1;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </MenuItem>
                         <MenuItem Header="工程(_P)" Style="{DynamicResource MenuItemStyle}">
                             <MenuItem Header="{Binding ConnectName}" Command="{Binding ConnectCommand}" IsEnabled="{Binding HasPpec}" Style="{DynamicResource MenuItemStyle}">

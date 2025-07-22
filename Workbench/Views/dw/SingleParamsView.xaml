@@ -33,7 +33,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="224" Background="#fafafa" Padding="8">
+        <Border Grid.Column="0" Width="324" Background="#fafafa" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -399,6 +399,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150"/>
                                             <DataGridTextColumn Header="数据读取" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100"/>
+                                            <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100"/> 
                                             <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="100"/>
                                             <DataGridTemplateColumn Header="数据下发" Width="*" MinWidth="100" >
                                                 <DataGridTemplateColumn.CellTemplate>

@@ -157,7 +157,10 @@ namespace Workbench.Views
 
         #endregion
 
-
+        private void ShowChipPDFCommand_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
         private void ShowChipCommand_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;

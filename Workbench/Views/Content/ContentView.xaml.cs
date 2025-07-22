@@ -3,7 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Workbench.Models;
+using Workbench.Utils;
 using Workbench.ViewModels;
 using Workbench.ViewModels.Content;
 
@@ -17,6 +19,34 @@ namespace Workbench.Views.Content
         public ContentView()
         {
             InitializeComponent();
+        }
+
+        private async void DocTab_PreviewMouseLeftButtonDown(
+           object sender, MouseButtonEventArgs e)
+        {
+            var tab = (LayoutDocumentTabItem)sender;
+            var next = tab.LayoutItem?.Model as AvaDocument;
+            if (next == null) return;
+
+            var vm = (ContentViewModel)DataContext; // 你的 VM
+            if (vm.ActiveDocument?.Project?.PPEC_Id != next.Project?.PPEC_Id &&
+                vm._projectManager.CurrentProject.IsConnecting)
+            {
+                var r = MessageBox.Show(
+                    "切换芯片后必须断开原有芯片连接，确认断开？",
+                    "确认", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (r == MessageBoxResult.No)
+                {
+                    e.Handled = true;        // ★ 直接拦截
+                    return;
+                }
+
+                // 先拦截，异步断开后再手动激活
+                e.Handled = true;
+                await vm.AsyncDisConnect();
+                next.IsActive = true;        // 断开成功后再切
+            }
         }
 
         private void CloseOthers_Click(object sender, System.Windows.RoutedEventArgs e)

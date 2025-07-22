@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity;
 using Workbench.Events;
 using Workbench.Models;
@@ -22,7 +23,7 @@ namespace Workbench.ViewModels.Content
     {
         private readonly IUnityContainer _container;
         private readonly IEventAggregator _eventAggregator;
-        private ProjectManager _projectManager;
+        public ProjectManager _projectManager;
         public ContentViewModel(IUnityContainer container, IEventAggregator eventAggregator, IRegionManager regionManager, ProjectManager projectManager)
         {
             _container = container;
@@ -120,7 +121,12 @@ namespace Workbench.ViewModels.Content
                 _eventAggregator.GetEvent<TabChangeEvent>().Publish(value?.Project);
             }
         }
-
+        public async Task AsyncDisConnect()
+        {
+            _eventAggregator.GetEvent<CloseConnectEvent>().Publish();
+            await Task.Delay(200);
+            _projectManager.CurrentProject.Disconnect();
+        }
         private ObservableCollection<ContextMenuItem> _contextMenuItems = new ObservableCollection<ContextMenuItem>
         {
             new ContextMenuItem { Header = "关闭", IconText = "\xe653" },

@@ -580,7 +580,7 @@ namespace PPEC.Communication
         /// 将 1–32 位的二进制字符串转换为 UInt16，
         /// 若结果超出 0–65535 则抛出 OverflowException。
         /// </summary>
-        public static ushort BinStringToUInt16(string bin)
+        public static uint BinStringToUInt(string bin)
         {
             if (string.IsNullOrWhiteSpace(bin))
                 throw new ArgumentException("输入不能为空", nameof(bin));
@@ -596,10 +596,10 @@ namespace PPEC.Communication
 
             // 先按 32 位解析，再判断是否超限
             uint value32 = Convert.ToUInt32(bin, 2);
-            if (value32 > ushort.MaxValue)
-                throw new OverflowException($"数值 {value32} 超出 UInt16 范围");
+            //if (value32 > ushort.MaxValue)
+            //    throw new OverflowException($"数值 {value32} 超出 UInt16 范围");
 
-            return (ushort)value32;
+            return (uint)value32;
         }
     }
 

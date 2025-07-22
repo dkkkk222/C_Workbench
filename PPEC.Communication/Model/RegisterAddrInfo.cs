@@ -322,6 +322,7 @@ namespace PPEC.Communication.Model
             {
                 if (SetProperty(ref _value, value))
                 {
+                    ReadHex = "0x"+value.ToString("X8");
                     Result = UtilHelper.GetValueForFormula(FormParam.ParamSymbol, FormParam.ParamA, FormParam.ParamB, value);
                 }
             }
@@ -333,6 +334,19 @@ namespace PPEC.Communication.Model
             set
             {
                 SetProperty(ref _result, value);
+            }
+        }
+        private string _readHex="0x00000000";
+        public string ReadHex
+        {
+            get => _readHex;
+            set
+            {
+                if (SetProperty(ref _readHex, value))
+                {
+                   
+                }
+
             }
         }
 
@@ -348,7 +362,7 @@ namespace PPEC.Communication.Model
             {
                 if(SetProperty(ref _readBinary, value))
                 {
-                    Value=Utility.BinStringToUInt16(value);
+                    Value=Utility.BinStringToUInt(value);
                 }
                 
             } 

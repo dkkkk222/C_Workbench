@@ -512,6 +512,8 @@ namespace Workbench.Utils
             register.BinaryArray.AddRange(list);
 
             ResolveBitFields(register);
+
+
         }
 
         private void ResolveBitFields(RegisterAddrInfo register)
