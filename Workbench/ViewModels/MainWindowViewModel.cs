@@ -12,11 +12,15 @@ using PPEC.Communication;
 using PPEC.Communication.Enum;
 using PPEC.Communication.DB;
 using Prism.Ioc;
+using Workbench.Views.Windows;
+using System.IO;
+using Prism.Commands;
 
 namespace Workbench.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        private UserManualWindow _userManualWindow;
         private MainServices MainServices;
         private readonly FileHandler _fileHandler;
         private readonly ProjectManager _projectManager;
@@ -173,7 +177,9 @@ namespace Workbench.ViewModels
         }
 
         #region Commands
-
+        private DelegateCommand _ShowCHMDocumentCommand;
+        public DelegateCommand ShowCHMDocumentCommand =>
+            _ShowCHMDocumentCommand ?? (_ShowCHMDocumentCommand = new DelegateCommand(ShowCHMDocument));
         //private DelegateCommand _connectCommand;
         //public DelegateCommand ConnectCommand =>
         //    _connectCommand ?? (_connectCommand = new DelegateCommand(async () =>
@@ -189,7 +195,31 @@ namespace Workbench.ViewModels
         #endregion
 
         #region Methods
-
+        public void ShowCHMDocument()
+        {
+            if (_userManualWindow == null)
+                _userManualWindow = new UserManualWindow();
+            var userManualName = "workbench_user_manual";
+            var path = $"{AppDomain.CurrentDomain.BaseDirectory}Resource\\{userManualName}.pdf";
+            if (!File.Exists(path))
+            {
+                MessageBox.Show($"未找到【Workbench用户手册】，请下载最新安装包并重新安装程序", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            if (_userManualWindow.IsVisible)
+            {
+                if (_userManualWindow.WindowState == WindowState.Minimized)
+                {
+                    _userManualWindow.WindowState = WindowState.Normal;
+                }
+                _userManualWindow.Activate();
+            }
+            else
+            {
+                _userManualWindow = new UserManualWindow();
+                _userManualWindow.Show();
+            }
+        }
         #endregion
     }
 }

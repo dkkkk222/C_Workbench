@@ -1,0 +1,24 @@
+﻿<comCtrl:NoTitleBarWindow x:Class="Workbench.Views.Windows.UserManualWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:comCtrl="clr-namespace:Common.Controls;assembly=Workbench.Controls"
+        xmlns:local="clr-namespace:Workbench.Views.Windows"
+       xmlns:wv="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        mc:Ignorable="d"
+       WindowStyle="None"
+        WindowStartupLocation="CenterOwner"
+        Style="{StaticResource DefaulClientWindow}"
+        Title="UserManualWindow" Height="450" Width="800">
+    <comCtrl:NoTitleBarWindow.TitleBarContent>
+        <comCtrl:TitleBar>
+            <comCtrl:TitleBar.Title>
+                <TextBlock Text="芯片手册" Style="{DynamicResource TitleBarStyle}"/>
+            </comCtrl:TitleBar.Title>
+        </comCtrl:TitleBar>
+    </comCtrl:NoTitleBarWindow.TitleBarContent>
+    <Grid>
+        <wv:WebView2 x:Name="webView"/>
+    </Grid>
+</comCtrl:NoTitleBarWindow>
