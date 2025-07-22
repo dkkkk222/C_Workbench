@@ -195,6 +195,41 @@ namespace Workbench.ViewModels.dw
             });
         }));
 
+        public async Task SendRegister()
+        {
+            if (CurrentRegister == null)
+                return;
+
+            var currentProject = _projectManager.CurrentProject;
+
+            if (!currentProject.IsConnecting)
+            {
+                MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            await Task.Run(async () =>
+            {
+                var calcResult = UtilsFunc.GetWriteCommandByAddress(CurrentRegister.AddressHex, currentProject.CommunicationType, CurrentRegister.DecValue);
+                await currentProject.CommService.SendAsync(calcResult.bytes);
+                var history = new SingleParamHistory
+                {
+                    ReadWrite = "W",
+                    Address = CurrentRegister.AddressHex,
+                    Hex = CurrentRegister.HexValue,
+                    Name = CurrentRegister.Name,
+                    State = "正常",
+                    Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                };
+                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    _projectManager.CurrentProject.ReadWriteHistory.Add(history);
+                    SetCurrentRegisterValue(0);
+
+                });
+
+            });
+        }
         private DelegateCommand _closeCommand;
 
         public override DelegateCommand CloseCommand =>

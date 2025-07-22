@@ -355,7 +355,8 @@
                                                     hc:IconElement.Geometry="{StaticResource ReadGeometry}" Command="{Binding ReadRegisterCommand}"/>
                                             <Button Content="下 发" Style="{StaticResource ButtonPrimary}" Width="80" 
                                                     IsEnabled="{Binding CurrentRegister.AllowWrite}"
-                                                    hc:IconElement.Geometry="{StaticResource PushGeometry}" Command="{Binding SendRegisterCommand}"/>
+                                                    hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
+                                            <!--Command="{Binding SendRegisterCommand}"-->
                                         </StackPanel>
                                     </Border>
                                 </hc:UniformSpacingPanel>

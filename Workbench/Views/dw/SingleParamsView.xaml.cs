@@ -1,9 +1,12 @@
 ﻿using PPEC.Communication;
 using PPEC.Communication.Model;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Workbench.Utils;
 using Workbench.ViewModels.dw;
@@ -24,24 +27,35 @@ namespace Workbench.Views.dw
         {
             var textBox = sender as TextBox;
             var text = textBox.Text;
-            var u = Utility.ParseHexToUInt(text);
-            var viewModel = DataContext as SingleParamsViewModel;
-            if (viewModel.CurrentRegister == null)
-                return;
-            if (viewModel.CurrentRegister.DecValue != u)
+            try
             {
-                viewModel.CurrentRegister.DecValue = u;
-            }
+                var u = Utility.ParseHexToUInt(text);
+                var viewModel = DataContext as SingleParamsViewModel;
+                if (viewModel.CurrentRegister == null)
+                    return;
+                if (viewModel.CurrentRegister.DecValue != u)
+                {
+                    viewModel.CurrentRegister.DecValue = u;
+                    textBox.Text = "0x" + viewModel.CurrentRegister.DecValue.ToString("X8");
+                }
 
-            var bs = Utility.BinaryToDec(viewModel.CurrentRegister.BinaryStr);
-            if (u != bs)
-            {
-                var tuple = Utility.ParseDecToBinary(u);
-                viewModel.CurrentRegister.BinaryStr = tuple.binaryString;
-                var list = tuple.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
-                viewModel.CurrentRegister.BinaryArray.Clear();
-                viewModel.CurrentRegister.BinaryArray.AddRange(list);
+                var bs = Utility.BinaryToDec(viewModel.CurrentRegister.BinaryStr);
+                if (u != bs)
+                {
+                    var tuple = Utility.ParseDecToBinary(u);
+                    viewModel.CurrentRegister.BinaryStr = tuple.binaryString;
+                    var list = tuple.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
+                    viewModel.CurrentRegister.BinaryArray.Clear();
+                    viewModel.CurrentRegister.BinaryArray.AddRange(list);
+                }
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show("输入值异常");
+                return;
+            }
+         
+            
         }
 
         private void DecValueText_LostFocus(object sender, RoutedEventArgs e)
@@ -165,6 +179,15 @@ namespace Workbench.Views.dw
                 //bf.WriteBinary = result;
                 viewModel.UpdateBinaryString(bf.Name, bf.EndBit, bf.StartBit, text);
             }
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            BindingExpression be = HexValueText.GetBindingExpression(TextBox.TextProperty);
+            be?.UpdateSource();
+            await Task.Delay(200);
+            var viewModel = DataContext as SingleParamsViewModel;
+            await viewModel.SendRegister();
         }
     }
 }
