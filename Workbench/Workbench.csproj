@@ -333,6 +333,7 @@
     <Compile Include="Behaviors\InputMaskBehavior.cs" />
     <Compile Include="Communication\IBaseCommService.cs" />
     <Compile Include="Communication\SerialPortService.cs" />
+    <Compile Include="Converters\AddOneConverter.cs" />
     <Compile Include="Converters\RowIndexConverter.cs" />
     <Compile Include="Db\DbContext.cs" />
     <Compile Include="Db\IService\ICpService.cs" />

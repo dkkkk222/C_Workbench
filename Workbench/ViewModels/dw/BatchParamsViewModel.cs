@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Forms;
 using Workbench.Events;
 using Workbench.Models;
@@ -270,21 +271,17 @@ namespace Workbench.ViewModels.dw
         {
             var index = CurrentSequence.Items.IndexOf(param);
             if (index > 0)
-            {
-                CurrentSequence.Items.Remove(param);
-                CurrentSequence.Items.Insert(index - 1, param);
-            }
+                CurrentSequence.Items.Move(index, index - 1);
+            CollectionViewSource.GetDefaultView(CurrentSequence.Items).Refresh();
         }));
 
         private DelegateCommand<RegisterAddrInfo> _moveDownCommand;
         public DelegateCommand<RegisterAddrInfo> MoveDownCommand => _moveDownCommand ?? (_moveDownCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
         {
-            var index = CurrentSequence.Items.IndexOf(param);
-            if (index < CurrentSequence.Items.Count - 1)
-            {
-                CurrentSequence.Items.Remove(param);
-                CurrentSequence.Items.Insert(index + 1, param);
-            }
+            int idx = CurrentSequence.Items.IndexOf(param);
+            if (idx < CurrentSequence.Items.Count - 1)
+                CurrentSequence.Items.Move(idx, idx + 1);
+            CollectionViewSource.GetDefaultView(CurrentSequence.Items).Refresh();
         }));
 
         private DelegateCommand<RegisterAddrInfo> _copyCommand;

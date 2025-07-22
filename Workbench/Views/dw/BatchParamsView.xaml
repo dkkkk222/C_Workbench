@@ -9,6 +9,7 @@
              xmlns:views="clr-namespace:Workbench.Views.dw"
              xmlns:cvt="clr-namespace:Workbench.Converters"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -16,6 +17,7 @@
         <DataTemplate DataType="{x:Type viewModels:BatchParamsViewModel}">
             <views:BatchParamsView />
         </DataTemplate>
+        <cvt:AddOneConverter x:Key="AddOneConverter"/>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
     </UserControl.Resources>
     <Grid>
@@ -229,7 +231,8 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                                 </Border>
                             </DockPanel>
                         </Border>
-                        <DataGrid ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"
+                        <DataGrid ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
+                                  AlternationCount="{x:Static sys:Int32.MaxValue}"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
@@ -262,17 +265,9 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                                 <DataGridTemplateColumn  Header="发送顺序" MinWidth="60">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <!-- 使用 MultiBinding -->
-                                                    <MultiBinding Converter="{StaticResource RowIndexConverter}">
-                                                        <!-- 第一个绑定：绑定到当前行的数据项 (DataContext) -->
-                                                        <Binding />
-                                                        <!-- 第二个绑定：通过 RelativeSource 找到父级的 DataGrid 控件 -->
-                                                        <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
+                                            <TextBlock  Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow},
+                                                   Path=AlternationIndex,
+                                                   Converter={StaticResource AddOneConverter}}"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
