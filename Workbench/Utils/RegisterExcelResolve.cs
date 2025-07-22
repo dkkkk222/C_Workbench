@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Workbench.Utils
 {
@@ -75,6 +76,19 @@ namespace Workbench.Utils
                 if (dic.ContainsKey(name))
                 {
                     ti.AddrInfo.BitFields = dic[name];
+                }
+                else
+                {
+                    List<BitField> NoneBitField = new List<BitField>();
+                    NoneBitField.Add(new BitField
+                    {
+                        Name = name,
+                        EndBit = 31,
+                        StartBit = 0,
+                        Desc = "无",
+                        FieldType = "None"
+                    });
+                    ti.AddrInfo.BitFields = NoneBitField;
                 }
             }
 
