@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using log4net;
+using Newtonsoft.Json;
+using NPOI.XSSF.UserModel;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -7,8 +9,11 @@ using ScottPlot.Plottables;
 using ScottPlot.WPF;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Workbench.Controls.Controls.Scottplot;
+using Workbench.ViewModels.dw;
 using Workbench.Views;
 using Workbench.Views.Windows;
 
@@ -16,7 +21,8 @@ namespace Workbench.Models.dw
 {
     public class WatchGroup : BindableBase
     {
-        private readonly IDialogService _dialogService;
+        private static readonly ILog _log = LogManager.GetLogger(typeof(WatchGroup));
+        private IDialogService _dialogService;
         public WatchGroup(IDialogService dialogService)
         {
             _dialogService = dialogService;
@@ -99,9 +105,83 @@ namespace Workbench.Models.dw
         { 
             get=> wpfPlotControl;
             set=>SetProperty(ref wpfPlotControl,value); 
-        } 
+        }
+
+        #region Method
+        private void HistoryToExcel(string path)
+        {
+            try
+            {
+                var workbook = new XSSFWorkbook();
+                var sheet = workbook.CreateSheet("Sheet1");
+                var headerRow = sheet.CreateRow(0);
+                string[] headerColumns = new string[] { "名称", "寄存器地址", "解析范围", "解析要求", "解析结果", "原始值(DEC)", "原始值(bit)", "单位" };
+                for (int i = 0; i < headerColumns.Length; i++)
+                {
+                    headerRow.CreateCell(i).SetCellValue(headerColumns[i]);
+                }
+
+                int startRow = 1;
+                foreach (var history in BitFields)
+                {
+                    var row = sheet.CreateRow(startRow);
+                    row.CreateCell(0).SetCellValue(history.Desc);
+                    row.CreateCell(1).SetCellValue(history.AddressHexName);
+                    row.CreateCell(2).SetCellValue("b"+history.StartBit+ "-"+ "b" + history.EndBit);
+                    row.CreateCell(3).SetCellValue(history.FormParam.ParamName);
+                    row.CreateCell(4).SetCellValue(history.Result);
+                    row.CreateCell(5).SetCellValue(history.Value);
+                    row.CreateCell(6).SetCellValue(history.ReadBinary);
+                    row.CreateCell(7).SetCellValue(history.FormParam.UnitName);
+                    startRow++;
+                }
+
+                for (int i = 0; i < headerColumns.Length; i++)
+                {
+                    sheet.AutoSizeColumn(i);
+                }
+
+                string fileName = "数据监控表-"+this.TableName+".xlsx";
+                string filePath = Path.Combine(path, fileName);
+                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    workbook.Write(fs);
+                }
+                MessageBox.Show("下载成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+                MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public void Inject(IDialogService dialogService)
+        {
+            _dialogService = dialogService;         // 重建命令
+        }
+        #endregion
+
+
+        [JsonIgnore]
+        public DelegateCommand HistoryDownloadCommand => new DelegateCommand(() =>
+        {
+            if (!BitFields.Any())
+            {
+                MessageBox.Show("无数据", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            var fbd = new FolderBrowserDialog();
+            fbd.Description = "请选择保存路径";
+            var result = fbd.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                var path = fbd.SelectedPath;
+                HistoryToExcel(path);
+            }
+        });
 
         private DelegateCommand<string> _renameCommand;
+        [JsonIgnore]
         public DelegateCommand<string> RenameCommand => _renameCommand ?? (_renameCommand = new DelegateCommand<string>((param) =>
         {
             IDialogParameters dialogParameters = new DialogParameters();
@@ -126,6 +206,7 @@ namespace Workbench.Models.dw
         }));
 
         private DelegateCommand<BitField> _addToChartCommand;
+        [JsonIgnore]
         public DelegateCommand<BitField> AddToChartCommand =>
             _addToChartCommand ?? (_addToChartCommand = new DelegateCommand<BitField>(OnAddToChart));
 
@@ -157,6 +238,7 @@ namespace Workbench.Models.dw
         }
 
         private DelegateCommand<object> _settingChartLimitCommand;
+        [JsonIgnore]
         public DelegateCommand<object> SettingChartLimitCommand =>
             _settingChartLimitCommand ?? (_settingChartLimitCommand = new DelegateCommand<object>(SettingChartLimit));
 

@@ -161,25 +161,31 @@
                                                                 Command="{Binding RenameCommand}"
                                                                 CommandParameter="Table"/>
                                                     </StackPanel>
-                                                    <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
-                                                        <hc:SplitButton.DropDownContent>
-                                                            <ItemsControl ItemsSource="{Binding TableColumns}">
-                                                                <ItemsControl.ItemsPanel>
-                                                                    <ItemsPanelTemplate>
-                                                                        <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5"/>
-                                                                    </ItemsPanelTemplate>
-                                                                </ItemsControl.ItemsPanel>
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <Border Padding="8,0">
-                                                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                                                        </Border>
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
-                                                        </hc:SplitButton.DropDownContent>
-                                                    </hc:SplitButton>
-                                                </DockPanel>
+                                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                                                        <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                                                Command="{Binding HistoryDownloadCommand}"/>
+                                                        <TextBlock Width="10"></TextBlock>
+                                                        <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
+                                                            <hc:SplitButton.DropDownContent>
+                                                                <ItemsControl ItemsSource="{Binding TableColumns}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Border Padding="8,0">
+                                                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                                            </Border>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </hc:SplitButton.DropDownContent>
+                                                        </hc:SplitButton>
+
+                                                    </StackPanel>
+                                                      </DockPanel>
                                             </Border>
                                             <DataGrid ItemsSource="{Binding BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                                       CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"

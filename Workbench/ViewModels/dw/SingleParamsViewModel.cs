@@ -344,7 +344,7 @@ namespace Workbench.ViewModels.dw
                     row.CreateCell(3).SetCellValue(history.Hex);
                     row.CreateCell(4).SetCellValue(history.State);
                     row.CreateCell(5).SetCellValue(history.Datetime);
-
+                    startRow++;
                 }
 
                 for (int i = 0; i < headerColumns.Length; i++)

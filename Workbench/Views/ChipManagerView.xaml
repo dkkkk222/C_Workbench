@@ -165,8 +165,8 @@
 
         </Border>
         <Grid Visibility="{calc:Binding Loading,FalseToVisibility=Collapsed}">
-            <!--<Border Background="{StaticResource DarkDefaultBrush}" Opacity=".5"></Border>-->
-            <!--<hc:LoadingCircle/>-->
+            <Border Background="{StaticResource DarkDefaultBrush}" Opacity=".5"></Border>
+            <hc:LoadingCircle/>
         </Grid>
     </Grid>
 </UserControl>

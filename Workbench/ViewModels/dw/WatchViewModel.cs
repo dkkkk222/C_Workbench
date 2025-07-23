@@ -44,6 +44,11 @@ namespace Workbench.ViewModels.dw
             _timer.Elapsed += Timer_Tick; // 设置触发事件
 
             EventListener();
+
+            foreach(var group in WatchGroups)
+            {
+                group.Inject(dialogService);
+            }
         }
 
         #region Property
