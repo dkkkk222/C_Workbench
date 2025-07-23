@@ -38,6 +38,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
@@ -57,13 +58,36 @@
                         </hc:UniformSpacingPanel>
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
-                <hc:SearchBar Grid.Row="1" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                <StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
+                    <ComboBox Grid.Row="1"  ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
+hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="130"
+SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
+                    <TextBlock Width="10"></TextBlock>
+                    <ComboBox ItemsSource="{Binding CategoryAddressList}" Style="{StaticResource ComboBoxExtend}"
+hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="167"
+SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
+                </StackPanel>
+                <hc:SearchBar Grid.Row="2" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
                     <hc:SearchBar.Text>
                         <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
                     </hc:SearchBar.Text>
                 </hc:SearchBar>
-                <Border Margin="0,5,0,0" Grid.Row="2">
-                    <TreeView ItemsSource="{Binding SingleParamTrees}">
+                <Border Margin="0,5,0,0" Grid.Row="3">
+                    <TreeView ItemsSource="{Binding SingleParamTrees}"> 
+                        <TreeView.Resources>
+                            <!-- ★ 继承原样式，只追加两个 Setter -->
+                            <Style x:Key="BindableTreeViewItemStyle"
+               TargetType="TreeViewItem"
+               BasedOn="{StaticResource TreeViewItemStyle}">
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                            </Style>
+                        </TreeView.Resources>
+
+                        <!-- 只影响当前这棵 TreeView -->
+                        <TreeView.ItemContainerStyle>
+                            <StaticResource ResourceKey="BindableTreeViewItemStyle"/>
+                        </TreeView.ItemContainerStyle>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">
                                 <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 

@@ -421,9 +421,19 @@ namespace Workbench.Utils
                     Children = GetSubCategory(category, infos, isOrderByAddress)
                 });
             }
+            // ★ 在这里给每棵根树补父引用
+            foreach (var root in list)
+                AttachParentRecursive(root, null);
             return list;
         }
+        private void AttachParentRecursive(CategoryTree node, CategoryTree parent)
+        {
+            node.Parent = parent;
+            if (node.Children == null) return;
 
+            foreach (var child in node.Children)
+                AttachParentRecursive(child, node);
+        }
         private List<CategoryTree> GetSubCategory(string category, List<RegisterAddrInfo> infos, bool isOrderByAddress)
         {
             var list = new List<CategoryTree>();

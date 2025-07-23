@@ -19,6 +19,13 @@
         </DataTemplate>
         <cvt:AddOneConverter x:Key="AddOneConverter"/>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
+        <Style x:Key="ItemTitle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Padding" Value="0,0,8,0"/>
+
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -87,6 +94,20 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                 </hc:SearchBar>
                 <Border Margin="0,5,0,0" Grid.Row="4">
                     <TreeView ItemsSource="{Binding SingleParamTrees}">
+                        <TreeView.Resources>
+                            <!-- ★ 继承原样式，只追加两个 Setter -->
+                            <Style x:Key="BindableTreeViewItemStyle"
+                                TargetType="TreeViewItem"
+                                BasedOn="{StaticResource TreeViewItemStyle}">
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                            </Style>
+                        </TreeView.Resources>
+
+                        <!-- 只影响当前这棵 TreeView -->
+                        <TreeView.ItemContainerStyle>
+                            <StaticResource ResourceKey="BindableTreeViewItemStyle"/>
+                        </TreeView.ItemContainerStyle>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">
                                 <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 

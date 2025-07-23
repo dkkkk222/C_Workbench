@@ -71,6 +71,8 @@ namespace Workbench.ViewModels.dw
                     var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(value.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
                     CategoryAddressList.AddRange(CategoryAddressListOptions);
                     CategoryAddress = CategoryAddressList.FirstOrDefault();
+
+                    UtilsFunc.SerachCategoryNode(SingleParamTrees, value);
                 }
             }
         }
@@ -90,8 +92,11 @@ namespace Workbench.ViewModels.dw
             {
                 if (SetProperty(ref _categoryAddress, value))
                 {
-                    if(value!=null)
+                    if (value != null)
+                    {
                         CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.AddressDec == (uint)value.Value);
+
+                    }
                 }
             }
         }

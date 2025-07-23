@@ -11,6 +11,9 @@ using PPEC.Communication;
 using System.Threading;
 using Workbench.SerialAsistant.Utils;
 using PPEC.Communication.Model;
+using Workbench.Models.dw;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Workbench.Utils
 {
@@ -329,6 +332,35 @@ namespace Workbench.Utils
                     break;
             }
             return result;
+        }
+        public static void SerachCategoryNode(ObservableCollection<CategoryTree> SingleParamTrees, ValueLabelOption NodeCategory)
+        {
+            var serachNode = SingleParamTrees.Where(x => x.Title == NodeCategory.Label).FirstOrDefault();
+
+            if (serachNode == null) return;
+            CollapseAll(SingleParamTrees);
+
+            for (var p = serachNode; p != null; p = p.Parent)
+                p.IsExpanded = true;
+
+            ExpandDescendants(serachNode);
+            serachNode.IsSelected = true;
+        }
+        private static void CollapseAll(IEnumerable<CategoryTree> nodes)
+        {
+            foreach (var n in nodes)
+            {
+                n.IsExpanded = false;
+                if (n.Children != null && n.Children.Any())
+                    CollapseAll(n.Children);
+            }
+        }
+        private static void ExpandDescendants(CategoryTree node)
+        {
+            node.IsExpanded = true;
+            if (node.Children != null && node.Children.Any())
+                foreach (var child in node.Children)
+                    ExpandDescendants(child);
         }
     }
 }
