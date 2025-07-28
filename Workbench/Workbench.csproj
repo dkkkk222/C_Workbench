@@ -385,6 +385,7 @@
     <Compile Include="Models\ValueName.cs" />
     <Compile Include="Profiles\RegisterProfile.cs" />
     <Compile Include="Utils\BindingProxy.cs" />
+    <Compile Include="Utils\CategoryTreeQueries.cs" />
     <Compile Include="Utils\CommandHandler.cs" />
     <Compile Include="Utils\Common\CommEntity.cs" />
     <Compile Include="Utils\Common\HttpHelper.cs" />

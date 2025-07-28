@@ -10,6 +10,7 @@ using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -61,18 +62,52 @@ namespace Workbench.ViewModels.dw
             }
         }
 
-        private bool _isOrderByName = true;
+        private bool _isOrderByCategory = true;
+        public bool IsOrderByCategory
+        {
+            get => _isOrderByCategory;
+            set
+            {
+                if (value)
+                {
+                    SearchCategoryTree(TreeKeyword, IsOrderByAddress);
+                }
+                SetProperty(ref _isOrderByCategory, value);
+            }
+        }
+
+        private bool _isOrderByName = false;
         public bool IsOrderByName
         {
             get => _isOrderByName;
-            set => SetProperty(ref _isOrderByName, value);
+            set
+            {
+                if (value)
+                {
+                    var tempList = SingleParamTrees.GetMaxDepthLeaves().ToList().OrderBy(x => x.Title);
+                    SingleParamTrees.Clear();
+                    SingleParamTrees.AddRange(tempList);
+                }
+                SetProperty(ref _isOrderByName, value);
+            }
         }
 
-        private bool _isOrderByAddress = true;
+        private bool _isOrderByAddress = false;
         public bool IsOrderByAddress
         {
             get => _isOrderByAddress;
-            set => SetProperty(ref _isOrderByAddress, value);
+            set
+            {
+                if (value)
+                {
+                    var tempList = SingleParamTrees.GetMaxDepthLeaves()
+    .OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
+    .ToList();
+                    SingleParamTrees.Clear();
+                    SingleParamTrees.AddRange(tempList);
+                }
+                SetProperty(ref _isOrderByAddress, value);
+            }
         }
 
         private RegisterAddrInfo _currentRegister;

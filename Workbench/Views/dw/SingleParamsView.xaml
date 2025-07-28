@@ -62,15 +62,14 @@
                             <TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>
                         </StackPanel>
                     </Border>
-                    <hc:UniformSpacingPanel Spacing="8" Orientation="Vertical" Margin="0,10">
-                        <hc:UniformSpacingPanel Orientation="Horizontal">
-                            <TextBlock Text="按名称排列：" FontSize="14"/>
-                            <CheckBox IsChecked="{Binding IsOrderByName}"/>
-                        </hc:UniformSpacingPanel>
-                        <hc:UniformSpacingPanel Orientation="Horizontal">
-                            <TextBlock Text="按地址排列：" FontSize="14"/>
-                            <CheckBox IsChecked="{Binding IsOrderByAddress}" Command="{Binding CheckboxChangeCommand}"/>
-                        </hc:UniformSpacingPanel>
+                    <hc:UniformSpacingPanel Spacing="8" Orientation="Horizontal" Margin="0,10">
+                        <RadioButton GroupName="OrderBy" Content="按分类"
+IsChecked="{Binding IsOrderByCategory, Mode=TwoWay}"/>
+                        <RadioButton GroupName="OrderBy" Content="按名称"
+IsChecked="{Binding IsOrderByName, Mode=TwoWay}"/>
+                        <RadioButton GroupName="OrderBy" Content="按地址"
+IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
+                        
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
                 <StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">

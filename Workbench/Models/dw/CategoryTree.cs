@@ -4,7 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Force.DeepCloner;
 using Prism.Mvvm;
+using Workbench.Utils;
 
 namespace Workbench.Models.dw
 {
@@ -29,6 +32,16 @@ namespace Workbench.Models.dw
         {
             get => _isSelected;
             set => SetProperty(ref _isSelected, value);
+        }
+
+        private bool _isCheck=false;
+        public bool IsCheck
+        {
+            get => _isCheck;
+            set
+            {
+                SetProperty(ref _isCheck, value);               
+            } 
         }
     }
 

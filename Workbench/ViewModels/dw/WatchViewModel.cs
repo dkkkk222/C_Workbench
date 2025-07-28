@@ -1,5 +1,6 @@
 ﻿using Force.DeepCloner;
 using NPOI.SS.Formula.Functions;
+using NPOI.XSSF.Streaming.Values;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
@@ -8,6 +9,7 @@ using ScottPlot.Plottables;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -161,6 +163,155 @@ namespace Workbench.ViewModels.dw
         }
         #endregion
 
+        #region Tree
+        private ValueLabelOption _currentCategory;
+        public ValueLabelOption CurrentCategory
+        {
+            get => _currentCategory;
+            set
+            {
+                if (SetProperty(ref _currentCategory, value))
+                {
+                    CategoryAddressList.Clear();
+                    var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(value.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
+                    CategoryAddressList.AddRange(CategoryAddressListOptions);
+                    CategoryAddress = CategoryAddressList.FirstOrDefault();
+
+                    UtilsFunc.SerachCategoryNode(SingleParamTrees, value);
+                }
+            }
+        }
+        private bool _isLeftOpen = true;
+        public bool IsLeftOpen
+        {
+            get => _isLeftOpen;
+            set
+            {
+                if (_isLeftOpen != value)
+                {
+                    SetProperty(ref _isLeftOpen, value);
+                }
+            }
+        }
+        private string _treeKeyword;
+        public string TreeKeyword
+        {
+            get => _treeKeyword;
+            set
+            {
+                SetProperty(ref _treeKeyword, value);
+                SearchCategoryTree(value, IsOrderByAddress);
+            }
+        }
+        private bool _isOrderByCategory = true;
+        public bool IsOrderByCategory
+        {
+            get => _isOrderByCategory;
+            set
+            {
+                if (value)
+                {
+                    SearchCategoryTree(TreeKeyword, IsOrderByAddress);
+                }
+                SetProperty(ref _isOrderByCategory, value);
+            }
+        }
+
+        private bool _isOrderByName = false;
+        public bool IsOrderByName
+        {
+            get => _isOrderByName;
+            set
+            {
+                if (value)
+                {
+                    var tempList = SingleParamTrees.GetMaxDepthLeaves().ToList().OrderBy(x => x.Title);
+                    SingleParamTrees.Clear();
+                    SingleParamTrees.AddRange(tempList);
+                }
+                SetProperty(ref _isOrderByName, value);
+            }
+        }
+
+        private bool _isOrderByAddress = false;
+        public bool IsOrderByAddress
+        {
+            get => _isOrderByAddress;
+            set
+            {
+                if (value)
+                {
+                    var tempList = SingleParamTrees.GetMaxDepthLeaves()
+    .OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
+    .ToList();
+                    SingleParamTrees.Clear();
+                    SingleParamTrees.AddRange(tempList);
+                }
+                SetProperty(ref _isOrderByAddress, value);
+            }
+        }
+
+        public DelegateCommand ToggleDrawerCommand => new DelegateCommand(() => IsLeftOpen = !IsLeftOpen);
+
+        private ObservableCollection<CategoryTree> _singleParamTrees = new ObservableCollection<CategoryTree>();
+        public ObservableCollection<CategoryTree> SingleParamTrees
+        {
+            get => _singleParamTrees;
+            set => SetProperty(ref _singleParamTrees, value);
+        }
+
+        public DelegateCommand AddTreeListToTableCommand => new DelegateCommand(() =>
+        {
+            //var SelectAddress = SingleParamTrees.GetDeepestChecked().ToList();
+            //foreach (var item in SelectAddress)
+            //{
+            //    var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == item.Title);
+            //    var clone = register.DeepClone();
+            //    clone.Id = Guid.NewGuid().ToString("N");
+            //    CurrentSequence.Items.Add(clone);
+            //}
+            //CategoryAddressList.Clear();
+            //var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(value.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
+            //CategoryAddressList.AddRange(CategoryAddressListOptions);
+            //CategoryAddress = CategoryAddressList.FirstOrDefault();
+
+        });
+
+        private void SearchCategoryTree(string keyword, bool isOrderByAddress = true)
+        {
+            SingleParamTrees.Clear();
+            var source = _projectManager.GetChipCategoryTree(isOrderByAddress: isOrderByAddress);
+            if (string.IsNullOrEmpty(keyword))
+            {
+                SingleParamTrees.AddRange(source);
+            }
+            else
+            {
+                var searcher = new TreeSearcher();
+                var filteredResult = searcher.SearchInForest(source, keyword);
+                SingleParamTrees.AddRange(filteredResult);
+            }
+        }
+
+        public void LoadTreeData()
+        {
+            var tree = _projectManager.GetChipCategoryTree();
+            SingleParamTrees.AddRange(tree);
+            CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo)
+                .FirstOrDefault(t => t.Name == tree[0].Children[0].Children[0].Title);
+
+            var categoryOptions = _projectManager.GetCategories().Select(t => new ValueLabelOption() { Value = t, Label = t });
+            SettingCategoryList.Clear();
+            SettingCategoryList.AddRange(categoryOptions);
+            CurrentCategory = SettingCategoryList.FirstOrDefault();
+
+            CategoryAddressList.Clear();
+
+            var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(CurrentCategory.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
+            CategoryAddressList.AddRange(CategoryAddressListOptions);
+            CategoryAddress = CategoryAddressList.FirstOrDefault();
+        }
+        #endregion
         private DelegateCommand _closeCommand;
 
         public override DelegateCommand CloseCommand =>
@@ -409,6 +560,7 @@ namespace Workbench.ViewModels.dw
         {
             InitData();
             StartUiLoop(RefreshInterval);
+            LoadTreeData();
         }
 
         private void InitData()
