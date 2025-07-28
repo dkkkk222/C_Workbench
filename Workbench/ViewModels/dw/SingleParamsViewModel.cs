@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Common.Controls;
+using log4net;
 using Newtonsoft.Json;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
@@ -33,6 +35,20 @@ namespace Workbench.ViewModels.dw
             _eventAggregator = eventAggregator;
             ReadWriteHistory = _projectManager.CurrentProject.ReadWriteHistory;
         }
+
+        private bool _isLeftOpen= true;
+        public bool IsLeftOpen
+        {
+            get => _isLeftOpen;
+            set { 
+                if (_isLeftOpen != value) 
+                {
+                    SetProperty(ref _isLeftOpen, value);
+                }
+            }
+        }
+
+        public DelegateCommand ToggleDrawerCommand => new DelegateCommand(() => IsLeftOpen = !IsLeftOpen);
 
         private string _treeKeyword;
         public string TreeKeyword

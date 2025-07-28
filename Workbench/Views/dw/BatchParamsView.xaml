@@ -11,6 +11,7 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+              xmlns:local_Model="clr-namespace:Workbench.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -26,10 +27,22 @@
             <Setter Property="Padding" Value="0,0,8,0"/>
 
         </Style>
+        <Storyboard x:Key="ExpandStoryboard">
+            <local_Model:GridLengthAnimation Storyboard.TargetName="LeftCol"
+                                Storyboard.TargetProperty="Width"
+                                From="0" To="324"
+                                Duration="0:0:0.18"/>
+        </Storyboard>
+        <Storyboard x:Key="CollapseStoryboard">
+            <local_Model:GridLengthAnimation Storyboard.TargetName="LeftCol"
+                                Storyboard.TargetProperty="Width"
+                                From="324" To="0"
+                                Duration="0:0:0.18"/>
+        </Storyboard>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" Width="324" Background="#fafafa" Padding="8">
@@ -149,6 +162,13 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                                 <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
                                     <DockPanel LastChildFill="True">
                                         <TextBlock Text="序列管理列表" FontSize="{StaticResource SubHeadFontSize}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Width="10"></TextBlock>
+                                        <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
+        ToolTip="展开/收起目录" Content="展开目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
+        Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource  AlignLeftGeometry}"/>
+                                        <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
+ToolTip="展开/收起目录" Content="收起目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
+Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />
                                         <Border>
                                             <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
                                                 <Button Content="新增序列" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"

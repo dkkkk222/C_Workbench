@@ -27,7 +27,20 @@ namespace Workbench.ViewModels.dw
             _eventAggregator = eventAggregator;
             SequenceList = _projectManager.CurrentProject.Sequences;
         }
+        private bool _isLeftOpen=true;
+        public bool IsLeftOpen
+        {
+            get => _isLeftOpen;
+            set
+            {
+                if (_isLeftOpen != value)
+                {
+                    SetProperty(ref _isLeftOpen, value);
+                }
+            }
+        }
 
+        public DelegateCommand ToggleDrawerCommand => new DelegateCommand(() => IsLeftOpen = !IsLeftOpen);
         private ValueLabelOption _currentSettingCategory;
         public ValueLabelOption CurrentSettingCategory
         {

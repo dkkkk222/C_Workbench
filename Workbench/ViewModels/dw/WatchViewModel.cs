@@ -17,6 +17,7 @@ using Workbench.Models;
 using Workbench.Models.dw;
 using Workbench.Utils;
 using Workbench.Views;
+using Workbench.Views.dw;
 using Workbench.Views.Windows;
 using static SkiaSharp.HarfBuzz.SKShaper;
 
@@ -215,6 +216,18 @@ namespace Workbench.ViewModels.dw
             }
         }));
 
+        public DelegateCommand ShowWatchGroupCommand => new DelegateCommand(() =>
+        {
+            IDialogParameters dialogParameters = new DialogParameters();
+            dialogParameters.Add("WatchGroups", WatchGroups);
+            _dialogService.Show(nameof(WatchChartListView), dialogParameters, r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {                    
+
+                }
+            }, nameof(ShowChartListWindows));
+        });
         private ObservableCollection<TableColumn> InitTableColumns()
         {
             var target = new ObservableCollection<TableColumn>();

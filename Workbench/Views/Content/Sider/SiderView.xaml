@@ -58,6 +58,7 @@
                                        Foreground="{DynamicResource PrimaryFontColor}"
                                        VerticalAlignment="Center" 
                                        Margin="8,0,0,0"></TextBlock>
+                            
                         </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>

@@ -11,6 +11,8 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:behaviors="clr-namespace:Workbench.Behaviors"
              xmlns:enums="clr-namespace:PPEC.Communication.Enum;assembly=PPEC.Communication"
+            xmlns:cvt="clr-namespace:Workbench.Converters"
+             xmlns:local_Model="clr-namespace:Workbench.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -27,10 +29,23 @@
         <Style x:Key="DataGridTextCenterColumnStyle" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
+     
+        <Storyboard x:Key="ExpandStoryboard">
+            <local_Model:GridLengthAnimation Storyboard.TargetName="LeftCol"
+                                       Storyboard.TargetProperty="Width"
+                                       From="0" To="324"
+                                       Duration="0:0:0.18"/>
+        </Storyboard>
+        <Storyboard x:Key="CollapseStoryboard">
+            <local_Model:GridLengthAnimation Storyboard.TargetName="LeftCol"
+                                       Storyboard.TargetProperty="Width"
+                                       From="324" To="0"
+                                       Duration="0:0:0.18"/>
+        </Storyboard>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" Width="324" Background="#fafafa" Padding="8">
@@ -126,7 +141,17 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                         <StackPanel>
                             <Border Style="{StaticResource BorderTipPrimary}" Margin="0,0,0,5">
                                 <hc:UniformSpacingPanel Spacing="15">
-                                    <TextBlock Text="寄存器概览" FontSize="{StaticResource SubHeadFontSize}"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="寄存器概览" FontSize="{StaticResource SubHeadFontSize}"/>
+                                        <TextBlock Width="10"></TextBlock>
+                                        <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
+        ToolTip="展开/收起目录" Content="展开目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
+        Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource  AlignLeftGeometry}"/>
+                                        <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
+ToolTip="展开/收起目录" Content="收起目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
+Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />
+                                    </StackPanel>
+                                
                                 </hc:UniformSpacingPanel>
                             </Border>
                             <Border>

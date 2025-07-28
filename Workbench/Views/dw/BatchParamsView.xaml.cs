@@ -2,6 +2,7 @@
 using PPEC.Communication.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +12,11 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Workbench.Models;
 using Workbench.ViewModels.dw;
 
 namespace Workbench.Views.dw
@@ -23,40 +26,98 @@ namespace Workbench.Views.dw
     /// </summary>
     public partial class BatchParamsView : UserControl
     {
+        private const double PaneWidth = 324.0;
         public BatchParamsView()
         {
             InitializeComponent();
+            Loaded += (s, e) =>
+            {
+                var vm = DataContext as INotifyPropertyChanged;
+                ApplyInitialWidth();
+
+                // 监听 VM 属性变化（IsLeftOpen 改变时播放动画）
+                if (vm != null)
+                {
+                    vm.PropertyChanged -= VmOnPropertyChanged;
+                    vm.PropertyChanged += VmOnPropertyChanged;
+                }
+
+                // DataContext 变化时重新订阅
+                DataContextChanged += (_, __) =>
+                {
+                    var oldVm = vm;
+                    if (oldVm != null)
+                        oldVm.PropertyChanged -= VmOnPropertyChanged;
+
+                    vm = DataContext as INotifyPropertyChanged;
+                    if (vm != null)
+                        vm.PropertyChanged += VmOnPropertyChanged;
+
+                    ApplyInitialWidth();
+                };
+            };
         }
 
-        //private void BinaryTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    var textBox = sender as TextBox;
-        //    if (textBox == null) return;
+        #region 展开收起动画
+        private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsLeftOpen")
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    bool isOpen = GetIsLeftOpen();
+                    AnimatePane(isOpen);
+                });
+            }
+        }
 
-        //    textBox.TextChanged -= BinaryTextBox_TextChanged;
+        private bool GetIsLeftOpen()
+        {
+            // 你的 ViewModel 里 bool 属性名为 IsLeftOpen
+            dynamic vm = DataContext;
+            try { return (bool)(vm?.IsLeftOpen ?? false); }
+            catch { return false; }
+        }
 
-        //    string input = textBox.Text;
+        private void ApplyInitialWidth()
+        {
+            LeftCol.Width = GetIsLeftOpen()
+                ? new GridLength(PaneWidth, GridUnitType.Pixel)
+                : new GridLength(0, GridUnitType.Pixel);
+        }
 
-        //    // 从后往前找，找到最后一个 '0' 或 '1'
-        //    char finalChar = '0'; // 默认 fallback
-        //    bool found = false;
+        private void AnimatePane(bool open)
+        {
+            double from = LeftCol.ActualWidth;                  // 当前实际宽度
+            double to = open ? PaneWidth : 0.0;               // 目标宽度
 
-        //    for (int i = input.Length - 1; i >= 0; i--)
-        //    {
-        //        if (input[i] == '0' || input[i] == '1')
-        //        {
-        //            finalChar = input[i];
-        //            found = true;
-        //            break;
-        //        }
-        //    }
+            if (Math.Abs(from - to) < 0.5)                      // 已在目标值，就不动画
+            {
+                LeftCol.Width = new GridLength(to, GridUnitType.Pixel);
+                return;
+            }
 
-        //    // 如果没找到合法字符，设为 '0'
-        //    textBox.Text = found ? finalChar.ToString() : "0";
+            var anim = new GridLengthAnimation
+            {
+                From = new GridLength(from, GridUnitType.Pixel),
+                To = new GridLength(to, GridUnitType.Pixel),
+                Duration = TimeSpan.FromMilliseconds(180),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+            };
 
-        //    textBox.CaretIndex = 1; // 设置光标在末尾
-        //    textBox.TextChanged += BinaryTextBox_TextChanged;
-        //}
+            // 关键：FillBehavior=Stop，动画完成后手动落到终值，避免“保持值”占坑
+            Timeline.SetDesiredFrameRate(anim, 60);
+            anim.FillBehavior = FillBehavior.Stop;
+            anim.Completed += (s, e) =>
+            {
+                // 落到终值并清除动画
+                LeftCol.Width = new GridLength(to, GridUnitType.Pixel);
+                LeftCol.BeginAnimation(ColumnDefinition.WidthProperty, null);
+            };
+
+            LeftCol.BeginAnimation(ColumnDefinition.WidthProperty, anim);
+        }
+        #endregion
         private void BinaryTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;

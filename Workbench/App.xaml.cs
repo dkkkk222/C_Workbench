@@ -27,6 +27,7 @@ using Workbench.Profiles;
 using Workbench.Db.IService;
 using Workbench.Db.Service;
 using Workbench.ViewModels.dw;
+using Workbench.Views.dw;
 
 namespace Workbench
 {
@@ -136,7 +137,9 @@ namespace Workbench
         private void RegisterDialog(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialogWindow<CreateProjectWindow>(nameof(CreateProjectWindow));
+            containerRegistry.RegisterDialog<WatchChartListView, WatchChartListViewModel>(); 
             containerRegistry.RegisterDialogWindow<ChipManagerWindow>(nameof(ChipManagerWindow));
+            containerRegistry.RegisterDialogWindow<ShowChartListWindows>(nameof(ShowChartListWindows)); 
             containerRegistry.RegisterDialog<CreateProjectView, CreateProjectViewModel>();
             containerRegistry.RegisterSingleton<ChipManagerViewModel>();
             containerRegistry.RegisterDialog<ChipManagerView, ChipManagerViewModel>();
