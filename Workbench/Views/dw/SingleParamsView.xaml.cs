@@ -130,22 +130,22 @@ namespace Workbench.Views.dw
             {
                 var u = Utility.ParseHexToUInt(text);
                 var viewModel = DataContext as SingleParamsViewModel;
-                if (viewModel.CurrentRegister == null)
+                if (viewModel.WriteCurrentRegister == null)
                     return;
-                if (viewModel.CurrentRegister.DecValue != u)
+                if (viewModel.WriteCurrentRegister.DecValue != u)
                 {
-                    viewModel.CurrentRegister.DecValue = u;
-                    textBox.Text = "0x" + viewModel.CurrentRegister.DecValue.ToString("X8");
+                    viewModel.WriteCurrentRegister.DecValue = u;
+                    textBox.Text = "0x" + viewModel.WriteCurrentRegister.DecValue.ToString("X8");
                 }
 
-                var bs = Utility.BinaryToDec(viewModel.CurrentRegister.BinaryStr);
+                var bs = Utility.BinaryToDec(viewModel.WriteCurrentRegister.BinaryStr);
                 if (u != bs)
                 {
                     var tuple = Utility.ParseDecToBinary(u);
-                    viewModel.CurrentRegister.BinaryStr = tuple.binaryString;
+                    viewModel.WriteCurrentRegister.BinaryStr = tuple.binaryString;
                     var list = tuple.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
-                    viewModel.CurrentRegister.BinaryArray.Clear();
-                    viewModel.CurrentRegister.BinaryArray.AddRange(list);
+                    viewModel.WriteCurrentRegister.BinaryArray.Clear();
+                    viewModel.WriteCurrentRegister.BinaryArray.AddRange(list);
                 }
             }
             catch(Exception ex)
@@ -155,29 +155,6 @@ namespace Workbench.Views.dw
             }
          
             
-        }
-
-        private void DecValueText_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var viewModel = DataContext as SingleParamsViewModel;
-            if (viewModel.CurrentRegister == null)
-                return;
-            var dec = viewModel.CurrentRegister.DecValue;
-            var ui = Utility.ParseHexToUInt(viewModel.CurrentRegister.HexValue);
-            if (dec != ui)
-            {
-                viewModel.CurrentRegister.HexValue = Utility.DecToHex(dec);
-            }
-
-            var bs = Utility.BinaryToDec(viewModel.CurrentRegister.BinaryStr);
-            if (dec != bs)
-            {
-                var tuple = Utility.ParseDecToBinary(dec);
-                viewModel.CurrentRegister.BinaryStr = tuple.binaryString;
-                var list = tuple.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
-                viewModel.CurrentRegister.BinaryArray.Clear();
-                viewModel.CurrentRegister.BinaryArray.AddRange(list);
-            }
         }
 
         private void BinaryTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -219,25 +196,25 @@ namespace Workbench.Views.dw
         private void BinaryTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             var viewModel = DataContext as SingleParamsViewModel;
-            if (viewModel.CurrentRegister == null)
+            if (viewModel.WriteCurrentRegister == null)
                 return;
 
-            var arr = viewModel.CurrentRegister.BinaryArray;
+            var arr = viewModel.WriteCurrentRegister.BinaryArray;
             var binaryStr = Utility.BinaryArrayToString(arr);
-            viewModel.CurrentRegister.BinaryStr = binaryStr;
+            viewModel.WriteCurrentRegister.BinaryStr = binaryStr;
 
             //更新Dec
             var dec = Utility.BinaryToDec(binaryStr);
-            if (dec != viewModel.CurrentRegister.DecValue)
+            if (dec != viewModel.WriteCurrentRegister.DecValue)
             {
-                viewModel.CurrentRegister.DecValue = dec;
+                viewModel.WriteCurrentRegister.DecValue = dec;
             }
 
             //更新Hex
             var hex = Utility.DecToHex(dec);
-            if (hex != viewModel.CurrentRegister.HexValue)
+            if (hex != viewModel.WriteCurrentRegister.HexValue)
             {
-                viewModel.CurrentRegister.HexValue = hex;
+                viewModel.WriteCurrentRegister.HexValue = hex;
             }
         }
 
@@ -247,7 +224,7 @@ namespace Workbench.Views.dw
             var bf = fe.DataContext as BitField;
 
             var viewModel = DataContext as SingleParamsViewModel;
-            if (viewModel.CurrentRegister == null)
+            if (viewModel.WriteCurrentRegister == null)
                 return;
 
             var tbx = sender as TextBox;
@@ -256,7 +233,7 @@ namespace Workbench.Views.dw
             {
                 var result = text.PadLeft(bf.Length, '0');
                 bf.WriteBinary = result;
-                viewModel.UpdateBinaryString(bf.Name, bf.EndBit, bf.StartBit, result);
+                viewModel.UpdateWriteRegister(bf.Name, bf.EndBit, bf.StartBit, result);
             }
         }
 
@@ -266,7 +243,7 @@ namespace Workbench.Views.dw
             var bf = fe.DataContext as BitField;
 
             var viewModel = DataContext as SingleParamsViewModel;
-            if (viewModel.CurrentRegister == null)
+            if (viewModel.WriteCurrentRegister == null)
                 return;
 
             var tbx = sender as HandyControl.Controls.NumericUpDown;
@@ -276,7 +253,7 @@ namespace Workbench.Views.dw
             {
                 //var result = text.PadLeft(bf.Length, '0');
                 //bf.WriteBinary = result;
-                viewModel.UpdateBinaryString(bf.Name, bf.EndBit, bf.StartBit, text);
+                viewModel.UpdateWriteRegister(bf.Name, bf.EndBit, bf.StartBit, text);
             }
         }
 

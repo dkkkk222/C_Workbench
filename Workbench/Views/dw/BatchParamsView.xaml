@@ -83,18 +83,18 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
 
                     <Border> 
                             <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="所选寄存器:" Style="{StaticResource ItemTitle}" VerticalAlignment="Center"/>
+                            <TextBlock Text="当前选中寄存器:"   VerticalAlignment="Center"/>
                             <TextBlock Width="5"></TextBlock>
-                            <TextBlock Text="{Binding CurrentRegister.Name}" Style="{StaticResource ItemTitle}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding CurrentRegister.Name}"   VerticalAlignment="Center"/>
                             </StackPanel>
                     </Border>
                     
                     <TextBlock Width="10"></TextBlock>
                     <Border>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="地址:" Style="{StaticResource ItemTitle}" VerticalAlignment="Center"/>
+                            <TextBlock Text="地址:"   VerticalAlignment="Center"/>
                             <TextBlock Width="10"></TextBlock>
-                            <TextBlock Text="{Binding CurrentRegister.AddressHex}" Style="{StaticResource ItemTitle}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding CurrentRegister.AddressHex}"   VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
 

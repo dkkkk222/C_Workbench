@@ -3,6 +3,7 @@ using log4net;
 using Newtonsoft.Json;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Org.BouncyCastle.Asn1.Mozilla;
 using PPEC.Communication;
 using PPEC.Communication.Model;
 using Prism.Commands;
@@ -114,7 +115,20 @@ namespace Workbench.ViewModels.dw
         public RegisterAddrInfo CurrentRegister
         {
             get => _currentRegister;
-            set => SetProperty(ref _currentRegister, value);
+            set
+            {
+                if(SetProperty(ref _currentRegister, value))
+                {
+                    WriteCurrentRegister = JsonHelper.DeepClone(value);
+                }                
+            } 
+        }
+
+        private RegisterAddrInfo _writeCurrentRegister;
+        public RegisterAddrInfo WriteCurrentRegister
+        {
+            get => _writeCurrentRegister;
+            set => SetProperty(ref _writeCurrentRegister, value);
         }
 
         private ObservableCollection<ValueLabelOption> _settingCategoryList = new ObservableCollection<ValueLabelOption>();
@@ -297,7 +311,7 @@ namespace Workbench.ViewModels.dw
 
         public async Task SendRegister()
         {
-            if (CurrentRegister == null)
+            if (WriteCurrentRegister == null)
                 return;
 
             var currentProject = _projectManager.CurrentProject;
@@ -310,21 +324,21 @@ namespace Workbench.ViewModels.dw
 
             await Task.Run(async () =>
             {
-                var calcResult = UtilsFunc.GetWriteCommandByAddress(CurrentRegister.AddressHex, currentProject.CommunicationType, CurrentRegister.DecValue);
+                var calcResult = UtilsFunc.GetWriteCommandByAddress(WriteCurrentRegister.AddressHex, currentProject.CommunicationType, WriteCurrentRegister.DecValue);
                 await currentProject.CommService.SendAsync(calcResult.bytes);
                 var history = new SingleParamHistory
                 {
                     ReadWrite = "W",
-                    Address = CurrentRegister.AddressHex,
-                    Hex = CurrentRegister.HexValue,
-                    Name = CurrentRegister.Name,
+                    Address = WriteCurrentRegister.AddressHex,
+                    Hex = WriteCurrentRegister.HexValue,
+                    Name = WriteCurrentRegister.Name,
                     State = "正常",
                     Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                 };
                 await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     _projectManager.CurrentProject.ReadWriteHistory.Add(history);
-                    SetCurrentRegisterValue(0);
+                    //SetCurrentRegisterValue(0);
 
                 });
 
@@ -361,15 +375,23 @@ namespace Workbench.ViewModels.dw
         {
             var bnr = Utility.HexToBinaryStringLarge(param.SelectedValue, param.Length);
             param.WriteBinary = bnr;
-            UpdateBinaryString(param.Name, param.EndBit, param.StartBit, bnr);
+            //UpdateBinaryString(param.Name, param.EndBit, param.StartBit, bnr);
+            UpdateWriteRegister(param.Name, param.EndBit, param.StartBit, bnr);
         }));
 
-        internal void UpdateBinaryString(string name, int endBit, int startBit, string replaceStr)
+        public void UpdateWriteRegister(string name, int endBit, int startBit, string replaceStr)
         {
-            var bs = CurrentRegister.BinaryStr;
+            var bs = WriteCurrentRegister.BinaryStr;
             var str = Utility.ReplaceBitsInString(bs, endBit, startBit, replaceStr);
             var dec = Utility.BinaryToDec(str);
-            _projectManager.SetRegisterValue(name, dec);
+            _projectManager.SetWriteRegisterValue(WriteCurrentRegister,name, dec);
+        }
+        internal void UpdateBinaryString(string name, int endBit, int startBit, string replaceStr)
+        {
+            //var bs = CurrentRegister.BinaryStr;
+            //var str = Utility.ReplaceBitsInString(bs, endBit, startBit, replaceStr);
+            //var dec = Utility.BinaryToDec(str);
+            //_projectManager.SetRegisterValue(name, dec);
         }
 
         private void HistoryToExcel(string path)

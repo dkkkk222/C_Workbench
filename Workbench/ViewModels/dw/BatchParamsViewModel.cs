@@ -1,4 +1,5 @@
 ﻿using Force.DeepCloner;
+using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
@@ -74,7 +75,7 @@ namespace Workbench.ViewModels.dw
             {
                 if (value)
                 {
-                    var tempList= SingleParamTrees.GetMaxDepthLeaves().ToList().OrderBy(x=>x.Title);
+                    var tempList= _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().ToList().OrderBy(x=>x.Title);
                     SingleParamTrees.Clear();
                     SingleParamTrees.AddRange(tempList);                     
                 }
@@ -90,7 +91,7 @@ namespace Workbench.ViewModels.dw
             {
                 if (value)
                 {
-                    var tempList = SingleParamTrees.GetMaxDepthLeaves()
+                    var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves()
     .OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
     .ToList();
                     SingleParamTrees.Clear();
@@ -297,6 +298,8 @@ namespace Workbench.ViewModels.dw
                 if (param == null || param.Type != CategoryTreeType.Register) return;
 
                 CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
+                param.IsCheck = !param.IsCheck;
+
             }));
 
         private DelegateCommand _addRegisterToSequenceCommand;
@@ -317,7 +320,7 @@ namespace Workbench.ViewModels.dw
             foreach (var item in SelectAddress)
             {
                 var  register= _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == item.Title);
-                var clone = register.DeepClone();
+                var clone = JsonHelper.DeepClone(register);
                 clone.Id = Guid.NewGuid().ToString("N");
                 CurrentSequence.Items.Add(clone);
             }

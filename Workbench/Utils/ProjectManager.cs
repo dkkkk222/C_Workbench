@@ -522,8 +522,19 @@ namespace Workbench.Utils
             register.BinaryArray.AddRange(list);
 
             ResolveBitFields(register);
+        }
 
+        internal void SetWriteRegisterValue(RegisterAddrInfo writeRegister,string registerName, uint value)
+        {
+            writeRegister.DecValue = value;
+            writeRegister.HexValue = Utility.DecToHex(value);
+            var tpl = Utility.ParseDecToBinary(value);
+            writeRegister.BinaryStr = tpl.binaryString;
+            var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
+            writeRegister.BinaryArray.Clear();
+            writeRegister.BinaryArray.AddRange(list);
 
+            ResolveBitFields(writeRegister);
         }
 
         private void ResolveBitFields(RegisterAddrInfo register)
@@ -537,6 +548,10 @@ namespace Workbench.Utils
                     if (option != null)
                     {
                         bf.ResolveStr = option.Label;
+                    }
+                    else
+                    {
+                        bf.ResolveStr = null;
                     }
                 }
                 else if (bf.FieldType == FieldType.Range)

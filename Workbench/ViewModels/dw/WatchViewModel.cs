@@ -209,27 +209,10 @@ namespace Workbench.ViewModels.dw
                 else if(IsOrderByName)
                 {
                     OrderByType(value,OrderByTypeEnum.Name);
-                    //var tempList =  _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().OrderBy(x => x.Title).ToList(); 
-                    //if (!string.IsNullOrEmpty(value))
-                    //{
-                    //    tempList = tempList.GetMaxDepthLeaves().ToList().Where(x => x.AddressHex.Contains(value) || x.Title.Contains(value)).OrderBy(x => x.Title).ToList();
-                    //}                   
-                    //SingleParamTrees.Clear();
-                    //SingleParamTrees.AddRange(tempList);
                 }
                 else if (IsOrderByAddress)
                 {
                     OrderByType(value, OrderByTypeEnum.Address);
-       //             var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue).ToList(); 
-       
-       //             if (!string.IsNullOrEmpty(value))
-       //             {
-       //                 tempList = tempList.GetMaxDepthLeaves().Where(x => x.AddressHex.Contains(value) || x.Title.Contains(value))
-       //.OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue).ToList();
-       //             }
-                       
-       //             SingleParamTrees.Clear();
-       //             SingleParamTrees.AddRange(tempList);
                 }
                 
                 var currentTreeNode = SingleParamTrees.GetMaxDepthLeaves().ToList();
@@ -276,13 +259,6 @@ namespace Workbench.ViewModels.dw
                 if (value)
                 {
                     OrderByType(null,OrderByTypeEnum.Address);
-    //                var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves()
-    //.OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
-    //.ToList();
-    //                SingleParamTrees.Clear();
-    //                SingleParamTrees.AddRange(tempList);
-                     
-    //                UtilsFunc.SyncTreeCheckNode(SingleParamTrees, CategoryRegisters);
                 }
                 SetProperty(ref _isOrderByAddress, value);
             }
@@ -365,6 +341,16 @@ namespace Workbench.ViewModels.dw
                     CategoryRegisters.Add(register);
             }
         });
+
+        private DelegateCommand<CategoryTree> _selectedItemChangedCommand;
+        public DelegateCommand<CategoryTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??
+            (_selectedItemChangedCommand = new DelegateCommand<CategoryTree>((param) =>
+            {
+                if (param == null || param.Type != CategoryTreeType.Register) return;
+
+                CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
+                param.IsCheck = !param.IsCheck;
+            }));
 
         private void OrderByType(string value, OrderByTypeEnum NameOrAddress)
         {

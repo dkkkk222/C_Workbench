@@ -178,23 +178,27 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                      Text="{Binding CurrentRegister.AddressHex}"/>
 
                                         </StackPanel>
-                                    </Border>
-                                    <!--<Border>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="数据DEC:" Style="{StaticResource ItemTitle}"/>
-                                            <hc:NumericUpDown x:Name="DecValueText" Width="200" Minimum="0" LostFocus="DecValueText_LostFocus">
-                                                <hc:NumericUpDown.Value>
-                                                    <Binding Path="CurrentRegister.DecValue" UpdateSourceTrigger="PropertyChanged"></Binding>
-                                                </hc:NumericUpDown.Value>
-                                            </hc:NumericUpDown>
-                                        </StackPanel>
-                                    </Border>-->
+                                    </Border> 
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="数据HEX:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox x:Name="HexValueText" Text="{Binding CurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" 
-                                                     hc:InfoElement.Placeholder="请输入" Width="200" LostFocus="HexValueText_LostFocus" 
-                                                                                    PreviewTextInput="HexBox_PreviewTextInput" />
+                                            <TextBlock Text="读写:" Style="{StaticResource ItemTitle}"/>
+                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"  IsEnabled="False"
+                                                        Text="{Binding CurrentRegister.RW}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border>
+                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
+                                            <TextBlock Text="读数据HEX:" Style="{StaticResource ItemTitle}"/>
+                                            <TextBox x:Name="ReadHexValueText" Text="{Binding CurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" 
+                                                     hc:InfoElement.Placeholder="请输入" Width="200" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Border>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="写数据HEX:" Style="{StaticResource ItemTitle}"/>
+                                            <TextBox x:Name="HexValueText" Text="{Binding WriteCurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" 
+                  hc:InfoElement.Placeholder="请输入" Width="200" LostFocus="HexValueText_LostFocus" 
+                                                 PreviewTextInput="HexBox_PreviewTextInput" />
                                         </StackPanel>
                                     </Border>
                                 </hc:UniformSpacingPanel>
@@ -204,7 +208,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="数据Binary:" Style="{StaticResource ItemTitle}"/>
-                                            <ItemsControl ItemsSource="{Binding CurrentRegister.BinaryArray[0],Mode=TwoWay}">
+                                            <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[0],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <UniformGrid Rows="1" Columns="8" Width="200"/>
@@ -253,7 +257,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
-                                            <ItemsControl ItemsSource="{Binding CurrentRegister.BinaryArray[1],Mode=TwoWay}">
+                                            <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[1],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <UniformGrid Rows="1" Columns="8" Width="200"/>
@@ -302,7 +306,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
-                                            <ItemsControl ItemsSource="{Binding CurrentRegister.BinaryArray[2],Mode=TwoWay}">
+                                            <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[2],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <UniformGrid Rows="1" Columns="8" Width="200"/>
@@ -351,7 +355,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
-                                            <ItemsControl ItemsSource="{Binding CurrentRegister.BinaryArray[3],Mode=TwoWay}">
+                                            <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[3],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <UniformGrid Rows="1" Columns="8" Width="200"/>
@@ -397,104 +401,220 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                             </hc:Row>
                                         </StackPanel>
                                     </Border>
-                                    <Border>
+                                    <!--<Border>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="80,5,0,0">
                                             <Button Content="读 取" Style="{StaticResource ButtonPrimary}" Margin="0,0,15,0" Width="80" 
                                                     IsEnabled="{Binding CurrentRegister.AllowRead}"
                                                     hc:IconElement.Geometry="{StaticResource ReadGeometry}" Command="{Binding ReadRegisterCommand}"/>
                                             <Button Content="下 发" Style="{StaticResource ButtonPrimary}" Width="80" 
                                                     IsEnabled="{Binding CurrentRegister.AllowWrite}"
-                                                    hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
-                                            <!--Command="{Binding SendRegisterCommand}"-->
+                                                    hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" /> 
                                         </StackPanel>
-                                    </Border>
+                                    </Border>-->
                                 </hc:UniformSpacingPanel>
                             </Border>
                         </StackPanel>
                         <Border Grid.Column="1" Padding="15,0,0,0">
-                            <DockPanel LastChildFill="True">
-                                <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
-                                    <hc:UniformSpacingPanel Spacing="15">
-                                        <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
-                                    </hc:UniformSpacingPanel>
-                                </Border>
-                                <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0" Height="385" VerticalAlignment="Top">
-                                    <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                  CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False">
-                                        <DataGrid.ColumnHeaderStyle>
-                                            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
-                                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                <Setter Property="FontSize" Value="13"/>
-                                                <Setter Property="Margin" Value="0,0,0,5"/>
-                                            </Style>
-                                        </DataGrid.ColumnHeaderStyle>
-                                        <DataGrid.Columns>
-                                            <DataGridTemplateColumn Header="位" Width="*" MinWidth="60">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="b"/>
-                                                            <TextBlock Text="{Binding EndBit}"/>
-                                                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
-                                                                <TextBlock Text="-"/>
-                                                                <TextBlock Text="b"/>
-                                                                <TextBlock Text="{Binding StartBit}"/>
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150"/>
-                                            <DataGridTextColumn Header="数据读取" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100"/>
-                                            <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100"/> 
-                                            <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="100"/>
-                                            <DataGridTemplateColumn Header="数据下发" Width="*" MinWidth="100" >
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Vertical">
-                                                            <TextBox Style="{StaticResource TextBoxExtend.Small}" HorizontalAlignment="Stretch" hc:InfoElement.Placeholder="请输入"
-                                                                     MaxLength="{Binding Length}" Text="{Binding WriteBinary}"
-                                                                     behaviors:InputMaskBehavior.IsBinaryOnly="True"
-                                                                     LostFocus="TextBox_LostFocus"
-                                                                     IsEnabled="{Binding IsTextbox}"
-                                                                     Visibility="{c:Binding 'RangeMin==null',FalseToVisibility=Collapsed}"/>
-                                                            <hc:NumericUpDown Minimum="{Binding RangeMin}" Maximum="{Binding RangeMax}"
-                                                                              Style="{StaticResource NumericUpDownExtend.Small}"
-                                                                              hc:InfoElement.Placeholder="请输入"
-                                                                              LostFocus="NumericUpDown_LostFocus"
-                                                                              Visibility="{c:Binding 'RangeMin!=null and RangeMax!=null',FalseToVisibility=Collapsed}">
-                                                                <hc:NumericUpDown.Value>
-                                                                    <Binding Path="WriteBinary" UpdateSourceTrigger="PropertyChanged"/>
-                                                                </hc:NumericUpDown.Value>
-                                                            </hc:NumericUpDown>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Header="配置"  Width="*" MinWidth="100">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"
-                                                                  DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择"
-                                                                  SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                                  Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}"
-                                                                  >
-                                                            <i:Interaction.Triggers>
-                                                                <i:EventTrigger EventName="SelectionChanged">
-                                                                    <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                                                           CommandParameter="{Binding}" />
-                                                                </i:EventTrigger>
-                                                            </i:Interaction.Triggers>
-                                                        </ComboBox>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition ></RowDefinition>
+                                    <RowDefinition ></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <DockPanel LastChildFill="True">
+                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <hc:UniformSpacingPanel Spacing="15">
+                                                <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <TextBlock Text="{Binding WriteCurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <TextBlock Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
+                                            </hc:UniformSpacingPanel>
 
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </Border>
-                            </DockPanel>
+                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary}" Width="80" 
+IsEnabled="{Binding WriteCurrentRegister.AllowWrite}" HorizontalAlignment="Right"
+hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
+                                        </Grid>
+                                    </Border>
+                                    <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0" Height="200" VerticalAlignment="Top">
+                                        <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                         CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                                            <DataGrid.ColumnHeaderStyle>
+                                                <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
+                                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                    <Setter Property="FontSize" Value="13"/>
+                                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                                </Style>
+                                            </DataGrid.ColumnHeaderStyle>
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Header="位" Width="*" MinWidth="60">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="b"/>
+                                                                <TextBlock Text="{Binding EndBit}"/>
+                                                                <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
+                                                                    <TextBlock Text="-"/>
+                                                                    <TextBlock Text="b"/>
+                                                                    <TextBlock Text="{Binding StartBit}"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150"/>
+                                                <DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100"/>
+                                                <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100"/>
+                                                <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="100"/>
+                                                <DataGridTemplateColumn Header="数据配置解析(Binary)" Width="*" MinWidth="100" >
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Vertical">
+                                                                <TextBox Style="{StaticResource TextBoxExtend.Small}" HorizontalAlignment="Stretch" hc:InfoElement.Placeholder="请输入"
+                                                            MaxLength="{Binding Length}" Text="{Binding WriteBinary}"
+                                                            behaviors:InputMaskBehavior.IsBinaryOnly="True"
+                                                            LostFocus="TextBox_LostFocus"
+                                                            IsEnabled="{Binding IsTextbox}"
+                                                            Visibility="{c:Binding 'RangeMin==null',FalseToVisibility=Collapsed}"/>
+                                                                <hc:NumericUpDown Minimum="{Binding RangeMin}" Maximum="{Binding RangeMax}"
+                                                                     Style="{StaticResource NumericUpDownExtend.Small}"
+                                                                     hc:InfoElement.Placeholder="请输入"
+                                                                     LostFocus="NumericUpDown_LostFocus"
+                                                                     Visibility="{c:Binding 'RangeMin!=null and RangeMax!=null',FalseToVisibility=Collapsed}">
+                                                                    <hc:NumericUpDown.Value>
+                                                                        <Binding Path="WriteBinary" UpdateSourceTrigger="PropertyChanged"/>
+                                                                    </hc:NumericUpDown.Value>
+                                                                </hc:NumericUpDown>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn Header="配置"  Width="*" MinWidth="100">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"
+                                                         DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择"
+                                                         SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                         Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}"
+                                                         >
+                                                                <i:Interaction.Triggers>
+                                                                    <i:EventTrigger EventName="SelectionChanged">
+                                                                        <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                                                  CommandParameter="{Binding}" />
+                                                                    </i:EventTrigger>
+                                                                </i:Interaction.Triggers>
+                                                            </ComboBox>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Border>
+                                </DockPanel>
+                                <DockPanel LastChildFill="True" Grid.Row="1">
+                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <hc:UniformSpacingPanel Spacing="15">
+                                                <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <TextBlock Text="{Binding CurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <TextBlock Text="{Binding CurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
+                                            </hc:UniformSpacingPanel>
+                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary}"   Width="80" 
+        IsEnabled="{Binding CurrentRegister.AllowRead}" HorizontalAlignment="Right"
+        hc:IconElement.Geometry="{StaticResource ReadGeometry}" Command="{Binding ReadRegisterCommand}"/>
+                                        </Grid>
+
+
+                                    </Border>
+                                    <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0"   Height="200" VerticalAlignment="Top">
+                                        <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                         CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                                            <DataGrid.ColumnHeaderStyle>
+                                                <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
+                                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                    <Setter Property="FontSize" Value="13"/>
+                                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                                </Style>
+                                            </DataGrid.ColumnHeaderStyle>
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Header="位" Width="*" MinWidth="60">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="b"/>
+                                                                <TextBlock Text="{Binding EndBit}"/>
+                                                                <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
+                                                                    <TextBlock Text="-"/>
+                                                                    <TextBlock Text="b"/>
+                                                                    <TextBlock Text="{Binding StartBit}"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150"/>
+                                                <DataGridTextColumn Header="数据读取" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100"/>
+                                                <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100"/>
+                                                <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="100"/>
+                                                <!--<DataGridTemplateColumn Header="数据下发" Width="*" MinWidth="100" >
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Vertical">
+                                                                <TextBox Style="{StaticResource TextBoxExtend.Small}" HorizontalAlignment="Stretch" hc:InfoElement.Placeholder="请输入"
+                                                            MaxLength="{Binding Length}" Text="{Binding WriteBinary}"
+                                                            behaviors:InputMaskBehavior.IsBinaryOnly="True"
+                                                            LostFocus="TextBox_LostFocus"
+                                                            IsEnabled="False"
+                                                            Visibility="{c:Binding 'RangeMin==null',FalseToVisibility=Collapsed}"/>
+                                                                <hc:NumericUpDown Minimum="{Binding RangeMin}" Maximum="{Binding RangeMax}"
+                                                                     Style="{StaticResource NumericUpDownExtend.Small}"
+                                                                     hc:InfoElement.Placeholder="请输入"
+                                                                     LostFocus="NumericUpDown_LostFocus" IsEnabled="False"
+                                                                     Visibility="{c:Binding 'RangeMin!=null and RangeMax!=null',FalseToVisibility=Collapsed}">
+                                                                    <hc:NumericUpDown.Value>
+                                                                        <Binding Path="WriteBinary" UpdateSourceTrigger="PropertyChanged"/>
+                                                                    </hc:NumericUpDown.Value>
+                                                                </hc:NumericUpDown>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn Header="配置"  Width="*" MinWidth="100">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"
+                                                         DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择"
+                                                         SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                         Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" IsEnabled="False"
+                                                         >
+                                                                <i:Interaction.Triggers>
+                                                                    <i:EventTrigger EventName="SelectionChanged">
+                                                                        <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                                                  CommandParameter="{Binding}" />
+                                                                    </i:EventTrigger>
+                                                                </i:Interaction.Triggers>
+                                                            </ComboBox>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>-->
+
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Border>
+                                </DockPanel>
+                            </Grid>
+                           
                         </Border>
                     </Grid>
                 </StackPanel>

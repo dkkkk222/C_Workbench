@@ -52,6 +52,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
@@ -77,13 +78,33 @@ SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValue
                     <ComboBox ItemsSource="{Binding CategoryAddressList}" Style="{StaticResource ComboBoxExtend}"
 hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="167"
 SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                </StackPanel> 
-                <hc:SearchBar Grid.Row="3" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,5">
+
+                    <Border>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="当前选中寄存器:"   VerticalAlignment="Center"/>
+                            <TextBlock Width="5"></TextBlock>
+                            <TextBlock Text="{Binding CurrentRegister.Name}"   VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Width="10"></TextBlock>
+                    <Border>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="地址:"   VerticalAlignment="Center"/>
+                            <TextBlock Width="10"></TextBlock>
+                            <TextBlock Text="{Binding CurrentRegister.AddressHex}"   VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+                <hc:SearchBar Grid.Row="4" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
                     <hc:SearchBar.Text>
                         <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
                     </hc:SearchBar.Text>
                 </hc:SearchBar>
-                <Border Margin="0,5,0,0" Grid.Row="4">
+                <Border Margin="0,5,0,0" Grid.Row="5">
                     <TreeView ItemsSource="{Binding SingleParamTrees}">
                         <TreeView.Resources>
                             <!-- ★ 继承原样式，只追加两个 Setter -->
