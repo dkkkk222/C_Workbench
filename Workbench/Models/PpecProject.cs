@@ -148,6 +148,13 @@ namespace Workbench.Models
             set => SetProperty(ref _watchGroups, value);
         }
 
+        private ObservableCollection<RegisterAddrInfo> _categoryRegisters = new ObservableCollection<RegisterAddrInfo>();
+        public ObservableCollection<RegisterAddrInfo> CategoryRegisters
+        {
+            get => _categoryRegisters;
+            set => SetProperty(ref _categoryRegisters, value);
+        }
+
         private IBaseCommService _commService;
         [JsonIgnore]
         public IBaseCommService CommService

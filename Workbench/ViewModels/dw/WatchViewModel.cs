@@ -1,6 +1,7 @@
 ﻿using Force.DeepCloner;
 using NPOI.SS.Formula.Functions;
 using NPOI.XSSF.Streaming.Values;
+using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
@@ -40,7 +41,8 @@ namespace Workbench.ViewModels.dw
             _dialogService = dialogService;
             _eventAggregator = eventAggregator;
             WatchGroups = _projectManager.CurrentProject.WatchGroups;
-            pms=new ParameterMonitorService(10) { CurrentProject= _projectManager.CurrentProject };
+            CategoryRegisters = _projectManager.CurrentProject.CategoryRegisters;
+            pms =new ParameterMonitorService(10) { CurrentProject= _projectManager.CurrentProject };
             pms.Enable();
 
             _timer.Interval = 1; // 设置触发间隔
@@ -200,7 +202,38 @@ namespace Workbench.ViewModels.dw
             set
             {
                 SetProperty(ref _treeKeyword, value);
-                SearchCategoryTree(value, IsOrderByAddress);
+                if (IsOrderByCategory)
+                { 
+                    SearchCategoryTree(value, IsOrderByAddress);
+                }
+                else if(IsOrderByName)
+                {
+                    OrderByType(value,OrderByTypeEnum.Name);
+                    //var tempList =  _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().OrderBy(x => x.Title).ToList(); 
+                    //if (!string.IsNullOrEmpty(value))
+                    //{
+                    //    tempList = tempList.GetMaxDepthLeaves().ToList().Where(x => x.AddressHex.Contains(value) || x.Title.Contains(value)).OrderBy(x => x.Title).ToList();
+                    //}                   
+                    //SingleParamTrees.Clear();
+                    //SingleParamTrees.AddRange(tempList);
+                }
+                else if (IsOrderByAddress)
+                {
+                    OrderByType(value, OrderByTypeEnum.Address);
+       //             var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue).ToList(); 
+       
+       //             if (!string.IsNullOrEmpty(value))
+       //             {
+       //                 tempList = tempList.GetMaxDepthLeaves().Where(x => x.AddressHex.Contains(value) || x.Title.Contains(value))
+       //.OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue).ToList();
+       //             }
+                       
+       //             SingleParamTrees.Clear();
+       //             SingleParamTrees.AddRange(tempList);
+                }
+                
+                var currentTreeNode = SingleParamTrees.GetMaxDepthLeaves().ToList();
+                UtilsFunc.SyncTreeCheckNode(currentTreeNode, CategoryRegisters);
             }
         }
         private bool _isOrderByCategory = true;
@@ -212,6 +245,9 @@ namespace Workbench.ViewModels.dw
                 if (value)
                 {
                     SearchCategoryTree(TreeKeyword, IsOrderByAddress);
+                    var currentTreeNode=SingleParamTrees.GetMaxDepthLeaves().ToList();
+                     
+                    UtilsFunc.SyncTreeCheckNode(currentTreeNode, CategoryRegisters);
                 }
                 SetProperty(ref _isOrderByCategory, value);
             }
@@ -225,9 +261,7 @@ namespace Workbench.ViewModels.dw
             {
                 if (value)
                 {
-                    var tempList = SingleParamTrees.GetMaxDepthLeaves().ToList().OrderBy(x => x.Title);
-                    SingleParamTrees.Clear();
-                    SingleParamTrees.AddRange(tempList);
+                    OrderByType(null,OrderByTypeEnum.Name);
                 }
                 SetProperty(ref _isOrderByName, value);
             }
@@ -241,11 +275,14 @@ namespace Workbench.ViewModels.dw
             {
                 if (value)
                 {
-                    var tempList = SingleParamTrees.GetMaxDepthLeaves()
-    .OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
-    .ToList();
-                    SingleParamTrees.Clear();
-                    SingleParamTrees.AddRange(tempList);
+                    OrderByType(null,OrderByTypeEnum.Address);
+    //                var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves()
+    //.OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
+    //.ToList();
+    //                SingleParamTrees.Clear();
+    //                SingleParamTrees.AddRange(tempList);
+                     
+    //                UtilsFunc.SyncTreeCheckNode(SingleParamTrees, CategoryRegisters);
                 }
                 SetProperty(ref _isOrderByAddress, value);
             }
@@ -260,23 +297,91 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _singleParamTrees, value);
         }
 
+
+        /// <summary>
+        /// 从监控表移除
+        /// </summary>
+        public DelegateCommand RemoveTreeListToTableCommand => new DelegateCommand(() =>
+        {
+            var resultSelect = MessageBox.Show("是否从监控表执行移除，该操作会停止监控该数据并从图和表中移除！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (resultSelect != System.Windows.Forms.DialogResult.Yes)
+            {
+                return;
+            }
+            //当选中状态取消的时候触发
+            var SelectAddress = SingleParamTrees.GetDeepestChecked().ToList();
+            if (SelectAddress == null)
+                return;
+            var RemoveList = new ObservableCollection<RegisterAddrInfo>();
+            foreach (var isWatch in CategoryRegisters)
+            {
+                if(SelectAddress.Where(x => x.Title == isWatch.Name).FirstOrDefault()==null)
+                {
+                    pms.StopRecord(isWatch.Id);//停止记录
+                    isWatch.IsStartRecord = false;
+                    if(!string.IsNullOrEmpty(isWatch.TableId))
+                    {
+                        var thisTab = WatchGroups.Where(x => x.Id == isWatch.TableId).FirstOrDefault();
+                        if (thisTab != null)
+                        {
+                            //从监测表中移除
+                            var allFields=thisTab.BitFields.Where(x => x.AddressId == isWatch.Id).ToList();
+                            if(allFields!=null&& allFields.Count>0)
+                            {
+                                var labels = thisTab.WpfPlotControl.Plot.GetPlottables();
+                                foreach (var rem in allFields)
+                                {
+                                    var legLabel = labels.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                    if(legLabel!=null)
+                                        legLabel.IsVisible = false;//从波形图中移除
+                                    thisTab.BitFields.Remove(rem);//从状态监测表中移除
+                                }
+                            }
+                            thisTab.WpfPlotControl.Refresh();                            
+                        }
+                        isWatch.TableId = null;
+                    }
+                    RemoveList.Add(isWatch);
+                }
+            }
+            foreach(var removeObj in RemoveList)
+            {
+                CategoryRegisters.Remove(removeObj);
+            }
+        });
+        /// <summary>
+        /// 添加到监控表
+        /// </summary>
         public DelegateCommand AddTreeListToTableCommand => new DelegateCommand(() =>
         {
-            //var SelectAddress = SingleParamTrees.GetDeepestChecked().ToList();
-            //foreach (var item in SelectAddress)
-            //{
-            //    var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == item.Title);
-            //    var clone = register.DeepClone();
-            //    clone.Id = Guid.NewGuid().ToString("N");
-            //    CurrentSequence.Items.Add(clone);
-            //}
-            //CategoryAddressList.Clear();
-            //var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(value.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
-            //CategoryAddressList.AddRange(CategoryAddressListOptions);
-            //CategoryAddress = CategoryAddressList.FirstOrDefault();
-
+            var SelectAddress = SingleParamTrees.GetDeepestChecked().ToList();
+            if (SelectAddress == null)
+                return;
+            foreach (var item in SelectAddress)
+            {
+                var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == item.Title);
+                var isHaveAdd=CategoryRegisters.Where(x => x.AddressDec == register.AddressDec).FirstOrDefault();
+                if(isHaveAdd==null)
+                    CategoryRegisters.Add(register);
+            }
         });
 
+        private void OrderByType(string value, OrderByTypeEnum NameOrAddress)
+        {
+            var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().ToList().OrderBy(x => x.Title);
+            if(NameOrAddress== OrderByTypeEnum.Address)
+            {
+                tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().ToList().OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue);
+
+            }
+            if (!string.IsNullOrEmpty(value))
+            {
+                tempList = tempList.Where(x => x.AddressHex.Contains(value) || x.Title.Contains(value)).OrderBy(x => x.Title);
+            }
+            SingleParamTrees.Clear();
+            SingleParamTrees.AddRange(tempList);
+            UtilsFunc.SyncTreeCheckNode(SingleParamTrees, CategoryRegisters);
+        }
         private void SearchCategoryTree(string keyword, bool isOrderByAddress = true)
         {
             SingleParamTrees.Clear();
@@ -310,6 +415,9 @@ namespace Workbench.ViewModels.dw
             var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(CurrentCategory.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
             CategoryAddressList.AddRange(CategoryAddressListOptions);
             CategoryAddress = CategoryAddressList.FirstOrDefault();
+
+            var currentTreeNode = SingleParamTrees.GetMaxDepthLeaves().ToList();
+            UtilsFunc.SyncTreeCheckNode(currentTreeNode, CategoryRegisters);
         }
         #endregion
         private DelegateCommand _closeCommand;
@@ -344,6 +452,7 @@ namespace Workbench.ViewModels.dw
             param.IsStartRecord = true;
             //StartUiLoop(RefreshInterval);
         }));
+
         private DelegateCommand<RegisterAddrInfo> _stopRecordCommand;
         public DelegateCommand<RegisterAddrInfo> StopRecordCommand => _stopRecordCommand ?? (_stopRecordCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
         {
@@ -570,7 +679,7 @@ namespace Workbench.ViewModels.dw
             SettingCategoryList.AddRange(categoryOptions);
             CurrentSettingCategory = SettingCategoryList.FirstOrDefault();
 
-            LoadRegisters();
+            //LoadRegisters();
 
             if (CurrentTab == null)
                 CurrentTab = WatchGroups.FirstOrDefault();

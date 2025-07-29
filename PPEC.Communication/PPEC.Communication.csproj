@@ -187,6 +187,7 @@
     <Compile Include="Enum\FieldType.cs" />
     <Compile Include="Enum\FormulaEnum.cs" />
     <Compile Include="Enum\LoggingLevel.cs" />
+    <Compile Include="Enum\OrderByTypeEnum.cs" />
     <Compile Include="Enum\PortType.cs" />
     <Compile Include="Enum\RegisterLimit.cs" />
     <Compile Include="Enum\RegisterType.cs" />

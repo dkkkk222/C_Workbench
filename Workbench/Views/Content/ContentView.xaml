@@ -33,7 +33,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Border Width="245" Background="Transparent" Margin="0,0,4,0" CornerRadius="6">
+                <Border Width="205" Background="Transparent" Margin="0,0,4,0" CornerRadius="6">
                     <ContentControl prism:RegionManager.RegionName="{x:Static utils:RegionNames.SideRegion}"/>
                 </Border>
                 <Border Grid.Column="1" Background="{DynamicResource AvalonDockAreaBackgroundColor}" Margin="4,0,0,0" CornerRadius="6">

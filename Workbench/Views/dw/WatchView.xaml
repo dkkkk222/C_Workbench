@@ -77,27 +77,7 @@ SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValue
                     <ComboBox ItemsSource="{Binding CategoryAddressList}" Style="{StaticResource ComboBoxExtend}"
 hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="167"
 SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                </StackPanel>
-                <!--<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,5">
-
-                    <Border>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="所选寄存器:" Style="{StaticResource ItemTitle}" VerticalAlignment="Center"/>
-                            <TextBlock Width="5"></TextBlock>
-                            <TextBlock Text="{Binding CurrentRegister.Name}" Style="{StaticResource ItemTitle}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <TextBlock Width="10"></TextBlock>
-                    <Border>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="地址:" Style="{StaticResource ItemTitle}" VerticalAlignment="Center"/>
-                            <TextBlock Width="10"></TextBlock>
-                            <TextBlock Text="{Binding CurrentRegister.AddressHex}" Style="{StaticResource ItemTitle}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                </StackPanel>-->
+                </StackPanel> 
                 <hc:SearchBar Grid.Row="3" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
                     <hc:SearchBar.Text>
                         <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
@@ -134,7 +114,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                                         <TextBlock Text=" : "/>
                                         <TextBlock Text="{Binding Title}"/>
                                         <TextBlock Width="10"></TextBlock>
-                                        <CheckBox IsChecked="{Binding IsCheck}"></CheckBox>
+                                        <CheckBox IsChecked="{Binding IsCheck}" Command="{Binding DataContext.CheckChangeCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}"></CheckBox>
                                     </StackPanel>
                                 </StackPanel>
                             </HierarchicalDataTemplate>
@@ -172,17 +152,13 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
                             <Border Margin="0,8,0,0" Grid.Row="0">
-                                <hc:UniformSpacingPanel Spacing="20" Orientation="Horizontal">
-                                    <ComboBox ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
-                   hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="180"
-                   SelectedItem="{Binding CurrentSettingCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                                    <TextBox Text="{Binding AddressKeyword}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="地址：" 
-                  hc:InfoElement.TitlePlacement="Left" Width="180" hc:InfoElement.Placeholder="请输入关键字检索"/>
-                                    <Button Style="{StaticResource ButtonPrimary}" Content="搜索" hc:IconElement.Geometry="{StaticResource SearchGeometry}" 
-                 hc:IconElement.Width="14" Command="{Binding SearchCommand}"/>
+                                <hc:UniformSpacingPanel Spacing="20" Orientation="Horizontal"> 
 
                                     <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="添加到监控配置表" hc:IconElement.Geometry="{StaticResource AddGeometry}" 
 hc:IconElement.Width="14" Command="{Binding AddTreeListToTableCommand}"/>
+
+                                    <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="从监控配置表移除" hc:IconElement.Geometry="{StaticResource SubGeometry}" 
+hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
                                 </hc:UniformSpacingPanel>
                             </Border>
                             <DataGrid  MaxHeight="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"

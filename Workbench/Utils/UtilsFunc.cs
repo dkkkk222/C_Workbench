@@ -308,15 +308,15 @@ namespace Workbench.Utils
 
             return null;
         }
-        public static double GetValueForFormula(FormulaEnum formula,double paramA,double paramB,uint value )
+        public static double GetValueForFormula(FormulaEnum formula, double paramA, double paramB, uint value)
         {
             double result = 1 * value;
             if (formula == FormulaEnum.None)
             {
                 return result;
             }
-                
-            switch(formula)
+
+            switch (formula)
             {
                 case FormulaEnum.Add:
                     result = paramA * value + paramB;
@@ -361,6 +361,19 @@ namespace Workbench.Utils
             if (node.Children != null && node.Children.Any())
                 foreach (var child in node.Children)
                     ExpandDescendants(child);
+        }
+
+        public static void SyncTreeCheckNode(IEnumerable<CategoryTree> currentTreeNode, IEnumerable<RegisterAddrInfo> IsCheckAdd)
+        {
+            if (IsCheckAdd == null || IsCheckAdd.Count() == 0)
+                return;
+            foreach (var treeNode in currentTreeNode)
+            {
+                if (IsCheckAdd != null && IsCheckAdd.Count() > 0 && IsCheckAdd.Where(x => x.Name == treeNode.Title).FirstOrDefault() != null)
+                {
+                    treeNode.IsCheck = true;
+                }
+            }
         }
     }
 }
