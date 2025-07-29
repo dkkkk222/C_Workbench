@@ -1,9 +1,11 @@
 ﻿using Force.DeepCloner;
+using PPEC.Communication;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -75,7 +77,7 @@ namespace Workbench.ViewModels.dw
             {
                 if (value)
                 {
-                    var tempList= _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().ToList().OrderBy(x=>x.Title);
+                    var tempList= _projectManager.GetChipCategoryTreeOnlyW().GetMaxDepthLeaves().ToList().OrderBy(x=>x.Title);
                     SingleParamTrees.Clear();
                     SingleParamTrees.AddRange(tempList);                     
                 }
@@ -91,7 +93,7 @@ namespace Workbench.ViewModels.dw
             {
                 if (value)
                 {
-                    var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves()
+                    var tempList = _projectManager.GetChipCategoryTreeOnlyW().GetMaxDepthLeaves()
     .OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
     .ToList();
                     SingleParamTrees.Clear();
@@ -157,6 +159,13 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _sequenceList, value);
         }
 
+        private RegisterAddrInfo _writeCurrentRegister;
+        public RegisterAddrInfo WriteCurrentRegister
+        {
+            get => _writeCurrentRegister;
+            set => SetProperty(ref _writeCurrentRegister, value);
+        }
+
         private DelegateCommand _checkboxChangeCommand;
         public DelegateCommand CheckboxChangeCommand => _checkboxChangeCommand ?? (_checkboxChangeCommand = new DelegateCommand(() =>
         {
@@ -166,7 +175,7 @@ namespace Workbench.ViewModels.dw
         private void SearchCategoryTree(string keyword, bool isOrderByAddress = true)
         {
             SingleParamTrees.Clear();
-            var source = _projectManager.GetChipCategoryTree(isOrderByAddress: isOrderByAddress);
+            var source = _projectManager.GetChipCategoryTreeOnlyW(isOrderByAddress: isOrderByAddress);
             if (string.IsNullOrEmpty(keyword))
             {
                 SingleParamTrees.AddRange(source);
@@ -326,6 +335,49 @@ namespace Workbench.ViewModels.dw
             }
         }));
 
+        private DelegateCommand<BitField> _optionChangeCommand;
+        public DelegateCommand<BitField> OptionChangeCommand => _optionChangeCommand ?? (_optionChangeCommand = new DelegateCommand<BitField>(async (param) =>
+        {
+            var bnr = Utility.HexToBinaryStringLarge(param.SelectedValue, param.Length);
+            param.WriteBinary = bnr;
+            //UpdateBinaryString(param.Name, param.EndBit, param.StartBit, bnr);
+            await UpdateWriteRegister(param.Name, param.EndBit, param.StartBit, bnr);
+        }));
+        public async Task UpdateWriteRegister(string name, int endBit, int startBit, string replaceStr)
+        {
+            var bs = WriteCurrentRegister.BinaryStr;
+           
+            var str = Utility.ReplaceBitsInString(bs, endBit, startBit, replaceStr);
+            var dec = Utility.BinaryToDec(str);
+            _projectManager.SetWriteRegisterValue(WriteCurrentRegister, name, dec);
+            var newBitStr = WriteCurrentRegister.BinaryStr;
+            var newList = await Task.Run(() =>
+            {
+                var charArr = newBitStr.ToCharArray();
+                var length = charArr.Length;
+
+                var list = new List<BitOption>(length);
+                for (int i = 0; i < length; i++)
+                {
+                    list.Add(new BitOption
+                    {
+                        Value = (uint)Char.GetNumericValue(charArr[i]),
+                        Display = (length - 1 - i).ToString()
+                    });
+                }
+                return list;
+            });
+            WriteCurrentRegister.BinaryList.Clear();
+            foreach (var item in newList)
+            {
+                WriteCurrentRegister.BinaryList.Add(item);
+            }
+        }
+        public DelegateCommand<RegisterAddrInfo> ConfigRegisterCommand => new DelegateCommand<RegisterAddrInfo>((param) =>
+        {
+            WriteCurrentRegister = param;
+        });
+
         private DelegateCommand<RegisterAddrInfo> _removeSequenceItemCommand;
         public DelegateCommand<RegisterAddrInfo> RemoveSequenceItemCommand => _removeSequenceItemCommand ?? (_removeSequenceItemCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
         {
@@ -360,7 +412,7 @@ namespace Workbench.ViewModels.dw
 
         public override void LoadData()
         {
-            var tree = _projectManager.GetChipCategoryTree();
+            var tree = _projectManager.GetChipCategoryTreeOnlyW();
             SingleParamTrees.AddRange(tree);
             CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo)
                 .FirstOrDefault(t => t.Name == tree[0].Children[0].Children[0].Title);

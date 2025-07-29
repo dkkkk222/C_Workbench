@@ -393,6 +393,35 @@ namespace Workbench.Utils
         }
         #endregion
 
+        public List<CategoryTree> GetChipCategoryTreeOnlyW(string ctg = null, string address = null, bool isOrderByAddress = true)
+        {
+            var list = new List<CategoryTree>();
+            var infos = CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).Where(x=>x.RW.Contains('W')).ToList();
+            if (!string.IsNullOrEmpty(ctg))
+            {
+                infos = infos.Where(t => t.Category == ctg).ToList();
+            }
+            if (!string.IsNullOrEmpty(address))
+            {
+                infos = infos.Where(t => t.AddressHex == address).ToList();
+            }
+            var categories = infos.Select(t => t.Category).Distinct().ToList();
+
+            foreach (var category in categories)
+            {
+                list.Add(new CategoryTree()
+                {
+                    Title = category,
+                    Type = CategoryTreeType.Category,
+                    Children = GetSubCategory(category, infos, isOrderByAddress)
+                });
+            }
+            // ★ 在这里给每棵根树补父引用
+            foreach (var root in list)
+                AttachParentRecursive(root, null);
+            return list;
+        }
+
         /// <summary>
         /// 获取分类树
         /// </summary>
