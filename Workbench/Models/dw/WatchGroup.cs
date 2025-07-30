@@ -55,6 +55,46 @@ namespace Workbench.Models.dw
             set { SetProperty(ref _chartName, value); }
         }
 
+        #region TabHeight
+        private double _tableWidth = 520;   // 初始宽
+        private double _tableHeight = 360;   // 初始高
+        public double TableWidth
+        {
+            get => _tableWidth;
+            set
+            {
+                SetProperty(ref _tableWidth, value);
+            }
+        }
+        public double TableHeight
+        {
+            get => _tableHeight;
+            set
+            {
+                SetProperty(ref _tableHeight, value);
+            }
+        }
+
+
+        private double _chartWidth = 720;   // 初始宽
+        private double _chartHeight = 360;   // 初始高
+        public double ChartWidth
+        {
+            get => _chartWidth;
+            set
+            {
+                SetProperty(ref _chartWidth, value);
+            }
+        }
+        public double ChartHeight
+        {
+            get => _chartHeight;
+            set
+            {
+                SetProperty(ref _chartHeight, value);
+            }
+        }
+        #endregion
         #region ChartPropety
         public int chart1MaxX = 5000;
         public int Chart1MaxX
@@ -160,8 +200,17 @@ namespace Workbench.Models.dw
             _dialogService = dialogService;         // 重建命令
         }
         #endregion
-
-
+        [JsonIgnore]
+        public DelegateCommand SettingDefaultWHCommand => new DelegateCommand(() =>
+        {
+            TableWidth = 520;
+            TableHeight = 360;
+        });
+        public DelegateCommand SettingDefaultChartWHCommand => new DelegateCommand(() =>
+        {
+            ChartWidth = 720;
+            ChartHeight = 360;
+        });
         [JsonIgnore]
         public DelegateCommand HistoryDownloadCommand => new DelegateCommand(() =>
         {

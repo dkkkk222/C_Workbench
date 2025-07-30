@@ -465,15 +465,30 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand ShowWatchGroupCommand => new DelegateCommand(() =>
         {
             IDialogParameters dialogParameters = new DialogParameters();
-            dialogParameters.Add("WatchGroups", WatchGroups);
-            _dialogService.Show(nameof(WatchChartListView), dialogParameters, r =>
+            dialogParameters.Add("viewModel", this);
+            _dialogService.Show(nameof(WatchTableListView), dialogParameters, r =>
             {
                 if (r.Result == ButtonResult.OK)
                 {                    
 
                 }
+            }, nameof(ShowTableListWindows));
+        });
+
+        public DelegateCommand ShowChartGroupCommand => new DelegateCommand(() =>
+        {
+            IDialogParameters dialogParameters = new DialogParameters();
+            dialogParameters.Add("viewModel", this);
+            _dialogService.ShowDialog(nameof(WatchChartListView), dialogParameters, r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+
+                }
             }, nameof(ShowChartListWindows));
         });
+
+        
         private ObservableCollection<TableColumn> InitTableColumns()
         {
             var target = new ObservableCollection<TableColumn>();

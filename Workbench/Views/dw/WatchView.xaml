@@ -11,6 +11,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:utils="clr-namespace:Workbench.Utils"
              xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
+             xmlns:controls_Scottplot="clr-namespace:Workbench.Controls.Controls.Scottplot;assembly=Workbench.Controls"
              xmlns:local_Model="clr-namespace:Workbench.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -425,13 +426,13 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                             Command="{Binding RenameCommand}"
                                                             CommandParameter="Chart"/>
                                                         <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
-                                                            hc:InfoElement.TitlePlacement="Left" Width="120" />
+                                                            hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                         <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
-                                                            hc:InfoElement.TitlePlacement="Left" Width="120" />
+                                                            hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                         <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
-                                                            hc:InfoElement.TitlePlacement="Left" Width="120" />
+                                                            hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                         <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
-                                                            hc:InfoElement.TitlePlacement="Left" Width="120" />
+                                                            hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                         <Button Style="{StaticResource ButtonPrimary}" Content="设置" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
                                                             Margin="5,0,0,0" 
                                                             Command="{Binding SettingChartLimitCommand}"
@@ -439,8 +440,8 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                     </StackPanel>
                                                 </Border>
                                                 <Border Margin="0,5,0,0">
-                                                    <ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>
-
+                                                    <!--<ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>-->
+                                                    <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl,Mode=TwoWay}"/>
                                                 </Border>
                                             </DockPanel>
                                         </Grid>

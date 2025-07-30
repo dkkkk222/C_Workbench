@@ -34,8 +34,8 @@ namespace Workbench.Views.dw
             const double minW = 300;
             const double minH = 180;
 
-           // vm.TableWidth = System.Math.Max(minW, vm.TableWidth + e.HorizontalChange);
-            //vm.TableHeight = System.Math.Max(minH, vm.TableHeight + e.VerticalChange);
+            vm.TableWidth = System.Math.Max(minW, vm.TableWidth + e.HorizontalChange);
+            vm.TableHeight = System.Math.Max(minH, vm.TableHeight + e.VerticalChange);
         }
     }
 }

@@ -137,9 +137,11 @@ namespace Workbench
         private void RegisterDialog(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialogWindow<CreateProjectWindow>(nameof(CreateProjectWindow));
-            containerRegistry.RegisterDialog<WatchChartListView, WatchChartListViewModel>(); 
+            containerRegistry.RegisterDialog<WatchChartListView, WatchChartListViewModel>();
+            containerRegistry.RegisterDialog<WatchTableListView, WatchTableListViewModel>();
             containerRegistry.RegisterDialogWindow<ChipManagerWindow>(nameof(ChipManagerWindow));
-            containerRegistry.RegisterDialogWindow<ShowChartListWindows>(nameof(ShowChartListWindows)); 
+            containerRegistry.RegisterDialogWindow<ShowChartListWindows>(nameof(ShowChartListWindows));
+            containerRegistry.RegisterDialogWindow<ShowTableListWindows>(nameof(ShowTableListWindows)); 
             containerRegistry.RegisterDialog<CreateProjectView, CreateProjectViewModel>();
             containerRegistry.RegisterSingleton<ChipManagerViewModel>();
             containerRegistry.RegisterDialog<ChipManagerView, ChipManagerViewModel>();

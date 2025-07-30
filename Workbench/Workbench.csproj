@@ -494,6 +494,9 @@
     <Compile Include="Views\Windows\ShowChartListWindows.xaml.cs">
       <DependentUpon>ShowChartListWindows.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Windows\ShowTableListWindows.xaml.cs">
+      <DependentUpon>ShowTableListWindows.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Windows\UserManualWindow.xaml.cs">
       <DependentUpon>UserManualWindow.xaml</DependentUpon>
     </Compile>
@@ -514,6 +517,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Windows\ShowChartListWindows.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\ShowTableListWindows.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
