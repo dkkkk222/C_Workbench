@@ -44,7 +44,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border x:Name="RootCard"
-    Width="{Binding ChartWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="460" MinHeight="200"
+    Width="{Binding ChartWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="680" MinHeight="300"
     Height="{Binding ChartHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
     Background="White"
     BorderBrush="#DDD" BorderThickness="1" CornerRadius="6"
@@ -53,28 +53,52 @@
                                 <DockPanel LastChildFill="True" Grid.Column="1">
                                     <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top" VerticalAlignment="Center">
                                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                            <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
-                Margin="5,0,5,0" 
-                Command="{Binding RenameCommand}"
-                CommandParameter="Chart"/>
-                                            <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
-                hc:InfoElement.TitlePlacement="Left" Width="120" />
-                                            <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
-                hc:InfoElement.TitlePlacement="Left" Width="120" />
-                                            <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
-                hc:InfoElement.TitlePlacement="Left" Width="120" />
-                                            <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
-                hc:InfoElement.TitlePlacement="Left" Width="120" />
-                                            <Button Style="{StaticResource ButtonPrimary}" Content="设置" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
-                Margin="5,0,0,0" 
-                Command="{Binding SettingChartLimitCommand}"
-                CommandParameter="{Binding}"/>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition></RowDefinition>
+                                                    <RowDefinition></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                                    <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
+Margin="5,0,5,0" 
+Command="{Binding RenameCommand}"
+CommandParameter="Chart"/>
+                                                    <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
+hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                    <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
+hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                    <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
+hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                    <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
+hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                    <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" hc:IconElement.Geometry="{StaticResource  PenGeometry }" Margin="5,0,0,0" Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Row="1"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                    <!--<StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="宽:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        <TextBox Style="{StaticResource TextBoxExtend}" Background="White" Width="80"  Text="{Binding TableWidth}"/>
+                                                    </StackPanel>-->
+                                                    <TextBox Text="{Binding ChartWidth}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="宽："  Margin="0,0,0,0"
+hc:InfoElement.TitlePlacement="Left" Width="80" />
+                                                    <TextBlock Width="30"></TextBlock>
+                                                    <!--<StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="高:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        <TextBox Style="{StaticResource TextBoxExtend}" Background="White" Width="110" Text="{Binding TableHeight}"/>
+                                                    </StackPanel>-->
+                                                    <TextBox Text="{Binding ChartHeight}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="高："  Margin="5,0,0,0"
+hc:InfoElement.TitlePlacement="Left" Width="80" />
+                                                    <TextBlock Width="5"></TextBlock>
+                                                    <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Command="{Binding SettingDefaultChartWHCommand1}"/>
+
+                                                </StackPanel>
+                                                  </Grid>
+                                          
                                         </StackPanel>
                                     </Border>
                                     <Border Margin="0,5,0,0">
                                         <!--<ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>-->
-                                        <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl,Mode=TwoWay}"/> 
+                                        <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl2,Mode=TwoWay}"/> 
                                     </Border>
                                 </DockPanel> 
                             </Grid>

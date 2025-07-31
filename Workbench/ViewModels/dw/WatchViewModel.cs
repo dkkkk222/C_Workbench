@@ -305,15 +305,20 @@ namespace Workbench.ViewModels.dw
                             if(allFields!=null&& allFields.Count>0)
                             {
                                 var labels = thisTab.WpfPlotControl.Plot.GetPlottables();
+                                var labels2 = thisTab.WpfPlotControl2.Plot.GetPlottables();
                                 foreach (var rem in allFields)
                                 {
                                     var legLabel = labels.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
                                     if(legLabel!=null)
                                         legLabel.IsVisible = false;//从波形图中移除
+                                    var legLabel2 = labels2.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                    if (legLabel2 != null)
+                                        legLabel2.IsVisible = false;//从波形图中移除
                                     thisTab.BitFields.Remove(rem);//从状态监测表中移除
                                 }
                             }
-                            thisTab.WpfPlotControl.Refresh();                            
+                            thisTab.WpfPlotControl.Refresh();
+                            thisTab.WpfPlotControl2.Refresh();
                         }
                         isWatch.TableId = null;
                     }
@@ -479,11 +484,10 @@ namespace Workbench.ViewModels.dw
         {
             IDialogParameters dialogParameters = new DialogParameters();
             dialogParameters.Add("viewModel", this);
-            _dialogService.ShowDialog(nameof(WatchChartListView), dialogParameters, r =>
+            _dialogService.Show(nameof(WatchChartListView), dialogParameters, r =>
             {
                 if (r.Result == ButtonResult.OK)
-                {
-
+                { 
                 }
             }, nameof(ShowChartListWindows));
         });
@@ -519,15 +523,24 @@ namespace Workbench.ViewModels.dw
                 group.BitFields.Clear();
                 group.BitFields.AddRange(remain);
 
-                var labels=group.WpfPlotControl.Plot.GetPlottables();
-                foreach(var lengLabel in labels)
+                var labels = group.WpfPlotControl.Plot.GetPlottables();
+                var labels2 = group.WpfPlotControl2.Plot.GetPlottables();
+                foreach (var lengLabel in labels)
                 {
                     if(lengLabel is Scatter sc)
                     {
                         sc.IsVisible = false;
                     }
                 }
-                group.WpfPlotControl.Refresh();
+                foreach (var lengLabel in labels2)
+                {
+                    if (lengLabel is Scatter sc)
+                    {
+                        sc.IsVisible = false;
+                    }
+                }
+                group.WpfPlotControl.Refresh(); 
+                group.WpfPlotControl2.Refresh();
             }
 
             //找到Tab
@@ -608,7 +621,7 @@ namespace Workbench.ViewModels.dw
                         field.ReadBinary = newField.ReadBinary;
                         field.Value = newField.Value;
 
-                        group.WpfPlotControl.RefreshData(true);                        
+                        group.WpfPlotControl.RefreshData(true); group.WpfPlotControl2.RefreshData(true);
                     }                        
                 }
             });
@@ -640,6 +653,7 @@ namespace Workbench.ViewModels.dw
                                     {
                                         //更新波形数据
                                         group.WpfPlotControl.UpdateData(field.Desc, field.Result);
+                                        group.WpfPlotControl2.UpdateData(field.Desc, field.Result);
                                     }
                                 }
                             }

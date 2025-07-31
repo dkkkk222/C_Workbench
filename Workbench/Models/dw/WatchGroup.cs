@@ -63,6 +63,8 @@ namespace Workbench.Models.dw
             get => _tableWidth;
             set
             {
+                if (value < 520)
+                    value = 520;
                 SetProperty(ref _tableWidth, value);
             }
         }
@@ -71,18 +73,22 @@ namespace Workbench.Models.dw
             get => _tableHeight;
             set
             {
+                if (value < 360)
+                    value = 360;
                 SetProperty(ref _tableHeight, value);
             }
         }
 
 
-        private double _chartWidth = 720;   // 初始宽
+        private double _chartWidth = 680;   // 初始宽
         private double _chartHeight = 360;   // 初始高
         public double ChartWidth
         {
             get => _chartWidth;
             set
             {
+                if (value < 680)
+                    value = 680;
                 SetProperty(ref _chartWidth, value);
             }
         }
@@ -91,6 +97,8 @@ namespace Workbench.Models.dw
             get => _chartHeight;
             set
             {
+                if (value < 360)
+                    value = 360;
                 SetProperty(ref _chartHeight, value);
             }
         }
@@ -147,6 +155,13 @@ namespace Workbench.Models.dw
             set=>SetProperty(ref wpfPlotControl,value); 
         }
 
+        private WpfPlotSteamBase wpfPlotControl2 = new WpfPlotSteamBase("监测图", "X", "Y", yMin: -30, yMax: 30, defaultXCount: 5000);
+        [JsonIgnore]
+        public WpfPlotSteamBase WpfPlotControl2
+        {
+            get => wpfPlotControl2;
+            set => SetProperty(ref wpfPlotControl2, value);
+        }
         #region Method
         private void HistoryToExcel(string path)
         {
@@ -208,7 +223,7 @@ namespace Workbench.Models.dw
         });
         public DelegateCommand SettingDefaultChartWHCommand => new DelegateCommand(() =>
         {
-            ChartWidth = 720;
+            ChartWidth = 680;
             ChartHeight = 360;
         });
         [JsonIgnore]
@@ -256,8 +271,10 @@ namespace Workbench.Models.dw
 
         private DelegateCommand<BitField> _addToChartCommand;
         [JsonIgnore]
-        public DelegateCommand<BitField> AddToChartCommand =>
-            _addToChartCommand ?? (_addToChartCommand = new DelegateCommand<BitField>(OnAddToChart));
+        public DelegateCommand<BitField> AddToChartCommand => new DelegateCommand<BitField>((e) =>
+        {
+            OnAddToChart(e); OnAddToChart2(e);
+        });
 
         private void OnAddToChart(BitField field)
         {
@@ -285,7 +302,32 @@ namespace Workbench.Models.dw
                 }
             }
         }
+        private void OnAddToChart2(BitField field)
+        {
+            if (field == null) return;
 
+            var matched = BitFields.FirstOrDefault(f => f.AddressHexName == field.AddressHexName && f.StartBit == field.StartBit);
+
+            var plotConfig = WpfPlotControl2.Plot.GetPlottables();
+            var legLabel = plotConfig.Where(x => (x as Scatter).LegendText.Equals(field.Desc)).FirstOrDefault();
+
+            if (legLabel == null)
+            {
+                //添加通道信息到波形图 
+                WpfPlotControl2.AddSignalData(field.Desc);
+            }
+            else
+            {
+                if (!field.IsSelected)
+                {
+                    legLabel.IsVisible = false;
+                }
+                else
+                {
+                    legLabel.IsVisible = true;
+                }
+            }
+        }
         private DelegateCommand<object> _settingChartLimitCommand;
         [JsonIgnore]
         public DelegateCommand<object> SettingChartLimitCommand =>
@@ -294,6 +336,7 @@ namespace Workbench.Models.dw
         private void SettingChartLimit(object o)
         {
             WpfPlotControl.SetXYLimit(MaxX: Chart1MaxX,MinX:Chart1MinX,MaxY:Chart1MaxY,MinY:Chart1MinY);
+            WpfPlotControl2.SetXYLimit(MaxX: Chart1MaxX, MinX: Chart1MinX, MaxY: Chart1MaxY, MinY: Chart1MinY);
         }
     }
 }

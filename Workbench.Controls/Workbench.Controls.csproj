@@ -151,6 +151,7 @@
     <Compile Include="Controls\Scottplot\LiveDataPlot.xaml.cs">
       <DependentUpon>LiveDataPlot.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Scottplot\PlotStream.cs" />
     <Compile Include="Controls\Scottplot\WpfPlotWithData.cs" />
     <Compile Include="Controls\TextBlock\PPEC_TextBlock.xaml.cs">
       <DependentUpon>PPEC_TextBlock.xaml</DependentUpon>
