@@ -92,4 +92,30 @@
     <!--按钮颜色-->
     <SolidColorBrush x:Key="StartButtonBackground" Color="#2371B0"/>
     <SolidColorBrush x:Key="StopButtonBackground" Color="#EB5252"/>
+    
+    <!--DataGrid-->
+    <SolidColorBrush x:Key="DataGridBackgroundColor" Color="#C7D6E3"/>
+    <SolidColorBrush x:Key="DataGridHeadBackgroundColor" Color="#A8BDD2"/>
+    <SolidColorBrush x:Key="DataGridRowBackgroundColor" Color="#CBD9E6"/>
+    <SolidColorBrush x:Key="DataGridRowAltBackgroundColor" Color="#F0F7FF"/>
+    <SolidColorBrush x:Key="DataGridSelectRowFontBackgroundColor" Color="#FFF"/>
+    <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#DCE6F2"/>
+    <!-- 表头浅蓝灰 -->
+    <SolidColorBrush x:Key="BorderLineBrush"     Color="#D6DEE8"/>
+    <!-- 底部分隔线 -->
+    <SolidColorBrush x:Key="RowBackgroundBrush"  Color="#FFFFFF"/>
+    <!-- 行：奇数 -->
+    <SolidColorBrush x:Key="RowAltBrush"         Color="#F7F9FC"/>
+    <!-- 行：偶数 -->
+    <SolidColorBrush x:Key="RowHoverBrush"       Color="#F0F6FF"/>
+    <!-- 悬停 -->
+    <!--<SolidColorBrush x:Key="RowSelectedBrush"    Color="#EAF2FE"/>-->
+    <!-- 选中 -->
+    <SolidColorBrush x:Key="TextBrush"           Color="#333842"/>
+    <!-- 文本 -->
+    <SolidColorBrush x:Key="RowHoverBrushEven" Color="#F6FAFF"/>
+    <SolidColorBrush x:Key="RowHoverBrushOdd"  Color="#EEF6FF"/>
+    <SolidColorBrush x:Key="RowSelectedBrush" Color="#3D7EFF"/>
+    <SolidColorBrush x:Key="RowSelectedForeground" Color="White"/>
+
 </ResourceDictionary>

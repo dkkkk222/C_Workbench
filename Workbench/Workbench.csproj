@@ -338,6 +338,7 @@
     <Compile Include="Communication\SerialPortService.cs" />
     <Compile Include="Converters\AddOneConverter.cs" />
     <Compile Include="Converters\BoolToGridLengthConverter.cs" />
+    <Compile Include="Converters\IsOddAlternationConverter.cs" />
     <Compile Include="Converters\RowIndexConverter.cs" />
     <Compile Include="Db\DbContext.cs" />
     <Compile Include="Db\IService\ICpService.cs" />

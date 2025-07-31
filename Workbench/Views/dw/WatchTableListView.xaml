@@ -100,28 +100,115 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                         </DockPanel>
                                     </Border>
                                     <DataGrid ItemsSource="{Binding BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-          CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
-          SelectedItem="{Binding CurrentSequence}"
-          x:Name="MyDataGrid">
-                                        <DataGrid.Resources>
-                                            <utils:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
-                                        </DataGrid.Resources>
+                                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
+                                                     Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
+                                                      SelectedItem="{Binding CurrentSequence}"
+                                                      x:Name="MyDataGrid">
                                         <DataGrid.ColumnHeaderStyle>
-                                            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DataGridColumnHeaderStyle.Small}">
-                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Style TargetType="{x:Type DataGridColumnHeader}"  >
+                                                <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
+                                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                 <Setter Property="FontSize" Value="13"/>
                                                 <Setter Property="Margin" Value="0,0,0,5"/>
+                                                <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
+                                                <Setter Property="BorderThickness" Value="0,0,0,1" />
                                             </Style>
                                         </DataGrid.ColumnHeaderStyle>
+                                        <DataGrid.Resources>
+                                            <utils:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+     Color="Transparent"/>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+     Color="{StaticResource RowSelectedBrush}"/>
+                                        </DataGrid.Resources>
+                                        <DataGrid.CellStyle>
+                                            <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                                <!-- 前景色跟随行 -->
+                                                <Setter Property="Foreground"
+Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
+
+                                                <Style.Triggers>
+                                                    <!-- 选中 -->
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                        <Setter Property="BorderThickness" Value="0"/>
+                                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                                    </Trigger>
+
+                                                    <!-- 选中 + DataGrid失焦（例如右键弹菜单） -->
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True"/>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=IsKeyboardFocusWithin}" Value="False"/>
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                        <Setter Property="BorderThickness" Value="0"/>
+                                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                                    </MultiDataTrigger>
+
+                                                    <!-- Hover 时也别盖住整行背景 -->
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGrid.CellStyle>
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow">
+                                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                                <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
+                                                <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
+                                                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                                <Setter Property="SnapsToDevicePixels" Value="True" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="AlternationIndex" Value="1">
+                                                        <Setter Property="Background" Value="{StaticResource DataGridRowAltBackgroundColor}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
+                                                    </Trigger>
+
+                                                    <!-- 选中（鼠标不在上面） -->
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True"/>
+                                                            <Condition Property="IsMouseOver" Value="False"/>
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                        <!-- 白字 -->
+                                                        <Setter Property="BorderThickness" Value="0"/>
+                                                        <!-- 去掉分割线 -->
+                                                    </MultiTrigger>
+
+                                                    <!-- 选中 + 悬停 -->
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True"/>
+                                                            <Condition Property="IsMouseOver" Value="True"/>
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                        <Setter Property="BorderThickness" Value="0"/>
+                                                    </MultiTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTemplateColumn  Header="序号" Width="45" Visibility="{Binding 
-            Source={StaticResource DataContextProxy},
-            Path=Data.TableColumns[0].IsChecked,
-            Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                        Source={StaticResource DataContextProxy},
+                                                        Path=Data.TableColumns[0].IsChecked,
+                                                        Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock HorizontalAlignment="Center">
+                                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
                                                             <TextBlock.Text>
                                                                 <MultiBinding Converter="{StaticResource RowIndexConverter}">
                                                                     <Binding />
@@ -132,21 +219,21 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"
-                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                            <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto" 
+                                                                        Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
                                             <DataGridTemplateColumn Header="寄存器地址(HEX)" Width="Auto"
-                                Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock HorizontalAlignment="Center" Text="{Binding AddressHexName}"/>
+                                                        <TextBlock HorizontalAlignment="Center" Text="{Binding AddressHexName}" VerticalAlignment="Center"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="解析范围" Width="75"
-                                Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <TextBlock Text="b"/>
                                                             <TextBlock Text="{Binding EndBit}"/>
                                                             <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
@@ -161,7 +248,7 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                             <DataGridTemplateColumn Header="解析要求" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <TextBlock Text="{Binding FormParam.ParamName}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -174,7 +261,7 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                             <DataGridTemplateColumn Header="添加到监测图" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel HorizontalAlignment="Center">
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding DataContext.AddToChartCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" />
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -183,6 +270,7 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                         </DataGrid.Columns>
 
                                     </DataGrid>
+
                                 </DockPanel>
 
                                 <!-- 右下角拖拽柄 -->
