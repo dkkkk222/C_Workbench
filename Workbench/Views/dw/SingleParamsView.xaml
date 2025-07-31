@@ -140,7 +140,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <Border Style="{StaticResource BorderTipPrimary}" BorderBrush="{DynamicResource BordTitleBackgroundColor}"  Margin="0,0,0,5">
-                                <hc:UniformSpacingPanel Spacing="15">
+                                <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="寄存器概览" FontSize="{StaticResource SubHeadFontSize}"/>
                                         <TextBlock Width="10"></TextBlock>
@@ -428,14 +428,14 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 <ColumnDefinition></ColumnDefinition>
                                                 <ColumnDefinition></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <hc:UniformSpacingPanel Spacing="15">
+                                            <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
                                                 <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding WriteCurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </hc:UniformSpacingPanel>
 
-                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary}"  Background="{DynamicResource GenButtonBackgroundColor}" Width="80" 
+                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary.Small}"  Background="{DynamicResource GenButtonBackgroundColor}" Width="80" 
 IsEnabled="{Binding WriteCurrentRegister.AllowWrite}" HorizontalAlignment="Right"
 hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                         </Grid>
@@ -452,7 +452,8 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                          Color="{StaticResource RowSelectedBrush}"/>
                                             </DataGrid.Resources>
                                             <DataGrid.CellStyle>
-                                                <Style TargetType="DataGridCell" BasedOn="{x:Null}">                                                    
+                                                <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                                    <Setter Property="Margin" Value="8,0,12,0"/>
                                                     <Setter Property="Background" Value="Transparent"/>
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                     <Setter Property="BorderBrush" Value="Transparent"/>
@@ -536,7 +537,8 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                     <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                                     <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                     <Setter Property="FontSize" Value="13"/>
-                                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                                    <Setter Property="Padding" Value="10,0,0,0"/>
+                                                    <Setter Property="Margin" Value="0,0,12,0"/>
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                                     <Setter Property="BorderThickness" Value="0,0,0,1" />
                                                 </Style>
@@ -614,13 +616,13 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                 <ColumnDefinition></ColumnDefinition>
                                                 <ColumnDefinition></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <hc:UniformSpacingPanel Spacing="15">
+                                            <hc:UniformSpacingPanel Spacing="15" VerticalAlignment="Center">
                                                 <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding CurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding CurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </hc:UniformSpacingPanel>
-                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary}"   Background="{DynamicResource GenButtonBackgroundColor}"  Width="80" 
+                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary.Small}"   Background="{DynamicResource GenButtonBackgroundColor}"  Width="80" 
         IsEnabled="{Binding CurrentRegister.AllowRead}" HorizontalAlignment="Right"
         hc:IconElement.Geometry="{StaticResource ReadGeometry}" Command="{Binding ReadRegisterCommand}"/>
                                         </Grid>
@@ -643,7 +645,8 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                     <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                                     <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                     <Setter Property="FontSize" Value="13"/>
-                                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                                    <Setter Property="Padding" Value="10,0,0,0"/>
+                                                    <Setter Property="Margin" Value="0,0,12,0"/>
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                                     <Setter Property="BorderThickness" Value="0,0,0,1" />
                                                 </Style>
@@ -656,6 +659,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                             </DataGrid.Resources>
                                             <DataGrid.CellStyle>
                                                 <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                                    <Setter Property="Margin" Value="8,0,12,0"/>
                                                     <Setter Property="Background" Value="Transparent"/>
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                     <Setter Property="BorderBrush" Value="Transparent"/>
@@ -765,7 +769,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                 <Border Grid.Row="2">
                     <DockPanel LastChildFill="True">
                         <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
-                            <hc:UniformSpacingPanel Spacing="15">
+                            <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
                                 <TextBlock Text="历史数据" FontSize="14"/>
                                 <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                 Command="{Binding HistoryDownloadCommand}"/>
@@ -782,7 +786,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                     <Setter Property="VerticalContentAlignment" Value="Center"/>
                                     <Setter Property="FontSize" Value="13"/>
-                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                    <Setter Property="Padding" Value="10,0,0,0"/>
+                                    <Setter Property="Margin" Value="0,0,12,0"/>
                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                     <Setter Property="BorderThickness" Value="0,0,0,1" />
                                 </Style>
@@ -795,6 +800,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </DataGrid.Resources>
                             <DataGrid.CellStyle>
                                 <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                    <Setter Property="Margin" Value="8,0,12,0"/>
                                     <Setter Property="Background" Value="Transparent"/>
                                     <Setter Property="BorderThickness" Value="0"/>
                                     <Setter Property="BorderBrush" Value="Transparent"/>

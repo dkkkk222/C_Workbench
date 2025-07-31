@@ -47,7 +47,7 @@
             <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="332" Background="#fafafa" Padding="8">
+        <Border Grid.Column="0" Width="332" Background="{StaticResource AvalonDockAreaBackgroundColor}" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -194,7 +194,8 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                             <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                                             <Setter Property="FontSize" Value="13"/>
-                                            <Setter Property="Margin" Value="0,0,0,5"/>
+                                            <Setter Property="Padding" Value="10,0,0,0"/>
+                                            <Setter Property="Margin" Value="0,0,12,0"/>
                                             <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                             <Setter Property="BorderThickness" Value="0,0,0,1" />
                                         </Style>
@@ -207,6 +208,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     </DataGrid.Resources>
                                     <DataGrid.CellStyle>
                                         <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                            <Setter Property="Margin" Value="8,0,12,0"/>
                                             <Setter Property="Background" Value="Transparent"/>
                                             <Setter Property="BorderThickness" Value="0"/>
                                             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -407,7 +409,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                                         <Setter Property="FontSize" Value="13"/>
-                                        <Setter Property="Margin" Value="0,0,0,5"/>
+                                        <Setter Property="Padding" Value="10,0,0,0"/>
+                                        <Setter Property="Margin" Value="0,0,12,0"/>
                                         <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                         <Setter Property="BorderThickness" Value="0,0,0,1" />
                                     </Style>
@@ -420,6 +423,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 </DataGrid.Resources>
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                        <Setter Property="Margin" Value="8,0,12,0"/>
                                         <Setter Property="Background" Value="Transparent"/>
                                         <Setter Property="BorderThickness" Value="0"/>
                                         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -522,7 +526,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTemplateColumn  Header="发送顺序" MinWidth="70">
+                                    <DataGridTemplateColumn  Header="发送顺序" MinWidth="80">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow},
@@ -609,10 +613,10 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </hc:UniformSpacingPanel>
                                 </Grid>
                             </Border>
-                            <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0"    VerticalAlignment="Top">
+                    
                                 <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}" AutoGenerateColumns="False" 
                                            Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
-                         CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False">
+                         CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
 
                                     <DataGrid.ColumnHeaderStyle>
                                         <Style TargetType="{x:Type DataGridColumnHeader}"  >
@@ -622,7 +626,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                                             <Setter Property="FontSize" Value="13"/>
-                                            <Setter Property="Margin" Value="0,0,0,5"/>
+                                            <Setter Property="Padding" Value="10,0,0,0"/>
+                                            <Setter Property="Margin" Value="0,0,12,0"/>
                                             <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                             <Setter Property="BorderThickness" Value="0,0,0,1" />
                                         </Style>
@@ -635,6 +640,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </DataGrid.Resources>
                                     <DataGrid.CellStyle>
                                         <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                            <Setter Property="Margin" Value="8,0,12,0"/>
                                             <Setter Property="Background" Value="Transparent"/>
                                             <Setter Property="BorderThickness" Value="0"/>
                                             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -711,7 +717,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         </Style>
                                     </DataGrid.RowStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTemplateColumn Header="位" Width="*" MinWidth="70">
+                                        <DataGridTemplateColumn Header="位" Width="*" MinWidth="70">                                          
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -813,7 +819,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                                     </DataGrid.Columns>
                                 </DataGrid>
-                            </Border>
+                       
                         </DockPanel>
                         
                     </Grid>

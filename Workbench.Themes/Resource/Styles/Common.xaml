@@ -143,7 +143,7 @@
 
     <!-- Hyperlink -->
     <Style x:Key="HyperlinkStyle" TargetType="{x:Type Hyperlink}">
-        <Setter Property="Foreground" Value="#2494F0"/>
+        <Setter Property="Foreground" Value="{StaticResource ButtonBarIconColor}"/>
         <Setter Property="TextDecorations" Value="None"/>
     </Style>
     

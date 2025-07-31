@@ -30,10 +30,10 @@
                             <homeTitle:HomeTitle Title="快速开始"/>
                             <Border HorizontalAlignment="Left">
                                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="20">
-                                    <Border Background="{StaticResource SecondaryRegionBrush}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
+                                    <Border Background="{StaticResource GenButtonBackgroundColor}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
                                         <hc:UniformSpacingPanel Spacing="10" VerticalAlignment="Center">
                                             <TextBlock Text="&#xe620;" FontFamily="{StaticResource Iconfont}" 
-                                                           Foreground="{DynamicResource PrimaryFontColor}"
+                                                           Foreground="{DynamicResource ButtonBarIconColor}"
                                                            FontSize="32" VerticalAlignment="Center"/>
                                             <Border>
                                                 <TextBlock FontSize="18" VerticalAlignment="Center">
@@ -44,10 +44,10 @@
                                             </Border>
                                         </hc:UniformSpacingPanel>
                                     </Border>
-                                    <Border Background="{StaticResource SecondaryRegionBrush}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
+                                    <Border Background="{StaticResource GenButtonBackgroundColor}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
                                         <hc:UniformSpacingPanel Spacing="10" VerticalAlignment="Center">
                                             <TextBlock Text="&#xe60a;" FontFamily="{StaticResource Iconfont}" 
-                                                           Foreground="{DynamicResource PrimaryFontColor}"
+                                                           Foreground="{DynamicResource ButtonBarIconColor}"
                                                            FontSize="32" VerticalAlignment="Center"/>
                                             <Border>
                                                 <TextBlock FontSize="18" VerticalAlignment="Center">
@@ -58,10 +58,10 @@
                                             </Border>
                                         </hc:UniformSpacingPanel>
                                     </Border>
-                                    <Border Background="{StaticResource SecondaryRegionBrush}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
+                                    <Border Background="{StaticResource GenButtonBackgroundColor}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
                                         <hc:UniformSpacingPanel Spacing="10" VerticalAlignment="Center">
                                             <TextBlock Text="&#xe615;" FontFamily="{StaticResource Iconfont}" 
-                                                           Foreground="{DynamicResource PrimaryFontColor}"
+                                                           Foreground="{DynamicResource ButtonBarIconColor}"
                                                            FontSize="32" VerticalAlignment="Center"/>
                                             <Border>
                                                 <TextBlock FontSize="18" VerticalAlignment="Center">
@@ -72,10 +72,10 @@
                                             </Border>
                                         </hc:UniformSpacingPanel>
                                     </Border>
-                                    <Border Background="{StaticResource SecondaryRegionBrush}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
+                                    <Border Background="{StaticResource GenButtonBackgroundColor}" Height="50" Width="215" CornerRadius="5" Padding="20,0">
                                         <hc:UniformSpacingPanel Spacing="10" VerticalAlignment="Center">
                                             <TextBlock Text="&#xe623;" FontFamily="{StaticResource Iconfont}" 
-                                                           Foreground="{DynamicResource PrimaryFontColor}"
+                                                           Foreground="{DynamicResource ButtonBarIconColor}"
                                                            FontSize="32" VerticalAlignment="Center"/>
                                             <Border>
                                                 <TextBlock FontSize="18" VerticalAlignment="Center">
@@ -153,7 +153,7 @@
                                                 <Border Margin="0,0,0,15">
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock FontSize="14" VerticalAlignment="Center">
-                                                        <Hyperlink Style="{StaticResource HyperlinkStyle}" 
+                                                        <Hyperlink Style="{StaticResource HyperlinkStyle}"   Foreground="{StaticResource IndexPageFontBackground}"
                                                                    Command="{Binding Path=DataContext.OpenRecentFileCommand,RelativeSource={ RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}"
                                                                    CommandParameter="{Binding}">
                                                             <TextBlock Text="{Binding FileName}"/>
@@ -172,7 +172,7 @@
 
                                     <Border Margin="0,10,0,0">
                                         <TextBlock FontSize="14">
-                                                <Hyperlink Style="{DynamicResource HyperlinkStyle}" Command="{Binding ShowRecentFileViewCommand}">
+                                                <Hyperlink Style="{DynamicResource HyperlinkStyle}" Foreground="{StaticResource IndexPageFontBackground}" Command="{Binding ShowRecentFileViewCommand}">
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="更多>>"/>
                                                     </StackPanel>

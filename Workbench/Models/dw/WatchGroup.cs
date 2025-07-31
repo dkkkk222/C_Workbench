@@ -56,15 +56,15 @@ namespace Workbench.Models.dw
         }
 
         #region TabHeight
-        private double _tableWidth = 520;   // 初始宽
+        private double _tableWidth = 540;   // 初始宽
         private double _tableHeight = 360;   // 初始高
         public double TableWidth
         {
             get => _tableWidth;
             set
             {
-                if (value < 520)
-                    value = 520;
+                if (value < 540)
+                    value = 540;
                 SetProperty(ref _tableWidth, value);
             }
         }
@@ -218,7 +218,7 @@ namespace Workbench.Models.dw
         [JsonIgnore]
         public DelegateCommand SettingDefaultWHCommand => new DelegateCommand(() =>
         {
-            TableWidth = 520;
+            TableWidth = 540;
             TableHeight = 360;
         });
         public DelegateCommand SettingDefaultChartWHCommand => new DelegateCommand(() =>

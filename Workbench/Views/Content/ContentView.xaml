@@ -40,7 +40,7 @@
                     <avalonDock:DockingManager DocumentsSource="{Binding Documents}"
                                                DocumentPaneControlStyle="{DynamicResource DocumentPaneControlStyle}"
                                                ActiveContent="{Binding ActiveDocument,Mode=TwoWay}">
-                        <avalonDock:DockingManager.DocumentContextMenu>
+                        <!--<avalonDock:DockingManager.DocumentContextMenu>
                             <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="165">
                                 <MenuItem Header="关闭" Click="Close_Click" Foreground="{DynamicResource TitleBarColor}">
                                     <MenuItem.Icon>
@@ -78,7 +78,7 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>
-                        </avalonDock:DockingManager.DocumentContextMenu>
+                        </avalonDock:DockingManager.DocumentContextMenu>-->
                         <avalonDock:DockingManager.DocumentHeaderTemplate>
                             <DataTemplate>
                                 <Border Background="Transparent" MinWidth="80">

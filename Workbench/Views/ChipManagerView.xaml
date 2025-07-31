@@ -33,7 +33,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Border Grid.Column="1" Background="{StaticResource DarkDefaultBrush}" Margin="4,0,0,0" CornerRadius="3">
+        <Border Grid.Column="1" Background="{StaticResource HomeBackgroundColor}" Margin="4,0,0,0" CornerRadius="3">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -105,12 +105,12 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                         <!-- 使用样式 -->
-                        <Button Width="80" Height="30" Content="取消" Command="{Binding CloseCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
+                        <Button Width="80" Height="30" Content="取消" Foreground="{StaticResource TitleBarColor}" Background="{StaticResource GenCancelButtonBackgroundColor}" Command="{Binding CloseCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
                         <!--<TextBlock Width="10"></TextBlock>
                         <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="新增" Command="{Binding AddCommand}" 
                                 hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:IconElement.Width="13"/>-->
                         <TextBlock Width="10"></TextBlock>
-                        <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="确认" Command="{Binding ComfirmCommand}" 
+                        <Button Style="{StaticResource ButtonPrimary}"  Background="{StaticResource GenButtonBackgroundColor}" Width="80" Height="30" Content="确认" Command="{Binding ComfirmCommand}" 
                                 hc:IconElement.Geometry="{StaticResource SaveGeometry}" hc:IconElement.Width="13"/>
                     </StackPanel>
                 </Border>
@@ -126,29 +126,143 @@
                   CanUserSortColumns="False"
                   SelectionMode="Single"
                   RowHeight="40"
-                  CanUserAddRows="False"
-                  ColumnHeaderHeight="40" IsReadOnly="True"
+                  CanUserAddRows="False"   AlternationCount="2"
+                  ColumnHeaderHeight="40" IsReadOnly="True"   Background="{DynamicResource DataGridBackgroundColor}"
                               ItemsSource="{Binding Chips,Mode=TwoWay}" SelectedItem="{Binding SelectedChip, Mode=TwoWay}">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}"  >
+                                <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="Padding" Value="10,0,12,0"/> 
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
+                                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+     Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+     Color="{StaticResource RowSelectedBrush}"/>
+                        </DataGrid.Resources>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                <Setter Property="Margin" Value="8,0,12,0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <!-- 前景色跟随行 -->
+                                <Setter Property="Foreground"
+Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
+
+                                <Style.Triggers>
+                                    <!-- 选中 -->
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                    </Trigger>
+
+                                    <!-- 选中 + DataGrid失焦（例如右键弹菜单） -->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True"/>
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=IsKeyboardFocusWithin}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                    </MultiDataTrigger>
+
+                                    <!-- Hover 时也别盖住整行背景 -->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
+                                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                <Setter Property="SnapsToDevicePixels" Value="True" />
+                                <Style.Triggers>
+                                    <Trigger Property="AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="{StaticResource DataGridRowAltBackgroundColor}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
+                                    </Trigger>
+
+                                    <!-- 选中（鼠标不在上面） -->
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="IsMouseOver" Value="False"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                        <!-- 白字 -->
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <!-- 去掉分割线 -->
+                                    </MultiTrigger>
+
+                                    <!-- 选中 + 悬停 -->
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="IsMouseOver" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                    </MultiTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <!-- 定义列 -->
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="芯片名称" Binding="{Binding Name}" Width="150" />
-                            <DataGridTextColumn Header="寄存器说明文件" Binding="{Binding FileName}" Width="*" />
-                            <DataGridTextColumn Header="日期" Binding="{Binding Datetime}" Width="*" />
+                            <DataGridTextColumn Header="芯片名称" Binding="{Binding Name}" Width="150" >
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="ToolTip" Value="{Binding Desc}"/>
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="寄存器说明文件" Binding="{Binding FileName}" Width="*" >
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="ToolTip" Value="{Binding Desc}"/>
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="日期" Binding="{Binding Datetime}" Width="*" >
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="ToolTip" Value="{Binding Desc}"/>
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
                             <DataGridTemplateColumn Header="管理" Width="150" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                            <!--<TextBlock Text="修改" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                       Cursor="Hand" Margin="0,0,16,0" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"/>
-                                            <TextBlock Width="10"></TextBlock>
-                                            <Button Width="16"
-                                                    Height="16"
-                                                    Padding="0"
-                                                    BorderThickness="0"
-                                                    Background="Transparent"
-                                                    Click="Delete_Click">
-                                                <TextBlock Text="&#xe690;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
-                                            </Button>-->
+                                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                                      
                                             <hc:UniformSpacingPanel Spacing="10">
                                                 <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
                                                 <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}" Click="Delete_Click"/>

@@ -99,7 +99,7 @@
                                 <ContentPresenter Content="{Binding Model,RelativeSource={RelativeSource TemplatedParent}}"
                                                   ContentTemplate="{Binding DocumentHeaderTemplate, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type avalonDock:DockingManager}, Mode=FindAncestor}}"
                                                   ContentTemplateSelector="{Binding DocumentHeaderTemplateSelector, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type avalonDock:DockingManager}, Mode=FindAncestor}}"/>
-                                <Button x:Name="DocumentCloseButton" 
+                                <Button x:Name="DocumentCloseButton"
                                         Grid.Column="1"
                                         Visibility="Hidden"
                                         Style="{DynamicResource CloseButtonStyle}"
@@ -191,7 +191,7 @@
                         </Grid.RowDefinitions>
                         <!--  Following border is required to catch mouse events  -->
                         <Border Grid.RowSpan="2" Background="Transparent" CornerRadius="6,6,6,6" />
-                        <Grid Background="Transparent"
+                        <Grid Background="{DynamicResource TabsBackgroundColor}"
 					            Margin="1,0"
 					            Grid.Row="0"
 					            Panel.ZIndex="1"
@@ -204,12 +204,12 @@
 						                        x:Name="BD"
 						                        Grid.ColumnSpan="2" Background="{DynamicResource TabsBackgroundColor}" CornerRadius="6,6,0,0"
 						                        BorderBrush="#E8E8E8"
-						                        BorderThickness="0,0,0,1" />
+						                        BorderThickness="0,0,0,0" />
                             <avalonDockControls:DocumentPaneTabPanel Background="Transparent"
 						                                                        x:Name="HeaderPanel"
 						                                                        Grid.Row="0"
 						                                                        Grid.Column="0"
-						                                                        Margin="0"
+						                                                        Margin="0,0,0,0"
 						                                                        IsItemsHost="true"
 						                                                        KeyboardNavigation.TabIndex="1" />
                             <avalonDockControls:DropDownButton

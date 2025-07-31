@@ -26,7 +26,12 @@
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="{DynamicResource TitleBarColor}"/>
     </Style>
-
+    <!--CreateWindow-->
+    <Style x:Key="CreateWindowStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource BottomBarTextColor}"/>
+    </Style>
+    
     <!-- 必填标识 -->
     <Style x:Key="RequiedStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="VerticalAlignment" Value="Center"/>

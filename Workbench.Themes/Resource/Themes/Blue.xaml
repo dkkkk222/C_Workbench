@@ -58,6 +58,8 @@
     <SolidColorBrush x:Key="BordTitleBackgroundColor" Color="#548EC4"/>
     <!--一般按钮背景色-->
     <SolidColorBrush x:Key="GenButtonBackgroundColor" Color="#2371B0"/>
+    <!--取消按钮-->
+    <SolidColorBrush x:Key="GenCancelButtonBackgroundColor" Color="#8BACC9"/>
     <!-- 按钮栏图标颜色 -->
     <SolidColorBrush x:Key="ButtonBarIconColor" Color="#fff"/>
     <!-- 按钮栏图标Hover颜色 -->
@@ -92,6 +94,9 @@
     <!--按钮颜色-->
     <SolidColorBrush x:Key="StartButtonBackground" Color="#2371B0"/>
     <SolidColorBrush x:Key="StopButtonBackground" Color="#EB5252"/>
+    
+    <!--首页最近工程文字-->
+    <SolidColorBrush x:Key="IndexPageFontBackground" Color="#315985"/>
     
     <!--DataGrid-->
     <SolidColorBrush x:Key="DataGridBackgroundColor" Color="#C7D6E3"/>

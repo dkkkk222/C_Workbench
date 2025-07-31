@@ -46,7 +46,7 @@
             <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="332" Background="#fafafa" Padding="8">
+        <Border Grid.Column="0" Width="332" Background="{StaticResource AvalonDockAreaBackgroundColor}" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -145,7 +145,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                 </Border>
             </Grid>
         </Border>
-        <Border Background="#fafafa"   Grid.Column="1" Padding="8">
+        <Border Background="{StaticResource AvalonDockAreaBackgroundColor}"   Grid.Column="1" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -189,13 +189,14 @@ hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
                SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}"  >
+                                        <Setter Property="Padding" Value="10,0,0,0"/>
+                                        <Setter Property="Margin" Value="0,0,12,0"/>
                                         <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
                                         <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                         <Setter Property="FontWeight" Value="SemiBold" />
                                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                         <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        <Setter Property="FontSize" Value="13"/>
-                                        <Setter Property="Margin" Value="0,0,0,5"/>
+                                        <Setter Property="FontSize" Value="13"/> 
                                         <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                         <Setter Property="BorderThickness" Value="0,0,0,1" />
                                     </Style>
@@ -208,6 +209,7 @@ hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
                                 </DataGrid.Resources>
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                        <Setter Property="Margin" Value="8,0,12,0"/>
                                         <Setter Property="Background" Value="Transparent"/>
                                         <Setter Property="BorderThickness" Value="0"/>
                                         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -412,8 +414,8 @@ Command="{Binding ShowChartGroupCommand}"/>
                         </StackPanel>
 
                     </Border>
-                    <Border Grid.Row="1">
-                        <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" IsDraggable="True" 
+                    <Border Grid.Row="1"  Background="{StaticResource AvalonDockAreaBackgroundColor}">
+                        <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
                                    ItemsSource="{Binding WatchGroups}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}">
                             <TabControl.ItemTemplate>
                                 <DataTemplate>
@@ -422,7 +424,7 @@ Command="{Binding ShowChartGroupCommand}"/>
                             </TabControl.ItemTemplate>
                             <TabControl.ContentTemplate>
                                 <DataTemplate>
-                                    <Border Padding="5">
+                                    <Border Padding="5" Background="{StaticResource AvalonDockAreaBackgroundColor}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -477,7 +479,8 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                             <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                             <Setter Property="FontSize" Value="13"/>
-                                                            <Setter Property="Margin" Value="0,0,0,5"/>
+                                                            <Setter Property="Padding" Value="7,0,0,0"/>
+                                                            <Setter Property="Margin" Value="0,0,12,0"/>
                                                             <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                                             <Setter Property="BorderThickness" Value="0,0,0,1" />
                                                         </Style>
@@ -491,6 +494,7 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                     </DataGrid.Resources>
                                                     <DataGrid.CellStyle>
                                                         <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                                            <Setter Property="Margin" Value="8,0,12,0"/>
                                                             <Setter Property="Background" Value="Transparent"/>
                                                             <Setter Property="BorderThickness" Value="0"/>
                                                             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -644,15 +648,15 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                             Margin="5,0,5,0" 
                                                             Command="{Binding RenameCommand}"
                                                             CommandParameter="Chart"/>
-                                                        <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
+                                                        <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                        <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
+                                                        <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                        <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
+                                                        <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                        <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
+                                                        <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                        <Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+                                                        <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
                                                             Margin="5,0,0,0" 
                                                             Command="{Binding SettingChartLimitCommand}"
                                                             CommandParameter="{Binding}"/>
