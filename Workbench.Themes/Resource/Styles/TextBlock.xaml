@@ -75,7 +75,7 @@
     <Style x:Key="ButtonBarTitleStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryFontColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ButtonBarFontColor}"/>
     </Style>
 
     <!-- 右键菜单栏-->

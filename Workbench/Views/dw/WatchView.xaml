@@ -57,17 +57,17 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
-                    <Border Style="{StaticResource BorderTipPrimary}">
+                    <Border Style="{StaticResource BorderTipPrimary}"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>
                         </StackPanel>
                     </Border>
                     <hc:UniformSpacingPanel Spacing="8" Orientation="Horizontal" Margin="0,10">
-                        <RadioButton GroupName="OrderBy" Content="按分类"
+                        <RadioButton GroupName="OrderBy" Content="按分类" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
              IsChecked="{Binding IsOrderByCategory, Mode=TwoWay}"/>
-                        <RadioButton GroupName="OrderBy" Content="按名称"
+                        <RadioButton GroupName="OrderBy" Content="按名称" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
              IsChecked="{Binding IsOrderByName, Mode=TwoWay}"/>
-                        <RadioButton GroupName="OrderBy" Content="按地址"
+                        <RadioButton GroupName="OrderBy" Content="按地址" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
              IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/> 
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
@@ -154,7 +154,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                 </Grid.RowDefinitions>
                 <Border Grid.Row="0">
                     <DockPanel LastChildFill="True">
-                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="监控数据配置" FontSize="{StaticResource SubHeadFontSize}"/>
                                 <TextBlock Width="10"></TextBlock>
@@ -174,12 +174,12 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
                             <Border Margin="0,8,0,0" Grid.Row="0">
-                                <hc:UniformSpacingPanel Spacing="20" Orientation="Horizontal"> 
+                                <hc:UniformSpacingPanel Spacing="20" Orientation="Horizontal">
 
-                                    <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="添加到监控配置表" hc:IconElement.Geometry="{StaticResource AddGeometry}" 
+                                    <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="添加到监控配置表"  Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" 
 hc:IconElement.Width="14" Command="{Binding AddTreeListToTableCommand}"/>
 
-                                    <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="从监控配置表移除" hc:IconElement.Geometry="{StaticResource SubGeometry}" 
+                                    <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="从监控配置表移除" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource SubGeometry}" 
 hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
                                 </hc:UniformSpacingPanel>
                             </Border>
@@ -217,7 +217,7 @@ hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
                                     <DataGridTemplateColumn Header="开始" Width="*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Content="开始记录" Style="{StaticResource ButtonInfo.Small}" HorizontalAlignment="Left"  IsEnabled="{c:Binding !IsStartRecord}"
+                                                <Button Content="开始记录" Style="{StaticResource ButtonInfo.Small}" BorderThickness="0" Background="{DynamicResource StartButtonBackground}" HorizontalAlignment="Left"  IsEnabled="{c:Binding !IsStartRecord}"
                              Command="{Binding Path=DataContext.BeginRecordCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}"
                              CommandParameter="{Binding}"/>
                                             </DataTemplate>
@@ -226,7 +226,7 @@ hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
                                     <DataGridTemplateColumn Header="停止" Width="*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Content="停止记录" Style="{StaticResource ButtonWarning.Small}" HorizontalAlignment="Left"  IsEnabled="{c:Binding IsStartRecord}"
+                                                <Button Content="停止记录" Style="{StaticResource ButtonWarning.Small}" BorderThickness="0" Background="{DynamicResource StopButtonBackground}" HorizontalAlignment="Left"  IsEnabled="{c:Binding IsStartRecord}"
                               Command="{Binding Path=DataContext.StopRecordCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}"
                               CommandParameter="{Binding}"/>
                                             </DataTemplate>
@@ -266,15 +266,15 @@ hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
                     </Grid.RowDefinitions>
                     <Border Grid.Row="0">
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="增加数据监测表" Style="{StaticResource ButtonPrimary}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                            <Button Content="增加数据监测表" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
                    HorizontalAlignment="Left" hc:IconElement.Width="14"
                    Command="{Binding AddWatchGroupCommand}"/>
                             <TextBlock Width="10"></TextBlock>
-                            <Button Content="展示数据监测表" Style="{StaticResource ButtonPrimary}" hc:IconElement.Geometry="{StaticResource  PushGeometry}"
+                            <Button Content="展示数据监测表" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PushGeometry}"
 HorizontalAlignment="Left" hc:IconElement.Width="14"
 Command="{Binding ShowWatchGroupCommand}"/>
                             <TextBlock Width="10"></TextBlock>
-                            <Button Content="展示数据监测图" Style="{StaticResource ButtonPrimary}" hc:IconElement.Geometry="{StaticResource   HTabGroup}"
+                            <Button Content="展示数据监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource   HTabGroup}"
 HorizontalAlignment="Left" hc:IconElement.Width="14"
 Command="{Binding ShowChartGroupCommand}"/>
                         </StackPanel>
@@ -297,7 +297,7 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <DockPanel LastChildFill="True" Grid.Column="0">
-                                                <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                                <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                                     <DockPanel>
                                                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                                             <TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
@@ -307,7 +307,7 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                                 CommandParameter="Table"/>
                                                         </StackPanel>
                                                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                                                            <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                                            <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                                 Command="{Binding HistoryDownloadCommand}"/>
                                                             <TextBlock Width="10"></TextBlock>
                                                             <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
@@ -418,7 +418,7 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                 </DataGrid>
                                             </DockPanel>
                                             <DockPanel LastChildFill="True" Grid.Column="1" Margin="15,0,0,0">
-                                                <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top" VerticalAlignment="Center">
+                                                <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top" VerticalAlignment="Center"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                                     <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                                         <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
                                                         <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
@@ -433,7 +433,7 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                         <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                        <Button Style="{StaticResource ButtonPrimary}" Content="设置" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+                                                        <Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
                                                             Margin="5,0,0,0" 
                                                             Command="{Binding SettingChartLimitCommand}"
                                                             CommandParameter="{Binding}"/>

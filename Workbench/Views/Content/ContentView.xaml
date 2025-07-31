@@ -27,7 +27,7 @@
         <Border>
             <ContentControl prism:RegionManager.RegionName="{x:Static utils:RegionNames.ButtonBarRegion}"/>
         </Border>
-        <Border Grid.Row="1" Background="Transparent" Padding="8,8,8,0">
+        <Border Grid.Row="1" Background="{DynamicResource MainPageBackgroundColor}" Padding="8,8,8,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>

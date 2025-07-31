@@ -290,7 +290,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
         }
         private void InitTheme()
         {
-            IsDarkTheme = false;
+            IsDarkTheme = true;
         }
 
         private async Task OnConnectionAsync()

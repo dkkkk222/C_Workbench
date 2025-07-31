@@ -51,7 +51,7 @@
     Padding="8" Margin="8">
                             <Grid>
                                 <DockPanel LastChildFill="True" Grid.Column="1">
-                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top" VerticalAlignment="Center">
+                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top" VerticalAlignment="Center"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                             <Grid>
                                                 <Grid.RowDefinitions>
@@ -60,7 +60,7 @@
                                                 </Grid.RowDefinitions>
                                                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                                                     <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                                    <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
+                                                    <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" 
 Margin="5,0,5,0" 
 Command="{Binding RenameCommand}"
 CommandParameter="Chart"/>
@@ -72,24 +72,16 @@ hc:InfoElement.TitlePlacement="Left" Width="110" />
 hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                     <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" hc:IconElement.Geometry="{StaticResource  PenGeometry }" Margin="5,0,0,0" Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>
+                                                    <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }" Margin="5,0,0,0" Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>
                                                 </StackPanel>
-                                                <StackPanel Grid.Row="1"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                    <!--<StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="宽:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        <TextBox Style="{StaticResource TextBoxExtend}" Background="White" Width="80"  Text="{Binding TableWidth}"/>
-                                                    </StackPanel>-->
+                                                <StackPanel Grid.Row="1"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right"> 
                                                     <TextBox Text="{Binding ChartWidth}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="宽："  Margin="0,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="80" />
-                                                    <TextBlock Width="30"></TextBlock>
-                                                    <!--<StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="高:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        <TextBox Style="{StaticResource TextBoxExtend}" Background="White" Width="110" Text="{Binding TableHeight}"/>
-                                                    </StackPanel>-->
+                                                    <TextBlock Width="30"></TextBlock> 
                                                     <TextBox Text="{Binding ChartHeight}" Style="{StaticResource TextBoxExtend}" hc:InfoElement.Title="高："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="80" />
                                                     <TextBlock Width="5"></TextBlock>
-                                                    <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Command="{Binding SettingDefaultChartWHCommand1}"/>
+                                                    <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource PenGeometry}" Command="{Binding SettingDefaultChartWHCommand1}"/>
 
                                                 </StackPanel>
                                                   </Grid>

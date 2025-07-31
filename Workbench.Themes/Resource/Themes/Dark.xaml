@@ -4,9 +4,13 @@
     <SolidColorBrush x:Key="PrimaryFontColor" Color="White"/>
     <!-- 主要背景颜色-->
     <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#212531"/>
+    <!--左侧树菜单底色-->
+    <SolidColorBrush x:Key="TreeBordBackgroundColor" Color="#E8EFF7"/>
     <!--次要背景颜色-->
     <SolidColorBrush x:Key="SecondaryBackgroundColor" Color="#313C4F"/>
     <SolidColorBrush x:Key="FooterBackgroundColor" Color="#212531"/>
+    <!--主界面底色-->
+    <SolidColorBrush x:Key="MainPageBackgroundColor" Color="Transparent"/>
     <!--标题栏底色-->
     <SolidColorBrush x:Key="TitleBarBackgroundColor" Color="#212531"/>
     <!--标题栏文字颜色-->
@@ -21,12 +25,20 @@
     <SolidColorBrush x:Key="HomeBackgroundColor" Color="#212531"/>
     <!-- AvalonDock区域背景 -->
     <SolidColorBrush x:Key="AvalonDockAreaBackgroundColor" Color="#2E3547"/>
+    <!--Tabs未选中区域颜色-->
+    <SolidColorBrush x:Key="TabsNoSelectBackgroundColor" Color="#D7E2EC"/>
+    <!--Tabs选中区域颜色-->
+    <SolidColorBrush x:Key="TabsSelectBackgroundColor" Color="#E8EFF7"/>
     <!-- Tabs区域背景 -->
     <SolidColorBrush x:Key="TabsBackgroundColor" Color="#3A4359"/>
     <!-- Tab选中背景色 -->
     <SolidColorBrush x:Key="TabSelectedBackgroundColor" Color="#266AC9"/>
     <!-- Tab选中字体色 -->
     <SolidColorBrush x:Key="TabSelectedFontColor" Color="#ffffff"/>
+    <!--TreeViewBordBackground-->
+    <SolidColorBrush x:Key="TreeViewBordBackgroundColor" Color="#E8EFF7"/>
+    <!-- TreeView标题 -->
+    <SolidColorBrush x:Key="TreeViewTitleBackgroundColor" Color="#ffffff"/>
     <!-- TreeView背景色 -->
     <SolidColorBrush x:Key="TreeViewBackgroundColor" Color="#313C4F"/>
     <!-- TreeViewItem选择背景色 -->
@@ -42,7 +54,10 @@
     <SolidColorBrush x:Key="MenuItemDropHighLight" Color="#5f5f5f"/>
     <!-- MenuItem选项高亮边框颜色 -->
     <SolidColorBrush x:Key="MenuItemDropHighLightBorderColor" Color="#ededed"/>
-
+    <!--Bord标题前颜色-->
+    <SolidColorBrush x:Key="BordTitleBackgroundColor" Color="#548EC4"/>
+    <!--一般按钮背景色-->
+    <SolidColorBrush x:Key="GenButtonBackgroundColor" Color="#2371B0"/>
     <!-- 按钮栏图标颜色 -->
     <SolidColorBrush x:Key="ButtonBarIconColor" Color="#DCDFE6"/>
     <!-- 按钮栏图标Hover颜色 -->
@@ -51,7 +66,8 @@
     <SolidColorBrush x:Key="ButtonBarHoverBorderBrush" Color="#909399"/>
     <!-- 按钮栏图标按压背景色 -->
     <SolidColorBrush x:Key="ButtonBarPressedBackground" Color="#909399"/>
-
+    <!-- 按钮栏文字颜色 -->
+    <SolidColorBrush x:Key="ButtonBarFontColor" Color="#fff"/>
     <!-- 黑色 -->
     <SolidColorBrush x:Key="BlackColor" Color="Black"/>
 
@@ -59,4 +75,7 @@
     <SolidColorBrush x:Key="ComboBoxToggleBackground" Color="#FF3F3F3F"/>
     <SolidColorBrush x:Key="ComboBoxItemHighlightBackground" Color="#FF4F4F4F"/>
 
+    <!--按钮颜色-->
+    <SolidColorBrush x:Key="StartButtonBackground" Color="#2371B0"/>
+    <SolidColorBrush x:Key="StopButtonBackground" Color="#EB5252"/>
 </ResourceDictionary>

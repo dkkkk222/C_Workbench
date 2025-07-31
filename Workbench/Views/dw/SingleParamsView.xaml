@@ -43,7 +43,7 @@
                                        Duration="0:0:0.18"/>
         </Storyboard>
     </UserControl.Resources>
-    <Grid>
+    <Grid  >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
@@ -57,17 +57,17 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
-                    <Border Style="{StaticResource BorderTipPrimary}">
+                    <Border Style="{StaticResource BorderTipPrimary}"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>
                         </StackPanel>
                     </Border>
                     <hc:UniformSpacingPanel Spacing="8" Orientation="Horizontal" Margin="0,10">
-                        <RadioButton GroupName="OrderBy" Content="按分类"
+                        <RadioButton GroupName="OrderBy" Content="按分类" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
 IsChecked="{Binding IsOrderByCategory, Mode=TwoWay}"/>
-                        <RadioButton GroupName="OrderBy" Content="按名称"
+                        <RadioButton GroupName="OrderBy" Content="按名称" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
 IsChecked="{Binding IsOrderByName, Mode=TwoWay}"/>
-                        <RadioButton GroupName="OrderBy" Content="按地址"
+                        <RadioButton GroupName="OrderBy" Content="按地址" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
 IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                         
                     </hc:UniformSpacingPanel>
@@ -138,7 +138,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel>
-                            <Border Style="{StaticResource BorderTipPrimary}" Margin="0,0,0,5">
+                            <Border Style="{StaticResource BorderTipPrimary}" BorderBrush="{DynamicResource BordTitleBackgroundColor}"  Margin="0,0,0,5">
                                 <hc:UniformSpacingPanel Spacing="15">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="寄存器概览" FontSize="{StaticResource SubHeadFontSize}"/>
@@ -421,7 +421,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <RowDefinition ></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <DockPanel LastChildFill="True">
-                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition></ColumnDefinition>
@@ -434,7 +434,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 <TextBlock Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </hc:UniformSpacingPanel>
 
-                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary}" Width="80" 
+                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary}"  Background="{DynamicResource GenButtonBackgroundColor}" Width="80" 
 IsEnabled="{Binding WriteCurrentRegister.AllowWrite}" HorizontalAlignment="Right"
 hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                         </Grid>
@@ -517,7 +517,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                     </Border>
                                 </DockPanel>
                                 <DockPanel LastChildFill="True" Grid.Row="1">
-                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition></ColumnDefinition>
@@ -529,7 +529,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding CurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </hc:UniformSpacingPanel>
-                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary}"   Width="80" 
+                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary}"   Background="{DynamicResource GenButtonBackgroundColor}"  Width="80" 
         IsEnabled="{Binding CurrentRegister.AllowRead}" HorizontalAlignment="Right"
         hc:IconElement.Geometry="{StaticResource ReadGeometry}" Command="{Binding ReadRegisterCommand}"/>
                                         </Grid>
@@ -621,10 +621,10 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                 <hc:Divider Grid.Row="1" Margin="0,8"/>
                 <Border Grid.Row="2">
                     <DockPanel LastChildFill="True">
-                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                             <hc:UniformSpacingPanel Spacing="15">
                                 <TextBlock Text="历史数据" FontSize="14"/>
-                                <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                 Command="{Binding HistoryDownloadCommand}"/>
                             </hc:UniformSpacingPanel>
                         </Border>

@@ -56,18 +56,18 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
-                    <Border Style="{StaticResource BorderTipPrimary}">
+                    <Border Style="{StaticResource BorderTipPrimary}"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>
                         </StackPanel>
                     </Border>
                     <hc:UniformSpacingPanel Spacing="8" Orientation="Horizontal" Margin="0,10">
                         <RadioButton GroupName="OrderBy" Content="按分类"
-             IsChecked="{Binding IsOrderByCategory, Mode=TwoWay}"/>
+             IsChecked="{Binding IsOrderByCategory, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
                         <RadioButton GroupName="OrderBy" Content="按名称"
-             IsChecked="{Binding IsOrderByName, Mode=TwoWay}"/>
+             IsChecked="{Binding IsOrderByName, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
                         <RadioButton GroupName="OrderBy" Content="按地址"
-             IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
+             IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
                         
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
@@ -161,7 +161,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                         </Grid.ColumnDefinitions>
                         <Border Margin="0,0,15,0">
                             <DockPanel LastChildFill="True">
-                                <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                     <DockPanel LastChildFill="True">
                                         <TextBlock Text="序列管理列表" FontSize="{StaticResource SubHeadFontSize}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
                                         <TextBlock Width="10"></TextBlock>
@@ -173,9 +173,9 @@ ToolTip="展开/收起目录" Content="收起目录" Visibility="{c:Binding IsLe
 Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />
                                         <Border>
                                             <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
-                                                <Button Content="新增序列" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                                <Button Content="新增序列" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                                     Command="{Binding AddSequenceCommand}"/>
-                                                <Button Content="批量下发" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AllGeometry}"
+                                                <Button Content="批量下发" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AllGeometry}"
                                                         Command="{Binding BatchSendCommand}"/>
                                             </hc:UniformSpacingPanel>
                                         </Border>
@@ -287,7 +287,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
 
                         <DockPanel LastChildFill="True">
 
-                            <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                            <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                 <DockPanel LastChildFill="True">
                                     <hc:UniformSpacingPanel  DockPanel.Dock="Left" Spacing="5">
                                         <TextBlock Text="序列配置详情:" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
@@ -295,10 +295,10 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     </hc:UniformSpacingPanel>
                                     <Border>
                                         <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
-                                            <Button Content="添加到序列" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                            <Button Content="添加到序列" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                             Command="{Binding AddRegisterToSequenceCommand}"/>
 
-                                            <Button Content="配置" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                            <Button Content="配置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                                         Command="{Binding ConfigRegisterCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"/>
                                         </hc:UniformSpacingPanel>
                                     </Border>
@@ -408,7 +408,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                             </DataGrid>
                         </DockPanel>
                         <DockPanel LastChildFill="True" Grid.Column="1">
-                            <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                            <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition></ColumnDefinition>

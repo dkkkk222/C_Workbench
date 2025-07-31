@@ -139,7 +139,7 @@
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
                 <Style TargetType="{x:Type TabItem}">
-                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Background" Value="{DynamicResource TabsNoSelectBackgroundColor}" />
                     <Setter Property="Foreground" Value="{DynamicResource PrimaryFontColor}" />
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="ToolTip" Value="{Binding ToolTip}" />
@@ -161,7 +161,7 @@
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="Selector.IsSelected" Value="true">
-                                        <Setter Property="Background" Value="{DynamicResource TabSelectedBackgroundColor}" />
+                                        <Setter Property="Background" Value="{DynamicResource TabsSelectBackgroundColor}" />
                                         <Setter Property="Foreground" Value="{DynamicResource TabSelectedFontColor}" />
                                         <Setter Property="Margin" Value="0,2" />
                                         <Setter TargetName="Content" Property="Margin" Value="0" />

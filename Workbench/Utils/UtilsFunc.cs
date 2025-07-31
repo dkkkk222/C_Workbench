@@ -141,7 +141,8 @@ namespace Workbench.Utils
         {
             Uri lightTheme = new Uri("pack://application:,,,/Workbench.Themes;component/Resource/Themes/Light.xaml", UriKind.Absolute);
             Uri darkTheme = new Uri("pack://application:,,,/Workbench.Themes;component/Resource/Themes/Dark.xaml", UriKind.Absolute);
-            ResourceDictionary darkThemeDict = new ResourceDictionary() { Source = darkTheme };
+            Uri blueTheme = new Uri("pack://application:,,,/Workbench.Themes;component/Resource/Themes/Blue.xaml", UriKind.Absolute);
+            ResourceDictionary darkThemeDict = new ResourceDictionary() { Source = blueTheme };
             ResourceDictionary lightThemeDict = new ResourceDictionary() { Source = lightTheme };
             if (isDarkTheme)
             {

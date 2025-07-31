@@ -17,13 +17,13 @@
             <MenuItem Name="Copy" Header="另存为" Command="{Binding SaveAsProjectCommand}"/>
         </ContextMenu>
     </UserControl.Resources>
-    <Border Padding="0" Background="{DynamicResource PrimaryBackgroundColor}" ContextMenu="{StaticResource CuContextMenu}">
+    <Border Padding="0" Background="{DynamicResource TreeBordBackgroundColor}" ContextMenu="{StaticResource CuContextMenu}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Border Background="{StaticResource DarkDefaultBrush}" Height="24" CornerRadius="6,6,0,0">
+            <Border Background="{DynamicResource TreeViewTitleBackgroundColor}" Height="24" CornerRadius="6,6,0,0">
                 <TextBlock Text="工程管理" FontSize="14" 
                            Foreground="{DynamicResource PrimaryFontColor}"
                            VerticalAlignment="Center" 

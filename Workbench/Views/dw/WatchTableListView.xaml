@@ -47,7 +47,7 @@
     Padding="8" Margin="8">
                             <Grid>
                                 <DockPanel LastChildFill="True" Grid.Column="0">
-                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top">
+                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
                                         <DockPanel>
                                             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                                 <TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
@@ -71,10 +71,10 @@
 
                                                 </StackPanel>
                                                 <TextBlock Width="10"></TextBlock>
-                                                <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource  FullScreenGeometry}"
+                                                <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  FullScreenGeometry}"
 Command="{Binding SettingDefaultWHCommand2}"/>
                                                 <TextBlock Width="10"></TextBlock>
-                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource CustomDownload}"
                     Command="{Binding HistoryDownloadCommand}"/>
                                                 <TextBlock Width="10"></TextBlock>
                                                 <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
