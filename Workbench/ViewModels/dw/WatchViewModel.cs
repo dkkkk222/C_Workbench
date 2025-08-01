@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Workbench.Db.Tables;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
@@ -344,6 +345,68 @@ namespace Workbench.ViewModels.dw
                 var isHaveAdd=CategoryRegisters.Where(x => x.AddressDec == register.AddressDec).FirstOrDefault();
                 if(isHaveAdd==null)
                     CategoryRegisters.Add(register);
+            }
+        });
+
+        #region TreeViewAddOrRemove
+        public void AddRegisterForCheck(CategoryTree current)
+        {
+            var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == current.Title);
+            var isHaveAdd = CategoryRegisters.Where(x => x.AddressDec == register.AddressDec).FirstOrDefault();
+            if (isHaveAdd == null)
+                CategoryRegisters.Add(register);
+        }
+        public void RemoveRegisterForCheck(CategoryTree current)
+        {            
+            //当选中状态取消的时候触发          
+            var RemoveList = new ObservableCollection<RegisterAddrInfo>();
+            var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == current.Title);
+            var isWatch = CategoryRegisters.Where(x => x.AddressDec == register.AddressDec).FirstOrDefault();
+            if(isWatch != null)
+            {
+                pms.StopRecord(isWatch.Id);//停止记录
+                isWatch.IsStartRecord = false;
+                if (!string.IsNullOrEmpty(isWatch.TableId))
+                {
+                    var thisTab = WatchGroups.Where(x => x.Id == isWatch.TableId).FirstOrDefault();
+                    if (thisTab != null)
+                    {
+                        //从监测表中移除
+                        var allFields = thisTab.BitFields.Where(x => x.AddressId == isWatch.Id).ToList();
+                        if (allFields != null && allFields.Count > 0)
+                        {
+                            var labels = thisTab.WpfPlotControl.Plot.GetPlottables();
+                            var labels2 = thisTab.WpfPlotControl2.Plot.GetPlottables();
+                            foreach (var rem in allFields)
+                            {
+                                var legLabel = labels.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                if (legLabel != null)
+                                    legLabel.IsVisible = false;//从波形图中移除
+                                var legLabel2 = labels2.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                if (legLabel2 != null)
+                                    legLabel2.IsVisible = false;//从波形图中移除
+                                thisTab.BitFields.Remove(rem);//从状态监测表中移除
+                            }
+                        }
+                        thisTab.WpfPlotControl.Refresh();
+                        thisTab.WpfPlotControl2.Refresh();
+                    }
+                    isWatch.TableId = null;
+                }
+                RemoveList.Add(isWatch);
+            }
+            CategoryRegisters.Remove(isWatch);
+        }
+        #endregion
+        public DelegateCommand<CategoryTree> CheckChangeCommand => new DelegateCommand<CategoryTree>((e) =>
+        {
+            if(e.IsCheck)
+            {
+                AddRegisterForCheck(e);
+            }
+            else
+            {
+                RemoveRegisterForCheck(e);
             }
         });
 

@@ -5,6 +5,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Org.BouncyCastle.Asn1.Mozilla;
 using PPEC.Communication;
+using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
@@ -59,7 +60,18 @@ namespace Workbench.ViewModels.dw
             set
             {
                 SetProperty(ref _treeKeyword, value);
-                SearchCategoryTree(value, IsOrderByAddress);
+                if (IsOrderByCategory)
+                {
+                    SearchCategoryTree(value, IsOrderByAddress);
+                }
+                else if (IsOrderByName)
+                {
+                    OrderByType(value, OrderByTypeEnum.Name);
+                }
+                else if (IsOrderByAddress)
+                {
+                    OrderByType(value, OrderByTypeEnum.Address);
+                }
             }
         }
 
@@ -308,7 +320,21 @@ namespace Workbench.ViewModels.dw
 
             });
         }));
+        private void OrderByType(string value, OrderByTypeEnum NameOrAddress)
+        {
+            var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().ToList().OrderBy(x => x.Title);
+            if (NameOrAddress == OrderByTypeEnum.Address)
+            {
+                tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().ToList().OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue);
 
+            }
+            if (!string.IsNullOrEmpty(value))
+            {
+                tempList = tempList.Where(x => x.AddressHex.Contains(value) || x.Title.Contains(value)).OrderBy(x => x.Title);
+            }
+            SingleParamTrees.Clear();
+            SingleParamTrees.AddRange(tempList);
+        }
         public async Task SendRegister()
         {
             if (WriteCurrentRegister == null)

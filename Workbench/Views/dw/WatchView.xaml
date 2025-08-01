@@ -173,7 +173,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Border Margin="0,8,0,0" Grid.Row="0">
+                            <!--<Border Margin="0,8,0,0" Grid.Row="0">
                                 <hc:UniformSpacingPanel Spacing="20" Orientation="Horizontal">
 
                                     <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="添加到监控配置表"  Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" 
@@ -182,7 +182,7 @@ hc:IconElement.Width="14" Command="{Binding AddTreeListToTableCommand}"/>
                                     <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="从监控配置表移除" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource SubGeometry}" 
 hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
                                 </hc:UniformSpacingPanel>
-                            </Border>
+                            </Border>-->
                             <DataGrid  MaxHeight="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="245" IsReadOnly="True"
                                          Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
@@ -631,7 +631,21 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                             <DataGridTemplateColumn.CellTemplate>
                                                                 <DataTemplate>
                                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding DataContext.AddToChartCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" />
+                                                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding DataContext.AddToChartCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" >
+                                                                            <CheckBox.Style>
+                                                                                <Style TargetType="CheckBox">
+                                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding Desc}" Value="无">
+                                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                                        </DataTrigger>
+                                                                                        <DataTrigger Binding="{Binding Desc}" Value="预留">
+                                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </CheckBox.Style>
+                                                                        </CheckBox>
                                                                     </StackPanel>
                                                                 </DataTemplate>
                                                             </DataGridTemplateColumn.CellTemplate>

@@ -38,7 +38,7 @@ namespace Workbench.Utils
                     AddressHex = decAddress.ToString("X4"),
                     Category = row.GetCell(2).StringCellValue,
                     SubCategory = row.GetCell(3).StringCellValue,
-                    Name = row.GetCell(4).StringCellValue,
+                    Name = row.GetCell(4).StringCellValue.Trim(),
                     RW = row.GetCell(5).StringCellValue,
                     ResetValue = row.GetCell(6).StringCellValue
                 };
@@ -57,7 +57,7 @@ namespace Workbench.Utils
                 var minMaxTuple = GetMinMax(remark);
                 details.Add(new BitField
                 {
-                    Name = name,
+                    Name = name.Trim(),
                     EndBit = bitTuple.endBit,
                     StartBit = bitTuple.startBit,
                     Desc = row.GetCell(2).StringCellValue,

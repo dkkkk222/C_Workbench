@@ -49,7 +49,7 @@
             <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="324" Background="#fafafa" Padding="8">
+        <Border Grid.Column="0" Width="324" Background="{StaticResource AvalonDockAreaBackgroundColor}" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -167,7 +167,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="名称:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True" IsEnabled="False"
+                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True" 
                                                      Text="{Binding CurrentRegister.Name}"/>
 
                                         </StackPanel>
