@@ -105,6 +105,8 @@ namespace Workbench.ViewModels.Content.ButtonBar
             });
             _eventAggregator.GetEvent<CloseConnectEvent>().Subscribe(() =>
             {
+                ConnectIcon = Constants.ConnectIcon;
+                ConnectStr = Constants.ConnectStr;
                 IsConnected = false;
             });
         }

@@ -737,9 +737,15 @@ namespace Workbench.ViewModels.dw
         {
             _eventAggregator.GetEvent<CloseConnectEvent>().Subscribe(() =>
             {
+                foreach (var isWatch in CategoryRegisters)
+                {
+                    pms.StopRecord(isWatch.Id);//停止记录
+                    isWatch.IsStartRecord = false;
+                }
                 _timer.Stop();
                 pms.Disable();
                 StopUiLoopAsync().ConfigureAwait(false);
+                
             });
         }
         #endregion
