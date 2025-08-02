@@ -360,6 +360,10 @@ namespace PPEC.Communication.Model
             get => _readBinary;
             set
             {
+                if(value==null)
+                {
+
+                }
                 if(SetProperty(ref _readBinary, value))
                 {
                     Value=Utility.BinStringToUInt(value);

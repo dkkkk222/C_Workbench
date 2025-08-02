@@ -418,6 +418,14 @@ namespace Workbench.ViewModels.dw
 
                 CurrentRegister = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == param.Title);
                 param.IsCheck = !param.IsCheck;
+                if (param.IsCheck)
+                {
+                    AddRegisterForCheck(param);
+                }
+                else
+                {
+                    RemoveRegisterForCheck(param);
+                }
             }));
 
         private void OrderByType(string value, OrderByTypeEnum NameOrAddress)

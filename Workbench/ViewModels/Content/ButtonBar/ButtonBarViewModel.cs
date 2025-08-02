@@ -271,8 +271,8 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 else
                 {
                     await OnConnectionAsync();
-                    ConnectIcon = Constants.DisConnectIcon;
-                    ConnectStr = Constants.DisConnectStr;
+                    //ConnectIcon = Constants.DisConnectIcon;
+                    //ConnectStr = Constants.DisConnectStr;
                 }
                     
             }));
@@ -308,6 +308,11 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 ppec.PortName = SerialPortName;
                 bool result = await ppec.ConnectAsync();
                 IsConnected = result;
+                if (IsConnected)
+                {
+                    ConnectIcon = Constants.DisConnectIcon;
+                    ConnectStr = Constants.DisConnectStr;
+                }
             }
             catch (System.Exception ex)
             {
