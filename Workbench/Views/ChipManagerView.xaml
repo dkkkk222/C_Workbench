@@ -146,7 +146,7 @@
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+     Color="#3D7EFF"/>
                         </DataGrid.Resources>
                         <DataGrid.CellStyle>
                             <Style TargetType="DataGridCell" BasedOn="{x:Null}">
@@ -248,7 +248,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="日期" Binding="{Binding Datetime}" Width="*" >
+                            <DataGridTextColumn Header="日期" Binding="{Binding Datetime}" Width="150" >
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="ToolTip" Value="{Binding Desc}"/>
@@ -258,11 +258,16 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTemplateColumn Header="管理" Width="150" >
+                            <DataGridTemplateColumn Header="管理" Width="170" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                                      
+
+                                            <hc:UniformSpacingPanel Spacing="10">
+                                                <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
+                                                <Button Content="芯片手册" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource   EyeOpenGeometry}" Click="ShowDoc_Click"/>
+                                            </hc:UniformSpacingPanel>
+                                            <TextBlock Width="10"></TextBlock>
                                             <hc:UniformSpacingPanel Spacing="10">
                                                 <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
                                                 <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}" Click="Delete_Click"/>

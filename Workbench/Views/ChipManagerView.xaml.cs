@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using PPEC.Communication.DB.Model;
 using Workbench.Db;
 using Workbench.Db.Tables;
 using Workbench.ViewModels;
+using Workbench.Views.Windows;
 
 namespace Workbench.Views
 {
@@ -50,7 +52,32 @@ namespace Workbench.Views
             vm.FilePath = chip.FilePath;
             vm.ChipId = chip.Id;
         }
-
+        private UserManualWindow _userManualWindow;
+        private void ShowDoc_Click(object sender, RoutedEventArgs e)
+        {
+            if (_userManualWindow == null)
+                _userManualWindow = new UserManualWindow();
+            var userManualName = "workbench_user_manual";
+            var path = $"{AppDomain.CurrentDomain.BaseDirectory}Resource\\{userManualName}.pdf";
+            if (!File.Exists(path))
+            {
+                MessageBox.Show($"未找到【Workbench用户手册】，请下载最新安装包并重新安装程序", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            if (_userManualWindow.IsVisible)
+            {
+                if (_userManualWindow.WindowState == WindowState.Minimized)
+                {
+                    _userManualWindow.WindowState = WindowState.Normal;
+                }
+                _userManualWindow.Activate();
+            }
+            else
+            {
+                _userManualWindow = new UserManualWindow();
+                _userManualWindow.Show();
+            }
+        }
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
 

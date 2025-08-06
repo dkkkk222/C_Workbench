@@ -204,7 +204,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+     Color="#3D7EFF"/>
                                     </DataGrid.Resources>
                                     <DataGrid.CellStyle>
                                         <Style TargetType="DataGridCell" BasedOn="{x:Null}">
@@ -390,7 +390,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <Button Content="添加到序列" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                             Command="{Binding AddRegisterToSequenceCommand}"/>
 
-                                            <Button Content="配置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                            <Button Content="查看配置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource EnlargeGeometry}"
                                                         Command="{Binding ConfigRegisterCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"/>
                                         </hc:UniformSpacingPanel>
                                     </Border>
@@ -400,7 +400,14 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
                                   AlternationCount="{x:Static sys:Int32.MaxValue}"   Background="{DynamicResource DataGridBackgroundColor}"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
-                                
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                        <i:InvokeCommandAction
+                Command="{Binding ConfigRegisterCommand}"          
+                                            CommandParameter="{Binding SelectedItem,
+                                          ElementName=SequenceGrid}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}"  >
                                         <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
@@ -419,7 +426,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+     Color="#3D7EFF"/>
                                 </DataGrid.Resources>
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell" BasedOn="{x:Null}">
@@ -651,7 +658,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+     Color="#3D7EFF"/>
                                     </DataGrid.Resources>
                                     <DataGrid.CellStyle>
                                         <Style TargetType="DataGridCell" BasedOn="{x:Null}">

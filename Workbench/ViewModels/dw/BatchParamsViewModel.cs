@@ -343,6 +343,7 @@ namespace Workbench.ViewModels.dw
                 var clone = JsonHelper.DeepClone(register);
                 clone.Id = Guid.NewGuid().ToString("N");
                 CurrentSequence.Items.Add(clone);
+                item.IsCheck = false;
             }
         }));
 

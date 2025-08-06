@@ -203,7 +203,7 @@ namespace Workbench.Models
                 string dataStr = Utility.ToHexString(dataBytes);
                 var decValue = Utility.ParseHexToUInt(dataStr);
 
-                return (addressHex, decValue); ;
+                return (addressHex, decValue);
             };
 
             CommService = service;
