@@ -16,7 +16,7 @@
         MinWidth="500"
         Topmost="False"
         Style="{StaticResource DefaulClientWindow}"
-        Title="MainWindow" Height="786" Width="1200">
+        Title="MainWindow" Height="786" Width="1200" Closing="NoTitleBarWindow_Closing">
     <Window.Resources>
         <Style x:Key="MenuItemIcon" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="16"/>

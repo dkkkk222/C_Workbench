@@ -169,6 +169,17 @@ namespace Workbench.Views
 
             }, nameof(ChipManagerWindow));
         }
+
+        private void NoTitleBarWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var viewModel = DataContext as MainWindowViewModel;
+            var r = MessageBox.Show("是否保存工程？", "提示",
+                           MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (r == MessageBoxResult.Yes)
+            {
+                viewModel.UserOrAutoSaveProject();
+            }            
+        }
     }
 
 }

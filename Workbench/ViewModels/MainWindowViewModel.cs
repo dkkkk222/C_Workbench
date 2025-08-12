@@ -44,6 +44,13 @@ namespace Workbench.ViewModels
             InitDataList();
         }
 
+        public void UserOrAutoSaveProject()
+        { 
+            foreach(var pro in _projectManager.OpenedProjectList)
+            {
+                _projectManager.SaveProject(pro);
+            }
+        }
         public async void InitDataList()
         {
             await InitDataStaticService.Instance.GetChipType();

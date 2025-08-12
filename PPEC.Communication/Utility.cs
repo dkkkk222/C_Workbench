@@ -622,7 +622,7 @@ namespace PPEC.Communication
                     Value = original.AddrInfo.Value?.ToArray(),
                     DecValue = original.AddrInfo.DecValue,
                     HexValue = original.AddrInfo.HexValue,
-                    BitFields = original.AddrInfo.BitFields
+                    BitFields =new ObservableCollection<BitField>( original.AddrInfo.BitFields
                         .Select(bf => new BitField
                         {
                             StartBit = bf.StartBit,
@@ -645,7 +645,7 @@ namespace PPEC.Communication
                             },
                             Value = bf.Value,
                             Result = bf.Result
-                        }).ToList()
+                        }))
                 }
             };
         }

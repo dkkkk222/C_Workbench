@@ -218,6 +218,30 @@ namespace Workbench.Views.dw
             }
         }
 
+        private void HexTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var viewModel = DataContext as SingleParamsViewModel;
+            if (viewModel.WriteCurrentRegister == null)
+                return;
+
+            var arr = viewModel.WriteCurrentRegister.BinaryArray;
+            var binaryStr = Utility.BinaryArrayToString(arr);
+            viewModel.WriteCurrentRegister.BinaryStr = binaryStr;
+
+            //更新Dec
+            var dec = Utility.BinaryToDec(binaryStr);
+            if (dec != viewModel.WriteCurrentRegister.DecValue)
+            {
+                viewModel.WriteCurrentRegister.DecValue = dec;
+            }
+
+            //更新Hex
+            var hex = Utility.DecToHex(dec);
+            if (hex != viewModel.WriteCurrentRegister.HexValue)
+            {
+                viewModel.WriteCurrentRegister.HexValue = hex;
+            }
+        }
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             var fe = sender as FrameworkElement;

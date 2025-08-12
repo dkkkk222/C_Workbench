@@ -619,13 +619,20 @@ namespace Workbench.ViewModels.dw
             if (tab == null)
                 return;
             //遍历寄存器下的BitField
-            param.BitFields.ForEach(bf =>
+            foreach(var bf in param.BitFields)
             {
                 var clone = JsonHelper.DeepClone(bf);
                 clone.AddressHexName = param.AddressHex;
                 clone.AddressId = param.Id;
                 tab.BitFields.Add(clone);
-            });
+            }
+            //param.BitFields.ForEach(bf =>
+            //{
+            //    var clone = JsonHelper.DeepClone(bf);
+            //    clone.AddressHexName = param.AddressHex;
+            //    clone.AddressId = param.Id;
+            //    tab.BitFields.Add(clone);
+            //});
         }));
 
         #region Method

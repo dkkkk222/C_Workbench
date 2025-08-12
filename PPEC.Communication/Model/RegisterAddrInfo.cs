@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using PPEC.Communication.Common;
 using PPEC.Communication.Enum;
 using Prism.Mvvm;
+using static Microsoft.IO.RecyclableMemoryStreamManager;
 
 namespace PPEC.Communication.Model
 {
@@ -101,11 +102,11 @@ namespace PPEC.Communication.Model
             }
         }
 
-        private List<BitField> _bitFields = new List<BitField>();
+        private ObservableCollection<BitField> _bitFields = new ObservableCollection<BitField>();
         /// <summary>
         /// 位值
         /// </summary>
-        public List<BitField> BitFields
+        public ObservableCollection<BitField> BitFields
         {
             get => _bitFields;
             set
@@ -308,6 +309,17 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _options, value);
         }
 
+        private bool _HasOptionsColumn = true;
+        public bool HasOptionsColumn
+        {
+            get => _HasOptionsColumn;
+            set
+            {
+                value = this.Options.Count > 0;
+                SetProperty(ref _HasOptionsColumn, value);
+            }
+        }
+
         public uint? RangeMin { get; set; }   // 连续范围最小值
         public uint? RangeMax { get; set; }   // 连续范围最大值
 
@@ -348,6 +360,17 @@ namespace PPEC.Communication.Model
                 }
 
             }
+        }
+
+        private string _writeHex = "";
+        /// <summary>
+        /// 数据下发
+        /// </summary>
+        [JsonIgnore]
+        public string WriteHex
+        {
+            get => _writeHex;
+            set => SetProperty(ref _writeHex, value);
         }
 
         private string _readBinary;

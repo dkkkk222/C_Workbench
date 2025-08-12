@@ -9,6 +9,7 @@
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:views="clr-namespace:Workbench.Views.dw"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+           xmlns:utils="clr-namespace:Workbench.Utils"
              xmlns:behaviors="clr-namespace:Workbench.Behaviors"
              xmlns:enums="clr-namespace:PPEC.Communication.Enum;assembly=PPEC.Communication"
             xmlns:cvt="clr-namespace:Workbench.Converters"
@@ -16,7 +17,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
- 
         <DataTemplate DataType="{x:Type viewModels:SingleParamsViewModel}">
             <views:SingleParamsView />
         </DataTemplate>
@@ -198,7 +198,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="写数据HEX:" Style="{StaticResource ItemTitle}"/>
                                             <TextBox x:Name="HexValueText" Text="{Binding WriteCurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" 
-                  hc:InfoElement.Placeholder="请输入" Width="200" LostFocus="HexValueText_LostFocus" 
+                  hc:InfoElement.Placeholder="请输入" Width="200" LostFocus="HexValueText_LostFocus"  IsEnabled="False"
                                                  PreviewTextInput="HexBox_PreviewTextInput" />
                                         </StackPanel>
                                     </Border>
@@ -207,7 +207,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                             <Border Margin="0,10,0,0">
                                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
                                     <Border>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
                                             <TextBlock Text="数据Binary:" Style="{StaticResource ItemTitle}"/>
                                             <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[0],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
@@ -225,9 +225,9 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
                                             <TextBlock Text="bit->" Style="{StaticResource ItemTitle}"/>
-                                            <hc:Row Width="200">
+                                            <hc:Row Width="200" >
                                                 <hc:Col Span="3">
                                                     <TextBlock Text="31" HorizontalAlignment="Center"/>
                                                 </hc:Col>
@@ -256,7 +256,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
                                             <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[1],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
@@ -274,7 +274,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
                                             <TextBlock Text="bit->" Style="{StaticResource ItemTitle}"/>
                                             <hc:Row Width="200">
                                                 <hc:Col Span="3">
@@ -305,7 +305,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
                                             <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[2],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
@@ -354,7 +354,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
                                             <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[3],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
@@ -372,7 +372,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" >
                                             <TextBlock Text="bit->" Style="{StaticResource ItemTitle}"/>
                                             <hc:Row Width="200">
                                                 <hc:Col Span="3">
@@ -441,15 +441,16 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                         </Grid>
                                     </Border>
                                     <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0" Height="200" VerticalAlignment="Top">
-                                        <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}"
+                                        <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}" x:Name="BitGrid"
                                                    Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
                                                   AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                          CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False">
                                             <DataGrid.Resources>
+                                                <utils:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
                                                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
                          Color="Transparent"/>
                                                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-                         Color="{StaticResource RowSelectedBrush}"/>
+                         Color="#3D7EFF"/>
                                             </DataGrid.Resources>
                                             <DataGrid.CellStyle>
                                                 <Style TargetType="DataGridCell" BasedOn="{x:Null}">
@@ -560,10 +561,10 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                     </DataGridTemplateColumn.CellTemplate>
                                                 </DataGridTemplateColumn>
                                                 <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                <DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                <DataGridTemplateColumn Header="数据配置解析(Binary)" Width="*" MinWidth="100" >
+                                                <DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}" Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>                                               
+                                                <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}" Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                <DataGridTemplateColumn Header="数据配置解析(Binary)" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}"  Width="*" MinWidth="100" >
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
@@ -589,18 +590,19 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                 <DataGridTemplateColumn Header="配置"  Width="*" MinWidth="100">
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
-                                                            <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"
-                                                         DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择"
-                                                         SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                         Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalAlignment="Center"
-                                                         >
-                                                                <i:Interaction.Triggers>
-                                                                    <i:EventTrigger EventName="SelectionChanged">
-                                                                        <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                                                  CommandParameter="{Binding}" />
-                                                                    </i:EventTrigger>
-                                                                </i:Interaction.Triggers>
-                                                            </ComboBox>
+                                                            <StackPanel VerticalAlignment="Center">
+                                                                <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}" DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalAlignment="Center">
+                                                                    <i:Interaction.Triggers>
+                                                                        <i:EventTrigger EventName="SelectionChanged">
+                                                                            <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                         CommandParameter="{Binding}" />
+                                                                        </i:EventTrigger>
+                                                                    </i:Interaction.Triggers>
+                                                                </ComboBox>
+                                                                <TextBox VerticalAlignment="Center" PreviewTextInput="HexBox_PreviewTextInput" 
+                                                                         InputMethod.IsInputMethodEnabled="False" Style="{StaticResource TextBoxExtend.Small}" Visibility="{c:Binding 'Options.Count==0',FalseToVisibility=Collapsed}"></TextBox>
+                                                            </StackPanel>                                                            
                                                         </DataTemplate>
                                                     </DataGridTemplateColumn.CellTemplate>
                                                 </DataGridTemplateColumn>
@@ -655,7 +657,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                                                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+     Color="#3D7EFF"/>
                                             </DataGrid.Resources>
                                             <DataGrid.CellStyle>
                                                 <Style TargetType="DataGridCell" BasedOn="{x:Null}">
@@ -796,7 +798,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+     Color="#3D7EFF"/>
                             </DataGrid.Resources>
                             <DataGrid.CellStyle>
                                 <Style TargetType="DataGridCell" BasedOn="{x:Null}">

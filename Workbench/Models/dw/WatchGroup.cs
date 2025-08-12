@@ -221,6 +221,7 @@ namespace Workbench.Models.dw
             TableWidth = 540;
             TableHeight = 360;
         });
+        [JsonIgnore]
         public DelegateCommand SettingDefaultChartWHCommand => new DelegateCommand(() =>
         {
             ChartWidth = 680;

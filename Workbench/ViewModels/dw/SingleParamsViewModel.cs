@@ -12,6 +12,7 @@ using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -132,10 +133,52 @@ namespace Workbench.ViewModels.dw
                 if(SetProperty(ref _currentRegister, value))
                 {
                     WriteCurrentRegister = JsonHelper.DeepClone(value);
+                    HookBitFields();
                 }                
             } 
         }
 
+        #region ShowClomn
+        private bool _hasOptionsColumn = true;
+        public bool HasOptionsColumn
+        {
+            get => _hasOptionsColumn;
+            set => SetProperty(ref _hasOptionsColumn, value);
+        }
+
+        private void HookBitFields()
+        {
+            var fields = WriteCurrentRegister?.BitFields;
+            if (fields == null) { HasOptionsColumn = false; return; }
+
+            // TODO: 解绑旧订阅（略）
+
+            // 集合替换时重算
+            // 如果 BitFields 不是 ObservableCollection，建议先换成它
+
+            //foreach (var f in fields)
+            //{
+            //    // Options 被替换
+            //    f.PropertyChanged += (_, e) =>
+            //    {
+            //        if (e.PropertyName == nameof(BitField.Options))
+            //            RecalcHasOptions();
+            //    };
+
+            //    // Options 内部增删
+            //    if (f.Options is INotifyCollectionChanged ncc)
+            //        ncc.CollectionChanged += (_, __) => RecalcHasOptions();
+            //}
+
+            RecalcHasOptions();
+        }
+
+        private void RecalcHasOptions()
+        {
+            var fields = WriteCurrentRegister?.BitFields;
+            HasOptionsColumn = fields != null && fields.Any(x => x.Options != null && x.Options.Count > 0);
+        }
+        #endregion
         private RegisterAddrInfo _writeCurrentRegister;
         public RegisterAddrInfo WriteCurrentRegister
         {

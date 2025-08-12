@@ -75,7 +75,7 @@ namespace Workbench.Utils
                 var name = ti.AddrInfo.Name;
                 if (dic.ContainsKey(name))
                 {
-                    ti.AddrInfo.BitFields = dic[name];
+                    ti.AddrInfo.BitFields = new ObservableCollection<BitField>(dic[name]);
                 }
                 else
                 {
@@ -88,7 +88,7 @@ namespace Workbench.Utils
                         Desc = "无",
                         FieldType = "None"
                     });
-                    ti.AddrInfo.BitFields = NoneBitField;
+                    ti.AddrInfo.BitFields = new ObservableCollection<BitField>(NoneBitField);
                 }
             }
 

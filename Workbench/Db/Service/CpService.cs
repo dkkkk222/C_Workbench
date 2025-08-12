@@ -60,7 +60,7 @@ namespace Workbench.Db.Service
                         bitFields.Add(bitField);
                     }
 
-                    addressInfo.BitFields = bitFields;
+                    addressInfo.BitFields =new ObservableCollection<BitField> (bitFields);
 
                     meta.AddrInfo = addressInfo;
                     target.Add(meta);
