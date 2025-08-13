@@ -15,4 +15,11 @@ namespace PPEC.Communication.Enum
         DECIMAL = 4,
         SHORT = 5
     }
+
+    public enum RecordTimeType
+    {
+        Hour=0,
+        Min=1,
+        Second=2
+    }
 }

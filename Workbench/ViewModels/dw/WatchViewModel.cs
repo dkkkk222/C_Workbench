@@ -521,7 +521,16 @@ namespace Workbench.ViewModels.dw
                 MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            pms.StartRecord(param,TimeSpan.FromSeconds(param.RecordTime));
+            double recordTime = param.RecordTime;
+            if (param.RecordTimeTypeItem== ((int)RecordTimeType.Hour).ToString())
+            {
+                recordTime = param.RecordTime * 60 * 60;
+            }
+            if (param.RecordTimeTypeItem == ((int)RecordTimeType.Min).ToString())
+            {
+                recordTime = param.RecordTime * 60;
+            }
+            pms.StartRecord(param,TimeSpan.FromSeconds(recordTime));
             param.IsStartRecord = true;
             //StartUiLoop(RefreshInterval);
         }));
@@ -713,11 +722,8 @@ namespace Workbench.ViewModels.dw
                     }
                 }
 
-                if (anyChanged)
-                {
-                    group.WpfPlotControl.RefreshData(false);
-                    group.WpfPlotControl2.RefreshData(false);
-                }
+                group.WpfPlotControl.RefreshData(false);
+                group.WpfPlotControl2.RefreshData(false);
             }, System.Windows.Threading.DispatcherPriority.Background);
         }
 

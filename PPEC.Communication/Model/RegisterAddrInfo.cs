@@ -12,6 +12,11 @@ namespace PPEC.Communication.Model
 {
     public class RegisterAddrInfo : BindableBase
     {
+        public RegisterAddrInfo() 
+        {
+            RecordTimeTypeItem = ((int)RecordTimeType.Second).ToString();
+        }
+
         private string _id;
         public string Id
         {
@@ -253,6 +258,32 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _recordTime, value);
         }
 
+        public ObservableCollection<BitOption> _RecordTimeSource=new ObservableCollection<BitOption>() {
+        
+            new BitOption()
+        {
+             Value = 0,Key="0",Display="小时"
+        },
+            new BitOption()
+        {
+             Value = 1,Key="1",Display="分钟"
+        },
+            new BitOption()
+        {
+            Value = 2,Key="2",Display="秒"
+        },
+        };
+        public ObservableCollection<BitOption> RecordTimeSource
+        {
+            get => _RecordTimeSource;
+            set => SetProperty(ref _RecordTimeSource, value);
+        }
+        public string _RecordTimeTypeItem;
+        public string RecordTimeTypeItem
+        {
+            get => _RecordTimeTypeItem;
+            set => SetProperty(ref _RecordTimeTypeItem, value);
+        }
         private bool _isStartRecord = false;
         public bool IsStartRecord
         {

@@ -330,6 +330,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         </hc:NumericUpDown.Value>
                                                     </hc:NumericUpDown>
                                                     <TextBlock Text="秒" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding RecordTimeSource}" DisplayMemberPath="Display" 
+                                                              SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding RecordTimeTypeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center">                                                        
+                                                    </ComboBox>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
