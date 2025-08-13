@@ -697,6 +697,7 @@ namespace Workbench.ViewModels.dw
         {
             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
             {
+                bool anyChanged = false;
                 foreach (var field in group.BitFields)
                 {
                     var newValue = _projectManager.GetRegisterValue(field.AddressHexName);
@@ -706,15 +707,18 @@ namespace Workbench.ViewModels.dw
                                          .FirstOrDefault(x => x.StartBit == field.StartBit);
                     if (newField != null)
                     {
-                        field.Result = newField.Result;
-                        field.ReadBinary = newField.ReadBinary;
-                        field.Value = newField.Value;
-
-                        group.WpfPlotControl.RefreshData(true);
-                        group.WpfPlotControl2.RefreshData(true);
-                    }                        
+                        if (!Equals(field.Result, newField.Result)) { field.Result = newField.Result; anyChanged = true; }
+                        if (!Equals(field.ReadBinary, newField.ReadBinary)) { field.ReadBinary = newField.ReadBinary; anyChanged = true; }
+                        if (!Equals(field.Value, newField.Value)) { field.Value = newField.Value; anyChanged = true; }
+                    }
                 }
-            });
+
+                if (anyChanged)
+                {
+                    group.WpfPlotControl.RefreshData(false);
+                    group.WpfPlotControl2.RefreshData(false);
+                }
+            }, System.Windows.Threading.DispatcherPriority.Background);
         }
 
         private void RecordTime_Tick(object sender, EventArgs e)

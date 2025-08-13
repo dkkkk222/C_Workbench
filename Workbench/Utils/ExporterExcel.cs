@@ -15,6 +15,104 @@ namespace Workbench.Utils
 {
     public class ExporterExcel
     {
+        public void ExportSessionToExcel_MergedByTimeAndId(string sessionId, string xlsxDirectory, int page = 200_000)
+        {
+            using (var db = new DbContext())
+            {
+                // 1) 取出：本 session 用到的 paramId -> name（名称可重复，仅用于显示）；列由 paramId 确定
+                var id2name = GetParamNameMapForSession(db, sessionId); // Dictionary<string, string>
+
+                // 列顺序：按 paramId 排（也可改成按 name 再按 id 排，但列键仍是 id）
+                //var headerIds = id2name.Keys.OrderBy(id => id, StringComparer.Ordinal).ToList();
+                var headerIds = id2name.Keys
+                                   .OrderBy(id => id2name[id] ?? "", StringComparer.Ordinal)
+                                   .ThenBy(id => id, StringComparer.Ordinal)
+                                   .ToList();
+
+                // 列显示标签：Name(paramId)。若无名称则仅显示 paramId
+                var headerLabels = headerIds
+                    .Select(id => {
+                        string n;
+                        return id2name.TryGetValue(id, out n) && !string.IsNullOrWhiteSpace(n)
+                            ? $"{n}"
+                            : id;
+                    })
+                    .ToList();
+
+                // paramId -> 列序号
+                var id2col = new Dictionary<string, int>(StringComparer.Ordinal);
+                for (int i = 0; i < headerIds.Count; i++) id2col[headerIds[i]] = i;
+
+                using (var wb = new XSSFWorkbook())
+                {
+                    var sh = wb.CreateSheet("Data");
+                    int rowIdx = 0;
+
+                    // 2) 写表头
+                    var header = sh.CreateRow(rowIdx++);
+                    header.CreateCell(0).SetCellValue("时间");
+                    for (int i = 0; i < headerLabels.Count; i++)
+                        header.CreateCell(i + 1).SetCellValue(headerLabels[i]);
+
+                    // 3) 分页读取 + 按“时间合并行”
+                    long lastTs = -1;
+                    long lastFid = 0;
+
+                    long currentTs = -1;
+                    double?[] currentLine = null; // 与 headerIds 同长度
+
+                    while (true)
+                    {
+                        var chunk = ReadChunkByTime(db, sessionId, lastTs, lastFid, page); // List<FlatRow>
+                        if (chunk.Count == 0) break;
+
+                        foreach (var rec in chunk)
+                        {
+                            // 新时间戳：先把上一时间的聚合行写出
+                            if (currentTs != -1 && rec.TsUtcMs != currentTs)
+                            {
+                                WriteCurrentLine(sh, ref rowIdx, currentTs, currentLine);
+                                currentTs = -1;
+                                currentLine = null;
+                            }
+
+                            // 初始化当前时间的缓冲行
+                            if (currentTs == -1)
+                            {
+                                currentTs = rec.TsUtcMs;
+                                currentLine = new double?[headerIds.Count];
+                            }
+
+                            // 以 paramId 定位列，最后值覆盖
+                            int col;
+                            if (id2col.TryGetValue(rec.ParamId, out col))
+                            {
+                                currentLine[col] = rec.Val;
+                            }
+                            // 若某 paramId 不在 id2col（极少数晚到头的情况），可选择忽略或动态扩列（此处忽略）
+                        }
+
+                        // 更新分页游标
+                        var last = chunk[chunk.Count - 1];
+                        lastTs = last.TsUtcMs;
+                        lastFid = last.FrameId;
+                    }
+
+                    // 末尾补写
+                    if (currentTs != -1 && currentLine != null)
+                    {
+                        WriteCurrentLine(sh, ref rowIdx, currentTs, currentLine);
+                    }
+
+                    // 4) 保存
+                    Directory.CreateDirectory(xlsxDirectory);
+                    var fileName = "数据监控表-历史.xlsx";
+                    var filePath = System.IO.Path.Combine(xlsxDirectory, fileName);
+                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                        wb.Write(fs);
+                }
+            }
+        }
         public void ExportSessionToExcel_MergedByTimeAndName(string sessionId, string xlsxPath, int page = 200_000)
         {
             using (var db = new DbContext())
@@ -112,12 +210,9 @@ namespace Workbench.Utils
         }
         private static List<FlatRow> ReadChunkByTime(DbContext db, string sessionId, long lastTs, long lastFid, int take)
         {
-            // 等价 SQL 思路：
-            // SELECT f.frame_id, f.ts_utc_ms, v.param_id, COALESCE(v.val_real, CAST(v.val_int AS REAL)) AS val
-            // FROM frame f JOIN value v ON v.frame_id=f.frame_id
-            // WHERE f.session_id=@sid AND (f.ts_utc_ms>@lastTs OR (f.ts_utc_ms=@lastTs AND f.frame_id>@lastFid))
-            // ORDER BY f.ts_utc_ms, f.frame_id
-            // LIMIT @take;
+            // 说明：
+            // - v.Result：按你的模型取数值列；如果你是 val_real/val_int，请改回 COALESCE 逻辑
+            // - ParamId/SessionId 为 string；若你的库是 int，请把类型改回 int
 
             return (from v in db.Values
                     join f in db.Frames on v.FrameId equals f.FrameId
@@ -128,16 +223,17 @@ namespace Workbench.Utils
                     {
                         FrameId = f.FrameId,
                         TsUtcMs = f.TsUtcMs,
-                        ParamId = v.ParamId,
-                        Val =v.Result 
+                        ParamId = v.ParamId,                         // 以参数ID为列键
+                        Val = v.Result                           // <<< 如果你没有 Result，请改为：
+                                                                 // Val = v.ValReal ?? (v.ValInt.HasValue ? (double?)v.ValInt.Value : null)
                     })
                    .Take(take)
                    .ToList();
-            //v.ValReal ?? (v.ValInt.HasValue ? (double?)v.ValInt.Value : null)
         }
         private static Dictionary<string, string> GetParamNameMapForSession(DbContext db, string sessionId)
         {
-            // 只捞本 session 用到过的参数，避免无关参数进入表头
+            // 你的模型示例中：参数表是 RegisterBits（Id, Desc）
+            // 如果你的参数表叫 parameter(name) 或别的，请在这里改成对应的表与字段
             return (from v in db.Values
                     join f in db.Frames on v.FrameId equals f.FrameId
                     join p in db.RegisterBits on v.ParamId equals p.Id
@@ -145,9 +241,9 @@ namespace Workbench.Utils
                     select new { p.Id, p.Desc })
                    .Distinct()
                    .ToList()
-                   .ToDictionary(x => x.Id, x => x.Desc, comparer: EqualityComparer<string>.Default);
+                   .ToDictionary(x => x.Id, x => x.Desc ?? "", StringComparer.Ordinal);
         }
-        
+
         private static DateTime MsToLocal(long msUtc)
         => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
            .AddMilliseconds(msUtc)

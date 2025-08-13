@@ -245,7 +245,7 @@ namespace Workbench.Models.dw
             {
                 var path = fbd.SelectedPath;
                 ExporterExcel exporterExcel = new ExporterExcel();
-                exporterExcel.ExportSessionToExcel_MergedByTimeAndName(Session_id, path);
+                exporterExcel.ExportSessionToExcel_MergedByTimeAndId(Session_id, path);
                 //HistoryToExcel(path);
             }
         });
