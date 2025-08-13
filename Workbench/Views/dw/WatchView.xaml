@@ -194,7 +194,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+     Color="#3D7EFF"/>
                                 </DataGrid.Resources>
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell" BasedOn="{x:Null}">
@@ -482,7 +482,7 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                                                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+     Color="#3D7EFF"/>
                                                     </DataGrid.Resources>
                                                     <DataGrid.CellStyle>
                                                         <Style TargetType="DataGridCell" BasedOn="{x:Null}">

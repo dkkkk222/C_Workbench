@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Workbench.Db;
 using Workbench.Db.Tables;
 using Workbench.Events;
@@ -36,6 +37,7 @@ namespace Workbench.ViewModels.dw
         public int RefreshInterval = 500;//UI更新间隔
         public System.Timers.Timer _timer = new System.Timers.Timer();
         public System.Timers.Timer _recordTime=new System.Timers.Timer();
+        public System.Timers.Timer _refTime = new System.Timers.Timer();
         private CancellationTokenSource _cts = new CancellationTokenSource();
         public IngestPipeline pipeLineIng { get; set; }
         public string session_id { get; set; }
@@ -54,6 +56,11 @@ namespace Workbench.ViewModels.dw
 
             _recordTime.Interval = 500; // 设置触发间隔
             _recordTime.Elapsed += RecordTime_Tick; // 设置触发事件
+
+            _refTime.Interval = 1000; // 设置触发间隔
+            _refTime.Elapsed += RefTime_Tick; // 设置触发事件
+            
+
             EventListener();
 
 
@@ -82,6 +89,7 @@ namespace Workbench.ViewModels.dw
                     {
                         _timer.Start();
                         _recordTime.Start();
+                        _refTime.Start();
                         pms.Enable();
                         StartUiLoop(RefreshInterval);
                     }
@@ -89,6 +97,7 @@ namespace Workbench.ViewModels.dw
                     {
                         _timer.Stop();
                         _recordTime.Stop();
+                        _refTime.Stop();
                         pms.Disable();
                         StopUiLoopAsync().ConfigureAwait(false);
                     }
@@ -722,11 +731,28 @@ namespace Workbench.ViewModels.dw
                     }
                 }
 
-                group.WpfPlotControl.RefreshData(false);
-                group.WpfPlotControl2.RefreshData(false);
+                //group.WpfPlotControl.RefreshData(false);
+                //group.WpfPlotControl2.RefreshData(false);
             }, System.Windows.Threading.DispatcherPriority.Background);
         }
-
+        private void RefTime_Tick(object sender, EventArgs e)
+        {
+            if (System.Windows.Application.Current != null)
+            {
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    foreach (var group in WatchGroups)
+                    {
+                        foreach (var field in group.BitFields)
+                        {
+                            group.WpfPlotControl.RefreshData(false);
+                            group.WpfPlotControl2.RefreshData(false);
+                        }
+                    }  
+                });
+            }
+        }
+        
         private void RecordTime_Tick(object sender, EventArgs e)
         {
             Task.Run(() =>
@@ -806,6 +832,7 @@ namespace Workbench.ViewModels.dw
                 }
                 _timer.Stop();
                 _recordTime.Stop();
+                _refTime.Stop();
                 pms.Disable();
                 StopUiLoopAsync().ConfigureAwait(false);
                 
