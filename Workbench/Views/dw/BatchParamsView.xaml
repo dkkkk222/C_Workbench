@@ -19,7 +19,7 @@
         <DataTemplate DataType="{x:Type viewModels:BatchParamsViewModel}">
             <views:BatchParamsView />
         </DataTemplate>
-        <cvt:AddOneConverter x:Key="AddOneConverter"/>
+        <!--<cvt:AddOneConverter x:Key="AddOneConverter"/>-->
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
         <cvt:IsOddAlternationConverter x:Key="IsOddAlternationConverter"/>
         <Style x:Key="ItemTitle" TargetType="TextBlock">
@@ -69,10 +69,10 @@
              IsChecked="{Binding IsOrderByName, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
                         <RadioButton GroupName="OrderBy" Content="按地址"
              IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
-                        
+                        <CheckBox Content="全选/反选" Command="{Binding SelectAllCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"></CheckBox>
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
-                <StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
+                <!--<StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
                     <ComboBox Grid.Row="1"  ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
 hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="130"
 SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
@@ -80,7 +80,7 @@ SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValue
                     <ComboBox ItemsSource="{Binding CategoryAddressList}" Style="{StaticResource ComboBoxExtend}"
 hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="167"
 SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                </StackPanel>
+                </StackPanel>-->
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,5">
 
                     <Border> 
@@ -398,7 +398,10 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </Border>
 
                             <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
-                                  AlternationCount="{x:Static sys:Int32.MaxValue}"   Background="{DynamicResource DataGridBackgroundColor}"
+                                  AlternationCount="2"   Background="{DynamicResource DataGridBackgroundColor}" 
+                                      
+                                      RowHeaderWidth="60" LoadingRow="SequenceGrid_LoadingRow"
+          Sorting="SequenceGrid_Sorting"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseDoubleClick">
@@ -548,7 +551,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTemplateColumn  Header="发送顺序" MinWidth="80">
+                                    <!--<DataGridTemplateColumn  Header="发送顺序" MinWidth="80">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow},
@@ -556,7 +559,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                    Converter={StaticResource AddOneConverter}}"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    </DataGridTemplateColumn>-->
                                     <DataGridTemplateColumn Header="地址" Width="Auto" MinWidth="60">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -585,7 +588,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="数据(DEC)" Width="*" MinWidth="110">
+                                    <!--<DataGridTemplateColumn Header="数据(DEC)" Width="*" MinWidth="110">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <hc:NumericUpDown Minimum="0" VerticalAlignment="Center" Style="{StaticResource NumericUpDownExtend.Small}" LostFocus="DecValueText_LostFocus">
@@ -595,7 +598,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 </hc:NumericUpDown>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    </DataGridTemplateColumn>-->
                                     <DataGridTemplateColumn Header="数据(Binary)" Width="*" MinWidth="648">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -764,7 +767,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100">
+                                        <!--<DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100">
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="ToolTip" Value="{Binding ReadBinary}"/>
@@ -773,7 +776,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
-                                        </DataGridTextColumn>
+                                        </DataGridTextColumn>-->
                                         <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100">
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock">
@@ -784,7 +787,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="70">
+                                        <!--<DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="70">
                                             <DataGridTextColumn.ElementStyle>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="ToolTip" Value="{Binding ResolveStr}"/>
@@ -793,8 +796,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
-                                        </DataGridTextColumn>
-                                        <DataGridTemplateColumn Header="数据配置解析(Binary)" Width="*" MinWidth="160" >
+                                        </DataGridTextColumn>-->
+                                        <!--<DataGridTemplateColumn Header="数据配置解析(Binary)" Width="*" MinWidth="160" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
@@ -816,7 +819,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
+                                        </DataGridTemplateColumn>-->
                                         <DataGridTemplateColumn Header="配置"  Width="*" MinWidth="100">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>

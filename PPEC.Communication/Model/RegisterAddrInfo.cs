@@ -277,6 +277,7 @@ namespace PPEC.Communication.Model
     }
     public class BitField : BindableBase
     {
+        public string Id { get; set; }//ID
         public int StartBit { get; set; }   // 低位
         public int EndBit { get; set; }   // 高位
         public int Length => EndBit - StartBit + 1;//位长度
@@ -307,17 +308,6 @@ namespace PPEC.Communication.Model
         {
             get => _options;
             set => SetProperty(ref _options, value);
-        }
-
-        private bool _HasOptionsColumn = true;
-        public bool HasOptionsColumn
-        {
-            get => _HasOptionsColumn;
-            set
-            {
-                value = this.Options.Count > 0;
-                SetProperty(ref _HasOptionsColumn, value);
-            }
         }
 
         public uint? RangeMin { get; set; }   // 连续范围最小值
@@ -362,7 +352,7 @@ namespace PPEC.Communication.Model
             }
         }
 
-        private string _writeHex = "";
+        private string _writeHex = "0";
         /// <summary>
         /// 数据下发
         /// </summary>
@@ -432,6 +422,8 @@ namespace PPEC.Communication.Model
     }
     public class BitOption : BindableBase
     {
+        public string Id { get; set; }
+
         private uint _value;
 
         /// <summary>

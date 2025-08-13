@@ -312,5 +312,25 @@ namespace Workbench.Views.dw
                 await viewModel.UpdateWriteRegister(bf.Name, bf.EndBit, bf.StartBit, result);
             }
         }
+        private void SequenceGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            // 每次行被实现/重用时设置正确的行号（0 基 + 1）
+            e.Row.Header = e.Row.GetIndex() + 1;
+        }
+        private void SequenceGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            // 排序后行索引会改变——让 DataGrid 排序完成再刷新行头
+            e.Handled = false; // 交给默认排序
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                var grid = (DataGrid)sender;
+                // 更新已实现的行的行头（虚拟化场景足够用）
+                for (int i = 0; i < grid.Items.Count; i++)
+                {
+                    var row = (DataGridRow)grid.ItemContainerGenerator.ContainerFromIndex(i);
+                    if (row != null) row.Header = i + 1;
+                }
+            }), System.Windows.Threading.DispatcherPriority.Background);
+        }
     }
 }

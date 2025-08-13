@@ -166,6 +166,11 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _writeCurrentRegister, value);
         }
 
+        public DelegateCommand<object> SelectAllCommand => new DelegateCommand<object>((e) =>
+        {
+            SingleParamTrees.SetAllLeavesChecked((bool)e);
+        });
+
         private DelegateCommand _checkboxChangeCommand;
         public DelegateCommand CheckboxChangeCommand => _checkboxChangeCommand ?? (_checkboxChangeCommand = new DelegateCommand(() =>
         {

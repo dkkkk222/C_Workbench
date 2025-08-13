@@ -70,6 +70,28 @@ namespace Workbench.Migrations
             Create.Index("IX_t_register_bit_option_id").OnTable("t_register_bit_option").OnColumn("id").Ascending().WithOptions().Unique();
             Create.Index("IX_t_register_bit_option_register_bit_id").OnTable("t_register_bit_option").OnColumn("register_bit_id");
 
+            #region Log
+            Create.Table("t_session")
+             .WithColumn("session_id").AsString().PrimaryKey()
+             .WithColumn("start_utc_ms").AsInt32().Nullable()
+             .WithColumn("end_utc_ms").AsInt32().Nullable();
+            Create.Index("IX_t_session_session_id").OnTable("t_session").OnColumn("session_id").Ascending().WithOptions().Unique();
+
+            Create.Table("t_frame")
+              .WithColumn("frame_id").AsInt32().PrimaryKey()
+              .WithColumn("session_id").AsString().Nullable()
+              .WithColumn("ts_utc_ms").AsInt32().Nullable();
+            Create.Index("IX_t_frame_frame_id").OnTable("t_frame").OnColumn("frame_id").Ascending().WithOptions().Unique();
+
+            Create.Table("t_WatchHistory")
+              .WithColumn("frame_id").AsInt32().PrimaryKey()
+              .WithColumn("param_id").AsString().Nullable()
+              .WithColumn("resultParse").AsString().Nullable()
+              .WithColumn("result").AsString().Nullable();
+            #endregion
+
+
+
             string fileName = "B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类.xlsx";
             string SDPCfileName = "SDPC_workbench软件数据监控表_zby0715.xlsx";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);

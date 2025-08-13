@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -346,6 +347,31 @@ namespace PPEC.Communication
                 }
             }
             return sb.ToString();
+        }
+
+        public static string HexToBinary(string hex, int padBits = 0)
+        {
+            if (string.IsNullOrWhiteSpace(hex))
+                return string.Empty;
+
+            hex = hex.Trim();
+
+            // 去掉 0x 前缀
+            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                hex = hex.Substring(2);
+
+            // 解析成整数
+            if (!ulong.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ulong value))
+                throw new ArgumentException($"非法十六进制值: {hex}");
+
+            // 转成二进制
+            string bin = Convert.ToString((long)value, 2);
+
+            // 按位数补零
+            if (padBits > 0 && bin.Length < padBits)
+                bin = bin.PadLeft(padBits, '0');
+
+            return bin;
         }
 
         /// <summary>

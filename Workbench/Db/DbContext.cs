@@ -24,5 +24,7 @@ namespace Workbench.Db
         public ITable<Register> Registers => this.GetTable<Register>();
         public ITable<RegisterBit> RegisterBits => this.GetTable<RegisterBit>();
         public ITable<RegisterBitOption> RegisterBitOptions => this.GetTable<RegisterBitOption>();
+        public ITable<FrameRow> Frames => this.GetTable<FrameRow>();
+        public ITable<ValueRow> Values => this.GetTable<ValueRow>();
     }
 }

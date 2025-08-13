@@ -73,7 +73,7 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                         
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
-                <StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
+                <!--<StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
                     <ComboBox Grid.Row="1"  ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
 hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="130"
 SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
@@ -81,7 +81,7 @@ SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValue
                     <ComboBox ItemsSource="{Binding CategoryAddressList}" Style="{StaticResource ComboBoxExtend}"
 hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="167"
 SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                </StackPanel>
+                </StackPanel>-->
                 <hc:SearchBar Grid.Row="2" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
                     <hc:SearchBar.Text>
                         <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
@@ -561,7 +561,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                     </DataGridTemplateColumn.CellTemplate>
                                                 </DataGridTemplateColumn>
                                                 <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                <DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}" Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                <!--<DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}" Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>-->
                                                 <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>                                               
                                                 <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}" Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
                                                 <DataGridTemplateColumn Header="数据配置解析(Binary)" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}"  Width="*" MinWidth="100" >
@@ -600,7 +600,7 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
                                                                         </i:EventTrigger>
                                                                     </i:Interaction.Triggers>
                                                                 </ComboBox>
-                                                                <TextBox VerticalAlignment="Center" PreviewTextInput="HexBox_PreviewTextInput" 
+                                                                <TextBox VerticalAlignment="Center" PreviewTextInput="HexBox_PreviewTextInput" Text="{Binding WriteHex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" LostFocus="HexListValueText_LostFocus"
                                                                          InputMethod.IsInputMethodEnabled="False" Style="{StaticResource TextBoxExtend.Small}" Visibility="{c:Binding 'Options.Count==0',FalseToVisibility=Collapsed}"></TextBox>
                                                             </StackPanel>                                                            
                                                         </DataTemplate>
@@ -754,7 +754,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     </DataGridTemplateColumn.CellTemplate>
                                                 </DataGridTemplateColumn>
                                                 <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                <DataGridTextColumn Header="数据读取" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                <!--<DataGridTextColumn Header="数据读取" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>-->
                                                 <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
                                                 <DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
 

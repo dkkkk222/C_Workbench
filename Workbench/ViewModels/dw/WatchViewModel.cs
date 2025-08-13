@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Workbench.Db;
 using Workbench.Db.Tables;
 using Workbench.Events;
 using Workbench.Models;
@@ -34,8 +35,10 @@ namespace Workbench.ViewModels.dw
         private readonly IDialogService _dialogService;
         public int RefreshInterval = 500;//UI更新间隔
         public System.Timers.Timer _timer = new System.Timers.Timer();
-
+        public System.Timers.Timer _recordTime=new System.Timers.Timer();
         private CancellationTokenSource _cts = new CancellationTokenSource();
+        public IngestPipeline pipeLineIng { get; set; }
+        public string session_id { get; set; }
         public WatchViewModel(IEventAggregator eventAggregator, ProjectManager projectManager, IDialogService dialogService)
         {
             _projectManager = projectManager;
@@ -49,12 +52,18 @@ namespace Workbench.ViewModels.dw
             _timer.Interval = 1; // 设置触发间隔
             _timer.Elapsed += Timer_Tick; // 设置触发事件
 
+            _recordTime.Interval = 500; // 设置触发间隔
+            _recordTime.Elapsed += RecordTime_Tick; // 设置触发事件
             EventListener();
 
-            foreach(var group in WatchGroups)
+
+            
+            foreach (var group in WatchGroups)
             {
                 group.Inject(dialogService);
             }
+            session_id = Guid.NewGuid().ToString();
+            pipeLineIng = new IngestPipeline(session_id);
         }
 
         #region Property
@@ -72,12 +81,14 @@ namespace Workbench.ViewModels.dw
                     if (value)
                     {
                         _timer.Start();
+                        _recordTime.Start();
                         pms.Enable();
                         StartUiLoop(RefreshInterval);
                     }
                     else
                     {
                         _timer.Stop();
+                        _recordTime.Stop();
                         pms.Disable();
                         StopUiLoopAsync().ConfigureAwait(false);
                     }
@@ -526,7 +537,7 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand AddWatchGroupCommand => _addWatchGroupCommand ?? (_addWatchGroupCommand = new DelegateCommand(() =>
         {
 
-            WatchGroups.Add(new WatchGroup(_dialogService)
+            WatchGroups.Add(new WatchGroup(_dialogService,session_id)
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Header = $"表{WatchGroups.Count + 1}",
@@ -699,9 +710,35 @@ namespace Workbench.ViewModels.dw
                         field.ReadBinary = newField.ReadBinary;
                         field.Value = newField.Value;
 
-                        group.WpfPlotControl.RefreshData(true); group.WpfPlotControl2.RefreshData(true);
+                        group.WpfPlotControl.RefreshData(true);
+                        group.WpfPlotControl2.RefreshData(true);
                     }                        
                 }
+            });
+        }
+
+        private void RecordTime_Tick(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                foreach(var param in CategoryRegisters)
+                {
+                    if(param.IsStartRecord)
+                    {
+                        foreach(var newField in param.BitFields)
+                        {
+                            var tempdic = new Dictionary<string, double>();
+                            tempdic.Add(newField.Id, newField.Result);
+                            //开始存储，记录历史记录
+                            pipeLineIng.Enqueue(new Sample
+                            {
+                                TimestampUtcMs = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds,
+                                Values = tempdic,
+                            });
+                        }                        
+                    }                    
+                }
+                
             });
         }
         private void Timer_Tick(object sender, EventArgs e)
@@ -758,6 +795,7 @@ namespace Workbench.ViewModels.dw
                     isWatch.IsStartRecord = false;
                 }
                 _timer.Stop();
+                _recordTime.Stop();
                 pms.Disable();
                 StopUiLoopAsync().ConfigureAwait(false);
                 

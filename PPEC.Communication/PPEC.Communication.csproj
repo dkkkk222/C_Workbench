@@ -217,10 +217,12 @@
     <Compile Include="Message\PublicMessageImpl.cs" />
     <Compile Include="Model\ChannelFactory.cs" />
     <Compile Include="Model\ChipInfo.cs" />
+    <Compile Include="Model\FlatRow.cs" />
     <Compile Include="Model\InvFrame.cs" />
     <Compile Include="Model\INVProtocolHandler.cs" />
     <Compile Include="Model\RegisterAddrInfo.cs" />
     <Compile Include="Model\RegValue.cs" />
+    <Compile Include="Model\Sample.cs" />
     <Compile Include="Model\ShowParams.cs" />
     <Compile Include="Model\TopoConfigMeta.cs" />
     <Compile Include="Model\UartProtocolHandler.cs" />

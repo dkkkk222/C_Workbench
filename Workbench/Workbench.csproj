@@ -338,15 +338,19 @@
     <Compile Include="Communication\SerialPortService.cs" />
     <Compile Include="Converters\AddOneConverter.cs" />
     <Compile Include="Converters\BoolToGridLengthConverter.cs" />
+    <Compile Include="Converters\DataGridRowIndexConverter.cs" />
     <Compile Include="Converters\IsOddAlternationConverter.cs" />
     <Compile Include="Converters\RowIndexConverter.cs" />
     <Compile Include="Db\DbContext.cs" />
     <Compile Include="Db\IService\ICpService.cs" />
     <Compile Include="Db\Service\CpService.cs" />
+    <Compile Include="Db\SqliteHelper.cs" />
     <Compile Include="Db\Tables\Chip.cs" />
+    <Compile Include="Db\Tables\FrameRow.cs" />
     <Compile Include="Db\Tables\Register.cs" />
     <Compile Include="Db\Tables\RegisterBit.cs" />
     <Compile Include="Db\Tables\RegisterBitOption.cs" />
+    <Compile Include="Db\Tables\SessionRow.cs" />
     <Compile Include="Events\AddedProjectEvent.cs" />
     <Compile Include="Events\CloseConnectEvent.cs" />
     <Compile Include="Events\CloseTabEvent.cs" />
@@ -395,6 +399,7 @@
     <Compile Include="Utils\Common\SerialPortHelper.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\Crc16CcittFalse.cs" />
+    <Compile Include="Utils\ExporterExcel.cs" />
     <Compile Include="Utils\FileHandler.cs" />
     <Compile Include="Utils\IgnorePropertyContractResolver.cs" />
     <Compile Include="Utils\JsonHelper.cs" />

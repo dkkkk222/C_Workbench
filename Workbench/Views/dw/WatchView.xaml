@@ -71,7 +71,7 @@
              IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/> 
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
-                <StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
+                <!--<StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
                     <ComboBox Grid.Row="1"  ItemsSource="{Binding SettingCategoryList}" Style="{StaticResource ComboBoxExtend}"
 hc:InfoElement.Title="分类：" hc:InfoElement.TitlePlacement="Left" Width="130"
 SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
@@ -79,7 +79,7 @@ SelectedItem="{Binding CurrentCategory}" DisplayMemberPath="Label" SelectedValue
                     <ComboBox ItemsSource="{Binding CategoryAddressList}" Style="{StaticResource ComboBoxExtend}"
 hc:InfoElement.Title="地址：" hc:InfoElement.TitlePlacement="Left" Width="167"
 SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValuePath="Value"></ComboBox>
-                </StackPanel>
+                </StackPanel>-->
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,5">
 
                     <Border>
@@ -476,7 +476,7 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                             <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
                                                             <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                                             <Setter Property="FontWeight" Value="SemiBold" />
-                                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                             <Setter Property="FontSize" Value="13"/>
                                                             <Setter Property="Padding" Value="7,0,0,0"/>

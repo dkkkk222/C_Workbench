@@ -182,5 +182,14 @@ namespace Workbench.Utils
 
             return result;
         }
+
+        public static void SetAllLeavesChecked(this IEnumerable<CategoryTree> roots, bool isChecked)
+        {
+            if (roots == null) return;
+            foreach (var leaf in roots.GetDeepestLeaves()) // 你已实现的方法：返回所有叶子
+            {
+                if (leaf != null) leaf.IsCheck = isChecked;
+            }
+        }
     }
 }

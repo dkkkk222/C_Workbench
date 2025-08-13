@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Workbench.Controls.Controls.Scottplot;
+using Workbench.Utils;
 using Workbench.ViewModels.dw;
 using Workbench.Views;
 using Workbench.Views.Windows;
@@ -23,9 +24,11 @@ namespace Workbench.Models.dw
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(WatchGroup));
         private IDialogService _dialogService;
-        public WatchGroup(IDialogService dialogService)
+        public string Session_id { get; set; }
+        public WatchGroup(IDialogService dialogService,string session_id)
         {
             _dialogService = dialogService;
+            Session_id = session_id;
         }
         private string _id;
         public string Id
@@ -241,7 +244,9 @@ namespace Workbench.Models.dw
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 var path = fbd.SelectedPath;
-                HistoryToExcel(path);
+                ExporterExcel exporterExcel = new ExporterExcel();
+                exporterExcel.ExportSessionToExcel_MergedByTimeAndName(Session_id, path);
+                //HistoryToExcel(path);
             }
         });
 
