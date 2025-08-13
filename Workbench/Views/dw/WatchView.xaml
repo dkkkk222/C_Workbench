@@ -167,22 +167,11 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                             </StackPanel>
                             
                         </Border>
-                        <!--<StackPanel Orientation="Vertical">-->
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <!--<Border Margin="0,8,0,0" Grid.Row="0">
-                                <hc:UniformSpacingPanel Spacing="20" Orientation="Horizontal">
-
-                                    <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="添加到监控配置表"  Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" 
-hc:IconElement.Width="14" Command="{Binding AddTreeListToTableCommand}"/>
-
-                                    <Button Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Right" Content="从监控配置表移除" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource SubGeometry}" 
-hc:IconElement.Width="14" Command="{Binding RemoveTreeListToTableCommand}"/>
-                                </hc:UniformSpacingPanel>
-                            </Border>-->
                             <DataGrid  MaxHeight="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="245" IsReadOnly="True"
                                          Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    

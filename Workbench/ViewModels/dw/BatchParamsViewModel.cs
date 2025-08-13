@@ -305,6 +305,7 @@ namespace Workbench.ViewModels.dw
         private async Task SendSequence(Sequence param)
         {
             var currentProject = _projectManager.CurrentProject;
+            param.Progress = 0;
             param.CompletedNum = 0;
             Thread.Sleep(1000);
             foreach (var register in param.Items)
@@ -393,6 +394,31 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand<RegisterAddrInfo> ConfigRegisterCommand => new DelegateCommand<RegisterAddrInfo>((param) =>
         {
             WriteCurrentRegister = param;
+        });
+
+        public DelegateCommand<Sequence> RemoveSequenceListCommand => new DelegateCommand<Sequence>((e) =>
+        {
+            SequenceList.Remove(e);
+        });
+        public DelegateCommand<Sequence> CopySequenceListCommand => new DelegateCommand<Sequence>((e) =>
+        {
+            var clone = JsonHelper.DeepClone(e);
+            clone.Id = Guid.NewGuid().ToString("N");
+            SequenceList.Add(clone);
+        });
+        public DelegateCommand<Sequence> MoveUpSequenceListCommand => new DelegateCommand<Sequence>((e) =>
+        {
+            var index = SequenceList.IndexOf(e);
+            if (index > 0)
+                SequenceList.Move(index, index - 1);
+            CollectionViewSource.GetDefaultView(SequenceList).Refresh();
+        });
+        public DelegateCommand<Sequence> MoveDownSequenceListCommand => new DelegateCommand<Sequence>((e) =>
+        {
+            int idx = SequenceList.IndexOf(e);
+            if (idx < SequenceList.Count - 1)
+                SequenceList.Move(idx, idx + 1);
+            CollectionViewSource.GetDefaultView(SequenceList).Refresh();
         });
 
         private DelegateCommand<RegisterAddrInfo> _removeSequenceItemCommand;

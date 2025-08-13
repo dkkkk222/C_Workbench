@@ -307,6 +307,7 @@ namespace Workbench.Models.dw
                     legLabel.IsVisible = true;
                 }
             }
+            WpfPlotControl.RefreshData();
         }
         private void OnAddToChart2(BitField field)
         {
@@ -333,6 +334,7 @@ namespace Workbench.Models.dw
                     legLabel.IsVisible = true;
                 }
             }
+            WpfPlotControl2.RefreshData();
         }
         private DelegateCommand<object> _settingChartLimitCommand;
         [JsonIgnore]

@@ -245,6 +245,21 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </DataGrid.CellStyle>
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow">
+                                            <Setter Property="Tag" Value="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                            <Setter Property="ContextMenu">
+                                                <Setter.Value>
+                                                    <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="165">
+                                                        <MenuItem Header="删除" Command="{Binding Path=PlacementTarget.Tag.RemoveSequenceListCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+CommandParameter="{Binding}"/>
+                                                        <MenuItem Header="复制" Command="{Binding Path=PlacementTarget.Tag.CopySequenceListCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+CommandParameter="{Binding}"/>
+                                                        <MenuItem Header="上移" Command="{Binding Path=PlacementTarget.Tag.MoveUpSequenceListCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+CommandParameter="{Binding}"/>
+                                                        <MenuItem Header="下移" Command="{Binding Path=PlacementTarget.Tag.MoveDownSequenceListCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+CommandParameter="{Binding}"/>
+                                                    </ContextMenu>
+                                                </Setter.Value>
+                                            </Setter>
                                             <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                             <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                             <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
