@@ -1,5 +1,7 @@
 ﻿using Force.DeepCloner;
+using HandyControl.Controls;
 using NPOI.SS.Formula.Functions;
+using NPOI.Util;
 using NPOI.XSSF.Streaming.Values;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
@@ -10,12 +12,16 @@ using ScottPlot.Plottables;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Workbench.Controls.Controls.Scottplot;
 using Workbench.Db;
 using Workbench.Db.Tables;
 using Workbench.Events;
@@ -71,8 +77,47 @@ namespace Workbench.ViewModels.dw
             }
             session_id = Guid.NewGuid().ToString();
             pipeLineIng = new IngestPipeline(session_id);
-        }
 
+            _watchChartGroupsForTab = new ListCollectionView(WatchChartGroups);
+            _watchChartGroupsForTab.Filter = o => o is WatchChartModel m && !IsPlaceholder(m);
+            WatchChartGroups.CollectionChanged += (_, __) =>
+            {
+                _watchChartGroupsForTab.Refresh();
+                SyncCurrentChartTab();
+                HasRealCharts = _watchChartGroupsForTab.Count > 0;
+            };
+            _watchChartGroupsForTab.Refresh();
+            SyncCurrentChartTab();
+            HasRealCharts = _watchChartGroupsForTab.Count > 0;
+        }
+        private void SyncCurrentChartTab()
+        {
+            if (_watchChartGroupsForTab.Count == 0)
+            {
+                if (CurrentChartTab != null) CurrentChartTab = null;
+                return;
+            }
+
+            // 当前未选/占位/或不在视图中：选第一个真实项
+            if (CurrentChartTab == null
+                || IsPlaceholder(CurrentChartTab)
+                || !_watchChartGroupsForTab.Contains(CurrentChartTab))
+            {
+                CurrentChartTab = (WatchChartModel)_watchChartGroupsForTab.GetItemAt(0);
+            }
+        }
+        private static bool IsPlaceholder(WatchChartModel m)
+    => m != null && string.Equals(m.Header, "未选中", StringComparison.Ordinal);
+        // TabControl 专用视图（独立于默认视图，不会影响 ComboBox）
+        private readonly ListCollectionView _watchChartGroupsForTab;
+        public ICollectionView WatchChartGroupsForTab => _watchChartGroupsForTab;
+
+        private bool _hasRealCharts;
+        public bool HasRealCharts
+        {
+            get => _hasRealCharts;
+            set => SetProperty(ref _hasRealCharts, value);
+        }
         #region Property
         public bool _isActive = false;
         public new bool IsActive
@@ -119,11 +164,32 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _watchGroups, value);
         }
 
+        public ObservableCollection<WatchChartModel> _watchChartGroups = new ObservableCollection<WatchChartModel>() {
+               new WatchChartModel("监测图") {
+                Id = Guid.NewGuid().ToString("N"),
+                Header = $"未选中",
+            }};
+        /// <summary>
+        /// 数据监测图列表
+        /// </summary>
+        public ObservableCollection<WatchChartModel> WatchChartGroups
+        {
+            get => _watchChartGroups;
+            set => SetProperty(ref _watchChartGroups, value);
+        }
+
         private WatchGroup _currentTab;
         public WatchGroup CurrentTab
         {
             get => _currentTab;
             set => SetProperty(ref _currentTab, value);
+        }
+
+        private WatchChartModel _currentChartTab=null;
+        public WatchChartModel CurrentChartTab
+        {
+            get => _currentChartTab;
+            set => SetProperty(ref _currentChartTab, value);
         }
 
         private ObservableCollection<ValueLabelOption> _settingCategoryList = new ObservableCollection<ValueLabelOption>();
@@ -300,7 +366,7 @@ namespace Workbench.ViewModels.dw
         /// </summary>
         public DelegateCommand RemoveTreeListToTableCommand => new DelegateCommand(() =>
         {
-            var resultSelect = MessageBox.Show("是否从监控表执行移除，该操作会停止监控该数据并从图和表中移除！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var resultSelect = System.Windows.Forms.MessageBox.Show("是否从监控表执行移除，该操作会停止监控该数据并从图和表中移除！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (resultSelect != System.Windows.Forms.DialogResult.Yes)
             {
                 return;
@@ -527,7 +593,7 @@ namespace Workbench.ViewModels.dw
         {
             if (!_projectManager.CurrentProject.IsConnecting)
             {
-                MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Windows.Forms.MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             double recordTime = param.RecordTime;
@@ -566,6 +632,22 @@ namespace Workbench.ViewModels.dw
                 CurrentTab = WatchGroups.Last();
             }
         }));
+
+        public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
+        {
+            int nameCount = WatchChartGroups.Count == 1 ? 1 : WatchChartGroups.Count;
+            WatchChartModel wpfPlotControl = new WatchChartModel("监测图") {
+                Id = Guid.NewGuid().ToString("N"),
+                Header = $"图{nameCount}",
+            };
+            WatchChartGroups.Add(wpfPlotControl);
+            if (CurrentChartTab == null || IsPlaceholder(CurrentChartTab))
+            {
+                CurrentChartTab = wpfPlotControl;
+            }
+            _watchChartGroupsForTab.Refresh();
+            HasRealCharts = _watchChartGroupsForTab.Count > 0;
+        });
 
         public DelegateCommand ShowWatchGroupCommand => new DelegateCommand(() =>
         {
@@ -664,7 +746,78 @@ namespace Workbench.ViewModels.dw
             //});
         }));
 
+        public DelegateCommand<SelectionChangedEventArgs> ChartTableChangeCommand => new DelegateCommand<SelectionChangedEventArgs>((e) =>
+        {
+            if (e.OriginalSource is System.Windows.Controls.ComboBox cb)
+            {
+                var row = cb.DataContext as PPEC.Communication.Model.BitField;
+                // 选中项/选中值
+                var selectedItem = cb.SelectedItem as WatchChartModel;   // 如果你需要整个对象
+                var selectedValue = cb.SelectedValue; // 因为你设置了 SelectedValuePath="Id"
+                var selectChart = WatchChartGroups.Where(x => x.Id == row.TableId).FirstOrDefault();
+                var selectTable=WatchChartGroups.Where(x => x.Id == selectedItem.Id).FirstOrDefault();//选中的Chart
+
+                if (selectedItem.Header=="未选中"&& selectedItem.Id!= row.TableId)
+                {
+                    if(selectChart!=null)
+                    {
+                        ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
+                        ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
+                    }
+                    row.TableId = null;
+                }
+                else if (selectedItem.Id != row.TableId)
+                {
+                    if (selectChart != null)
+                    { 
+                        ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
+                        ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
+                    }
+                    //var tagChart=selectTable.WpfPlotControl2.Plot.GetPlottables();
+                    //var taglegLabel = tagChart.Where(x => (x as Scatter).LegendText.Equals(row.Desc)).FirstOrDefault();
+                    //if(taglegLabel!=null)
+                    //{
+                    //    taglegLabel.IsVisible = true;
+                    //}
+                    //else
+                    //{
+                    //    selectTable.WpfPlotControl2.AddSignalData(row.Desc);
+                    //}                        
+                    //selectTable.WpfPlotControl2.RefreshData();
+                    ChangeChartVisble2(selectTable.WpfPlotControl2, row.Desc);
+                    ChangeChartVisble2(selectTable.WpfPlotControl, row.Desc);
+                    row.TableId = selectedItem.Id;
+
+                }
+               
+            }
+        });
         #region Method
+        public void ChangeChartVisble2(WpfPlotSteamBase chart, string paramName)
+        {
+            var tagChart = chart.Plot.GetPlottables();
+            var taglegLabel = tagChart.Where(x => (x as Scatter).LegendText.Equals(paramName)).FirstOrDefault();
+            if (taglegLabel != null)
+            {
+                taglegLabel.IsVisible = true;
+            }
+            else
+            {
+                chart.AddSignalData(paramName);
+            }
+            chart.RefreshData();
+        }
+        public void ChangeChartVisible(WpfPlotSteamBase chart,bool isShow,string paramName)
+        {
+            var plotConfig = chart.Plot.GetPlottables();
+            var legLabel = plotConfig.Where(x => (x as Scatter).LegendText.Equals(paramName)).FirstOrDefault();
+
+            if (legLabel != null)
+            {
+                legLabel.IsVisible = isShow;
+            }
+            chart.RefreshData();
+        }
 
         #region UpdateUi  更新界面内容
         private Task _uiLoopTask;
@@ -745,8 +898,15 @@ namespace Workbench.ViewModels.dw
                     {
                         foreach (var field in group.BitFields)
                         {
-                            group.WpfPlotControl.RefreshData(false);
-                            group.WpfPlotControl2.RefreshData(false);
+                            var fieldChart = WatchChartGroups.Where(x => x.Id == field.TableId).FirstOrDefault();//找到参数所在的波形图
+                            if (fieldChart != null)
+                            {
+                                fieldChart.WpfPlotControl2.RefreshData(false);
+                                fieldChart.WpfPlotControl.RefreshData(false);
+                            }
+
+                            //group.WpfPlotControl.RefreshData(false);
+                            //group.WpfPlotControl2.RefreshData(false);
                         }
                     }  
                 });
@@ -798,13 +958,19 @@ namespace Workbench.ViewModels.dw
                                                  .FirstOrDefault(x => x.StartBit == field.StartBit);
                             if (newField != null)
                             {
-                                if (field.IsSelected)
+                                if (field.TableId!=null)
                                 {
                                     if (pms._watching.ContainsKey(field.AddressId))
                                     {
+                                        var fieldChart=WatchChartGroups.Where(x => x.Id == field.TableId).FirstOrDefault();//找到参数所在的波形图
+                                        if(fieldChart!=null)
+                                        {
+                                            fieldChart.WpfPlotControl2.UpdateData(field.Desc, field.Result);
+                                            fieldChart.WpfPlotControl.UpdateData(field.Desc, field.Result);
+                                        }
                                         //更新波形数据
-                                        group.WpfPlotControl.UpdateData(field.Desc, field.Result);
-                                        group.WpfPlotControl2.UpdateData(field.Desc, field.Result);
+                                        //group.WpfPlotControl.UpdateData(field.Desc, field.Result);
+                                        //group.WpfPlotControl2.UpdateData(field.Desc, field.Result);
                                     }
                                 }
                             }

@@ -258,7 +258,7 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _recordTime, value);
         }
 
-        public ObservableCollection<BitOption> _RecordTimeSource=new ObservableCollection<BitOption>() {
+        private ObservableCollection<BitOption> _RecordTimeSource=new ObservableCollection<BitOption>() {
         
             new BitOption()
         {
@@ -273,6 +273,7 @@ namespace PPEC.Communication.Model
             Value = 2,Key="2",Display="秒"
         },
         };
+        [JsonIgnore]
         public ObservableCollection<BitOption> RecordTimeSource
         {
             get => _RecordTimeSource;
@@ -309,6 +310,13 @@ namespace PPEC.Communication.Model
     public class BitField : BindableBase
     {
         public string Id { get; set; }//ID
+
+        private string _tableId;
+        public string TableId
+        {
+            get => _tableId;
+            set => SetProperty(ref _tableId, value);
+        }
         public int StartBit { get; set; }   // 低位
         public int EndBit { get; set; }   // 高位
         public int Length => EndBit - StartBit + 1;//位长度

@@ -425,6 +425,7 @@
     <Compile Include="ViewModels\dw\BatchParamsViewModel.cs" />
     <Compile Include="ViewModels\dw\SingleParamsViewModel.cs" />
     <Compile Include="ViewModels\dw\WatchChartListViewModel.cs" />
+    <Compile Include="ViewModels\dw\WatchChartModel.cs" />
     <Compile Include="ViewModels\dw\WatchTableListViewModel.cs" />
     <Compile Include="ViewModels\dw\WatchViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

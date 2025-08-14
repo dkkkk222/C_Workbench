@@ -35,7 +35,7 @@
         <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto"
                   CanContentScroll="False">
-            <ItemsControl ItemsSource="{Binding WatchGroups,Mode=TwoWay}">
+            <ItemsControl ItemsSource="{Binding WatchGroupsView}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Rows="2"/>
