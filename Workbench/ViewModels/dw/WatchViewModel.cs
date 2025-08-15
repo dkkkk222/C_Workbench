@@ -57,7 +57,7 @@ namespace Workbench.ViewModels.dw
             pms =new ParameterMonitorService(10) { CurrentProject= _projectManager.CurrentProject };
             pms.Enable();
 
-            _timer.Interval = 1; // 设置触发间隔
+            _timer.Interval = 100; // 设置触发间隔
             _timer.Elapsed += Timer_Tick; // 设置触发事件
 
             _recordTime.Interval = 500; // 设置触发间隔
@@ -773,17 +773,6 @@ namespace Workbench.ViewModels.dw
                         ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
                         ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
                     }
-                    //var tagChart=selectTable.WpfPlotControl2.Plot.GetPlottables();
-                    //var taglegLabel = tagChart.Where(x => (x as Scatter).LegendText.Equals(row.Desc)).FirstOrDefault();
-                    //if(taglegLabel!=null)
-                    //{
-                    //    taglegLabel.IsVisible = true;
-                    //}
-                    //else
-                    //{
-                    //    selectTable.WpfPlotControl2.AddSignalData(row.Desc);
-                    //}                        
-                    //selectTable.WpfPlotControl2.RefreshData();
                     ChangeChartVisble2(selectTable.WpfPlotControl2, row.Desc);
                     ChangeChartVisble2(selectTable.WpfPlotControl, row.Desc);
                     row.TableId = selectedItem.Id;
@@ -793,6 +782,11 @@ namespace Workbench.ViewModels.dw
             }
         });
         #region Method
+        /// <summary>
+        /// 波形图参数添加
+        /// </summary>
+        /// <param name="chart"></param>
+        /// <param name="paramName"></param>
         public void ChangeChartVisble2(WpfPlotSteamBase chart, string paramName)
         {
             var tagChart = chart.Plot.GetPlottables();
@@ -807,6 +801,12 @@ namespace Workbench.ViewModels.dw
             }
             chart.RefreshData();
         }
+        /// <summary>
+        /// 波形图参数显示设置
+        /// </summary>
+        /// <param name="chart"></param>
+        /// <param name="isShow"></param>
+        /// <param name="paramName"></param>
         public void ChangeChartVisible(WpfPlotSteamBase chart,bool isShow,string paramName)
         {
             var plotConfig = chart.Plot.GetPlottables();
@@ -883,9 +883,6 @@ namespace Workbench.ViewModels.dw
                         if (!Equals(field.Value, newField.Value)) { field.Value = newField.Value; anyChanged = true; }
                     }
                 }
-
-                //group.WpfPlotControl.RefreshData(false);
-                //group.WpfPlotControl2.RefreshData(false);
             }, System.Windows.Threading.DispatcherPriority.Background);
         }
         private void RefTime_Tick(object sender, EventArgs e)
@@ -894,21 +891,11 @@ namespace Workbench.ViewModels.dw
             {
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    foreach (var group in WatchGroups)
+                    foreach(var chartTab in WatchChartGroups)
                     {
-                        foreach (var field in group.BitFields)
-                        {
-                            var fieldChart = WatchChartGroups.Where(x => x.Id == field.TableId).FirstOrDefault();//找到参数所在的波形图
-                            if (fieldChart != null)
-                            {
-                                fieldChart.WpfPlotControl2.RefreshData(false);
-                                fieldChart.WpfPlotControl.RefreshData(false);
-                            }
-
-                            //group.WpfPlotControl.RefreshData(false);
-                            //group.WpfPlotControl2.RefreshData(false);
-                        }
-                    }  
+                        chartTab.WpfPlotControl2.RefreshData(false);
+                        chartTab.WpfPlotControl.RefreshData(false);
+                    }
                 });
             }
         }
