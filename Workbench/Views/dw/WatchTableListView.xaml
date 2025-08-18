@@ -51,10 +51,10 @@
                                         <DockPanel>
                                             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                                 <TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                                <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
+                                                <!--<Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
                     Margin="5,0,0,0" 
                     Command="{Binding RenameCommand}"
-                    CommandParameter="Table"/>
+                    CommandParameter="Table"/>-->
                                             </StackPanel>
                                          
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">

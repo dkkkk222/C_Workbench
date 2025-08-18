@@ -13,6 +13,7 @@ namespace Workbench.Communication
         void Connect(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits);
         Task<bool> SendAsync(byte[] data);
         uint? Read(string hexAddress);
+        Task<uint?> ReadRegisterAsync(ushort regAddr, bool param1 = false, byte param2 = 0xA0, int timeoutMs = 20);
         void Close();
     }
 }

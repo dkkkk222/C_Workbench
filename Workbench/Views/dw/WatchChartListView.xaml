@@ -60,10 +60,10 @@
                                                 </Grid.RowDefinitions>
                                                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                                                     <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                                    <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" 
+                                                    <!--<Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" 
 Margin="5,0,5,0" 
 Command="{Binding RenameCommand}"
-CommandParameter="Chart"/>
+CommandParameter="Chart"/>-->
                                                     <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                     <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
@@ -81,7 +81,7 @@ hc:InfoElement.TitlePlacement="Left" Width="80" />
                                                     <TextBox Text="{Binding ChartHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="80" />
                                                     <TextBlock Width="5"></TextBlock>
-                                                    <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource PenGeometry}" Command="{Binding SettingDefaultChartWHCommand1}"/>
+                                                    <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
 
                                                 </StackPanel>
                                                   </Grid>

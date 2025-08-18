@@ -70,7 +70,10 @@ namespace Workbench.Communication
                 throw;
             }
         }
-
+        public Task<uint?> ReadRegisterAsync(ushort regAddr, bool param1 = false, byte param2 = 0xA0, int timeoutMs = 20)
+        {
+            return default;
+        }
         public async Task<bool> SendAsync(byte[] data)
         {
             if (!IsConnected)

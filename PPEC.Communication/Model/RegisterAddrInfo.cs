@@ -443,6 +443,14 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _selectedValue, value);
         }
 
+        private string _selectedChartValue;
+        [JsonIgnore]
+        public string SelectedChartValue
+        {
+            get => _selectedChartValue;
+            set => SetProperty(ref _selectedChartValue, value);
+        }
+
         private string _resolveStr;
         [JsonIgnore]
         public string ResolveStr

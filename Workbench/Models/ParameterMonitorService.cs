@@ -2,7 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -129,7 +131,30 @@ namespace Workbench.Models
                                       item.Param.AddressHex,
                                       CurrentProject.CommunicationType);
 
-                        await CurrentProject.CommService.SendAsync(cmd.bytes);
+                        switch (CurrentProject.CommunicationType)
+                        {
+                            case Constants.Modbus:
+                                await CurrentProject.CommService.SendAsync(cmd.bytes);
+                                break;
+                            case Constants.I2C:
+                                if (!ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                                {
+                                    await CurrentProject.CommService.ReadRegisterAsync(reg);
+                                }
+                                CurrentProject.CommService.Read(item.Param.AddressHex);
+                                break;
+                            case Constants.CAN:
+                                if (!ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
+                                {
+                                    await CurrentProject.CommService.ReadRegisterAsync(reg1);
+                                }                                    
+                                break;
+                            default:
+                                await CurrentProject.CommService.SendAsync(cmd.bytes);
+                                break;
+                        }
+
+                       
 
                         /* 2️⃣ 是否到期？到期就移除 */
                         if (item.Expired())

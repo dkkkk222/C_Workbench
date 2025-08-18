@@ -160,7 +160,7 @@ namespace Workbench.ViewModels
         {
             _eventAggregator.GetEvent<SerialPortAddRemoveEvent>().Publish();
             //上电重连
-            UtilsFunc.PowerOnEvent();
+            //UtilsFunc.PowerOnEvent();
         }
 
         private void USBRemove_EventArrived(object sender, EventArrivedEventArgs e)

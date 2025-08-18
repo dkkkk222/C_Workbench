@@ -90,6 +90,69 @@ namespace Workbench.Models
             set { SetProperty(ref _communicationType, value); }
         }
 
+        #region I2C
+        private int _i2cBusId = 1;
+        /// <summary>
+        /// 总线号
+        /// </summary>
+        public int I2cBusId
+        {
+            get => _i2cBusId;
+            set => SetProperty(ref _i2cBusId, value);
+        }
+
+        private int _i2cAddrBits = 0; // b2b1b0，范围 0..7
+        /// <summary>
+        /// 地址位
+        /// </summary>
+        public int I2cAddrBits
+        {
+            get => _i2cAddrBits;
+            set => SetProperty(ref _i2cAddrBits, value);
+        }
+        #endregion
+
+        #region CAN
+        private int _DeviceType = 21;
+        /// <summary>
+        /// DeviceType
+        /// </summary>
+        public int DeviceType
+        {
+            get => _DeviceType;
+            set => SetProperty(ref _DeviceType, value);
+        }
+
+        private int _SelectedDeviceId = 0; // b2b1b0，范围 0..7
+        /// <summary>
+        /// DEVICEID
+        /// </summary>
+        public int SelectedDeviceId
+        {
+            get => _SelectedDeviceId;
+            set => SetProperty(ref _SelectedDeviceId, value);
+        }
+
+        private int _SelectedCanId = 1;
+        /// <summary>
+        /// CANID
+        /// </summary>
+        public int SelectedCanId
+        {
+            get => _SelectedCanId;
+            set => SetProperty(ref _SelectedCanId, value);
+        }
+
+        private int _selectedBaudIndex = 0;
+        /// <summary>
+        /// CANID
+        /// </summary>
+        public int SelectedBaudIndex
+        {
+            get => _selectedBaudIndex;
+            set => SetProperty(ref _selectedBaudIndex, value);
+        }
+        #endregion
         private string _portName = "COM1";
         /// <summary>
         /// 端口
@@ -178,6 +241,10 @@ namespace Workbench.Models
             {
                 case Constants.SERIAL_PORT:
                     return await ConnectSerialPort();
+                case Constants.I2C:
+                    return await ConnectI2c();
+                case Constants.CAN:
+                    return await ConnectCan();
                 default:
                     break;
             }
@@ -225,6 +292,94 @@ namespace Workbench.Models
                 IsConnecting = true;
                 return true;
             }
+        }
+
+        public async Task<bool> ConnectCan()
+        {
+            try
+            {
+                var opts = new CanConnectOptions
+                {
+                    DevType = 21,   // 例如用户选的 USBCAN-2E-U
+                    DevId = (uint)SelectedDeviceId,
+                    CanId = (uint)SelectedCanId,   // 0 或 1
+                    BaudIndex = SelectedBaudIndex,     // 按你的映射
+                    SendTimeoutMs = 400                // 可选
+                };
+
+                // 连接：USBCAN-2E-U(21), Dev0, CAN0, 500kbps(index=1)
+                var can = new CanCommService();
+                can.Connect($"CAN:{DeviceType}:{SelectedDeviceId}:{SelectedCanId}:{SelectedBaudIndex}");
+                //can.FrameParser += (VCI_CAN_OBJ data) =>
+                //{
+                //    switch(data.ID)
+                //    {
+                //        case 0:
+                //            break;
+                //    }
+                //    string hex = Utility.ToHexString(data);
+
+                //    byte[] addressBytes = new byte[2];
+                //    Array.Copy(data, 16, addressBytes, 0, 2);
+                //    string addressHex = Utility.ToHexString(addressBytes);
+
+                //    byte[] dataBytes = new byte[4];
+                //    Array.Copy(data, 18, dataBytes, 0, 4);
+                //    string dataStr = Utility.ToHexString(dataBytes);
+                //    var decValue = Utility.ParseHexToUInt(dataStr);
+
+                //    return (addressHex, decValue);
+                //};
+                // 复位（在 CANA 上，目标 A0）
+                //await can.ResetAsync(useCanB: false, dest: 0xA0);
+                return true;
+            }
+            catch (Exception ex) 
+            {
+                return false;
+            }
+            
+           
+        }
+        private async Task<bool> ConnectI2c()
+        {
+            var service = new Workbench.Communication.I2cCommService();
+
+            // 复用现有 IBaseCommService.Connect 的签名，portName 里塞 I2C 参数
+            string i2cPortToken = $"I2C:{I2cBusId}:{I2cAddrBits}";
+
+            try
+            {
+                service.Connect(i2cPortToken, 0, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"I2C 连接失败：{ex.Message}", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                IsConnecting = false;
+                service.Close();
+                return false;
+            }
+
+            CommService = service;
+
+            // （可选）按协议先来一次通信复位
+            var i2c = (Workbench.Communication.I2cCommService)CommService;
+            await i2c.ResetAsync(120); // 芯片约100ms复位，这里等120ms
+
+            // 按你的串口逻辑：读地址 0x0170 作为在线校验
+            ushort probeReg = 0x0170;
+            var val = await i2c.ReadRegisterAsync(probeReg);
+            if (!val.HasValue)
+            {
+                MessageBox.Show("板卡连接异常（I2C），请检查接线/地址", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                IsConnecting = false;
+                service.Close();
+                return false;
+            }
+
+            IsTrueConnected = CommService.IsConnected;
+            IsConnecting = true;
+            return true;
         }
     }
 }

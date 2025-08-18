@@ -398,16 +398,16 @@ SelectedValuePath="Id">
                    Command="{Binding AddWatchGroupCommand}"/>
                             <TextBlock Width="10"></TextBlock>
                             <Button Content="增加数据监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
-HorizontalAlignment="Left" hc:IconElement.Width="14"
-Command="{Binding AddWatchGroupChartCommand}"/>
+                                    HorizontalAlignment="Left" hc:IconElement.Width="14"
+                                    Command="{Binding AddWatchGroupChartCommand}"/>
                             <TextBlock Width="10"></TextBlock>
                             <Button Content="展示数据监测表" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PushGeometry}"
-HorizontalAlignment="Left" hc:IconElement.Width="14"
-Command="{Binding ShowWatchGroupCommand}"/>
+                                    HorizontalAlignment="Left" hc:IconElement.Width="14"
+                                    Command="{Binding ShowWatchGroupCommand}"/>
                             <TextBlock Width="10"></TextBlock>
                             <Button Content="展示数据监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource   HTabGroup}"
-HorizontalAlignment="Left" hc:IconElement.Width="14"
-Command="{Binding ShowChartGroupCommand}"/>
+                                    HorizontalAlignment="Left" hc:IconElement.Width="14"
+                                    Command="{Binding ShowChartGroupCommand}"/>
                         </StackPanel>
 
                     </Border>
@@ -489,10 +489,8 @@ Command="{Binding ShowChartGroupCommand}"/>
                                                         </DataGrid.ColumnHeaderStyle>
                                                         <DataGrid.Resources>
                                                             <utils:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
-     Color="Transparent"/>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="#3D7EFF"/>
+                                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#3D7EFF"/>
                                                         </DataGrid.Resources>
                                                         <DataGrid.CellStyle>
                                                             <Style TargetType="DataGridCell" BasedOn="{x:Null}">
@@ -634,7 +632,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                     <DataTemplate>
                                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                             <ComboBox ItemsSource="{Binding Path=DataContext.WatchChartGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                                                    DisplayMemberPath="Header"  SelectedValuePath="Id">
+                                                                                                    DisplayMemberPath="Header"  SelectedValuePath="Id"
+                                                                                      SelectedValue="{Binding SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                                                                 <!--Style="{StaticResource ComboBoxExtend.Small}"-->
                                                                                 <i:Interaction.Triggers>
                                                                                     <i:EventTrigger EventName="SelectionChanged">
@@ -655,23 +654,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                                     </Style>
                                                                                 </ComboBox.Style>
                                                                             </ComboBox>
-                                                                            
-                                                                            <!--<CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding DataContext.AddToChartCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" >
-                                                                                <CheckBox.Style>
-                                                                                    <Style TargetType="CheckBox">
-                                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                                        <Style.Triggers>
-                                                                                            <DataTrigger Binding="{Binding Desc}" Value="无">
-                                                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                                                            </DataTrigger>
-                                                                                            <DataTrigger Binding="{Binding Desc}" Value="预留">
-                                                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                                                            </DataTrigger>
-                                                                                        </Style.Triggers>
-                                                                                    </Style>
-                                                                                </CheckBox.Style>
-                                                                            </CheckBox>-->
-                                                                        </StackPanel>
+                                                                           </StackPanel>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>

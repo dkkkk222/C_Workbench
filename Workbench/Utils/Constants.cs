@@ -10,6 +10,8 @@ namespace Workbench.Utils
     {
         //串口
         public const string SERIAL_PORT = "串口";
+        //I2C
+        public const string I2C = "I2C";
 
         //CAN口
         public const string CAN_PORT = "CAN口";

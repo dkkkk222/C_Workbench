@@ -82,9 +82,13 @@ namespace Workbench.ViewModels.dw
             _watchChartGroupsForTab.Filter = o => o is WatchChartModel m && !IsPlaceholder(m);
             WatchChartGroups.CollectionChanged += (_, __) =>
             {
-                _watchChartGroupsForTab.Refresh();
-                SyncCurrentChartTab();
-                HasRealCharts = _watchChartGroupsForTab.Count > 0;
+                System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    _watchChartGroupsForTab.Refresh();
+                    SyncCurrentChartTab();
+                    HasRealCharts = _watchChartGroupsForTab.Count > 0;
+                });
+                    
             };
             _watchChartGroupsForTab.Refresh();
             SyncCurrentChartTab();
@@ -395,10 +399,12 @@ namespace Workbench.ViewModels.dw
                                 var labels2 = thisTab.WpfPlotControl2.Plot.GetPlottables();
                                 foreach (var rem in allFields)
                                 {
-                                    var legLabel = labels.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
-                                    if(legLabel!=null)
+                                    //var legLabel = labels.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                    var legLabel = labels.OfType<Scatter>().FirstOrDefault(s => s.LegendText == rem.Desc);
+                                    if (legLabel!=null)
                                         legLabel.IsVisible = false;//从波形图中移除
-                                    var legLabel2 = labels2.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                    //var legLabel2 = labels2.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                    var legLabel2 = labels2.OfType<Scatter>().FirstOrDefault(s => s.LegendText == rem.Desc);
                                     if (legLabel2 != null)
                                         legLabel2.IsVisible = false;//从波形图中移除
                                     thisTab.BitFields.Remove(rem);//从状态监测表中移除
@@ -748,39 +754,91 @@ namespace Workbench.ViewModels.dw
 
         public DelegateCommand<SelectionChangedEventArgs> ChartTableChangeCommand => new DelegateCommand<SelectionChangedEventArgs>((e) =>
         {
-            if (e.OriginalSource is System.Windows.Controls.ComboBox cb)
+            try
             {
-                var row = cb.DataContext as PPEC.Communication.Model.BitField;
-                // 选中项/选中值
-                var selectedItem = cb.SelectedItem as WatchChartModel;   // 如果你需要整个对象
-                var selectedValue = cb.SelectedValue; // 因为你设置了 SelectedValuePath="Id"
-                var selectChart = WatchChartGroups.Where(x => x.Id == row.TableId).FirstOrDefault();
-                var selectTable=WatchChartGroups.Where(x => x.Id == selectedItem.Id).FirstOrDefault();//选中的Chart
+                if (e == null) return;
 
-                if (selectedItem.Header=="未选中"&& selectedItem.Id!= row.TableId)
+                var selectedItem = e.AddedItems?.OfType<WatchChartModel>().FirstOrDefault();
+                if (selectedItem == null) return;
+                var cb = e.Source as System.Windows.Controls.ComboBox ?? e.OriginalSource as System.Windows.Controls.ComboBox;
+                if (cb == null) return;
+
+                var row = cb.DataContext as PPEC.Communication.Model.BitField;
+                if (row == null) return;
+
+                var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == row.TableId);
+                var selectTable = WatchChartGroups.FirstOrDefault(x => x.Id == selectedItem.Id);
+
+                if (selectedItem.Header == "未选中" && selectedItem.Id != row.TableId)
                 {
-                    if(selectChart!=null)
+                    if (selectChart != null)
                     {
-                        ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
+                        ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Desc);
                         ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
                     }
                     row.TableId = null;
+                    return;
                 }
-                else if (selectedItem.Id != row.TableId)
+
+                if (selectedItem.Id != row.TableId)
                 {
                     if (selectChart != null)
-                    { 
-                        ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
+                    {
+                        ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Desc);
                         ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
                     }
-                    ChangeChartVisble2(selectTable.WpfPlotControl2, row.Desc);
-                    ChangeChartVisble2(selectTable.WpfPlotControl, row.Desc);
-                    row.TableId = selectedItem.Id;
-
+                    if (selectTable != null)
+                    {
+                        ChangeChartVisble2(selectTable.WpfPlotControl2, row.Desc);
+                        ChangeChartVisble2(selectTable.WpfPlotControl, row.Desc);
+                        row.TableId = selectedItem.Id;
+                    }
                 }
-               
             }
+            catch (Exception ex) 
+            {
+
+            }
+            
         });
+        //public DelegateCommand<SelectionChangedEventArgs> ChartTableChangeCommand => new DelegateCommand<SelectionChangedEventArgs>((e) =>
+        //{
+        //    if (e.OriginalSource is System.Windows.Controls.ComboBox cb)
+        //    {
+        //        var row = cb.DataContext as PPEC.Communication.Model.BitField;
+        //        // 选中项/选中值
+        //        var selectedItem = cb.SelectedItem as WatchChartModel;   // 如果你需要整个对象
+        //        if (selectedItem == null|| row==null)
+        //            return;
+        //        //var selectedValue = cb.SelectedValue; // 因为你设置了 SelectedValuePath="Id"
+        //        var selectChart = WatchChartGroups.Where(x => x.Id == row.TableId).FirstOrDefault();
+        //        var selectTable=WatchChartGroups.Where(x => x.Id == selectedItem.Id).FirstOrDefault();//选中的Chart
+        //        if (selectTable == null)
+        //            return;
+        //        if (selectedItem.Header=="未选中"&& selectedItem.Id!= row.TableId)
+        //        {
+        //            if(selectChart!=null)
+        //            {
+        //                ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
+        //                ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
+        //            }
+        //            row.TableId = null;
+        //        }
+        //        else if (selectedItem.Id != row.TableId)
+        //        {
+        //            if (selectChart != null)
+        //            { 
+        //                ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
+        //                ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
+        //            }
+        //            ChangeChartVisble2(selectTable.WpfPlotControl2, row.Desc);
+        //            ChangeChartVisble2(selectTable.WpfPlotControl, row.Desc);
+        //            row.TableId = selectedItem.Id;
+
+        //        }
+
+        //    }
+        //});
         #region Method
         /// <summary>
         /// 波形图参数添加
@@ -789,17 +847,17 @@ namespace Workbench.ViewModels.dw
         /// <param name="paramName"></param>
         public void ChangeChartVisble2(WpfPlotSteamBase chart, string paramName)
         {
-            var tagChart = chart.Plot.GetPlottables();
-            var taglegLabel = tagChart.Where(x => (x as Scatter).LegendText.Equals(paramName)).FirstOrDefault();
-            if (taglegLabel != null)
+            var existing = chart.Plot.GetPlottables().OfType<Scatter>().FirstOrDefault(s => s.LegendText == paramName);
+            if (existing != null)
             {
-                taglegLabel.IsVisible = true;
+                existing.IsVisible = true;
             }
             else
             {
                 chart.AddSignalData(paramName);
             }
-            chart.RefreshData();
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(() => chart.RefreshData());
+            //chart.RefreshData();
         }
         /// <summary>
         /// 波形图参数显示设置
@@ -809,14 +867,11 @@ namespace Workbench.ViewModels.dw
         /// <param name="paramName"></param>
         public void ChangeChartVisible(WpfPlotSteamBase chart,bool isShow,string paramName)
         {
-            var plotConfig = chart.Plot.GetPlottables();
-            var legLabel = plotConfig.Where(x => (x as Scatter).LegendText.Equals(paramName)).FirstOrDefault();
-
+            var legLabel = chart.Plot.GetPlottables().OfType<Scatter>().FirstOrDefault(s => s.LegendText == paramName); ;
             if (legLabel != null)
-            {
                 legLabel.IsVisible = isShow;
-            }
-            chart.RefreshData();
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(() => chart.RefreshData());
+            //chart.RefreshData();
         }
 
         #region UpdateUi  更新界面内容
