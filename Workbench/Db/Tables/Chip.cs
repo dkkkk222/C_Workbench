@@ -19,6 +19,8 @@ namespace Workbench.Db.Tables
 
         [Column("file_name", CanBeNull = false)]
         public string FileName { get; set; }
+        [Column("doc_filepath", CanBeNull = false)]
+        public string DocFilePath { get; set; }
 
         [Column("datetime", CanBeNull = false)]
         public string Datetime { get; set; }

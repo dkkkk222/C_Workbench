@@ -190,6 +190,13 @@ namespace Workbench.ViewModels
             }
         }
 
+        public async Task UpdateChipDoc(Chip e)
+        {
+            using (var db = new DbContext())
+            {
+                await db.UpdateAsync(e);
+            }
+        }
         public DelegateCommand CloseCommand => new DelegateCommand(() =>
         {
             RequestClose?.Invoke(new Prism.Services.Dialogs.DialogResult(ButtonResult.Cancel));

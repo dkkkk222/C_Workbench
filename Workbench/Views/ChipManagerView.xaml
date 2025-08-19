@@ -228,7 +228,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         </DataGrid.RowStyle>
                         <!-- 定义列 -->
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="芯片名称" Binding="{Binding Name}" Width="150" >
+                            <DataGridTextColumn Header="芯片名称" Binding="{Binding Name}" Width="100" >
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="ToolTip" Value="{Binding Desc}"/>
@@ -258,7 +258,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTemplateColumn Header="管理" Width="170" >
+                            <DataGridTemplateColumn Header="管理" Width="270" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
@@ -266,6 +266,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <hc:UniformSpacingPanel Spacing="10">
                                                 <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
                                                 <Button Content="芯片手册" Style="{StaticResource ButtonInfo.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource   EyeOpenGeometry}" Click="ShowDoc_Click"/>
+                                                <Button Content="上传手册" Style="{StaticResource ButtonInfo.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource   EyeOpenGeometry}" Click="UpdateDoc_Click"/>
                                             </hc:UniformSpacingPanel>
                                             <TextBlock Width="10"></TextBlock>
                                             <hc:UniformSpacingPanel Spacing="10">

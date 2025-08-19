@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Web.WebView2.Core;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Workbench.Views.Windows
 {
@@ -24,23 +25,31 @@ namespace Workbench.Views.Windows
     /// </summary>
     public partial class UserManualWindow
     {
-        public UserManualWindow()
+        public UserManualWindow(string filePath=null)
         {
             InitializeComponent();
             DataContext = this;
-            InitWebViewAsync();
+            InitWebViewAsync(filePath);
         }
-        private async Task InitWebViewAsync()
+        private async Task InitWebViewAsync(string filePath)
         {
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
             InitWebView2DirAccess(baseDir);
-            await webView.EnsureCoreWebView2Async(
-                await CoreWebView2Environment.CreateAsync($"{baseDir}\\WebView2",
-                    options: new CoreWebView2EnvironmentOptions($"-disable-web-security --user-data-dir={baseDir}\\ChromeDevSession")));
-            webView.CoreWebView2.SetVirtualHostNameToFolderMapping("app.example", "./dist", CoreWebView2HostResourceAccessKind.Deny);
-            webView.CoreWebView2.Navigate("http://app.example/index.html");
+            LoadPdf(filePath);
+            //await webView.EnsureCoreWebView2Async(
+            //    await CoreWebView2Environment.CreateAsync($"{baseDir}\\WebView2",
+            //        options: new CoreWebView2EnvironmentOptions($"-disable-web-security --user-data-dir={baseDir}\\ChromeDevSession")));
+            //webView.CoreWebView2.SetVirtualHostNameToFolderMapping("app.example", "./dist", CoreWebView2HostResourceAccessKind.Deny);
+            //webView.CoreWebView2.Navigate("http://app.example/index.html");
         }
-
+        private async void LoadPdf(string pdfPath)
+        {
+            await webView.EnsureCoreWebView2Async();
+            var uri = new Uri(pdfPath); // 本地：file:/// 开头
+            webView.CoreWebView2.Navigate(uri.AbsoluteUri);
+            // 示例：跳至第3页可尝试 hash（是否生效取决于内置查看器）
+            // PdfView.CoreWebView2.Navigate(uri.AbsoluteUri + "#page=3");
+        }
         private void InitWebView2DirAccess(string baseDir)
         {
             try

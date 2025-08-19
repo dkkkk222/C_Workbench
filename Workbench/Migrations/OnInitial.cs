@@ -24,6 +24,7 @@ namespace Workbench.Migrations
                 .WithColumn("id").AsString().PrimaryKey()
                 .WithColumn("name").AsString(64).NotNullable()
                 .WithColumn("file_name").AsString().NotNullable()
+                .WithColumn("doc_filepath").AsString().Nullable()
                 .WithColumn("datetime").AsString().NotNullable()
                 .WithColumn("is_deleted").AsString(2).NotNullable();
             Create.Index("IX_t_chip_id").OnTable("t_chip").OnColumn("id").Ascending().WithOptions().Unique();
@@ -89,8 +90,6 @@ namespace Workbench.Migrations
               .WithColumn("resultParse").AsString().Nullable()
               .WithColumn("result").AsString().Nullable();
             #endregion
-
-
 
             string fileName = "B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类.xlsx";
             string SDPCfileName = "SDPC_workbench软件数据监控表_zby0715.xlsx";
