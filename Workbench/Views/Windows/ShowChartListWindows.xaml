@@ -11,9 +11,9 @@
    Style="{StaticResource DefaulClientWindow}"
    Height="900" Width="1620">
     <comCtrl:NoTitleBarWindow.TitleBarContent>
-        <comCtrl:TitleBar>
+        <comCtrl:TitleBar Background="{DynamicResource TitleBarBordBackgroundColor}">
             <comCtrl:TitleBar.Title>
-                <TextBlock Text="芯片管理" Style="{DynamicResource TitleBarStyle}"/>
+                <TextBlock Text="芯片管理" Foreground="{DynamicResource TreeViewTitleBackgroundColor}" Style="{DynamicResource TitleBarStyle}"/>
             </comCtrl:TitleBar.Title>
         </comCtrl:TitleBar>
     </comCtrl:NoTitleBarWindow.TitleBarContent>

@@ -28,12 +28,12 @@
                         <Border Grid.Column="2"></Border>
                         <Border Grid.Column="3">
                             <StackPanel Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
-                        <Button Content="&#xe646;" Style="{DynamicResource WindowControlButton}" 
-                                        Click="Minimum_Click" 
+                        <Button Content="&#xe646;" Style="{DynamicResource WindowControlButton}" Foreground="{DynamicResource TitleBarIconColor}"
+                                        Click="Minimum_Click"
                                         Visibility="{calc:Binding ElementName=titleBar, Path=ShowMaximize, FalseToVisibility=Collapsed}"/>
-                                <Button Style="{StaticResource MaximizeButtonStyle}" Click="Maximum_Click"
+                        <Button Style="{StaticResource MaximizeButtonStyle}" Click="Maximum_Click"  Foreground="{DynamicResource TitleBarIconColor}"
                                         Visibility="{calc:Binding ElementName=titleBar, Path=ShowMinimize, FalseToVisibility=Collapsed}"/>
-                                <Button Content="&#xe653;" Style="{StaticResource WindowCloseButton}" Click="Close_Click" />
+                        <Button Content="&#xe653;" Style="{StaticResource WindowCloseButton}" Click="Close_Click"  Foreground="{DynamicResource TitleBarIconColor}" />
                             </StackPanel>
                         </Border>
             </Grid>

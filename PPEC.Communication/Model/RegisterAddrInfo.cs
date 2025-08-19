@@ -14,7 +14,7 @@ namespace PPEC.Communication.Model
     {
         public RegisterAddrInfo() 
         {
-            RecordTimeTypeItem = ((int)RecordTimeType.Second).ToString();
+            RecordTimeTypeItem = ((int)RecordTimeType.Hour).ToString();
         }
 
         private string _id;

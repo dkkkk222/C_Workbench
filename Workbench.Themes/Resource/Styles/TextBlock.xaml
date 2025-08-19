@@ -9,7 +9,7 @@
 
     <!-- 最小化、最大化、关闭图标 -->
     <Style x:Key="WindowControlIcon" TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryFontColor}"/>
+       
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>

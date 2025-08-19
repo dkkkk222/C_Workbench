@@ -44,8 +44,8 @@ namespace Workbench.Controls.Controls.Scottplot
 
             //base.MouseRightButtonDown -= WpfPlotSteamBase_MouseRightButtonDown;
             //base.MouseRightButtonDown += WpfPlotSteamBase_MouseRightButtonDown;
-            Plot.XLabel("间距", 22);
-            Plot.YLabel("幅值", 22);
+            Plot.XLabel(XAxisName, 22);
+            Plot.YLabel(YAxisName, 22);
             Plot.Font.Automatic();
 
             //// change figure colors

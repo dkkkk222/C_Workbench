@@ -147,7 +147,7 @@ namespace Workbench.Models
                                 if (!ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
                                 {
                                     await CurrentProject.CommService.ReadRegisterAsync(reg1);
-                                }                                    
+                                }
                                 break;
                             default:
                                 await CurrentProject.CommService.SendAsync(cmd.bytes);

@@ -282,7 +282,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding AddressHex}" Header="寄存器地址(HEX)" Width="*" >
+                                    <DataGridTextColumn Binding="{Binding AddressHex}" Header="寄存器地址(HEX)" Width="*"  MinWidth="90">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="ToolTip" Value="{Binding AddressHex}"/>
@@ -291,7 +291,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding Category}" Header="分类" Width="*" >
+                                    <DataGridTextColumn Binding="{Binding Category}" Header="分类" Width="*"  MinWidth="90">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="ToolTip" Value="{Binding Category}"/>
@@ -309,7 +309,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding Name}" Header="寄存器名称" Width="*">
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="寄存器名称" Width="*"  MinWidth="90">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="ToolTip" Value="{Binding Name}"/>
@@ -344,7 +344,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="开始" Width="*">
+                                    <DataGridTemplateColumn Header="开始" Width="*" MinWidth="90">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Button Content="开始记录" VerticalAlignment="Center" Style="{StaticResource ButtonInfo.Small}" BorderThickness="0" Background="{DynamicResource StartButtonBackground}" HorizontalAlignment="Left"  IsEnabled="{c:Binding !IsStartRecord}"
@@ -353,7 +353,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="停止" Width="*">
+                                    <DataGridTemplateColumn Header="停止" Width="*"  MinWidth="90">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Button Content="停止记录" VerticalAlignment="Center" Style="{StaticResource ButtonWarning.Small}" BorderThickness="0" Background="{DynamicResource StopButtonBackground}" HorizontalAlignment="Left"  IsEnabled="{c:Binding IsStartRecord}"
@@ -362,7 +362,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="添加到数据监测表" Width="*">
+                                    <DataGridTemplateColumn Header="添加到数据监测表" Width="*"  MinWidth="80">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel VerticalAlignment="Center">
@@ -691,29 +691,47 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <DataTemplate>
                                         <DockPanel LastChildFill="True" Grid.Column="1" Margin="0,0,0,0">
                                             <!--BorderTipPrimary-->
-                                            <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0" Height="40" CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
-                                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                                    <!--<TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
-                                                    <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,10,0,0" StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                            <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0"  CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition></RowDefinition>
+                                                        <RowDefinition></RowDefinition>
+                                                    </Grid.RowDefinitions>
+                                                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
-                                                    
-                                                    <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
+                                                        <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,10,0,0" StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
+                                                        <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
 Margin="5,0,5,0" 
 Command="{Binding RenameCommand}"
 CommandParameter="Chart"/>
-                                                    <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
+                                                        <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
+                                                        <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
+                                                        <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
+                                                        <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+
+
+                                                        <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
 Margin="5,0,0,0" 
 Command="{Binding SettingChartLimitCommand}"
 CommandParameter="{Binding}"/>
-                                                </StackPanel>
+                                                    </StackPanel>
+                                                    <StackPanel Grid.Row="1"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,50,0">
+                                                        <TextBox Text="{Binding ChartXName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X名称："  Margin="0,0,12,0"
+hc:InfoElement.TitlePlacement="Left" Width="100" />
+
+                                                        <TextBox Text="{Binding ChartYName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y名称："  Margin="5,0,5,0"
+hc:InfoElement.TitlePlacement="Left" Width="98" />
+                                                      
+                                                        <Button  Margin="0,0,3,0" Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
+
+                                                    </StackPanel>
+                                                </Grid>
+                                       
                                             </Border>
                                             <Border Margin="0,1,0,0">
                                                 <!--<ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>-->

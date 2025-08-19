@@ -84,6 +84,27 @@ namespace Workbench.ViewModels.dw
                 SetProperty(ref _chartHeight, value);
             }
         }
+
+        private string _ChartXName = "间距";   // 初始高
+        public string ChartXName
+        {
+            get => _ChartXName;
+            set
+            {
+                SetProperty(ref _ChartXName, value);
+                WpfPlotControl.Plot.XLabel(value, 22); WpfPlotControl2.Plot.XLabel(value, 22);
+            }
+        }
+        private string _ChartYName = "幅值";   // 初始宽
+        public string ChartYName
+        {
+            get => _ChartYName;
+            set
+            {
+                SetProperty(ref _ChartYName, value);
+                WpfPlotControl.Plot.YLabel(value, 22); WpfPlotControl2.Plot.YLabel(value, 22);
+            }
+        }
         #endregion
         #region ChartPropety
         public int chart1MaxX = 5000;
@@ -112,7 +133,7 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref chart1MinY, value);
         }
         #endregion
-        private WpfPlotSteamBase wpfPlotControl2 = new WpfPlotSteamBase("监测图", "X", "Y", yMin: -30, yMax: 30, defaultXCount: 5000);
+        private WpfPlotSteamBase wpfPlotControl2 = new WpfPlotSteamBase("监测图", "间距", "幅值", yMin: -30, yMax: 30, defaultXCount: 5000);
         [JsonIgnore]
         public WpfPlotSteamBase WpfPlotControl2
         {
@@ -120,7 +141,7 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref wpfPlotControl2, value);
         }
 
-        private WpfPlotSteamBase wpfPlotControl = new WpfPlotSteamBase("监测图", "X", "Y", yMin: -30, yMax: 30, defaultXCount: 5000);
+        private WpfPlotSteamBase wpfPlotControl = new WpfPlotSteamBase("监测图", "间距", "幅值", yMin: -30, yMax: 30, defaultXCount: 5000);
         [JsonIgnore]
         public WpfPlotSteamBase WpfPlotControl
         {

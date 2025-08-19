@@ -14,6 +14,8 @@
     <SolidColorBrush x:Key="TitleBarBackgroundColor" Color="#FDFDFD"/>
     <!--标题栏文字颜色-->
     <SolidColorBrush x:Key="TitleBarColor" Color="Black"/>
+    <!--标题栏ICON颜色-->
+    <SolidColorBrush x:Key="TitleBarIconColor" Color="#FFF"/>
     <!-- 工程管理标题背景 -->
     <SolidColorBrush x:Key="ProjectManagementTitleBackground" Color="#F8F8F8"/>
     <!--底部栏文字颜色-->
@@ -62,6 +64,8 @@
     <SolidColorBrush x:Key="MenuItemDropHighLightBorderColor" Color="#203d77"/>
     <!--Bord标题前颜色-->
     <SolidColorBrush x:Key="BordTitleBackgroundColor" Color="#548EC4"/>
+    <!--弹出界面顶部背景色-->
+    <SolidColorBrush x:Key="TitleBarBordBackgroundColor" Color="#0071BC"/>
     <!--主界面底色-->
     <SolidColorBrush x:Key="MainPageBackgroundColor" Color="Transparent"/>
     <!--一般按钮背景色-->
