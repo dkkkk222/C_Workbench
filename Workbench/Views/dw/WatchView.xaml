@@ -12,6 +12,7 @@
              xmlns:utils="clr-namespace:Workbench.Utils"
              xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
              xmlns:controls_Scottplot="clr-namespace:Workbench.Controls.Controls.Scottplot;assembly=Workbench.Controls"
+             xmlns:controls_Title="clr-namespace:Workbench.Controls.Controls.Title;assembly=Workbench.Controls"
              xmlns:local_Model="clr-namespace:Workbench.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -58,10 +59,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
-                    <Border Style="{StaticResource BorderTipPrimary}"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                    <Border Style="{StaticResource BorderCircular}" Margin="0,10,0,0" BorderBrush="Transparent" Background="Transparent">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>
+                            <!--<TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>-->
+                            <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="寄存器目录" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
                         </StackPanel>
+                
                     </Border>
                     <hc:UniformSpacingPanel Spacing="8" Orientation="Horizontal" Margin="0,10">
                         <RadioButton GroupName="OrderBy" Content="按分类" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
@@ -155,9 +159,11 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                 </Grid.RowDefinitions>
                 <Border Grid.Row="0">
                     <DockPanel LastChildFill="True">
-                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="监控数据配置" FontSize="{StaticResource SubHeadFontSize}"/>
+                                <controls_Title:StandTitle Padding="0,0,0,0" x:Name="tbx_control" BordMargin="0,0,5,0" StandText="监控数据配置" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
+                                <!--<TextBlock Text="监控数据配置" FontSize="{StaticResource SubHeadFontSize}"/>-->
                                 <TextBlock Width="10"></TextBlock>
                                 <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
         ToolTip="展开/收起目录" Content="展开目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
@@ -182,7 +188,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         <Setter Property="Padding" Value="10,0,0,0"/>
                                         <Setter Property="Margin" Value="0,0,12,0"/>
                                         <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
-                                        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource DataGridHeTextBrush}" />
                                         <Setter Property="FontWeight" Value="SemiBold" />
                                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -393,19 +399,19 @@ SelectedValuePath="Id">
                     </Grid.RowDefinitions>
                     <Border Grid.Row="0">
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="增加数据监测表" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                            <Button Content="增加数据监测表" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
                    HorizontalAlignment="Left" hc:IconElement.Width="14"
                    Command="{Binding AddWatchGroupCommand}"/>
                             <TextBlock Width="10"></TextBlock>
-                            <Button Content="增加数据监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                            <Button Content="增加数据监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}"  BorderBrush="{DynamicResource StopButtonBackground}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                     HorizontalAlignment="Left" hc:IconElement.Width="14"
                                     Command="{Binding AddWatchGroupChartCommand}"/>
                             <TextBlock Width="10"></TextBlock>
-                            <Button Content="展示数据监测表" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PushGeometry}"
+                            <Button Content="展示数据监测表" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"  hc:IconElement.Geometry="{StaticResource  PushGeometry}"
                                     HorizontalAlignment="Left" hc:IconElement.Width="14"
                                     Command="{Binding ShowWatchGroupCommand}"/>
                             <TextBlock Width="10"></TextBlock>
-                            <Button Content="展示数据监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource   HTabGroup}"
+                            <Button Content="展示数据监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"   hc:IconElement.Geometry="{StaticResource   HTabGroup}"
                                     HorizontalAlignment="Left" hc:IconElement.Width="14"
                                     Command="{Binding ShowChartGroupCommand}"/>
                         </StackPanel>
@@ -433,17 +439,19 @@ SelectedValuePath="Id">
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <DockPanel LastChildFill="True" Grid.Column="0" Grid.ColumnSpan="2">
-                                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
                                                         <DockPanel>
                                                             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                                                <!--<TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
+                                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="{Binding TableName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
                                                                 <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
                                                                 Margin="5,0,0,0" 
                                                                 Command="{Binding RenameCommand}"
                                                                 CommandParameter="Table"/>
                                                             </StackPanel>
                                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                                 Command="{Binding HistoryDownloadCommand}"/>
                                                                 <TextBlock Width="10"></TextBlock>
                                                                 <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
@@ -706,10 +714,13 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 </TabControl.ItemTemplate>
                                 <TabControl.ContentTemplate>
                                     <DataTemplate>
-                                        <DockPanel LastChildFill="True" Grid.Column="1" Margin="15,0,0,0">
-                                            <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top" VerticalAlignment="Center"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                                        <DockPanel LastChildFill="True" Grid.Column="1" Margin="0,0,0,0">
+                                            <Border Style="{StaticResource BorderCircular}" Padding="0,10,0,10" CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
                                                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                                    <!--<TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
+                                                    <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
+                                                    
                                                     <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
 Margin="5,0,5,0" 
 Command="{Binding RenameCommand}"
@@ -722,13 +733,13 @@ hc:InfoElement.TitlePlacement="Left" Width="110" />
 hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                     <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+                                                    <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
 Margin="5,0,0,0" 
 Command="{Binding SettingChartLimitCommand}"
 CommandParameter="{Binding}"/>
                                                 </StackPanel>
                                             </Border>
-                                            <Border Margin="0,5,0,0">
+                                            <Border Margin="0,1,0,0">
                                                 <!--<ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>-->
                                                 <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl,Mode=TwoWay}"/>
                                             </Border>

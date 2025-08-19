@@ -5,7 +5,7 @@
     <!-- 主要背景颜色-->
     <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#E8E8E8"/>
     <!--次要背景颜色-->
-    <SolidColorBrush x:Key="SecondaryBackgroundColor" Color="#E8E8E8"/>
+    <SolidColorBrush x:Key="SecondaryBackgroundColor" Color="AliceBlue"/>
     <!--左侧树菜单底色-->
     <SolidColorBrush x:Key="TreeBordBackgroundColor" Color="#E8EFF7"/>
     
@@ -40,8 +40,12 @@
     <SolidColorBrush x:Key="TreeViewTitleBackgroundColor" Color="#ffffff"/>
     <!-- TreeView背景色 -->
     <SolidColorBrush x:Key="TreeViewBackgroundColor" Color="#E8E8E8"/>
+    <!-- 左侧菜单TreeView背景色 -->
+    <SolidColorBrush x:Key="LeftTreeViewBackgroundColor" Color="#CCE8FE"/>
     <!-- TreeViewItem选择背景色 -->
     <SolidColorBrush x:Key="TreeViewItemSelectedBackgroundColor" Color="#DCDFE6"/>
+        <!-- AvalonDock区域边框 -->
+    <SolidColorBrush x:Key="TreeViewPannelBordBrush" Color="#C9C9C9"/>
     <!-- Dialog背景色 -->
     <SolidColorBrush x:Key="DialogBackgroundColor" Color="#fff"/>
     <!-- AvalonDock Tab下拉按钮颜色 -->
@@ -63,6 +67,10 @@
     <SolidColorBrush x:Key="GenCancelButtonBackgroundColor" Color="#8BACC9"/>
     <!-- 按钮栏图标颜色 -->
     <SolidColorBrush x:Key="ButtonBarIconColor" Color="#4E5052"/>
+    <!-- 按钮栏文字 -->
+    <SolidColorBrush x:Key="ButtonBarTextColor" Color="#0071BC"/>
+    <!-- 首页按钮背景 -->
+    <SolidColorBrush x:Key="FirstButtonTextBack" Color="#E5E5E5"/>
     <!-- 按钮栏图标Hover颜色 -->
     <SolidColorBrush x:Key="ButtonBarHoverBackground" Color="#ECF4FF"/>
     <!-- 按钮栏图标Hover边框颜色 -->
@@ -115,6 +123,7 @@
     <!--<SolidColorBrush x:Key="RowSelectedBrush"    Color="#EAF2FE"/>-->
     <!-- 选中 -->
     <SolidColorBrush x:Key="TextBrush"           Color="#333842"/>
+    <SolidColorBrush x:Key="DataGridHeTextBrush"           Color="Black"/>
     <!-- 文本 -->
     <SolidColorBrush x:Key="RowHoverBrushEven" Color="#F6FAFF"/>
     <SolidColorBrush x:Key="RowHoverBrushOdd"  Color="#EEF6FF"/>

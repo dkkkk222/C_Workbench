@@ -17,16 +17,16 @@
             <MenuItem Name="Copy" Header="另存为" Command="{Binding SaveAsProjectCommand}"/>
         </ContextMenu>
     </UserControl.Resources>
-    <Border Padding="0" Background="{DynamicResource TreeBordBackgroundColor}" ContextMenu="{StaticResource CuContextMenu}">
+    <Border Padding="0" Background="{DynamicResource TreeViewTitleBackgroundColor}" ContextMenu="{StaticResource CuContextMenu}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Border Background="{DynamicResource TreeViewTitleBackgroundColor}" Height="24" CornerRadius="6,6,0,0">
+            <Border Background="{DynamicResource TreeViewItemSelectedBackgroundColor}" Height="24" CornerRadius="6,6,0,0" BorderThickness="1,1,1,0" BorderBrush="{DynamicResource TreeViewPannelBordBrush}">
                 <TextBlock Text="工程管理" FontSize="14" 
                            Foreground="{DynamicResource PrimaryFontColor}"
-                           VerticalAlignment="Center" 
+                           VerticalAlignment="Center"  Background="{DynamicResource TreeViewItemSelectedBackgroundColor}"
                            Padding="5,0,0,0"/>
             </Border>
             <Border Grid.Row="1" Visibility="{c:Binding !HasProject,FalseToVisibility=Collapsed}">
@@ -40,7 +40,7 @@
                 </StackPanel>
 
             </Border>
-            <TreeView Grid.Row="1"  x:Name="treeView" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch" 
+            <TreeView Grid.Row="1"  x:Name="treeView" ItemsSource="{Binding Projects}" HorizontalAlignment="Stretch"   BorderThickness="1,0,1,1" BorderBrush="{DynamicResource TreeViewPannelBordBrush}"
                       Style="{DynamicResource TreeViewStyle}" Visibility="{c:Binding HasProject,FalseToVisibility=Collapsed}"
                       SelectedItemChanged="treeView_SelectedItemChanged"
                       MouseDoubleClick="treeView_MouseDoubleClick"

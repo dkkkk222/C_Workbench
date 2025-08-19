@@ -9,10 +9,11 @@
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:views="clr-namespace:Workbench.Views.dw"
              xmlns:hc="https://handyorg.github.io/handycontrol"
-           xmlns:utils="clr-namespace:Workbench.Utils"
+             xmlns:utils="clr-namespace:Workbench.Utils"
              xmlns:behaviors="clr-namespace:Workbench.Behaviors"
              xmlns:enums="clr-namespace:PPEC.Communication.Enum;assembly=PPEC.Communication"
-            xmlns:cvt="clr-namespace:Workbench.Converters"
+             xmlns:controls_Title="clr-namespace:Workbench.Controls.Controls.Title;assembly=Workbench.Controls"
+             xmlns:cvt="clr-namespace:Workbench.Converters"
              xmlns:local_Model="clr-namespace:Workbench.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -58,9 +59,10 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
-                    <Border Style="{StaticResource BorderTipPrimary}"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                    <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,0"  BorderBrush="Transparent" Background="Transparent">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>
+                            <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="寄存器目录" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                            <!--<TextBlock Text="寄存器目录" FontSize="{StaticResource SubHeadFontSize}"/>-->
                         </StackPanel>
                     </Border>
                     <hc:UniformSpacingPanel Spacing="8" Orientation="Horizontal" Margin="0,10">
@@ -130,10 +132,11 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel>
-                            <Border Style="{StaticResource BorderTipPrimary}" BorderBrush="{DynamicResource BordTitleBackgroundColor}"  Margin="0,0,0,5">
+                            <Border Style="{StaticResource BorderCircular}" BorderBrush="Transparent" Background="Transparent"  Margin="5,10,0,9">
                                 <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="寄存器概览" FontSize="{StaticResource SubHeadFontSize}"/>
+                                        <!--<TextBlock Text="寄存器概览" FontSize="{StaticResource SubHeadFontSize}"/>-->
+                                        <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="寄存器概览" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                         <TextBlock Width="10"></TextBlock>
                                         <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
         ToolTip="展开/收起目录" Content="展开目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
@@ -403,20 +406,21 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <RowDefinition ></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <DockPanel LastChildFill="True">
-                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                                    <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition></ColumnDefinition>
                                                 <ColumnDefinition></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
-                                                <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <!--<TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>-->
+                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="寄存器详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding WriteCurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </hc:UniformSpacingPanel>
 
-                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary.Small}"  Background="{DynamicResource GenButtonBackgroundColor}" Width="80" 
+                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary.Small}"  Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" Width="80" 
 IsEnabled="{Binding WriteCurrentRegister.AllowWrite}" HorizontalAlignment="Right"
 hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                         </Grid>
@@ -593,19 +597,21 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
                                     </Border>
                                 </DockPanel>
                                 <DockPanel LastChildFill="True" Grid.Row="1">
-                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                                    <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition></ColumnDefinition>
                                                 <ColumnDefinition></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <hc:UniformSpacingPanel Spacing="15" VerticalAlignment="Center">
-                                                <TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>
+                                                <!--<TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>-->
+                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="寄存器目录" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                
                                                 <TextBlock Text="{Binding CurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding CurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </hc:UniformSpacingPanel>
-                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary.Small}"   Background="{DynamicResource GenButtonBackgroundColor}"  Width="80" 
+                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary.Small}"   Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" Width="80" 
         IsEnabled="{Binding CurrentRegister.AllowRead}" HorizontalAlignment="Right"
         hc:IconElement.Geometry="{StaticResource ReadGeometry}" Command="{Binding ReadRegisterCommand}"/>
                                         </Grid>
@@ -751,10 +757,12 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                 <hc:Divider Grid.Row="1" Margin="0,8"/>
                 <Border Grid.Row="2">
                     <DockPanel LastChildFill="True">
-                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                        <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                             <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
-                                <TextBlock Text="历史数据" FontSize="14"/>
-                                <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                <!--<TextBlock Text="历史数据" FontSize="14"/>-->
+                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="历史数据" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
+                                <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                 Command="{Binding HistoryDownloadCommand}"/>
                             </hc:UniformSpacingPanel>
                         </Border>
