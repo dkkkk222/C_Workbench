@@ -111,7 +111,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                     </hc:SearchBar.Text>
                 </hc:SearchBar>
                 <Border Margin="0,5,0,0" Grid.Row="5">
-                    <TreeView ItemsSource="{Binding SingleParamTrees}">
+                    <TreeView ItemsSource="{Binding SingleParamTrees}"  Background="{DynamicResource InLeftTreeViewBackGround}">
                         <TreeView.Resources>
                             <!-- ★ 继承原样式，只追加两个 Setter -->
                             <Style x:Key="BindableTreeViewItemStyle"
@@ -135,11 +135,11 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <StackPanel>
-                                    <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}"/>
+                                    <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                     <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
-                                        <TextBlock Text="{Binding AddressHex}"/>
+                                        <TextBlock Text="{Binding AddressHex}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                         <TextBlock Text=" : "/>
-                                        <TextBlock Text="{Binding Title}"/>
+                                        <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                         <TextBlock Width="10"></TextBlock>
                                         <CheckBox IsChecked="{Binding IsCheck}" Command="{Binding DataContext.CheckChangeCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}"></CheckBox>
                                     </StackPanel>
@@ -439,7 +439,7 @@ SelectedValuePath="Id">
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
                                                 <DockPanel LastChildFill="True" Grid.Column="0" Grid.ColumnSpan="2">
-                                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
+                                                    <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
                                                         <DockPanel>
                                                             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                                                 <!--<TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
@@ -645,11 +645,12 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                                 <!--Style="{StaticResource ComboBoxExtend.Small}"-->
                                                                                 <i:Interaction.Triggers>
                                                                                     <i:EventTrigger EventName="SelectionChanged">
-                                                                                        <i:InvokeCommandAction Command="{Binding DataContext.ChartTableChangeCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" PassEventArgsToCommand="True"  /> <!--CommandParameter="{Binding}"-->
+                                                                                        <i:InvokeCommandAction Command="{Binding DataContext.ChartTableChangeCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" PassEventArgsToCommand="True"  />
+                                                                                        <!--CommandParameter="{Binding}"-->
                                                                                     </i:EventTrigger>
                                                                                 </i:Interaction.Triggers>
                                                                                 <ComboBox.Style>
-                                                                                    <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">                                                                                        
+                                                                                    <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
                                                                                         <Setter Property="Visibility" Value="Visible"/>
                                                                                         <Style.Triggers>
                                                                                             <DataTrigger Binding="{Binding Desc}" Value="无">
@@ -662,7 +663,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                                     </Style>
                                                                                 </ComboBox.Style>
                                                                             </ComboBox>
-                                                                           </StackPanel>
+                                                                        </StackPanel>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
@@ -670,32 +671,6 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                                                     </DataGrid>
                                                 </DockPanel>
-                                                <!--<DockPanel LastChildFill="True" Grid.Column="1" Margin="15,0,0,0">
-                                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top" VerticalAlignment="Center"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
-                                                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                                            <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
-                                                            Margin="5,0,5,0" 
-                                                            Command="{Binding RenameCommand}"
-                                                            CommandParameter="Chart"/>
-                                                            <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
-                                                            hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                            <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
-                                                            hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                            <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
-                                                            hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                            <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
-                                                            hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                            <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
-                                                            Margin="5,0,0,0" 
-                                                            Command="{Binding SettingChartLimitCommand}"
-                                                            CommandParameter="{Binding}"/>
-                                                        </StackPanel>
-                                                    </Border>
-                                                    <Border Margin="0,5,0,0">
-                                                        <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl,Mode=TwoWay}"/>
-                                                    </Border>
-                                                </DockPanel>-->
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
@@ -715,10 +690,11 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 <TabControl.ContentTemplate>
                                     <DataTemplate>
                                         <DockPanel LastChildFill="True" Grid.Column="1" Margin="0,0,0,0">
-                                            <Border Style="{StaticResource BorderCircular}" Padding="0,10,0,10" CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
+                                            <!--BorderTipPrimary-->
+                                            <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0" Height="40" CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
                                                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                                     <!--<TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
-                                                    <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                    <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,10,0,0" StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
                                                     
                                                     <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"

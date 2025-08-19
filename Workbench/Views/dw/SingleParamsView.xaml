@@ -81,7 +81,7 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                     </hc:SearchBar.Text>
                 </hc:SearchBar>
                 <Border Margin="0,5,0,0" Grid.Row="3">
-                    <TreeView ItemsSource="{Binding SingleParamTrees}"> 
+                    <TreeView ItemsSource="{Binding SingleParamTrees}" Background="{DynamicResource InLeftTreeViewBackGround}"> 
                         <TreeView.Resources>
                             <!-- ★ 继承原样式，只追加两个 Setter -->
                             <Style x:Key="BindableTreeViewItemStyle"
@@ -105,11 +105,11 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <StackPanel>
-                                    <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}"/>
+                                    <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}"  Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                     <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
-                                        <TextBlock Text="{Binding AddressHex}"/>
+                                        <TextBlock Text="{Binding AddressHex}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                         <TextBlock Text=" : "/>
-                                        <TextBlock Text="{Binding Title}"/>
+                                        <TextBlock Text="{Binding Title}"  Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </HierarchicalDataTemplate>

@@ -47,6 +47,8 @@
     <SolidColorBrush x:Key="TreeViewBackgroundColor" Color="#E8EFF7"/>
     <!-- 左侧菜单TreeView背景色 -->
     <SolidColorBrush x:Key="LeftTreeViewBackgroundColor" Color="#ECF8FF"/>
+    <!--内部寄存器树结构背景色-->
+    <SolidColorBrush x:Key="InLeftTreeViewBackGround" Color="#F5F6F8"/>
     
     <!-- TreeViewItem选择背景色 -->
     <SolidColorBrush x:Key="TreeViewItemSelectedBackgroundColor" Color="#CCE8FE"/>
@@ -56,7 +58,7 @@
     <SolidColorBrush x:Key="AvalonDockDropDownButtonColor" Color="#717171"/>
 
     <!-- MenuItem下拉框背景色 -->
-    <SolidColorBrush x:Key="MenuItemDropBackground" Color="#89A8C9"/>
+    <SolidColorBrush x:Key="MenuItemDropBackground" Color="#FFF"/>
     <!-- MenuItem选项高亮 -->
     <SolidColorBrush x:Key="MenuItemDropHighLight" Color="#C5D4E2"/>
     <!-- MenuItem选项高亮边框颜色 -->
@@ -66,7 +68,7 @@
     <!--一般按钮背景色-->
     <SolidColorBrush x:Key="GenButtonBackgroundColor" Color="#4CAF50"/>
     <!--取消按钮-->
-    <SolidColorBrush x:Key="GenCancelButtonBackgroundColor" Color="#8BACC9"/>
+    <SolidColorBrush x:Key="GenCancelButtonBackgroundColor" Color="#9BB3CF"/>
     <!-- 按钮栏图标颜色 -->
     <SolidColorBrush x:Key="ButtonBarIconColor" Color="#FFF"/>
     <!-- 首页图标颜色 -->
@@ -83,7 +85,8 @@
     <SolidColorBrush x:Key="ButtonBarPressedBackground" Color="#ededed"/>
     <!-- 按钮栏文字颜色 -->
     <SolidColorBrush x:Key="ButtonBarFontColor" Color="#fff"/>
-
+    <!-- 小弹窗按钮背景色 -->
+    <SolidColorBrush x:Key="ShowPageButtonBackgroundColor" Color="#0071BC"/>
     <!-- 黑色 -->
     <SolidColorBrush x:Key="BlackColor" Color="Black"/>
     <!--芯片管理-->
@@ -130,7 +133,8 @@
     <!--<SolidColorBrush x:Key="RowSelectedBrush"    Color="#EAF2FE"/>-->
     <!-- 选中 -->
     <SolidColorBrush x:Key="TextBrush"           Color="#333842"/>
-    <SolidColorBrush x:Key="DataGridHeTextBrush"           Color="#383838"/>
+    <SolidColorBrush x:Key="DataGridHeTextBrush" Color="#383838"/>
+    <SolidColorBrush x:Key="TreeViewNodeBrush" Color="#383838"/>
     <!-- 文本 -->
     <SolidColorBrush x:Key="RowHoverBrushEven" Color="#F6FAFF"/>
     <SolidColorBrush x:Key="RowHoverBrushOdd"  Color="#EEF6FF"/>

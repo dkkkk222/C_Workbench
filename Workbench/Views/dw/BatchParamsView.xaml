@@ -108,7 +108,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                     </hc:SearchBar.Text>
                 </hc:SearchBar>
                 <Border Margin="0,5,0,0" Grid.Row="4">
-                    <TreeView ItemsSource="{Binding SingleParamTrees}">
+                    <TreeView ItemsSource="{Binding SingleParamTrees}" Background="{DynamicResource InLeftTreeViewBackGround}">
                         <TreeView.Resources>
                             <!-- ★ 继承原样式，只追加两个 Setter -->
                             <Style x:Key="BindableTreeViewItemStyle"
@@ -132,11 +132,11 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <StackPanel>
-                                    <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}"/>
+                                    <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                     <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
-                                        <TextBlock Text="{Binding AddressHex}"/>
+                                        <TextBlock Text="{Binding AddressHex}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                         <TextBlock Text=" : "/>
-                                        <TextBlock Text="{Binding Title}"/>
+                                        <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                         <TextBlock Width="10"></TextBlock>
                                         <CheckBox IsChecked="{Binding IsCheck}"></CheckBox>
                                     </StackPanel>
@@ -250,7 +250,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <Setter Property="Tag" Value="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                             <Setter Property="ContextMenu">
                                                 <Setter.Value>
-                                                    <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="165">
+                                                    <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="125">
                                                         <MenuItem Header="删除" Command="{Binding Path=PlacementTarget.Tag.RemoveSequenceListCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
 CommandParameter="{Binding}"/>
                                                         <MenuItem Header="复制" Command="{Binding Path=PlacementTarget.Tag.CopySequenceListCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
@@ -346,7 +346,8 @@ CommandParameter="{Binding}"/>
                                                             Content="下发"
                                                             Command="{Binding DataContext.SendCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                             CommandParameter="{Binding}"
-                                                            HorizontalAlignment="Left"
+                                                            HorizontalAlignment="Left" Background="{DynamicResource GenButtonBackgroundColor}"
+                                                            BorderBrush="{DynamicResource GenButtonBackgroundColor}"
                                                             hc:IconElement.Geometry="{StaticResource PushGeometry}"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -491,7 +492,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         <Setter Property="Tag" Value="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                         <Setter Property="ContextMenu">
                                             <Setter.Value>
-                                                <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="165">
+                                                <ContextMenu Style="{StaticResource ContextMenu.Small}" Width="125">
                                                     <MenuItem Header="删除" Command="{Binding Path=PlacementTarget.Tag.RemoveSequenceItemCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
               CommandParameter="{Binding}"/>
                                                     <MenuItem Header="复制" Command="{Binding Path=PlacementTarget.Tag.CopyCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"

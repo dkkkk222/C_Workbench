@@ -105,12 +105,12 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                         <!-- 使用样式 -->
-                        <Button Width="80" Height="30" Content="取消" Foreground="{StaticResource TitleBarColor}" Background="{StaticResource GenCancelButtonBackgroundColor}" Command="{Binding CloseCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
+                        <Button Width="80" Height="30" Content="取消" Foreground="{StaticResource ButtonBarIconColor}" Background="{StaticResource GenCancelButtonBackgroundColor}" Command="{Binding CloseCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
                         <!--<TextBlock Width="10"></TextBlock>
                         <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="新增" Command="{Binding AddCommand}" 
                                 hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:IconElement.Width="13"/>-->
                         <TextBlock Width="10"></TextBlock>
-                        <Button Style="{StaticResource ButtonPrimary}"  Background="{StaticResource GenButtonBackgroundColor}" Width="80" Height="30" Content="确认" Command="{Binding ComfirmCommand}" 
+                        <Button Style="{StaticResource ButtonPrimary}"  Background="{StaticResource ShowPageButtonBackgroundColor}" Width="80" Height="30" Content="确认" Command="{Binding ComfirmCommand}" 
                                 hc:IconElement.Geometry="{StaticResource SaveGeometry}" hc:IconElement.Width="13"/>
                     </StackPanel>
                 </Border>
@@ -265,7 +265,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                                             <hc:UniformSpacingPanel Spacing="10">
                                                 <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
-                                                <Button Content="芯片手册" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource   EyeOpenGeometry}" Click="ShowDoc_Click"/>
+                                                <Button Content="芯片手册" Style="{StaticResource ButtonInfo.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource   EyeOpenGeometry}" Click="ShowDoc_Click"/>
                                             </hc:UniformSpacingPanel>
                                             <TextBlock Width="10"></TextBlock>
                                             <hc:UniformSpacingPanel Spacing="10">

@@ -51,11 +51,14 @@
     <SolidColorBrush x:Key="TreeViewBackgroundColor" Color="#313C4F"/>
     <!-- TreeViewItem选择背景色 -->
     <SolidColorBrush x:Key="TreeViewItemSelectedBackgroundColor" Color="#212531"/>
+    <!--内部寄存器树结构背景色-->
+    <SolidColorBrush x:Key="InLeftTreeViewBackGround" Color="#F5F6F8"/>
     <!-- Dialog背景色 -->
     <SolidColorBrush x:Key="DialogBackgroundColor" Color="#212531"/>
     <!-- AvalonDock Tab下拉按钮颜色 -->
     <SolidColorBrush x:Key="AvalonDockDropDownButtonColor" Color="#fafafa"/>
-
+    <!-- 小弹窗按钮背景色 -->
+    <SolidColorBrush x:Key="ShowPageButtonBackgroundColor" Color="#0071BC"/>
     <!-- MenuItem下拉框背景色 -->
     <SolidColorBrush x:Key="MenuItemDropBackground" Color="#3d3d3d"/>
     <!-- MenuItem选项高亮 -->
@@ -110,6 +113,7 @@
     <!-- 选中 -->
     <SolidColorBrush x:Key="TextBrush"           Color="#333842"/>
     <SolidColorBrush x:Key="DataGridHeTextBrush"           Color="Black"/>
+    <SolidColorBrush x:Key="TreeViewNodeBrush" Color="#383838"/>
     <!-- 文本 -->
     <SolidColorBrush x:Key="RowHoverBrushEven" Color="#F6FAFF"/>
     <SolidColorBrush x:Key="RowHoverBrushOdd"  Color="#EEF6FF"/>
