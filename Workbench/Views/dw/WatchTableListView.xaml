@@ -12,6 +12,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:utils="clr-namespace:Workbench.Utils"
              xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
+             xmlns:controls_Title="clr-namespace:Workbench.Controls.Controls.Title;assembly=Workbench.Controls"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
@@ -47,36 +48,27 @@
     Padding="8" Margin="8">
                             <Grid>
                                 <DockPanel LastChildFill="True" Grid.Column="0">
-                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                                    <Border Style="{StaticResource BorderClip}" Padding="2" Margin="0,0,0,0"  DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                                         <DockPanel>
                                             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                                <TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                                <!--<Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
-                    Margin="5,0,0,0" 
-                    Command="{Binding RenameCommand}"
-                    CommandParameter="Table"/>-->
+                                                <!--<TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
+                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="{Binding TableName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
                                             </StackPanel>
                                          
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
-                                                <!--<StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="宽:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    <TextBox Style="{StaticResource TextBoxExtend}" Background="White" Width="40"  Text="{Binding TableWidth}"/>
-                                                </StackPanel>-->
+                                             
                                                 <TextBox Text="{Binding TableWidth}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽："  Margin="5,0,0,0"
      hc:InfoElement.TitlePlacement="Left" Width="70" />
                                                 <TextBlock Width="10"></TextBlock>
-                                                <!--<StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="高:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    <TextBox Style="{StaticResource TextBoxExtend}" Background="White" Width="40" Text="{Binding TableHeight}"/>
-
-                                                </StackPanel>-->
+                                             
                                                 <TextBox Text="{Binding TableHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="70" />
                                                 <TextBlock Width="10"></TextBlock>
-                                                <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  FullScreenGeometry}"
+                                                <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  FullScreenGeometry}"
 Command="{Binding SettingDefaultWHCommand2}"/>
                                                 <TextBlock Width="10"></TextBlock>
-                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
                     Command="{Binding HistoryDownloadCommand}"/>
                                                 <TextBlock Width="10"></TextBlock>
                                                 <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
@@ -111,11 +103,11 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                                 <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
                                                 <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                                 <Setter Property="FontWeight" Value="SemiBold" />
-                                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                 <Setter Property="FontSize" Value="13"/>
-                                                <Setter Property="Padding" Value="3,0,0,0"/>
-                                                <Setter Property="Margin" Value="0,0,12,0"/>
+                                                <Setter Property="Padding" Value="0,0,0,0"/>
+                                                <Setter Property="Margin" Value="0,0,0,0"/>
                                                 <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                                 <Setter Property="BorderThickness" Value="0,0,0,1" />
                                             </Style>
@@ -211,7 +203,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <TextBlock.Text>
                                                                 <MultiBinding Converter="{StaticResource RowIndexConverter}">
                                                                     <Binding />
@@ -261,7 +253,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <DataGridTextColumn Header="原始值(Dec)" Binding="{Binding Value}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
                                             <DataGridTextColumn Header="原始值(Bit)" Binding="{Binding ReadBinary}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
                                             <DataGridTextColumn Header="单位"  Binding="{Binding FormParam.UnitName}" Width="50" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
-                                            <DataGridTemplateColumn Header="添加到监测图" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                            <!--<DataGridTemplateColumn Header="添加到监测图" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -269,7 +261,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
+                                            </DataGridTemplateColumn>-->
                                         </DataGrid.Columns>
 
                                     </DataGrid>

@@ -6,15 +6,22 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using Workbench.Controls.Controls.Scottplot;
+using Workbench.Views.Windows;
+using Workbench.Views;
 
 namespace Workbench.ViewModels.dw
 {
     public class WatchChartModel:BindableBase
     {
-        public WatchChartModel(string chartName)
+        public string Session_id { get; set; }
+        private IDialogService _dialogService;
+        public WatchChartModel(string chartName, IDialogService dialogService=null, string session_id = null)
         {
-            ChartName= chartName;
+            Session_id = session_id;
+            _dialogService = dialogService;
+            ChartName = chartName;
         }
         private string _id;
         public string Id
@@ -172,5 +179,30 @@ namespace Workbench.ViewModels.dw
             ChartWidth = 680;
             ChartHeight = 360;
         });
+
+        private DelegateCommand<string> _renameCommand;
+        [JsonIgnore]
+        public DelegateCommand<string> RenameCommand => _renameCommand ?? (_renameCommand = new DelegateCommand<string>((param) =>
+        {
+            IDialogParameters dialogParameters = new DialogParameters();
+            dialogParameters.Add("NameType", param);
+            _dialogService.Show(nameof(RenameView), dialogParameters, r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+                    var NameType = r.Parameters.GetValue<string>("NameType");
+                    var ShowName = r.Parameters.GetValue<string>("ShowName");
+                    if (NameType == "Table")
+                    {
+                        ChartName = ShowName;
+                    }
+                    if (NameType == "Chart")
+                    {
+                        ChartName = ShowName;
+                    }
+
+                }
+            }, nameof(RenameWindow));
+        }));
     }
 }

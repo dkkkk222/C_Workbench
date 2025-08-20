@@ -33,13 +33,13 @@
         <Storyboard x:Key="ExpandStoryboard">
             <local_Model:GridLengthAnimation Storyboard.TargetName="LeftCol"
                                 Storyboard.TargetProperty="Width"
-                                From="0" To="324"
+                                From="0" To="300"
                                 Duration="0:0:0.18"/>
         </Storyboard>
         <Storyboard x:Key="CollapseStoryboard">
             <local_Model:GridLengthAnimation Storyboard.TargetName="LeftCol"
                                 Storyboard.TargetProperty="Width"
-                                From="324" To="0"
+                                From="300" To="0"
                                 Duration="0:0:0.18"/>
         </Storyboard>
     </UserControl.Resources>
@@ -48,7 +48,7 @@
             <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="332" Background="{StaticResource AvalonDockAreaBackgroundColor}" Padding="8">
+        <Border Grid.Column="0" Width="300" Background="{StaticResource AvalonDockAreaBackgroundColor}" HorizontalAlignment="Left" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -150,7 +150,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                 </Border>
             </Grid>
         </Border>
-        <Border Background="{StaticResource AvalonDockAreaBackgroundColor}"   Grid.Column="1" Padding="28,8,8,8">
+        <Border Background="{StaticResource AvalonDockAreaBackgroundColor}"   Grid.Column="1" Padding="0,8,28,8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -262,8 +262,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     <Condition Property="IsSelected" Value="True"/>
                                                     <Condition Property="IsMouseOver" Value="False"/>
                                                 </MultiTrigger.Conditions>
-                                                <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                 <!-- 白字 -->
                                                 <Setter Property="BorderThickness" Value="0"/>
                                                 <!-- 去掉分割线 -->
@@ -275,8 +275,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     <Condition Property="IsSelected" Value="True"/>
                                                     <Condition Property="IsMouseOver" Value="True"/>
                                                 </MultiTrigger.Conditions>
-                                                <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                 <Setter Property="BorderThickness" Value="0"/>
                                             </MultiTrigger>
                                         </Style.Triggers>
@@ -332,12 +332,12 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Width="80">
+                                                    <hc:NumericUpDown Style="{StaticResource NumericUpDownExtend.Small}" Width="80" Minimum="0">
                                                         <hc:NumericUpDown.Value>
                                                             <Binding Path="RecordTime" UpdateSourceTrigger="PropertyChanged"/>
                                                         </hc:NumericUpDown.Value>
                                                     </hc:NumericUpDown>
-                                                    <TextBlock Text="秒" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    <TextBlock Text="" VerticalAlignment="Center" Width="5"/>
                                                     <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding RecordTimeSource}" DisplayMemberPath="Display" 
                                                               SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding RecordTimeTypeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center">                                                        
                                                     </ComboBox>
@@ -491,8 +491,8 @@ SelectedValuePath="Id">
                                                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                                                 <Setter Property="FontSize" Value="13"/>
-                                                                <Setter Property="Padding" Value="7,0,0,0"/>
-                                                                <Setter Property="Margin" Value="0,0,12,0"/>
+                                                                <Setter Property="Padding" Value="0,0,0,0"/>
+                                                                <Setter Property="Margin" Value="0,0,0,0"/>
                                                                 <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                                                 <Setter Property="BorderThickness" Value="0,0,0,1" />
                                                             </Style>
@@ -561,8 +561,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                             <Condition Property="IsSelected" Value="True"/>
                                                                             <Condition Property="IsMouseOver" Value="False"/>
                                                                         </MultiTrigger.Conditions>
-                                                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                                        <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                                        <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                                         <!-- 白字 -->
                                                                         <Setter Property="BorderThickness" Value="0"/>
                                                                         <!-- 去掉分割线 -->
@@ -574,8 +574,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                             <Condition Property="IsSelected" Value="True"/>
                                                                             <Condition Property="IsMouseOver" Value="True"/>
                                                                         </MultiTrigger.Conditions>
-                                                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                                        <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                                        <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                                         <Setter Property="BorderThickness" Value="0"/>
                                                                     </MultiTrigger>
                                                                 </Style.Triggers>
@@ -588,7 +588,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         Converter={StaticResource Boolean2VisibilityConverter}}">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                             <TextBlock.Text>
                                                                                 <MultiBinding Converter="{StaticResource RowIndexConverter}">
                                                                                     <Binding />
@@ -599,8 +599,34 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-                                                            <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto" MinWidth="30"
-                                                                        Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                            <!--<DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto" MinWidth="30"
+                                                                        Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>-->
+                                                            <DataGridTemplateColumn Header="名称" Width="Auto" MinWidth="30" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,
+                                                                                        Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                                <!-- 显示状态 -->
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Text="{Binding Desc}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+
+                                                                <!-- 编辑状态 -->
+                                                                <DataGridTemplateColumn.CellEditingTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Desc, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                                                            <i:Interaction.Triggers>
+                                                                                <i:EventTrigger EventName="GotFocus">
+                                                                                    <i:InvokeCommandAction Command="{Binding DataContext.CaptureOldNameCommand,  RelativeSource={RelativeSource AncestorType=UserControl}}"  CommandParameter="{Binding}"/>
+                                                                                </i:EventTrigger>
+                                                                                <!-- 失焦时触发命令（完成编辑） -->
+                                                                                <i:EventTrigger EventName="LostFocus">
+                                                                                    <i:InvokeCommandAction   Command="{Binding DataContext.NameEditedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                                                                </i:EventTrigger>
+                                                                            </i:Interaction.Triggers>
+                                                                        </TextBox>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                                            </DataGridTemplateColumn>
                                                             <DataGridTemplateColumn Header="寄存器地址(HEX)" Width="Auto"
                                                                             Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
                                                                 <DataGridTemplateColumn.CellTemplate>
@@ -625,7 +651,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-                                                            <DataGridTemplateColumn Header="解析要求" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
+                                                            <DataGridTemplateColumn Header="解析要求" Width="Auto"  MinWidth="70" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -634,10 +660,10 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-                                                            <DataGridTextColumn Header="解析结果" Binding="{Binding Result}" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                            <DataGridTextColumn Header="解析结果" Binding="{Binding Result}"   MinWidth="70" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
                                                             <DataGridTextColumn Header="原始值(Dec)" Binding="{Binding Value}" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
                                                             <DataGridTextColumn Header="原始值(Bit)" Binding="{Binding ReadBinary}" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                            <DataGridTextColumn Header="单位"  Binding="{Binding FormParam.UnitName}" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
+                                                            <DataGridTextColumn Header="单位"  Binding="{Binding FormParam.UnitName}"   MinWidth="50" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
                                                             <DataGridTemplateColumn Header="添加到监测图" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
@@ -645,11 +671,11 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                             <ComboBox ItemsSource="{Binding Path=DataContext.WatchChartGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                                                                     DisplayMemberPath="Header"  SelectedValuePath="Id" MinWidth="70"
                                                                                       SelectedValue="{Binding SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                                                                <!--Style="{StaticResource ComboBoxExtend.Small}"-->
+                                                                          
                                                                                 <i:Interaction.Triggers>
                                                                                     <i:EventTrigger EventName="SelectionChanged">
                                                                                         <i:InvokeCommandAction Command="{Binding DataContext.ChartTableChangeCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" PassEventArgsToCommand="True"  />
-                                                                                        <!--CommandParameter="{Binding}"-->
+                                                                             
                                                                                     </i:EventTrigger>
                                                                                 </i:Interaction.Triggers>
                                                                                 <ComboBox.Style>
@@ -702,38 +728,44 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     </Grid.RowDefinitions>
                                                     <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="4">
 
-                                                        <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition></RowDefinition>
+                                                                <RowDefinition></RowDefinition>
+                                                                <RowDefinition></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
-                                                        <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
-Margin="5,0,5,0" 
-Command="{Binding RenameCommand}"
-CommandParameter="Chart"/>
-                                                        <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                        <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                        <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                        <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                                <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Margin="5,0,5,0"  Command="{Binding RenameCommand}" CommandParameter="Chart"/>
+                                                            </StackPanel>
+                                                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="102,0,0,0">
+                                                                <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                                <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                                <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                                <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
 
 
-                                                        <Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
-Margin="5,0,0,0" 
-Command="{Binding SettingChartLimitCommand}"
-CommandParameter="{Binding}"/>
-                                                    </StackPanel>
-                                                    <StackPanel Grid.Row="1"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0">
-                                                        <TextBlock Width="348"/>
-                                                        <TextBox Text="{Binding ChartXName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X名称："  Margin="0,0,12,0"
+                                                                <Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+           Margin="5,0,0,0"  Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>
+                                                            </StackPanel>
+                                                            <StackPanel Grid.Row="2"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0">
+                                                                <TextBlock Width="348"/>
+                                                                <TextBox Text="{Binding ChartXName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X名称："  Margin="0,0,12,0"
 hc:InfoElement.TitlePlacement="Left" Width="100" />
 
-                                                        <TextBox Text="{Binding ChartYName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y名称："  Margin="5,0,5,0"
+                                                                <TextBox Text="{Binding ChartYName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y名称："  Margin="5,0,5,0"
 hc:InfoElement.TitlePlacement="Left" Width="98" />
-                                                      
-                                                        <Button  Margin="0,0,3,0" Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
 
+                                                                <!--<Button  Margin="0,0,3,0" Content="设置" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
+
+                                                            </StackPanel>
+                                                        </Grid>
+
+                                                     
+                                                        
                                                     </StackPanel>
+                                                    
                                                 </Grid>
                                        
                                             </Border>

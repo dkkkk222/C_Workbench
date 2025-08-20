@@ -4,18 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Workbench.Views.dw"
-              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-            xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
-            xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
-               xmlns:hc="https://handyorg.github.io/handycontrol"
-  xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
-  xmlns:cvt="clr-namespace:Workbench.Converters"
-  xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
-  xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-  xmlns:utils="clr-namespace:Workbench.Utils"
-  xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
-               xmlns:controls_Scottplot="clr-namespace:Workbench.Controls.Controls.Scottplot;assembly=Workbench.Controls"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+             xmlns:cvt="clr-namespace:Workbench.Converters"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:utils="clr-namespace:Workbench.Utils"
+             xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
+             xmlns:controls_Title="clr-namespace:Workbench.Controls.Controls.Title;assembly=Workbench.Controls"
+             xmlns:controls_Scottplot="clr-namespace:Workbench.Controls.Controls.Scottplot;assembly=Workbench.Controls"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
@@ -51,7 +52,7 @@
     Padding="8" Margin="8">
                             <Grid>
                                 <DockPanel LastChildFill="True" Grid.Column="1">
-                                    <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top" VerticalAlignment="Center"  BorderBrush="{DynamicResource BordTitleBackgroundColor}">
+                                    <Border Style="{StaticResource BorderClip}" Padding="2" DockPanel.Dock="Top" VerticalAlignment="Center"  BorderBrush="Transparent" Background="Transparent">
                                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                             <Grid>
                                                 <Grid.RowDefinitions>
@@ -59,7 +60,9 @@
                                                     <RowDefinition></RowDefinition>
                                                 </Grid.RowDefinitions>
                                                 <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                                    <!--<TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
+                                                    <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
                                                     <!--<Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" 
 Margin="5,0,5,0" 
 Command="{Binding RenameCommand}"
@@ -81,18 +84,18 @@ hc:InfoElement.TitlePlacement="Left" Width="80" />
                                                     <TextBox Text="{Binding ChartHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高："  Margin="5,0,0,0"
 hc:InfoElement.TitlePlacement="Left" Width="80" />
                                                     <TextBlock Width="5"></TextBlock>
-                                                    <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
+                                                    <Button Visibility="Hidden"  Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
 
                                                 </StackPanel>
-                                                  </Grid>
-                                          
+                                            </Grid>
+
                                         </StackPanel>
                                     </Border>
                                     <Border Margin="0,5,0,0">
                                         <!--<ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>-->
-                                        <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl2,Mode=TwoWay}"/> 
+                                        <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl2,Mode=TwoWay}"/>
                                     </Border>
-                                </DockPanel> 
+                                </DockPanel>
                             </Grid>
                         </Border>
                     </DataTemplate>

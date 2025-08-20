@@ -63,7 +63,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>20240426-165532.ico</ApplicationIcon>
+    <ApplicationIcon>Resource\jlism-fmgaz-001.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -660,6 +660,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="fe4tz-twz11-001.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\fe4tz-twz11-001.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\jlism-fmgaz-001.ico" />
+    <Content Include="SDPC_LOGO.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="dist\fonts\11e2353a399825874867.1e09861f.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

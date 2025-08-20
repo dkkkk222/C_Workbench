@@ -207,13 +207,15 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <UniformGrid Rows="1" Columns="8" Width="200"/>
-
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBox Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
-                                                    </DataTemplate>
+
+                                                        <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+
+                                                   
+                                                      </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
                                         </StackPanel>
@@ -261,7 +263,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBox Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+                                                        <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
@@ -310,7 +312,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBox Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+                                                        <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
@@ -359,7 +361,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBox Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+                                                        <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
@@ -399,7 +401,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                 </hc:UniformSpacingPanel>
                             </Border>
                         </StackPanel>
-                        <Border Grid.Column="1" Padding="55,0,0,0">
+                        <Border Grid.Column="1" Padding="55,0,20,0">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition ></RowDefinition>
@@ -496,8 +498,8 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                                 <Condition Property="IsSelected" Value="True"/>
                                                                 <Condition Property="IsMouseOver" Value="False"/>
                                                             </MultiTrigger.Conditions>
-                                                            <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                            <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                             <!-- 白字 -->
                                                             <Setter Property="BorderThickness" Value="0"/>
                                                             <!-- 去掉分割线 -->
@@ -509,8 +511,8 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                                 <Condition Property="IsSelected" Value="True"/>
                                                                 <Condition Property="IsMouseOver" Value="True"/>
                                                             </MultiTrigger.Conditions>
-                                                            <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                            <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                             <Setter Property="BorderThickness" Value="0"/>
                                                         </MultiTrigger>
                                                     </Style.Triggers>
@@ -706,8 +708,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 <Condition Property="IsSelected" Value="True"/>
                                                                 <Condition Property="IsMouseOver" Value="False"/>
                                                             </MultiTrigger.Conditions>
-                                                            <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                            <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                             <!-- 白字 -->
                                                             <Setter Property="BorderThickness" Value="0"/>
                                                             <!-- 去掉分割线 -->
@@ -719,8 +721,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 <Condition Property="IsSelected" Value="True"/>
                                                                 <Condition Property="IsMouseOver" Value="True"/>
                                                             </MultiTrigger.Conditions>
-                                                            <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                            <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                             <Setter Property="BorderThickness" Value="0"/>
                                                         </MultiTrigger>
                                                     </Style.Triggers>
@@ -757,7 +759,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                     </Grid>
                 </StackPanel>
                 <hc:Divider Grid.Row="1" Margin="0,8"/>
-                <Border Grid.Row="2">
+                <Border Grid.Row="2" Padding="2,2,20,2">
                     <DockPanel LastChildFill="True">
                         <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                             <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
@@ -850,8 +852,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 <Condition Property="IsSelected" Value="True"/>
                                                 <Condition Property="IsMouseOver" Value="False"/>
                                             </MultiTrigger.Conditions>
-                                            <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                            <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                            <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                             <!-- 白字 -->
                                             <Setter Property="BorderThickness" Value="0"/>
                                             <!-- 去掉分割线 -->
@@ -863,8 +865,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 <Condition Property="IsSelected" Value="True"/>
                                                 <Condition Property="IsMouseOver" Value="True"/>
                                             </MultiTrigger.Conditions>
-                                            <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                            <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                            <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                             <Setter Property="BorderThickness" Value="0"/>
                                         </MultiTrigger>
                                     </Style.Triggers>

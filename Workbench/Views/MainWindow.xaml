@@ -31,8 +31,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Margin="10,5">
-                    <Image Source="/Resource/20240426-165532.ico"/>
+                <Border Grid.Column="0" Margin="10,5" Background="{DynamicResource SecondaryBackgroundColor}">
+                    <Image Source="/Resource/jlism-fmgaz-001.ico" Width="30"/>
                 </Border>
                 <Border Grid.Column="1">
                     <Menu Style="{DynamicResource MenuStyle}">

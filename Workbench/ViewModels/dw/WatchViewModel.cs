@@ -623,26 +623,76 @@ namespace Workbench.ViewModels.dw
             param.IsStartRecord = false;
         }));
 
+        public DelegateCommand<PPEC.Communication.Model.BitField> CaptureOldNameCommand => new DelegateCommand<PPEC.Communication.Model.BitField>((e) =>
+        {
+            var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == e.TableId);
+            if (selectChart.Header != "未选中")
+            {
+                if (selectChart != null)
+                {
+                    ChangeChartVisible(selectChart.WpfPlotControl2, false, e.Desc);
+                    ChangeChartVisible(selectChart.WpfPlotControl, false, e.Desc);
+                }
+            }
+        });
+
+        public DelegateCommand<PPEC.Communication.Model.BitField> NameEditedCommand => new DelegateCommand<PPEC.Communication.Model.BitField>((e) =>
+        {
+            var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == e.TableId);
+            if (selectChart.Header != "未选中")
+            {
+                if (selectChart != null)
+                {
+                    ChangeChartVisble2(selectChart.WpfPlotControl2, e.Desc);
+                    ChangeChartVisble2(selectChart.WpfPlotControl, e.Desc);
+                }
+            }
+        });
         private DelegateCommand _addWatchGroupCommand;
         public DelegateCommand AddWatchGroupCommand => _addWatchGroupCommand ?? (_addWatchGroupCommand = new DelegateCommand(() =>
         {
+            var baseName = $"表{WatchGroups.Count + 1}";
+            var header = MakeUniqueHeader(baseName);
 
-            WatchGroups.Add(new WatchGroup(_dialogService,session_id)
+            WatchGroups.Add(new WatchGroup(_dialogService, session_id)
             {
                 Id = Guid.NewGuid().ToString("N"),
-                Header = $"表{WatchGroups.Count + 1}",
+                Header = header,
                 TableColumns = InitTableColumns()
             });
-            if (CurrentTab == null)
-            {
-                CurrentTab = WatchGroups.Last();
-            }
-        }));
 
+            if (CurrentTab == null)
+                CurrentTab = WatchGroups.Last();
+            //WatchGroups.Add(new WatchGroup(_dialogService,session_id)
+            //{
+            //    Id = Guid.NewGuid().ToString("N"),
+            //    Header = $"表{WatchGroups.Count + 1}",
+            //    TableColumns = InitTableColumns()
+            //});
+            //if (CurrentTab == null)
+            //{
+            //    CurrentTab = WatchGroups.Last();
+            //}
+        }));
+        private string MakeUniqueHeader(string baseName)
+        {
+            var exists = new HashSet<string>(WatchGroups.Select(x => x.Header));
+            if (!exists.Contains(baseName)) return baseName;
+
+            int i = 1;
+            string candidate;
+            do
+            {
+                candidate = $"{baseName}-{i}";
+                i++;
+            } while (exists.Contains(candidate));
+
+            return candidate;
+        }
         public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
         {
             int nameCount = WatchChartGroups.Count == 1 ? 1 : WatchChartGroups.Count;
-            WatchChartModel wpfPlotControl = new WatchChartModel("监测图") {
+            WatchChartModel wpfPlotControl = new WatchChartModel("监测图", _dialogService, session_id) {
                 Id = Guid.NewGuid().ToString("N"),
                 Header = $"图{nameCount}",
             };
@@ -801,44 +851,7 @@ namespace Workbench.ViewModels.dw
             }
             
         });
-        //public DelegateCommand<SelectionChangedEventArgs> ChartTableChangeCommand => new DelegateCommand<SelectionChangedEventArgs>((e) =>
-        //{
-        //    if (e.OriginalSource is System.Windows.Controls.ComboBox cb)
-        //    {
-        //        var row = cb.DataContext as PPEC.Communication.Model.BitField;
-        //        // 选中项/选中值
-        //        var selectedItem = cb.SelectedItem as WatchChartModel;   // 如果你需要整个对象
-        //        if (selectedItem == null|| row==null)
-        //            return;
-        //        //var selectedValue = cb.SelectedValue; // 因为你设置了 SelectedValuePath="Id"
-        //        var selectChart = WatchChartGroups.Where(x => x.Id == row.TableId).FirstOrDefault();
-        //        var selectTable=WatchChartGroups.Where(x => x.Id == selectedItem.Id).FirstOrDefault();//选中的Chart
-        //        if (selectTable == null)
-        //            return;
-        //        if (selectedItem.Header=="未选中"&& selectedItem.Id!= row.TableId)
-        //        {
-        //            if(selectChart!=null)
-        //            {
-        //                ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
-        //                ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
-        //            }
-        //            row.TableId = null;
-        //        }
-        //        else if (selectedItem.Id != row.TableId)
-        //        {
-        //            if (selectChart != null)
-        //            { 
-        //                ChangeChartVisible(selectChart.WpfPlotControl2,false, row.Desc);
-        //                ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
-        //            }
-        //            ChangeChartVisble2(selectTable.WpfPlotControl2, row.Desc);
-        //            ChangeChartVisble2(selectTable.WpfPlotControl, row.Desc);
-        //            row.TableId = selectedItem.Id;
-
-        //        }
-
-        //    }
-        //});
+       
         #region Method
         /// <summary>
         /// 波形图参数添加
@@ -867,7 +880,7 @@ namespace Workbench.ViewModels.dw
         /// <param name="paramName"></param>
         public void ChangeChartVisible(WpfPlotSteamBase chart,bool isShow,string paramName)
         {
-            var legLabel = chart.Plot.GetPlottables().OfType<Scatter>().FirstOrDefault(s => s.LegendText == paramName); ;
+            var legLabel = chart.Plot.GetPlottables().OfType<Scatter>().FirstOrDefault(s => s.LegendText == paramName);
             if (legLabel != null)
                 legLabel.IsVisible = isShow;
             System.Windows.Application.Current.Dispatcher.InvokeAsync(() => chart.RefreshData());
