@@ -22,7 +22,7 @@ namespace Workbench.Models
         }
 
         private bool _isActive;
-        public bool IsActive
+        public virtual bool IsActive
         {
             get => _isActive;
             set => SetProperty(ref _isActive, value);

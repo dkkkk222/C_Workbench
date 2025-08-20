@@ -124,7 +124,7 @@ namespace Workbench.ViewModels.dw
         }
         #region Property
         public bool _isActive = false;
-        public new bool IsActive
+        public override bool IsActive
         {
             get
             {

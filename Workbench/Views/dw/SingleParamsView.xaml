@@ -399,7 +399,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                 </hc:UniformSpacingPanel>
                             </Border>
                         </StackPanel>
-                        <Border Grid.Column="1" Padding="15,0,0,0">
+                        <Border Grid.Column="1" Padding="55,0,0,0">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition ></RowDefinition>
@@ -420,7 +420,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 <TextBlock Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </hc:UniformSpacingPanel>
 
-                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary.Small}"  Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" Width="80" 
+                                            <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary}"  Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" Width="80" 
 IsEnabled="{Binding WriteCurrentRegister.AllowWrite}" HorizontalAlignment="Right"
 hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                         </Grid>
@@ -476,6 +476,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                             </DataGrid.CellStyle>
                                             <DataGrid.RowStyle>
                                                 <Style TargetType="DataGridRow">
+                                                    <Setter Property="Height" Value="30"/>
                                                     <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                                     <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
@@ -611,7 +612,7 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding CurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
                                             </hc:UniformSpacingPanel>
-                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary.Small}"   Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" Width="80" 
+                                            <Button Content="读 取" Grid.Column="1" Style="{StaticResource ButtonPrimary}"   Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" Width="80" 
         IsEnabled="{Binding CurrentRegister.AllowRead}" HorizontalAlignment="Right"
         hc:IconElement.Geometry="{StaticResource ReadGeometry}" Command="{Binding ReadRegisterCommand}"/>
                                         </Grid>
@@ -685,6 +686,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataGrid.CellStyle>
                                             <DataGrid.RowStyle>
                                                 <Style TargetType="DataGridRow">
+                                                    <Setter Property="Height" Value="30"/>
                                                     <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                                     <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
@@ -760,9 +762,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                             <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
                                 <!--<TextBlock Text="历史数据" FontSize="14"/>-->
-                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="历史数据" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                <controls_Title:StandTitle Padding="0,5,0,0" BordMargin="0,0,5,0" StandText="历史数据" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
-                                <Button Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                <Button Content="下载" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                 Command="{Binding HistoryDownloadCommand}"/>
                             </hc:UniformSpacingPanel>
                         </Border>
@@ -828,6 +830,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </DataGrid.CellStyle>
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow">
+                                    <Setter Property="Height" Value="30"/>
                                     <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                     <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
