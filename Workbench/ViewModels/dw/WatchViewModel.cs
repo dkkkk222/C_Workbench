@@ -1,5 +1,6 @@
 ﻿using Force.DeepCloner;
 using HandyControl.Controls;
+using log4net;
 using NPOI.SS.Formula.Functions;
 using NPOI.Util;
 using NPOI.XSSF.Streaming.Values;
@@ -12,6 +13,7 @@ using ScottPlot.Plottables;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -37,12 +39,14 @@ namespace Workbench.ViewModels.dw
 {
     public class WatchViewModel : AvaDocument
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(WatchViewModel));
         private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly IDialogService _dialogService;
         public int RefreshInterval = 500;//UI更新间隔
         public System.Timers.Timer _timer = new System.Timers.Timer();
-        public System.Timers.Timer _recordTime=new System.Timers.Timer();
+        public System.Timers.Timer _ReceiveTimer = new System.Timers.Timer();
+        public System.Timers.Timer _recordTime = new System.Timers.Timer();
         public System.Timers.Timer _refTime = new System.Timers.Timer();
         private CancellationTokenSource _cts = new CancellationTokenSource();
         public IngestPipeline pipeLineIng { get; set; }
@@ -53,24 +57,28 @@ namespace Workbench.ViewModels.dw
             _dialogService = dialogService;
             _eventAggregator = eventAggregator;
             WatchGroups = _projectManager.CurrentProject.WatchGroups;
+            WatchChartGroups = _projectManager.CurrentProject.WatchChartGroups;
             CategoryRegisters = _projectManager.CurrentProject.CategoryRegisters;
-            pms =new ParameterMonitorService(10) { CurrentProject= _projectManager.CurrentProject };
+            pms = new ParameterMonitorService(30) { CurrentProject = _projectManager.CurrentProject };
             pms.Enable();
-
-            _timer.Interval = 100; // 设置触发间隔
+            NormalizeWatchCharts();
+            _timer.Interval = 200; // 设置触发间隔
             _timer.Elapsed += Timer_Tick; // 设置触发事件
+
+            _ReceiveTimer.Interval = 200;
+            _ReceiveTimer.Elapsed += ReceiveTimer_Tick;
 
             _recordTime.Interval = 500; // 设置触发间隔
             _recordTime.Elapsed += RecordTime_Tick; // 设置触发事件
 
             _refTime.Interval = 1000; // 设置触发间隔
             _refTime.Elapsed += RefTime_Tick; // 设置触发事件
-            
+
 
             EventListener();
 
 
-            
+
             foreach (var group in WatchGroups)
             {
                 group.Inject(dialogService);
@@ -80,20 +88,44 @@ namespace Workbench.ViewModels.dw
 
             _watchChartGroupsForTab = new ListCollectionView(WatchChartGroups);
             _watchChartGroupsForTab.Filter = o => o is WatchChartModel m && !IsPlaceholder(m);
-            WatchChartGroups.CollectionChanged += (_, __) =>
+            if (WatchChartGroups != null && _chartGroupsChangedHandler != null)
+                WatchChartGroups.CollectionChanged -= _chartGroupsChangedHandler;
+            _chartGroupsChangedHandler = (s, e) =>
             {
-                System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                System.Windows.Application.Current?.Dispatcher.InvokeAsync(() =>
                 {
-                    _watchChartGroupsForTab.Refresh();
+                    _watchChartGroupsForTab?.Refresh();
                     SyncCurrentChartTab();
-                    HasRealCharts = _watchChartGroupsForTab.Count > 0;
+                    HasRealCharts = _watchChartGroupsForTab?.Count > 0;
                 });
-                    
             };
+
+            WatchChartGroups.CollectionChanged += _chartGroupsChangedHandler;
+
             _watchChartGroupsForTab.Refresh();
             SyncCurrentChartTab();
             HasRealCharts = _watchChartGroupsForTab.Count > 0;
+            ReLoadChartTable();
         }
+        private static WatchChartModel CreatePlaceholder() => new WatchChartModel("监测图")
+        {
+            Id = "placeholder",
+            Header = "未选中"
+        };
+        private void NormalizeWatchCharts()
+        {
+            if (WatchChartGroups == null) return;
+
+            // 移除多余占位
+            var dups = WatchChartGroups.Where(IsPlaceholder).Skip(1).ToList();
+            foreach (var d in dups) WatchChartGroups.Remove(d);
+
+            // 没有就补一个
+            if (!WatchChartGroups.Any(IsPlaceholder))
+                WatchChartGroups.Insert(0, CreatePlaceholder());
+        }
+
+        private NotifyCollectionChangedEventHandler _chartGroupsChangedHandler;
         private void SyncCurrentChartTab()
         {
             if (_watchChartGroupsForTab.Count == 0)
@@ -137,6 +169,7 @@ namespace Workbench.ViewModels.dw
                     if (value)
                     {
                         _timer.Start();
+                        _ReceiveTimer.Start();
                         _recordTime.Start();
                         _refTime.Start();
                         pms.Enable();
@@ -145,6 +178,7 @@ namespace Workbench.ViewModels.dw
                     else
                     {
                         _timer.Stop();
+                        _ReceiveTimer.Stop();
                         _recordTime.Stop();
                         _refTime.Stop();
                         pms.Disable();
@@ -168,11 +202,12 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _watchGroups, value);
         }
 
-        public ObservableCollection<WatchChartModel> _watchChartGroups = new ObservableCollection<WatchChartModel>() {
-               new WatchChartModel("监测图") {
-                Id = Guid.NewGuid().ToString("N"),
-                Header = $"未选中",
-            }};
+        //public ObservableCollection<WatchChartModel> _watchChartGroups = new ObservableCollection<WatchChartModel>() {
+        //       new WatchChartModel("监测图") {
+        //        Id = Guid.NewGuid().ToString("N"),
+        //        Header = $"未选中",
+        //    }};
+        public ObservableCollection<WatchChartModel> _watchChartGroups = new ObservableCollection<WatchChartModel>();
         /// <summary>
         /// 数据监测图列表
         /// </summary>
@@ -189,7 +224,7 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _currentTab, value);
         }
 
-        private WatchChartModel _currentChartTab=null;
+        private WatchChartModel _currentChartTab = null;
         public WatchChartModel CurrentChartTab
         {
             get => _currentChartTab;
@@ -209,14 +244,14 @@ namespace Workbench.ViewModels.dw
             get => _currentSettingCategory;
             set
             {
-                if(SetProperty(ref _currentSettingCategory, value))
+                if (SetProperty(ref _currentSettingCategory, value))
                 {
                     CategoryAddressList.Clear();
                     var CategoryAddressListOptions = _projectManager.GetRegisterForCategories(value.Value.ToString()).Select(t => new ValueLabelOption() { Value = t.AddressDec, Label = t.ShowAddressStr });
                     CategoryAddressList.AddRange(CategoryAddressListOptions);
                     CategoryAddress = CategoryAddressList.FirstOrDefault();
-                }               
-            } 
+                }
+            }
         }
 
         private ObservableCollection<ValueLabelOption> _categoryAddressList = new ObservableCollection<ValueLabelOption>();
@@ -294,18 +329,18 @@ namespace Workbench.ViewModels.dw
             {
                 SetProperty(ref _treeKeyword, value);
                 if (IsOrderByCategory)
-                { 
+                {
                     SearchCategoryTree(value, IsOrderByAddress);
                 }
-                else if(IsOrderByName)
+                else if (IsOrderByName)
                 {
-                    OrderByType(value,OrderByTypeEnum.Name);
+                    OrderByType(value, OrderByTypeEnum.Name);
                 }
                 else if (IsOrderByAddress)
                 {
                     OrderByType(value, OrderByTypeEnum.Address);
                 }
-                
+
                 var currentTreeNode = SingleParamTrees.GetMaxDepthLeaves().ToList();
                 UtilsFunc.SyncTreeCheckNode(currentTreeNode, CategoryRegisters);
             }
@@ -319,8 +354,8 @@ namespace Workbench.ViewModels.dw
                 if (value)
                 {
                     SearchCategoryTree(TreeKeyword, IsOrderByAddress);
-                    var currentTreeNode=SingleParamTrees.GetMaxDepthLeaves().ToList();
-                     
+                    var currentTreeNode = SingleParamTrees.GetMaxDepthLeaves().ToList();
+
                     UtilsFunc.SyncTreeCheckNode(currentTreeNode, CategoryRegisters);
                 }
                 SetProperty(ref _isOrderByCategory, value);
@@ -335,7 +370,7 @@ namespace Workbench.ViewModels.dw
             {
                 if (value)
                 {
-                    OrderByType(null,OrderByTypeEnum.Name);
+                    OrderByType(null, OrderByTypeEnum.Name);
                 }
                 SetProperty(ref _isOrderByName, value);
             }
@@ -349,7 +384,7 @@ namespace Workbench.ViewModels.dw
             {
                 if (value)
                 {
-                    OrderByType(null,OrderByTypeEnum.Address);
+                    OrderByType(null, OrderByTypeEnum.Address);
                 }
                 SetProperty(ref _isOrderByAddress, value);
             }
@@ -382,18 +417,18 @@ namespace Workbench.ViewModels.dw
             var RemoveList = new ObservableCollection<RegisterAddrInfo>();
             foreach (var isWatch in CategoryRegisters)
             {
-                if(SelectAddress.Where(x => x.Title == isWatch.Name).FirstOrDefault()==null)
+                if (SelectAddress.Where(x => x.Title == isWatch.Name).FirstOrDefault() == null)
                 {
                     pms.StopRecord(isWatch.Id);//停止记录
                     isWatch.IsStartRecord = false;
-                    if(!string.IsNullOrEmpty(isWatch.TableId))
+                    if (!string.IsNullOrEmpty(isWatch.TableId))
                     {
                         var thisTab = WatchGroups.Where(x => x.Id == isWatch.TableId).FirstOrDefault();
                         if (thisTab != null)
                         {
                             //从监测表中移除
-                            var allFields=thisTab.BitFields.Where(x => x.AddressId == isWatch.Id).ToList();
-                            if(allFields!=null&& allFields.Count>0)
+                            var allFields = thisTab.BitFields.Where(x => x.AddressId == isWatch.Id).ToList();
+                            if (allFields != null && allFields.Count > 0)
                             {
                                 var labels = thisTab.WpfPlotControl.Plot.GetPlottables();
                                 var labels2 = thisTab.WpfPlotControl2.Plot.GetPlottables();
@@ -401,7 +436,7 @@ namespace Workbench.ViewModels.dw
                                 {
                                     //var legLabel = labels.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
                                     var legLabel = labels.OfType<Scatter>().FirstOrDefault(s => s.LegendText == rem.Desc);
-                                    if (legLabel!=null)
+                                    if (legLabel != null)
                                         legLabel.IsVisible = false;//从波形图中移除
                                     //var legLabel2 = labels2.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
                                     var legLabel2 = labels2.OfType<Scatter>().FirstOrDefault(s => s.LegendText == rem.Desc);
@@ -418,7 +453,7 @@ namespace Workbench.ViewModels.dw
                     RemoveList.Add(isWatch);
                 }
             }
-            foreach(var removeObj in RemoveList)
+            foreach (var removeObj in RemoveList)
             {
                 CategoryRegisters.Remove(removeObj);
             }
@@ -434,8 +469,8 @@ namespace Workbench.ViewModels.dw
             foreach (var item in SelectAddress)
             {
                 var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == item.Title);
-                var isHaveAdd=CategoryRegisters.Where(x => x.AddressDec == register.AddressDec).FirstOrDefault();
-                if(isHaveAdd==null)
+                var isHaveAdd = CategoryRegisters.Where(x => x.AddressDec == register.AddressDec).FirstOrDefault();
+                if (isHaveAdd == null)
                     CategoryRegisters.Add(register);
             }
         });
@@ -449,12 +484,12 @@ namespace Workbench.ViewModels.dw
                 CategoryRegisters.Add(register);
         }
         public void RemoveRegisterForCheck(CategoryTree current)
-        {            
+        {
             //当选中状态取消的时候触发          
             var RemoveList = new ObservableCollection<RegisterAddrInfo>();
             var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == current.Title);
             var isWatch = CategoryRegisters.Where(x => x.AddressDec == register.AddressDec).FirstOrDefault();
-            if(isWatch != null)
+            if (isWatch != null)
             {
                 pms.StopRecord(isWatch.Id);//停止记录
                 isWatch.IsStartRecord = false;
@@ -492,7 +527,7 @@ namespace Workbench.ViewModels.dw
         #endregion
         public DelegateCommand<CategoryTree> CheckChangeCommand => new DelegateCommand<CategoryTree>((e) =>
         {
-            if(e.IsCheck)
+            if (e.IsCheck)
             {
                 AddRegisterForCheck(e);
             }
@@ -523,7 +558,7 @@ namespace Workbench.ViewModels.dw
         private void OrderByType(string value, OrderByTypeEnum NameOrAddress)
         {
             var tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().ToList().OrderBy(x => x.Title);
-            if(NameOrAddress== OrderByTypeEnum.Address)
+            if (NameOrAddress == OrderByTypeEnum.Address)
             {
                 tempList = _projectManager.GetChipCategoryTree().GetMaxDepthLeaves().ToList().OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue);
 
@@ -603,7 +638,7 @@ namespace Workbench.ViewModels.dw
                 return;
             }
             double recordTime = param.RecordTime;
-            if (param.RecordTimeTypeItem== ((int)RecordTimeType.Hour).ToString())
+            if (param.RecordTimeTypeItem == ((int)RecordTimeType.Hour).ToString())
             {
                 recordTime = param.RecordTime * 60 * 60;
             }
@@ -611,7 +646,7 @@ namespace Workbench.ViewModels.dw
             {
                 recordTime = param.RecordTime * 60;
             }
-            pms.StartRecord(param,TimeSpan.FromSeconds(recordTime));
+            pms.StartRecord(param, TimeSpan.FromSeconds(recordTime));
             param.IsStartRecord = true;
             //StartUiLoop(RefreshInterval);
         }));
@@ -626,6 +661,8 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand<PPEC.Communication.Model.BitField> CaptureOldNameCommand => new DelegateCommand<PPEC.Communication.Model.BitField>((e) =>
         {
             var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == e.TableId);
+            if (selectChart == null)
+                return;
             if (selectChart.Header != "未选中")
             {
                 if (selectChart != null)
@@ -639,13 +676,12 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand<PPEC.Communication.Model.BitField> NameEditedCommand => new DelegateCommand<PPEC.Communication.Model.BitField>((e) =>
         {
             var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == e.TableId);
+            if (selectChart == null)
+                return;
             if (selectChart.Header != "未选中")
-            {
-                if (selectChart != null)
-                {
-                    ChangeChartVisble2(selectChart.WpfPlotControl2, e.Desc);
-                    ChangeChartVisble2(selectChart.WpfPlotControl, e.Desc);
-                }
+            {                
+                ChangeChartVisble2(selectChart.WpfPlotControl2, e.Desc);
+                ChangeChartVisble2(selectChart.WpfPlotControl, e.Desc);                
             }
         });
         private DelegateCommand _addWatchGroupCommand;
@@ -692,7 +728,8 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
         {
             int nameCount = WatchChartGroups.Count == 1 ? 1 : WatchChartGroups.Count;
-            WatchChartModel wpfPlotControl = new WatchChartModel("监测图", _dialogService, session_id) {
+            WatchChartModel wpfPlotControl = new WatchChartModel("监测图", _dialogService, session_id)
+            {
                 Id = Guid.NewGuid().ToString("N"),
                 Header = $"图{nameCount}",
             };
@@ -712,7 +749,7 @@ namespace Workbench.ViewModels.dw
             _dialogService.Show(nameof(WatchTableListView), dialogParameters, r =>
             {
                 if (r.Result == ButtonResult.OK)
-                {                    
+                {
 
                 }
             }, nameof(ShowTableListWindows));
@@ -725,23 +762,23 @@ namespace Workbench.ViewModels.dw
             _dialogService.Show(nameof(WatchChartListView), dialogParameters, r =>
             {
                 if (r.Result == ButtonResult.OK)
-                { 
+                {
                 }
             }, nameof(ShowChartListWindows));
         });
 
-        
+
         private ObservableCollection<TableColumn> InitTableColumns()
         {
             var target = new ObservableCollection<TableColumn>();
-            string[] arr = new string[] { "序号", "名称", "寄存器地址(HEX)", "解析范围", "解析要求", "解析结果","原始值(Dec)","原始值(Bit)", "单位", "添加到监测图" };
+            string[] arr = new string[] { "序号", "名称", "寄存器地址(HEX)", "解析范围", "解析要求", "解析结果", "原始值(Dec)", "原始值(Bit)", "单位", "添加到监测图" };
             for (int i = 0; i < arr.Length; i++)
             {
                 var tab = new TableColumn()
                 {
                     Name = arr[i],
                 };
-                if(arr[i]== "原始值(Dec)"|| arr[i] == "原始值(Bit)")
+                if (arr[i] == "原始值(Dec)" || arr[i] == "原始值(Bit)")
                 {
                     tab.IsChecked = false;
                 }
@@ -765,7 +802,7 @@ namespace Workbench.ViewModels.dw
                 var labels2 = group.WpfPlotControl2.Plot.GetPlottables();
                 foreach (var lengLabel in labels)
                 {
-                    if(lengLabel is Scatter sc)
+                    if (lengLabel is Scatter sc)
                     {
                         sc.IsVisible = false;
                     }
@@ -777,7 +814,7 @@ namespace Workbench.ViewModels.dw
                         sc.IsVisible = false;
                     }
                 }
-                group.WpfPlotControl.Refresh(); 
+                group.WpfPlotControl.Refresh();
                 group.WpfPlotControl2.Refresh();
             }
 
@@ -786,7 +823,7 @@ namespace Workbench.ViewModels.dw
             if (tab == null)
                 return;
             //遍历寄存器下的BitField
-            foreach(var bf in param.BitFields)
+            foreach (var bf in param.BitFields)
             {
                 var clone = JsonHelper.DeepClone(bf);
                 clone.AddressHexName = param.AddressHex;
@@ -802,6 +839,19 @@ namespace Workbench.ViewModels.dw
             //});
         }));
 
+        public void ReLoadChartTable()//重新加载后清除选中
+        {
+            foreach(var table in WatchGroups)
+            {
+                foreach(var filed in table.BitFields)
+                {
+                    var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == filed.TableId);
+                    
+                    filed.SelectedChartValue = null;
+                    filed.TableId = null;
+                }
+            }
+        }
         public DelegateCommand<SelectionChangedEventArgs> ChartTableChangeCommand => new DelegateCommand<SelectionChangedEventArgs>((e) =>
         {
             try
@@ -826,6 +876,7 @@ namespace Workbench.ViewModels.dw
                         ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Desc);
                         ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
                     }
+                    row.SelectedChartValue = null;
                     row.TableId = null;
                     return;
                 }
@@ -842,16 +893,17 @@ namespace Workbench.ViewModels.dw
                         ChangeChartVisble2(selectTable.WpfPlotControl2, row.Desc);
                         ChangeChartVisble2(selectTable.WpfPlotControl, row.Desc);
                         row.TableId = selectedItem.Id;
+                        row.SelectedChartValue = selectedItem.Id;
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-
+                _log.Error(ex);
             }
-            
+
         });
-       
+
         #region Method
         /// <summary>
         /// 波形图参数添加
@@ -878,11 +930,25 @@ namespace Workbench.ViewModels.dw
         /// <param name="chart"></param>
         /// <param name="isShow"></param>
         /// <param name="paramName"></param>
-        public void ChangeChartVisible(WpfPlotSteamBase chart,bool isShow,string paramName)
+        public void ChangeChartVisible(WpfPlotSteamBase chart, bool isShow, string paramName)
         {
             var legLabel = chart.Plot.GetPlottables().OfType<Scatter>().FirstOrDefault(s => s.LegendText == paramName);
             if (legLabel != null)
-                legLabel.IsVisible = isShow;
+            {
+                if(isShow)
+                {
+                    legLabel.IsVisible = isShow;
+                }
+                else
+                {
+                    legLabel.IsVisible = isShow;
+                    //chart.Plot.Remove(legLabel);
+                }
+            }
+            else
+            {
+                chart.AddSignalData(paramName);
+            }
             System.Windows.Application.Current.Dispatcher.InvokeAsync(() => chart.RefreshData());
             //chart.RefreshData();
         }
@@ -902,7 +968,7 @@ namespace Workbench.ViewModels.dw
 
             _cts.Cancel();
             try { await _uiLoopTask; }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException ex) { _log.Error(ex); }
             finally { _uiLoopTask = null; }
         }
         private async Task UiLoopAsync(int periodMs, CancellationToken token)
@@ -937,7 +1003,7 @@ namespace Workbench.ViewModels.dw
             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 bool anyChanged = false;
-                foreach (var field in group.BitFields)
+                foreach (var field in group.BitFields.ToArray())
                 {
                     var newValue = _projectManager.GetRegisterValue(field.AddressHexName);
                     if (newValue == null)
@@ -953,30 +1019,44 @@ namespace Workbench.ViewModels.dw
                 }
             }, System.Windows.Threading.DispatcherPriority.Background);
         }
+        private int _busy4;
         private void RefTime_Tick(object sender, EventArgs e)
         {
-            if (System.Windows.Application.Current != null)
+            if (Interlocked.Exchange(ref _busy4, 1) == 1) return;
+            try
             {
-                System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                if (System.Windows.Application.Current != null)
                 {
-                    foreach(var chartTab in WatchChartGroups)
+                    System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        chartTab.WpfPlotControl2.RefreshData(false);
-                        chartTab.WpfPlotControl.RefreshData(false);
-                    }
-                });
+                        foreach (var chartTab in WatchChartGroups.ToArray())
+                        {
+                            chartTab.WpfPlotControl2.RefreshData(false);
+                            chartTab.WpfPlotControl.RefreshData(false);
+                        }
+                    });
+                }
             }
+            catch(Exception ex)
+            { _log.Error(ex); }
+            finally
+            {
+                Interlocked.Exchange(ref _busy4, 0);
+            }
+            
         }
-        
+        private int _busy3;
         private void RecordTime_Tick(object sender, EventArgs e)
         {
-            Task.Run(() =>
+            if (Interlocked.Exchange(ref _busy3, 1) == 1) return;
+
+            try
             {
-                foreach(var param in CategoryRegisters)
+                foreach (var param in CategoryRegisters.ToArray())
                 {
-                    if(param.IsStartRecord)
+                    if (param.IsStartRecord)
                     {
-                        foreach(var newField in param.BitFields)
+                        foreach (var newField in param.BitFields.ToArray())
                         {
                             var tempdic = new Dictionary<string, double>();
                             tempdic.Add(newField.Id, newField.Result);
@@ -986,61 +1066,105 @@ namespace Workbench.ViewModels.dw
                                 TimestampUtcMs = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds,
                                 Values = tempdic,
                             });
-                        }                        
-                    }                    
+                        }
+                    }
                 }
-                
-            });
-        }
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            Task.Run(() =>
+            }
+            catch (Exception ex) { _log.Error(ex); }
+            finally
             {
-                try
-                {
+                Interlocked.Exchange(ref _busy3, 0);
+            }
+        }
+        private int _busy2;
+        private void ReceiveTimer_Tick(object sender, EventArgs e)
+        {
+            if (Interlocked.Exchange(ref _busy2, 1) == 1) return;
+            try
+            {
+                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => {
                     foreach (var group in WatchGroups.ToArray())
                     {
                         foreach (var field in group.BitFields)
                         {
-                            var unitValue = _projectManager.CurrentProject.CommService?.Read(field.AddressHexName);
-                            if (unitValue == null)
-                                continue;
-                            _projectManager.SetRegisterValue(field.Name, unitValue.Value);
-                            var newValue = _projectManager.GetRegisterValue(field.AddressHexName);
-                            if (newValue == null)
-                                continue;
-                            var newField = newValue.BitFields
-                                                 .FirstOrDefault(x => x.StartBit == field.StartBit);
-                            if (newField != null)
+                            if (field.TableId != null)
                             {
-                                if (field.TableId!=null)
+                                if (pms._watching.ContainsKey(field.AddressId))
                                 {
-                                    if (pms._watching.ContainsKey(field.AddressId))
+                                    var fieldChart = WatchChartGroups.Where(x => x.Id == field.TableId).FirstOrDefault();//找到参数所在的波形图
+                                    if (fieldChart != null)
                                     {
-                                        var fieldChart=WatchChartGroups.Where(x => x.Id == field.TableId).FirstOrDefault();//找到参数所在的波形图
-                                        if(fieldChart!=null)
-                                        {
-                                            fieldChart.WpfPlotControl2.UpdateData(field.Desc, field.Result);
-                                            fieldChart.WpfPlotControl.UpdateData(field.Desc, field.Result);
-                                        }
-                                        //更新波形数据
-                                        //group.WpfPlotControl.UpdateData(field.Desc, field.Result);
-                                        //group.WpfPlotControl2.UpdateData(field.Desc, field.Result);
+                                        fieldChart.WpfPlotControl2.UpdateData(field.Desc, field.Result);
+                                        fieldChart.WpfPlotControl.UpdateData(field.Desc, field.Result);
                                     }
                                 }
                             }
                         }
                     }
-                       
-                }
-                catch(Exception ex)
+                });
+                
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _busy2, 0);
+            }
+            
+        }
+        private int _busy;
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (Interlocked.Exchange(ref _busy, 1) == 1) return;
+            try
+            {
+                foreach (var group in WatchGroups.ToArray())
                 {
-
+                    foreach (var field in group.BitFields)
+                    {
+                        var unitValue = _projectManager.CurrentProject.CommService?.Read(field.AddressHexName);
+                        if (unitValue == null)
+                            continue;
+                        _projectManager.SetRegisterValue(field.Name, unitValue.Value);                        
+                    }
                 }
-            });
+
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _busy, 0);
+            }
         }
         #endregion
-        public void Dispose() => _cts.Cancel();
+        public void Dispose()
+        {
+            try
+            {
+                if (WatchChartGroups != null && _chartGroupsChangedHandler != null)
+                    WatchChartGroups.CollectionChanged -= _chartGroupsChangedHandler;
+                _cts.Cancel();
+                _timer.Stop();
+                _timer.Elapsed -= Timer_Tick; // 设置触发事件
+                _ReceiveTimer.Elapsed -= ReceiveTimer_Tick;
+                _recordTime.Elapsed += RecordTime_Tick; // 设置触发事件
+                _refTime.Elapsed -= RefTime_Tick; // 设置触发事件
+                _ReceiveTimer.Stop();
+                _recordTime.Stop();
+                _refTime.Stop();
+                pms.Disable();
+                StopUiLoopAsync().ConfigureAwait(false);
+            }
+            catch(Exception ex)
+            {
+                _log.Error(ex);
+            }
+        } 
 
         public void EventListener()
         {
@@ -1052,11 +1176,12 @@ namespace Workbench.ViewModels.dw
                     isWatch.IsStartRecord = false;
                 }
                 _timer.Stop();
+                _ReceiveTimer.Stop();
                 _recordTime.Stop();
                 _refTime.Stop();
                 pms.Disable();
                 StopUiLoopAsync().ConfigureAwait(false);
-                
+
             });
         }
         #endregion

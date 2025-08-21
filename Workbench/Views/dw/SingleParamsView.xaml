@@ -162,7 +162,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="名称:" Style="{StaticResource ItemTitle}"/>
                                             <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True" 
-                                                     Text="{Binding CurrentRegister.Name}"/>
+                                                     Text="{Binding CurrentRegister.Name}" IsEnabled="False"/>
 
                                         </StackPanel>
                                     </Border>

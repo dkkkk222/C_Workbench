@@ -12,6 +12,7 @@ using Workbench.Communication;
 using Workbench.Events;
 using Workbench.Models.dw;
 using Workbench.Utils;
+using Workbench.ViewModels.dw;
 
 namespace Workbench.Models
 {
@@ -209,6 +210,18 @@ namespace Workbench.Models
         {
             get => _watchGroups;
             set => SetProperty(ref _watchGroups, value);
+        }
+
+        //private ObservableCollection<WatchChartModel> _watchChartGroups = new ObservableCollection<WatchChartModel>() {
+        //       new WatchChartModel("监测图") {
+        //        Id = Guid.NewGuid().ToString("N"),
+        //        Header = $"未选中",
+        //    }};
+        private ObservableCollection<WatchChartModel> _watchChartGroups = new ObservableCollection<WatchChartModel>();
+        public ObservableCollection<WatchChartModel> WatchChartGroups
+        {
+            get => _watchChartGroups;
+            set => SetProperty(ref _watchChartGroups, value);
         }
 
         private ObservableCollection<RegisterAddrInfo> _categoryRegisters = new ObservableCollection<RegisterAddrInfo>();

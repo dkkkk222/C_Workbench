@@ -172,6 +172,7 @@ namespace Workbench.Views
 
         private void NoTitleBarWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            _eventAggregator.GetEvent<CloseConnectEvent>().Publish();
             var viewModel = DataContext as MainWindowViewModel;
             var r = MessageBox.Show("是否保存工程？", "提示",
                            MessageBoxButton.YesNo, MessageBoxImage.Question);

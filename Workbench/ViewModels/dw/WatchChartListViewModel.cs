@@ -52,6 +52,7 @@ namespace Workbench.ViewModels.dw
 
         public void OnDialogClosed()
         {
+            WatchViewModel.WatchChartGroups.CollectionChanged -= OnChartsChanged;
         }
 
         public void OnDialogOpened(IDialogParameters parameters)

@@ -47,7 +47,7 @@ namespace Workbench.Models
         private readonly int _intervalMs;         // 每条下发间隔 (ms)
         public PpecProject CurrentProject { get; set; }
 
-        public ParameterMonitorService(int intervalMs = 3)
+        public ParameterMonitorService(int intervalMs = 20)
         {
             if (intervalMs <= 0) throw new ArgumentOutOfRangeException(nameof(intervalMs));
             _intervalMs = intervalMs;

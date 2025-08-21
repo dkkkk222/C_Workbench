@@ -383,12 +383,12 @@ CommandParameter="{Binding}"/>
                 <Border Grid.Row="2">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition MinWidth="400"></ColumnDefinition>
                             <ColumnDefinition Width="5"></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition MinWidth="400"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <DockPanel LastChildFill="True">
+                        <DockPanel LastChildFill="True" MinWidth="400">
 
                             <Border Style="{StaticResource BorderCircular}" DockPanel.Dock="Top"  Margin="5,10,0,5"  BorderBrush="Transparent" Background="Transparent">
                                 <DockPanel LastChildFill="True">
@@ -399,10 +399,10 @@ CommandParameter="{Binding}"/>
                                     </hc:UniformSpacingPanel>
                                     <Border Margin="0,0,10,0">
                                         <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
-                                            <Button Content="添加到序列" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                                            <Button Content="添加到序列" Style="{StaticResource ButtonPrimary}" Width="110"  Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                             Command="{Binding AddRegisterToSequenceCommand}"/>
 
-                                            <Button Content="查看配置" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource EnlargeGeometry}"
+                                            <Button Content="查看配置" Style="{StaticResource ButtonPrimary}" Width="100"  Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource EnlargeGeometry}"
                                                         Command="{Binding ConfigRegisterCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"/>
                                         </hc:UniformSpacingPanel>
                                     </Border>
@@ -410,17 +410,13 @@ CommandParameter="{Binding}"/>
                             </Border>
 
                             <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
-                                  AlternationCount="2"   Background="{DynamicResource DataGridBackgroundColor}" 
-                              
-                                      RowHeaderWidth="60" LoadingRow="SequenceGrid_LoadingRow"
-          Sorting="SequenceGrid_Sorting"
+                                  AlternationCount="2"   Background="{DynamicResource DataGridBackgroundColor}"  ColumnHeaderHeight="30"
+                                      RowHeaderWidth="60" LoadingRow="SequenceGrid_LoadingRow" Sorting="SequenceGrid_Sorting"
+                                      Loaded="SequenceGrid_OnLoaded"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseDoubleClick">
-                                        <i:InvokeCommandAction
-                Command="{Binding ConfigRegisterCommand}"          
-                                            CommandParameter="{Binding SelectedItem,
-                                          ElementName=SequenceGrid}" />
+                                        <i:InvokeCommandAction Command="{Binding ConfigRegisterCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}" />
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                                 <DataGrid.ColumnHeaderStyle>
@@ -434,14 +430,12 @@ CommandParameter="{Binding}"/>
                                         <Setter Property="Padding" Value="10,0,0,0"/>
                                         <Setter Property="Margin" Value="0,0,12,0"/>
                                         <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                        <Setter Property="BorderThickness" Value="0,0,0,1" />                                       
                                     </Style>
                                 </DataGrid.ColumnHeaderStyle>
                                 <DataGrid.Resources>
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
-     Color="Transparent"/>
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="#3D7EFF"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#3D7EFF"/>
                                 </DataGrid.Resources>
                                 <DataGrid.CellStyle>
                                     <Style TargetType="DataGridCell" BasedOn="{x:Null}">
@@ -600,17 +594,6 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <!--<DataGridTemplateColumn Header="数据(DEC)" Width="*" MinWidth="110">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <hc:NumericUpDown Minimum="0" VerticalAlignment="Center" Style="{StaticResource NumericUpDownExtend.Small}" LostFocus="DecValueText_LostFocus">
-                                                    <hc:NumericUpDown.Value>
-                                                        <Binding Path="DecValue" UpdateSourceTrigger="PropertyChanged"/>
-                                                    </hc:NumericUpDown.Value>
-                                                </hc:NumericUpDown>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>-->
                                     <DataGridTemplateColumn Header="数据(Binary)" Width="*" MinWidth="648">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -637,25 +620,20 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         </DockPanel>
                         <DockPanel LastChildFill="True" Grid.Column="2">
                             <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
+                                <Grid> 
                                     <hc:UniformSpacingPanel Spacing="15">
                                         <!--<TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>-->
                                      
                                         <controls_Title:StandTitle Padding="0,5,0,0" BordMargin="0,0,5,0" StandText="寄存器详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                         <TextBlock Padding="0,5,0,0"  Text="{Binding WriteCurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                         <TextBlock Padding="0,5,0,0"  Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
-                                        <TextBlock Padding="0,5,0,0"  Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
-                                        <Button Content="添加到序列" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
-Command="{Binding AddRegisterToSequenceCommand}" Visibility="Hidden"/>
+                                        <TextBlock Padding="0,5,0,3"  Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
+                                        
                                     </hc:UniformSpacingPanel>
                                 </Grid>
                             </Border>
-                    
-                                <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}" AutoGenerateColumns="False" 
+
+                            <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}" AutoGenerateColumns="False"  ColumnHeaderHeight="30"
                                            Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
                          CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
 
@@ -737,9 +715,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         <Condition Property="IsSelected" Value="True"/>
                                                         <Condition Property="IsMouseOver" Value="False"/>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                    <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
-                                                    <!-- 白字 -->
+                                                <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
+                                                <!-- 白字 -->
                                                     <Setter Property="BorderThickness" Value="0"/>
                                                     <!-- 去掉分割线 -->
                                                 </MultiTrigger>
@@ -750,9 +728,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         <Condition Property="IsSelected" Value="True"/>
                                                         <Condition Property="IsMouseOver" Value="True"/>
                                                     </MultiTrigger.Conditions>
-                                                    <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                    <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
-                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
                                                 </MultiTrigger>
                                             </Style.Triggers>
                                         </Style>

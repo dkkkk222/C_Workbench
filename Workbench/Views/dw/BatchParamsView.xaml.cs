@@ -2,12 +2,14 @@
 using PPEC.Communication.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -332,5 +334,148 @@ namespace Workbench.Views.dw
                 }
             }), System.Windows.Threading.DispatcherPriority.Background);
         }
+
+        #region DataGridAllKey
+        private bool _cornerFixed;
+        private INotifyCollectionChanged _itemsNotify;
+        private EventHandler _statusChangedHandler;
+        private void SequenceGrid_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // 1) 订阅 ItemsSource 的集合变化（增删行时触发）
+            HookItemsSource();
+            _statusChangedHandler = (s, __) =>
+            {
+                if (SequenceGrid.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
+                    TrySetCornerHeader();
+            };
+            // 2) 行容器生成完成后再试（虚拟化/主题下常见）
+            SequenceGrid.ItemContainerGenerator.StatusChanged += _statusChangedHandler;
+
+            // 3) 再加一个布局兜底（模板晚创建的主题场景）
+            SequenceGrid.LayoutUpdated += SequenceGrid_LayoutUpdated;
+
+            // 初次尝试（若加载时就有行）
+            TrySetCornerHeader();
+        }
+       
+        private void SequenceGrid_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (_cornerFixed) return;
+            TrySetCornerHeader();
+        }
+
+        private void HookItemsSource()
+        {
+            if (_itemsNotify != null)
+                _itemsNotify.CollectionChanged -= Items_CollectionChanged;
+
+            _itemsNotify = SequenceGrid.ItemsSource as INotifyCollectionChanged;
+            if (_itemsNotify != null)
+                _itemsNotify.CollectionChanged += Items_CollectionChanged;
+        }
+
+        private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // 集合变更后延后尝试（确保可视元素已创建）
+            Dispatcher.BeginInvoke(new Action(TrySetCornerHeader),
+                System.Windows.Threading.DispatcherPriority.Loaded);
+        }
+
+        private void TrySetCornerHeader()
+        {
+            if (_cornerFixed) return;
+
+            SequenceGrid.ApplyTemplate();
+
+            // 不依赖具体名字，直接在 DataGrid 的可视树里找“左上角那颗按钮”
+            // 1) 先找 DataGrid 的 ColumnHeadersPresenter
+            var headersPresenter = FindDescendant<DataGridColumnHeadersPresenter>(SequenceGrid);
+            if (headersPresenter == null) return;
+
+            // 2) 再向上找它所在的 Grid（一般左上角按钮与它同级）
+            var parent = VisualTreeHelper.GetParent(headersPresenter);
+            if (parent == null) return;
+
+            // 3) 在这个容器里找第一个 ButtonBase，当作左上角按钮
+            var btn = FindDescendant<ButtonBase>(parent);
+            if (btn == null) return; // 还没创建出来，再等下一次
+            btn.Template = BuildCornerButtonTemplate(btn.GetType());
+            // 设置文本与样式
+            //btn.Content = "序号";
+            // 若不想触发全选，放开任一行：
+             btn.IsHitTestVisible = false;
+            // btn.IsEnabled = false;
+
+            _cornerFixed = true;
+
+            SequenceGrid.ItemContainerGenerator.StatusChanged -= _statusChangedHandler;
+            SequenceGrid.LayoutUpdated -= SequenceGrid_LayoutUpdated; // 设到位后取消兜底
+        }
+
+        // --- 可视树工具 ---
+        private static T FindDescendant<T>(DependencyObject root) where T : DependencyObject
+        {
+            if (root == null) return null;
+            int n = VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < n; i++)
+            {
+                var child = VisualTreeHelper.GetChild(root, i);
+                if (child is T t) return t;
+                var deep = FindDescendant<T>(child);
+                if (deep != null) return deep;
+            }
+            return null;
+        }
+
+        private void SequenceGrid_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            if (_itemsNotify != null)
+                _itemsNotify.CollectionChanged -= Items_CollectionChanged;
+            SequenceGrid.LayoutUpdated -= SequenceGrid_LayoutUpdated;
+            SequenceGrid.ItemContainerGenerator.StatusChanged -= null; // 如果你有字段存委托可在此移除
+        }
+
+        private ControlTemplate BuildCornerButtonTemplate(Type targetType)
+        {
+            var tpl = new ControlTemplate(targetType);
+
+            var border = new FrameworkElementFactory(typeof(Border));
+            border.SetResourceReference(Border.BackgroundProperty, "DataGridHeadBackgroundColor");
+            border.SetResourceReference(Border.BorderBrushProperty, "BorderLineBrush");
+            border.SetValue(Border.BorderThicknessProperty, new Thickness(0, 0, 0, 1));
+            border.SetValue(Border.SnapsToDevicePixelsProperty, true);
+
+            // 关键：充满单元格
+            border.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+            border.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+
+            // 跟随行头宽度
+            var wBind = new Binding("RowHeaderWidth")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DataGrid), 1)
+            };
+            border.SetBinding(FrameworkElement.WidthProperty, wBind);
+
+            // 跟随表头高度（若 ColumnHeaderHeight 未设置则为 NaN，Stretch 也能正常填充；
+            // 你若已在 XAML 设置 ColumnHeaderHeight=30，则这里会严格等高）
+            var hBind = new Binding("ColumnHeaderHeight")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DataGrid), 1)
+            };
+            border.SetBinding(FrameworkElement.HeightProperty, hBind);
+
+            var text = new FrameworkElementFactory(typeof(TextBlock));
+            text.SetValue(TextBlock.TextProperty, "序号");
+            text.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+            text.SetValue(TextBlock.FontWeightProperty, FontWeights.SemiBold);
+            text.SetValue(TextBlock.FontSizeProperty, 13.0);
+            text.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            text.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+            border.AppendChild(text);
+            tpl.VisualTree = border;
+            return tpl;
+        }
+        #endregion
     }
 }

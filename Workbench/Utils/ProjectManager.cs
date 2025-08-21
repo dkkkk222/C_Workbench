@@ -13,12 +13,14 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Unity;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
 using Workbench.Utils.Common;
+using Workbench.ViewModels.dw;
 
 namespace Workbench.Utils
 {
@@ -164,7 +166,7 @@ namespace Workbench.Utils
                 MessageBox.Show("请选择待保存项目", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
-
+            project.WatchChartGroups = new ObservableCollection<WatchChartModel>(project.WatchChartGroups.Where(m => m.Id!= "placeholder" && m.Header!="未选中"));
             var dirPath = project.Path;
             var fileName = project.Name;
             if (!Directory.Exists(dirPath))

@@ -36,6 +36,30 @@ namespace Workbench
     /// </summary>
     public partial class App : PrismApplication
     {
+        static App() // 最早：在 new App() 之前执行
+        {
+            HookGlobalExceptions();
+        }
+        private static void HookGlobalExceptions()
+        {
+            AppDomain.CurrentDomain.FirstChanceException += (s, e) => _log.Info("FirstChance" + e.Exception);
+
+            AppDomain.CurrentDomain.UnhandledException += (s, ev) =>
+            {
+                var ex = ev.ExceptionObject as Exception;
+                var text = ex?.ToString() ?? ev.ExceptionObject?.ToString() ?? "<null>";
+                _log.Info("AppDomain=" + text);               
+            };
+
+            TaskScheduler.UnobservedTaskException += (s, ev) =>
+            {
+                _log.Info("TaskScheduler" + ev.Exception);
+                ev.SetObserved();
+            };
+
+            // 注意：如果你在这里引用 Application.Current，确保它已存在；否则建议在 OnStartup 里再挂
+            // Application.Current.DispatcherUnhandledException += ... 也可以在 OnStartup 挂
+        }
         private static readonly ILog _log = LogManager.GetLogger(typeof(App));
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -43,9 +67,17 @@ namespace Workbench
             RegisteFluentMigrator();
             XmlConfigurator.Configure(new FileInfo("log4net.config"));
             _log.Info("Workbench started.");
-            base.OnStartup(e);
+            base.OnStartup(e);          
         }
-
+        static void LogFatal(string src, Exception ex)
+        {
+            try
+            {
+                System.IO.File.AppendAllText("crash.log",
+                    $"{DateTime.Now:u} [{src}] {ex}\r\n");
+            }
+            catch { /* ignore */ }
+        }
         private void HotLoadDatabase()
         {
             try

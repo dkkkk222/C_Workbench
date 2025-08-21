@@ -179,7 +179,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <DataGrid  MaxHeight="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                            <DataGrid  MaxHeight="200"  MinWidth="400" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="245" IsReadOnly="True"
                                          Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
                SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
@@ -301,7 +301,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding SubCategory}" Header="子分类" Width="*">
+                                    <DataGridTextColumn Binding="{Binding SubCategory}" Header="子分类" Width="*" MinWidth="90">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="ToolTip" Value="{Binding SubCategory}"/>
@@ -319,7 +319,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding HexValue}" Header="数据(HEX)" Width="*" >
+                                    <DataGridTextColumn Binding="{Binding HexValue}" Header="数据(HEX)" Width="*" MinWidth="90">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="ToolTip" Value="{Binding HexValue}"/>
@@ -328,7 +328,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTemplateColumn Header="记录时间" Width="Auto">
+                                    <DataGridTemplateColumn Header="记录时间" Width="Auto" MinWidth="90">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -421,9 +421,9 @@ SelectedValuePath="Id">
                     <Border Grid.Row="1"  Background="{StaticResource AvalonDockAreaBackgroundColor}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition MinWidth="400"></ColumnDefinition>
                                 <ColumnDefinition Width="5"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition MinWidth="400"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
                                    ItemsSource="{Binding WatchGroups}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}">
