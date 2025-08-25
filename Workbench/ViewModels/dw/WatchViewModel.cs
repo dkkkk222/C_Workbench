@@ -506,10 +506,10 @@ namespace Workbench.ViewModels.dw
                             var labels2 = thisTab.WpfPlotControl2.Plot.GetPlottables();
                             foreach (var rem in allFields)
                             {
-                                var legLabel = labels.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                var legLabel = labels.OfType<Scatter>().FirstOrDefault(s => s.LegendText == rem.Desc); // labels.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
                                 if (legLabel != null)
                                     legLabel.IsVisible = false;//从波形图中移除
-                                var legLabel2 = labels2.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
+                                var legLabel2 = labels2.OfType<Scatter>().FirstOrDefault(s => s.LegendText == rem.Desc); // labels2.Where(x => (x as Scatter).LegendText.Equals(rem.Desc)).FirstOrDefault();
                                 if (legLabel2 != null)
                                     legLabel2.IsVisible = false;//从波形图中移除
                                 thisTab.BitFields.Remove(rem);//从状态监测表中移除
@@ -830,13 +830,6 @@ namespace Workbench.ViewModels.dw
                 clone.AddressId = param.Id;
                 tab.BitFields.Add(clone);
             }
-            //param.BitFields.ForEach(bf =>
-            //{
-            //    var clone = JsonHelper.DeepClone(bf);
-            //    clone.AddressHexName = param.AddressHex;
-            //    clone.AddressId = param.Id;
-            //    tab.BitFields.Add(clone);
-            //});
         }));
 
         public void ReLoadChartTable()//重新加载后清除选中
@@ -847,7 +840,7 @@ namespace Workbench.ViewModels.dw
                 {
                     var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == filed.TableId);
                     
-                    filed.SelectedChartValue = null;
+                    //filed.SelectedChartValue = null;
                     filed.TableId = null;
                 }
             }
@@ -876,7 +869,7 @@ namespace Workbench.ViewModels.dw
                         ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Desc);
                         ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
                     }
-                    row.SelectedChartValue = null;
+                    //row.SelectedChartValue = null;
                     row.TableId = null;
                     return;
                 }
@@ -893,7 +886,7 @@ namespace Workbench.ViewModels.dw
                         ChangeChartVisble2(selectTable.WpfPlotControl2, row.Desc);
                         ChangeChartVisble2(selectTable.WpfPlotControl, row.Desc);
                         row.TableId = selectedItem.Id;
-                        row.SelectedChartValue = selectedItem.Id;
+                       // row.SelectedChartValue = selectedItem.Id;
                     }
                 }
             }
@@ -1152,7 +1145,7 @@ namespace Workbench.ViewModels.dw
                 _timer.Stop();
                 _timer.Elapsed -= Timer_Tick; // 设置触发事件
                 _ReceiveTimer.Elapsed -= ReceiveTimer_Tick;
-                _recordTime.Elapsed += RecordTime_Tick; // 设置触发事件
+                _recordTime.Elapsed -= RecordTime_Tick; // 设置触发事件
                 _refTime.Elapsed -= RefTime_Tick; // 设置触发事件
                 _ReceiveTimer.Stop();
                 _recordTime.Stop();

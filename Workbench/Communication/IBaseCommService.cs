@@ -14,6 +14,14 @@ namespace Workbench.Communication
         Task<bool> SendAsync(byte[] data);
         uint? Read(string hexAddress);
         Task<uint?> ReadRegisterAsync(ushort regAddr, bool param1 = false, byte param2 = 0xA0, int timeoutMs = 20);
+        /// <summary>
+        /// CAN发送
+        /// </summary>
+        Task WriteRegisterAsync(ushort regAddr, byte[] value4, bool useCanB = false, byte dest = 0xA0, int delayMs = 5);
+        /// <summary>
+        /// I2C发送
+        /// </summary>
+        Task<bool> WriteRegisterAsync(ushort regAddr, uint value4);
         void Close();
     }
 }

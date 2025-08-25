@@ -311,7 +311,26 @@ namespace Workbench.ViewModels.dw
             foreach (var register in param.Items)
             {
                 var calcResult = UtilsFunc.GetWriteCommandByAddress(register.AddressHex, currentProject.CommunicationType, register.DecValue);
-                await currentProject.CommService.SendAsync(calcResult.bytes);
+                switch (currentProject.CommunicationType)
+                {
+                    case Constants.Modbus:
+                        await currentProject.CommService.SendAsync(calcResult.bytes);
+                        break;
+                    case Constants.I2C:
+                        if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                        {
+                            await currentProject.CommService.WriteRegisterAsync(reg, WriteCurrentRegister.DecValue);
+                        }
+                        break;
+                    case Constants.CAN:
+                        byte[] byteArray = BitConverter.GetBytes(WriteCurrentRegister.DecValue);
+                        if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
+                        {
+                            await currentProject.CommService.WriteRegisterAsync(reg1, byteArray);
+                        }
+                        break;
+                }
+                //await currentProject.CommService.SendAsync(calcResult.bytes);
                 param.CompletedNum += 1;
                 Thread.Sleep(TimeSpan.FromMilliseconds(2));
             }

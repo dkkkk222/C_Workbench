@@ -137,14 +137,14 @@ namespace Workbench.Models
                                 await CurrentProject.CommService.SendAsync(cmd.bytes);
                                 break;
                             case Constants.I2C:
-                                if (!ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                                if (ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
                                 {
                                     await CurrentProject.CommService.ReadRegisterAsync(reg);
                                 }
-                                CurrentProject.CommService.Read(item.Param.AddressHex);
+                                //CurrentProject.CommService.Read(item.Param.AddressHex);
                                 break;
                             case Constants.CAN:
-                                if (!ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
+                                if (ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
                                 {
                                     await CurrentProject.CommService.ReadRegisterAsync(reg1);
                                 }

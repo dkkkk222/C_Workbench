@@ -494,6 +494,11 @@ namespace Workbench.Communication
             return (byte)s;
         }
 
+        public Task<bool> WriteRegisterAsync(ushort regAddr, uint value4)
+        {
+            throw new NotImplementedException();
+        }
+
         private static class DT
         {
             public const byte Reset = 0x1F;

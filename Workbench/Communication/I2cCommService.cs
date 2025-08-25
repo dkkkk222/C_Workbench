@@ -218,5 +218,10 @@ namespace Workbench.Communication
             }
             return false;
         }
+
+        public Task WriteRegisterAsync(ushort regAddr, byte[] value4, bool useCanB = false, byte dest = 160, int delayMs = 5)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

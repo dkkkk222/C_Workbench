@@ -130,5 +130,15 @@ namespace Workbench.Communication
             if (!res) return null;
             return (uint)value;
         }
+
+        public Task WriteRegisterAsync(ushort regAddr, byte[] value4, bool useCanB = false, byte dest = 160, int delayMs = 5)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> WriteRegisterAsync(ushort regAddr, uint value4)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

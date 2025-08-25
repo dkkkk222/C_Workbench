@@ -298,7 +298,26 @@ namespace Workbench.ViewModels.dw
             await Task.Run(async () =>
             {
                 var calcResult = UtilsFunc.GetReadCommandByAddress(CurrentRegister.AddressHex, currentProject.CommunicationType);
-                await currentProject.CommService.SendAsync(calcResult.bytes);
+                switch (currentProject.CommunicationType)
+                {
+                    case Constants.Modbus:
+                        await currentProject.CommService.SendAsync(calcResult.bytes);
+                        break;
+                    case Constants.I2C:
+                        if (ushort.TryParse(CurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                        {
+                            await currentProject.CommService.ReadRegisterAsync(reg);
+                        }
+                        //CurrentProject.CommService.Read(item.Param.AddressHex);
+                        break;
+                    case Constants.CAN:
+                        if (ushort.TryParse(CurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
+                        {
+                            await currentProject.CommService.ReadRegisterAsync(reg1);
+                        }
+                        break;
+                }
+                //await currentProject.CommService.SendAsync(calcResult.bytes);
 
                 Thread.Sleep(TimeSpan.FromMilliseconds(500));
                 var read = currentProject.CommService.Read(CurrentRegister.AddressHex);
@@ -344,7 +363,26 @@ namespace Workbench.ViewModels.dw
             await Task.Run(async () =>
             {
                 var calcResult = UtilsFunc.GetWriteCommandByAddress(CurrentRegister.AddressHex, currentProject.CommunicationType, CurrentRegister.DecValue);
-                await currentProject.CommService.SendAsync(calcResult.bytes);
+                switch (currentProject.CommunicationType)
+                {
+                    case Constants.Modbus:
+                        await currentProject.CommService.SendAsync(calcResult.bytes);
+                        break;
+                    case Constants.I2C:
+                        if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                        {
+                            await currentProject.CommService.WriteRegisterAsync(reg, WriteCurrentRegister.DecValue);
+                        }
+                        break;
+                    case Constants.CAN:
+                        byte[] byteArray = BitConverter.GetBytes(WriteCurrentRegister.DecValue);
+                        if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
+                        {
+                            await currentProject.CommService.WriteRegisterAsync(reg1, byteArray);
+                        }
+                        break;
+                }
+                //await currentProject.CommService.SendAsync(calcResult.bytes);
                 var history = new SingleParamHistory
                 {
                     ReadWrite = "W",
@@ -394,7 +432,26 @@ namespace Workbench.ViewModels.dw
             await Task.Run(async () =>
             {
                 var calcResult = UtilsFunc.GetWriteCommandByAddress(WriteCurrentRegister.AddressHex, currentProject.CommunicationType, WriteCurrentRegister.DecValue);
-                await currentProject.CommService.SendAsync(calcResult.bytes);
+                switch (currentProject.CommunicationType)
+                {
+                    case Constants.Modbus:
+                        await currentProject.CommService.SendAsync(calcResult.bytes);
+                        break;
+                    case Constants.I2C:
+                        if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                        {
+                            await currentProject.CommService.WriteRegisterAsync(reg, WriteCurrentRegister.DecValue);
+                        }
+                        break;
+                    case Constants.CAN:
+                        byte[] byteArray = BitConverter.GetBytes(WriteCurrentRegister.DecValue);
+                        if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
+                        {
+                            await currentProject.CommService.WriteRegisterAsync(reg1, byteArray);
+                        }
+                        break;
+                }
+                //await currentProject.CommService.SendAsync(calcResult.bytes);
                 var history = new SingleParamHistory
                 {
                     ReadWrite = "W",
