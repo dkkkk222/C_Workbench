@@ -89,20 +89,21 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
 
                     <Border>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="当前选中寄存器:"   VerticalAlignment="Center"/>
-                            <TextBlock Width="5"></TextBlock>
+                            <TextBlock Width="5"   VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding CurrentRegister.AddressHex}"   VerticalAlignment="Center"/>
+                            <TextBlock Text=" : "   VerticalAlignment="Center"/>
                             <TextBlock Text="{Binding CurrentRegister.Name}"   VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
 
-                    <TextBlock Width="10"></TextBlock>
+                    <!--<TextBlock Width="10"></TextBlock>
                     <Border>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="地址:"   VerticalAlignment="Center"/>
                             <TextBlock Width="10"></TextBlock>
                             <TextBlock Text="{Binding CurrentRegister.AddressHex}"   VerticalAlignment="Center"/>
                         </StackPanel>
-                    </Border>
+                    </Border>-->
 
                 </StackPanel>
                 <hc:SearchBar Grid.Row="4" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
@@ -137,11 +138,29 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                                 <StackPanel>
                                     <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                     <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
+                                       
+                                      
+                                            <CheckBox x:Name="cb"  IsChecked="{Binding IsCheck}" Command="{Binding DataContext.CheckChangeCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}">
+                                                <!--<CheckBox.Style>
+                                                    <Style TargetType="CheckBox">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsCheck}" Value="True">
+                                                            <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsCheck}" Value="false">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                    </Style>
+                                                </CheckBox.Style>-->
+                                            </CheckBox>                                         
+                                        
+                                        <TextBlock Width="5"></TextBlock>
                                         <TextBlock Text="{Binding AddressHex}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                         <TextBlock Text=" : "/>
                                         <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
-                                        <TextBlock Width="10"></TextBlock>
-                                        <CheckBox IsChecked="{Binding IsCheck}" Command="{Binding DataContext.CheckChangeCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}"></CheckBox>
+                                 
                                     </StackPanel>
                                 </StackPanel>
                             </HierarchicalDataTemplate>
@@ -161,15 +180,15 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                     <DockPanel LastChildFill="True">
                         <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
                             <StackPanel Orientation="Horizontal">
-                                <controls_Title:StandTitle Padding="0,0,0,0" x:Name="tbx_control" BordMargin="0,0,5,0" StandText="监控数据配置" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                <controls_Title:StandTitle Padding="0,0,0,0" x:Name="tbx_control" BordMargin="0,0,5,0" StandText="监测数据配置" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
-                                <!--<TextBlock Text="监控数据配置" FontSize="{StaticResource SubHeadFontSize}"/>-->
+                                <!--<TextBlock Text="监测数据配置" FontSize="{StaticResource SubHeadFontSize}"/>-->
                                 <TextBlock Width="10"></TextBlock>
                                 <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
-        ToolTip="展开/收起目录" Content="展开目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
+        ToolTip="展开/收起寄存器目录" Content="展开寄存器目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
         Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource  AlignLeftGeometry}"/>
                                 <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
-ToolTip="展开/收起目录" Content="收起目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
+ToolTip="展开/收起寄存器目录" Content="收起寄存器目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
 Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />
                             </StackPanel>
                             
@@ -328,7 +347,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTemplateColumn Header="记录时间" Width="Auto" MinWidth="90">
+                                    <DataGridTemplateColumn Header="监测时间" Width="Auto" MinWidth="90">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -348,7 +367,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <DataGridTemplateColumn Header="开始" Width="*" MinWidth="90">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Content="开始记录" VerticalAlignment="Center" Style="{StaticResource ButtonInfo.Small}" BorderThickness="0" Background="{DynamicResource StartButtonBackground}" HorizontalAlignment="Left"  IsEnabled="{c:Binding !IsStartRecord}"
+                                                <Button Content="开始监测" VerticalAlignment="Center" Style="{StaticResource ButtonInfo.Small}" BorderThickness="0" Background="{DynamicResource StartButtonBackground}" HorizontalAlignment="Left"  IsEnabled="{c:Binding !IsStartRecord}"
                              Command="{Binding Path=DataContext.BeginRecordCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" Height="23"
                              CommandParameter="{Binding}"/>
                                             </DataTemplate>
@@ -357,7 +376,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <DataGridTemplateColumn Header="停止" Width="*"  MinWidth="90">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Button Content="停止记录" VerticalAlignment="Center" Style="{StaticResource ButtonWarning.Small}" BorderThickness="0" Background="{DynamicResource StopButtonBackground}" HorizontalAlignment="Left"  IsEnabled="{c:Binding IsStartRecord}"
+                                                <Button Content="停止监测" VerticalAlignment="Center" Style="{StaticResource ButtonWarning.Small}" BorderThickness="0" Background="{DynamicResource StopButtonBackground}" HorizontalAlignment="Left"  IsEnabled="{c:Binding IsStartRecord}"
                               Command="{Binding Path=DataContext.StopRecordCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" Height="23"
                               CommandParameter="{Binding}"/>
                                             </DataTemplate>
@@ -421,9 +440,9 @@ SelectedValuePath="Id">
                     <Border Grid.Row="1"  Background="{StaticResource AvalonDockAreaBackgroundColor}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition MinWidth="400"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
                                 <ColumnDefinition Width="5"></ColumnDefinition>
-                                <ColumnDefinition MinWidth="400"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
                                    ItemsSource="{Binding WatchGroups}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}">
@@ -705,7 +724,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </DataTemplate>
                                 </TabControl.ContentTemplate>
                             </hc:TabControl>
-
+                            
+                            <GridSplitter Grid.Column="1" Width="10" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
                             <hc:TabControl Grid.Row="2" Grid.Column="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" 
                                            IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
         ItemsSource="{Binding WatchChartGroupsForTab}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentChartTab}"
@@ -738,28 +758,28 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
                                                                 <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Margin="5,0,5,0"  Command="{Binding RenameCommand}" CommandParameter="Chart"/>
+                                                                <!--<Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+Margin="5,0,0,0"  Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>-->
                                                             </StackPanel>
-                                                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="102,0,0,0">
+                                                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,0">
                                                                 <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                                 <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                                 <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                                 <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
-
+                                                                <TextBox Text="{Binding ChartXName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X名称："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="100" />
+                                                                <TextBox Text="{Binding ChartYName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y名称："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="98" />
 
                                                                 <Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
            Margin="5,0,0,0"  Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>
                                                             </StackPanel>
-                                                            <StackPanel Grid.Row="2"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0">
+                                                            <!--<StackPanel Grid.Row="2"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0">
                                                                 <TextBlock Width="348"/>
                                                                 <TextBox Text="{Binding ChartXName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X名称："  Margin="0,0,12,0"
 hc:InfoElement.TitlePlacement="Left" Width="100" />
 
                                                                 <TextBox Text="{Binding ChartYName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y名称："  Margin="5,0,5,0"
 hc:InfoElement.TitlePlacement="Left" Width="98" />
-
-                                                                <!--<Button  Margin="0,0,3,0" Content="设置" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
-
-                                                            </StackPanel>
+                                                            </StackPanel>-->
                                                         </Grid>
 
                                                      

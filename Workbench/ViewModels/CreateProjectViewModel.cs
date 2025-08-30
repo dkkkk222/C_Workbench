@@ -185,7 +185,7 @@ namespace Workbench.ViewModels
                             {
                                 UID = Guid.NewGuid().ToString(),
                                 Name = "状态监测",
-                                Label = "状态监控",
+                                Label = "状态监测",
                                 Level = ProjectLevel.Debug,
                                 Icon = IconUnicode.Debug,
                                 PPEC_Id = ppecId,

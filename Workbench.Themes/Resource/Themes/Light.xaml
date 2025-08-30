@@ -16,6 +16,8 @@
     <SolidColorBrush x:Key="TitleBarColor" Color="Black"/>
     <!--标题栏ICON颜色-->
     <SolidColorBrush x:Key="TitleBarIconColor" Color="#FFF"/>
+    <!-- TreeView背景色 -->
+    <SolidColorBrush x:Key="LeftTreeViewTitleBackgroundColor" Color="#CBDCEF"/>
     <!-- 工程管理标题背景 -->
     <SolidColorBrush x:Key="ProjectManagementTitleBackground" Color="#F8F8F8"/>
     <!--底部栏文字颜色-->

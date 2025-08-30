@@ -99,7 +99,8 @@ namespace Workbench.ViewModels.dw
             set
             {
                 SetProperty(ref _ChartXName, value);
-                WpfPlotControl.Plot.XLabel(value, 22); WpfPlotControl2.Plot.XLabel(value, 22);
+                WpfPlotControl.Plot.XLabel(value, 22);
+                WpfPlotControl2.Plot.XLabel(value, 22);
             }
         }
         private string _ChartYName = "幅值";   // 初始宽
@@ -109,7 +110,8 @@ namespace Workbench.ViewModels.dw
             set
             {
                 SetProperty(ref _ChartYName, value);
-                WpfPlotControl.Plot.YLabel(value, 22); WpfPlotControl2.Plot.YLabel(value, 22);
+                WpfPlotControl.Plot.YLabel(value, 22);
+                WpfPlotControl2.Plot.YLabel(value, 22);
             }
         }
         #endregion

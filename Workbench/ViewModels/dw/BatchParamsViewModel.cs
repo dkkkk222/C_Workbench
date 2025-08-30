@@ -30,6 +30,8 @@ namespace Workbench.ViewModels.dw
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;
             SequenceList = _projectManager.CurrentProject.Sequences;
+            TableColumns = InitTableColumns();
+            TableColumnsR = InitTableColumnsR();
         }
         private bool _isLeftOpen=true;
         public bool IsLeftOpen
@@ -44,6 +46,52 @@ namespace Workbench.ViewModels.dw
             }
         }
 
+        private ObservableCollection<TableColumn> _tableColumns = new ObservableCollection<TableColumn>();
+        public ObservableCollection<TableColumn> TableColumns
+        {
+            get { return _tableColumns; }
+            set { SetProperty(ref _tableColumns, value); }
+        }
+
+        private ObservableCollection<TableColumn> _tableColumnsR = new ObservableCollection<TableColumn>();
+        public ObservableCollection<TableColumn> TableColumnsR
+        {
+            get { return _tableColumnsR; }
+            set { SetProperty(ref _tableColumnsR, value); }
+        }
+
+        private ObservableCollection<TableColumn> InitTableColumns()
+        {
+            var target = new ObservableCollection<TableColumn>();
+            string[] arr = new string[] {"寄存器地址", "分类", "子分类", "寄存器名称", "数据(HEX)", "数据(binary)" };
+            for (int i = 0; i < arr.Length; i++)
+            {
+                var tab = new TableColumn()
+                {
+                    Name = arr[i],
+                };
+                //if (arr[i] == "原始值(Dec)" || arr[i] == "原始值(Bit)")
+                //{
+                //    tab.IsChecked = false;
+                //}
+                target.Add(tab);
+            }
+            return target;
+        }
+        private ObservableCollection<TableColumn> InitTableColumnsR()
+        {
+            var target = new ObservableCollection<TableColumn>();
+            string[] arr = new string[] { "位", "名称", "数据(HEX)", "配置" };
+            for (int i = 0; i < arr.Length; i++)
+            {
+                var tab = new TableColumn()
+                {
+                    Name = arr[i],
+                };
+                target.Add(tab);
+            }
+            return target;
+        }
         public DelegateCommand ToggleDrawerCommand => new DelegateCommand(() => IsLeftOpen = !IsLeftOpen);
         private ValueLabelOption _currentSettingCategory;
         public ValueLabelOption CurrentSettingCategory

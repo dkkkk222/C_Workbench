@@ -47,8 +47,10 @@
     <SolidColorBrush x:Key="TreeViewTitleBackgroundColor" Color="#ffffff"/>
     <!-- TreeView背景色 -->
     <SolidColorBrush x:Key="TreeViewBackgroundColor" Color="#E8EFF7"/>
+    <!-- TreeView背景色 -->
+    <SolidColorBrush x:Key="LeftTreeViewTitleBackgroundColor" Color="#CBDCEF"/>
     <!-- 左侧菜单TreeView背景色 -->
-    <SolidColorBrush x:Key="LeftTreeViewBackgroundColor" Color="#ECF8FF"/>
+    <SolidColorBrush x:Key="LeftTreeViewBackgroundColor" Color="#F5F6F7"/>
     <!--内部寄存器树结构背景色-->
     <SolidColorBrush x:Key="InLeftTreeViewBackGround" Color="#F5F6F8"/>
     

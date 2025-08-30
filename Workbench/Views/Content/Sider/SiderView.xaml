@@ -23,10 +23,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Border Background="{DynamicResource TreeViewItemSelectedBackgroundColor}" Height="24" CornerRadius="6,6,0,0" BorderThickness="1,1,1,0" BorderBrush="{DynamicResource TreeViewPannelBordBrush}">
-                <TextBlock Text="工程管理" FontSize="14" 
+            <Border Background="{DynamicResource LeftTreeViewTitleBackgroundColor}" Height="24" CornerRadius="6,6,0,0" BorderThickness="1,1,1,0" BorderBrush="{DynamicResource TreeViewPannelBordBrush}">
+                <TextBlock Text="工程管理" FontSize="14" FontWeight="Bold"
                            Foreground="{DynamicResource PrimaryFontColor}"
-                           VerticalAlignment="Center"  Background="{DynamicResource TreeViewItemSelectedBackgroundColor}"
+                           VerticalAlignment="Center"  Background="{DynamicResource LeftTreeViewTitleBackgroundColor}"
                            Padding="5,0,0,0"/>
             </Border>
             <Border Grid.Row="1" Visibility="{c:Binding !HasProject,FalseToVisibility=Collapsed}">

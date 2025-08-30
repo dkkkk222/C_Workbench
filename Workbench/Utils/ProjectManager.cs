@@ -202,7 +202,9 @@ namespace Workbench.Utils
             {
                 content = File.ReadAllText(filePath);
                 var openProject = JsonHelper.DeserializeObject<PpecProject>(content);
-                var isHaveChipType = InitDataStaticService.Instance.ChipTypeSource.FirstOrDefault(x => x.Value.ToString() == openProject.Chip.ChipId);
+                //var isHaveChipType = InitDataStaticService.Instance.ChipTypeSource.FirstOrDefault(x => x.Value.ToString() == openProject.Chip.ChipId);
+                //验证ID改为验证名称
+                var isHaveChipType = InitDataStaticService.Instance.ChipTypeSource.FirstOrDefault(x => x.Name.ToString() == openProject.Chip.ChipName);
                 if (isHaveChipType == null)
                 {
                     var result = MessageBox.Show("该芯片类型不存在，无法打开！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -401,11 +401,11 @@ namespace Workbench.ViewModels.dw
 
 
         /// <summary>
-        /// 从监控表移除
+        /// 从监测表移除
         /// </summary>
         public DelegateCommand RemoveTreeListToTableCommand => new DelegateCommand(() =>
         {
-            var resultSelect = System.Windows.Forms.MessageBox.Show("是否从监控表执行移除，该操作会停止监控该数据并从图和表中移除！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var resultSelect = System.Windows.Forms.MessageBox.Show("是否从监测表执行移除，该操作会停止监测该数据并从图和表中移除！", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (resultSelect != System.Windows.Forms.DialogResult.Yes)
             {
                 return;
@@ -459,7 +459,7 @@ namespace Workbench.ViewModels.dw
             }
         });
         /// <summary>
-        /// 添加到监控表
+        /// 添加到监测表
         /// </summary>
         public DelegateCommand AddTreeListToTableCommand => new DelegateCommand(() =>
         {
@@ -1052,6 +1052,8 @@ namespace Workbench.ViewModels.dw
                         foreach (var newField in param.BitFields.ToArray())
                         {
                             var tempdic = new Dictionary<string, double>();
+                            if (newField.Id == null)
+                                continue;
                             tempdic.Add(newField.Id, newField.Result);
                             //开始存储，记录历史记录
                             pipeLineIng.Enqueue(new Sample

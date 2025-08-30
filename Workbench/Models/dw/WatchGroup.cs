@@ -89,7 +89,10 @@ namespace Workbench.Models.dw
             set
             {
                 SetProperty(ref _ChartXName, value);
-                WpfPlotControl.Plot.XLabel(value, 22); WpfPlotControl2.Plot.XLabel(value, 22);
+                WpfPlotControl.Plot.XLabel(value, 22);
+                WpfPlotControl.Plot.Axes.Right.Label.Text = value;
+                WpfPlotControl2.Plot.XLabel(value, 22);
+                WpfPlotControl2.Plot.Axes.Right.Label.Text = value;
             }
         }
         private string _ChartYName = "幅值";   // 初始宽
@@ -99,7 +102,10 @@ namespace Workbench.Models.dw
             set
             {
                 SetProperty(ref _ChartYName, value);
-                WpfPlotControl.Plot.YLabel(value, 22); WpfPlotControl2.Plot.YLabel(value, 22);
+                WpfPlotControl.Plot.YLabel(value, 22);
+                WpfPlotControl.Plot.Axes.Top.Label.Text = value;
+                WpfPlotControl2.Plot.YLabel(value, 22);
+                WpfPlotControl2.Plot.Axes.Top.Label.Text = value;
             }
         }
 
@@ -220,7 +226,7 @@ namespace Workbench.Models.dw
                     sheet.AutoSizeColumn(i);
                 }
 
-                string fileName = "数据监控表-"+this.TableName+".xlsx";
+                string fileName = "数据监测表-"+this.TableName+".xlsx";
                 string filePath = Path.Combine(path, fileName);
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {

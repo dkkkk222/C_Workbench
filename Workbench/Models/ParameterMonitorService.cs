@@ -14,7 +14,7 @@ using Workbench.Utils;
 
 namespace Workbench.Models
 {
-    #region —— WatchItem：包装监控信息 ——
+    #region —— WatchItem：包装监测信息 ——
     public sealed class WatchItem
     {
         public RegisterAddrInfo Param { get; }
@@ -35,7 +35,7 @@ namespace Workbench.Models
     #endregion
     public sealed class ParameterMonitorService
     {
-        /* 线程安全监控池：Key = 参数 Id，Value = WatchItem */
+        /* 线程安全监测池：Key = 参数 Id，Value = WatchItem */
         public readonly ConcurrentDictionary<string, WatchItem> _watching =
             new ConcurrentDictionary<string, WatchItem>();
 
