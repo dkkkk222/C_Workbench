@@ -71,7 +71,20 @@
              IsChecked="{Binding IsOrderByName, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
                         <RadioButton GroupName="OrderBy" Content="按地址"
              IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
-                        <CheckBox Content="全选/反选" Command="{Binding SelectAllCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"></CheckBox>
+                        <CheckBox Content="全选/反选" Command="{Binding SelectAllCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="false">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,5">
@@ -128,7 +141,20 @@
                                 <StackPanel>
                                     <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                     <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
-                                        <CheckBox IsChecked="{Binding IsCheck}"></CheckBox>
+                                        <CheckBox IsChecked="{Binding IsCheck}">
+                                            <CheckBox.Style>
+                                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsCheck}" Value="True">
+                                                            <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsCheck}" Value="false">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </CheckBox.Style>
+                                        </CheckBox>
                                         <TextBlock Width="5"></TextBlock>
                                         <TextBlock Text="{Binding AddressHex}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                         <TextBlock Text=" : "/>

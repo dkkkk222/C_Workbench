@@ -141,19 +141,18 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                                        
                                       
                                             <CheckBox x:Name="cb"  IsChecked="{Binding IsCheck}" Command="{Binding DataContext.CheckChangeCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}">
-                                                <!--<CheckBox.Style>
-                                                    <Style TargetType="CheckBox">
+                                                <CheckBox.Style>
+                                                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsCheck}" Value="True">
                                                             <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
-                                                            <Setter Property="Foreground" Value="White"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding IsCheck}" Value="false">
                                                             <Setter Property="Background" Value="Transparent"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                     </Style>
-                                                </CheckBox.Style>-->
+                                                </CheckBox.Style>
                                             </CheckBox>                                         
                                         
                                         <TextBlock Width="5"></TextBlock>
