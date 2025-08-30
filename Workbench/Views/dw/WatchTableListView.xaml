@@ -13,7 +13,7 @@
              xmlns:utils="clr-namespace:Workbench.Utils"
              xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
              xmlns:controls_Title="clr-namespace:Workbench.Controls.Controls.Title;assembly=Workbench.Controls"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" x:Name="Root">
     <UserControl.Resources>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
         <Style x:Key="CenterCellStyle" TargetType="TextBlock">
@@ -25,52 +25,153 @@
             <Setter Property="TextAlignment" Value="Right"/>
             <Setter Property="Width" Value="80"/>
             <Setter Property="Padding" Value="0,0,8,0"/>
-
-        </Style> 
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                  VerticalScrollBarVisibility="Auto"
-                  CanContentScroll="False">
-            <ItemsControl ItemsSource="{Binding WatchGroups,Mode=TwoWay}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="2"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!-- 顶部控制条 -->
+        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+            <!-- 行/列（建议 LostFocus 更新，避免输入中断言失败） -->
+
+            <TextBlock Text="行:" Style="{StaticResource ItemTitle}"/>
+            <TextBox Width="60" Margin="8,0" Height="30"
+                     Text="{Binding GridRows, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+            <TextBlock Text="列:" Style="{StaticResource ItemTitle}"/>
+            <TextBox Width="60" Margin="8,0" Height="30"
+                     Text="{Binding GridColumns, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+            <!-- 布局方式 --><!--
+            <CheckBox Margin="16,0,0,0" Content="流式布局(Wrap)"
+                      IsChecked="{Binding UseWrapLayout, Mode=TwoWay}"/>
+
+            --><!-- WrapPanel 横/竖方向 --><!--
+            <TextBlock Text="横/竖方向:" Style="{StaticResource ItemTitle}"/>
+            <ComboBox Width="90" Margin="8,0"
+                      SelectedValue="{Binding ItemOrientation, Mode=TwoWay}"
+                      SelectedValuePath="Tag">
+                <ComboBoxItem Content="横向" Tag="{x:Static Orientation.Horizontal}"/>
+                <ComboBoxItem Content="竖向" Tag="{x:Static Orientation.Vertical}"/>
+            </ComboBox>-->
+
+            <!-- 卡片在单元格内水平/垂直对齐 -->
+            <TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
+            <ComboBox Width="110" Margin="16,0,0,0" Height="30"
+                      SelectedValue="{Binding ItemHorizontalAlignment, Mode=TwoWay}"
+                      SelectedValuePath="Tag">
+                <ComboBoxItem Content="左" Tag="{x:Static HorizontalAlignment.Left}"/>
+                <ComboBoxItem Content="居中" Tag="{x:Static HorizontalAlignment.Center}"/>
+                <ComboBoxItem Content="右" Tag="{x:Static HorizontalAlignment.Right}"/>
+                <ComboBoxItem Content="拉伸" Tag="{x:Static HorizontalAlignment.Stretch}"/>
+            </ComboBox>
+            <TextBlock Text="垂直对齐:" Style="{StaticResource ItemTitle}"/>
+            <ComboBox Width="110" Margin="8,0" Height="30"
+                      SelectedValue="{Binding ItemVerticalAlignment, Mode=TwoWay}"
+                      SelectedValuePath="Tag">
+                <ComboBoxItem Content="上" Tag="{x:Static VerticalAlignment.Top}"/>
+                <ComboBoxItem Content="居中" Tag="{x:Static VerticalAlignment.Center}"/>
+                <ComboBoxItem Content="下" Tag="{x:Static VerticalAlignment.Bottom}"/>
+                <ComboBoxItem Content="拉伸" Tag="{x:Static VerticalAlignment.Stretch}"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- 主体列表 -->
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      CanContentScroll="False">
+
+            <ItemsControl ItemsSource="{Binding WatchGroups, Mode=TwoWay}">
+
+                <!-- 使用 Style 切换 ItemsPanel（Uniform / Wrap），并显式绑定到 ItemsControl.DataContext -->
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <!-- 默认 UniformGrid：行/列可动态绑定 -->
+                        <Setter Property="ItemsPanel">
+                            <Setter.Value>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid
+                                        Rows="{Binding DataContext.GridRows, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        Columns="{Binding DataContext.GridColumns, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
+                                </ItemsPanelTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                        <Style.Triggers>
+                            <!-- UseWrapLayout=true 时切换为 WrapPanel -->
+                            <DataTrigger Binding="{Binding DataContext.UseWrapLayout, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                                <Setter Property="ItemsPanel">
+                                    <Setter.Value>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel
+                                                Orientation="{Binding DataContext.ItemOrientation, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                ItemWidth="{Binding DataContext.CellWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                ItemHeight="{Binding DataContext.CellHeight, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
+                                        </ItemsPanelTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+
+                <!-- 每个 Item 容器的对齐（可选，增强边界情况） -->
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="HorizontalAlignment"
+                                Value="{Binding DataContext.ItemContainerHorizontalAlignment, ElementName=Root}"/>
+                        <Setter Property="VerticalAlignment"
+                                Value="{Binding DataContext.ItemContainerVerticalAlignment, ElementName=Root}"/>
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+
+                <!-- ★不要再写固定的 ItemsPanelTemplate（否则会覆盖上面的 Style 切换） -->
+
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border x:Name="RootCard"
-    Width="{Binding TableWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="540" MinHeight="200"
-    Height="{Binding TableHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-    Background="White"
-    BorderBrush="#DDD" BorderThickness="1" CornerRadius="6"
-    Padding="8" Margin="8">
+                                HorizontalAlignment="{Binding DataContext.ItemHorizontalAlignment, ElementName=Root}"
+                                VerticalAlignment="{Binding DataContext.ItemVerticalAlignment, ElementName=Root}"
+                                Width="{Binding TableWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                MinWidth="540" MinHeight="200"
+                                Height="{Binding TableHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Background="White"
+                                BorderBrush="#DDD" BorderThickness="1" CornerRadius="6"
+                                Padding="8" Margin="8">
+
                             <Grid>
                                 <DockPanel LastChildFill="True" Grid.Column="0">
-                                    <Border Style="{StaticResource BorderClip}" Padding="2" Margin="0,0,0,0"  DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
+                                    <Border Style="{StaticResource BorderClip}" Padding="2" Margin="0,0,0,0" DockPanel.Dock="Top" BorderBrush="Transparent" Background="Transparent">
                                         <DockPanel>
                                             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                                <!--<TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
-                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="{Binding TableName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
-
+                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0"
+                                                                           StandText="{Binding TableName}"
+                                                                           StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                             </StackPanel>
-                                         
+
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
-                                             
-                                                <TextBox Text="{Binding TableWidth}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽："  Margin="5,0,0,0"
-     hc:InfoElement.TitlePlacement="Left" Width="70" />
-                                                <TextBlock Width="10"></TextBlock>
-                                             
-                                                <TextBox Text="{Binding TableHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="70" />
-                                                <TextBlock Width="10"></TextBlock>
-                                                <Button   Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry}"
-Command="{Binding SettingDefaultWHCommand2}"/>
-                                                <TextBlock Width="10"></TextBlock>
-                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
-                    Command="{Binding HistoryDownloadCommand}"/>
-                                                <TextBlock Width="10"></TextBlock>
+                                                <TextBox Text="{Binding TableWidth}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽：" Margin="5,0,0,0"
+                                                         hc:InfoElement.TitlePlacement="Left" Width="70" />
+                                                <TextBlock Width="10"/>
+                                                <TextBox Text="{Binding TableHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高：" Margin="5,0,0,0"
+                                                         hc:InfoElement.TitlePlacement="Left" Width="70" />
+                                                <TextBlock Width="10"/>
+                                                <Button Content="设置" Style="{StaticResource ButtonPrimary.Small}"
+                                                        Background="{DynamicResource GenButtonBackgroundColor}"
+                                                        BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+                                                        hc:IconElement.Geometry="{StaticResource PenGeometry}"
+                                                        Command="{Binding SettingDefaultWHCommand2}"/>
+                                                <TextBlock Width="10"/>
+                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}"
+                                                        Background="{DynamicResource GenButtonBackgroundColor}"
+                                                        BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+                                                        hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                                        Command="{Binding HistoryDownloadCommand}"/>
+                                                <TextBlock Width="10"/>
                                                 <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
                                                     <hc:SplitButton.DropDownContent>
                                                         <ItemsControl ItemsSource="{Binding TableColumns}">
@@ -82,24 +183,24 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <Border Padding="8,0">
-                                                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                                     </Border>
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
                                                         </ItemsControl>
                                                     </hc:SplitButton.DropDownContent>
                                                 </hc:SplitButton>
-
                                             </StackPanel>
                                         </DockPanel>
                                     </Border>
+
                                     <DataGrid ItemsSource="{Binding BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
-                                                     Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
-                                                      SelectedItem="{Binding CurrentSequence}"
-                                                      x:Name="MyDataGrid">
+                                              CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
+                                              Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
+                                              SelectedItem="{Binding CurrentSequence}"
+                                              x:Name="MyDataGrid">
                                         <DataGrid.ColumnHeaderStyle>
-                                            <Style TargetType="{x:Type DataGridColumnHeader}"  >
+                                            <Style TargetType="{x:Type DataGridColumnHeader}">
                                                 <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
                                                 <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                                 <Setter Property="FontWeight" Value="SemiBold" />
@@ -112,13 +213,13 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                                 <Setter Property="BorderThickness" Value="0,0,0,1" />
                                             </Style>
                                         </DataGrid.ColumnHeaderStyle>
+
                                         <DataGrid.Resources>
                                             <utils:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
-                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
-     Color="Transparent"/>
-                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-     Color="{StaticResource RowSelectedBrush}"/>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{StaticResource RowSelectedBrush}"/>
                                         </DataGrid.Resources>
+
                                         <DataGrid.CellStyle>
                                             <Style TargetType="DataGridCell" BasedOn="{x:Null}">
                                                 <Setter Property="Background" Value="Transparent"/>
@@ -126,18 +227,13 @@ Command="{Binding SettingDefaultWHCommand2}"/>
                                                 <Setter Property="BorderBrush" Value="Transparent"/>
                                                 <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                                                 <!-- 前景色跟随行 -->
-                                                <Setter Property="Foreground"
-Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
-
+                                                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
                                                 <Style.Triggers>
-                                                    <!-- 选中 -->
                                                     <Trigger Property="IsSelected" Value="True">
                                                         <Setter Property="Background" Value="Transparent"/>
                                                         <Setter Property="BorderThickness" Value="0"/>
                                                         <Setter Property="BorderBrush" Value="Transparent"/>
                                                     </Trigger>
-
-                                                    <!-- 选中 + DataGrid失焦（例如右键弹菜单） -->
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True"/>
@@ -147,14 +243,13 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         <Setter Property="BorderThickness" Value="0"/>
                                                         <Setter Property="BorderBrush" Value="Transparent"/>
                                                     </MultiDataTrigger>
-
-                                                    <!-- Hover 时也别盖住整行背景 -->
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Background" Value="Transparent"/>
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </DataGrid.CellStyle>
+
                                         <DataGrid.RowStyle>
                                             <Style TargetType="DataGridRow">
                                                 <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
@@ -169,8 +264,6 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
                                                     </Trigger>
-
-                                                    <!-- 选中（鼠标不在上面） -->
                                                     <MultiTrigger>
                                                         <MultiTrigger.Conditions>
                                                             <Condition Property="IsSelected" Value="True"/>
@@ -178,12 +271,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         </MultiTrigger.Conditions>
                                                         <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
                                                         <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
-                                                        <!-- 白字 -->
                                                         <Setter Property="BorderThickness" Value="0"/>
-                                                        <!-- 去掉分割线 -->
                                                     </MultiTrigger>
-
-                                                    <!-- 选中 + 悬停 -->
                                                     <MultiTrigger>
                                                         <MultiTrigger.Conditions>
                                                             <Condition Property="IsSelected" Value="True"/>
@@ -196,11 +285,10 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 </Style.Triggers>
                                             </Style>
                                         </DataGrid.RowStyle>
+
                                         <DataGrid.Columns>
-                                            <DataGridTemplateColumn  Header="序号" Width="45" Visibility="{Binding 
-                                                        Source={StaticResource DataContextProxy},
-                                                        Path=Data.TableColumns[0].IsChecked,
-                                                        Converter={StaticResource Boolean2VisibilityConverter}}">
+                                            <DataGridTemplateColumn Header="序号" Width="45"
+                                                                    Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[0].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -214,24 +302,28 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto" 
-                                                                        Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+
+                                            <DataGridTextColumn Binding="{Binding Desc}" Header="名称" Width="Auto"
+                                                                Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[1].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}"
+                                                                ElementStyle="{StaticResource CenterCellStyle}"/>
+
                                             <DataGridTemplateColumn Header="寄存器地址(HEX)" Width="Auto"
-                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
+                                                                    Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[2].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock HorizontalAlignment="Center" Text="{Binding AddressHexName}" VerticalAlignment="Center"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
+
                                             <DataGridTemplateColumn Header="解析范围" Width="75"
-                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                                    Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[3].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <TextBlock Text="b"/>
                                                             <TextBlock Text="{Binding EndBit}"/>
-                                                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1',FalseToVisibility=Collapsed}">
+                                                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'Length>1', FalseToVisibility=Collapsed}">
                                                                 <TextBlock Text="-"/>
                                                                 <TextBlock Text="b"/>
                                                                 <TextBlock Text="{Binding StartBit}"/>
@@ -240,7 +332,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Header="解析要求" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
+
+                                            <DataGridTemplateColumn Header="解析要求" Width="*"
+                                                                    Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[4].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -249,42 +343,30 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn Header="解析结果" Binding="{Binding Result}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                            <DataGridTextColumn Header="原始值(Dec)" Binding="{Binding Value}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                            <DataGridTextColumn Header="原始值(Bit)" Binding="{Binding ReadBinary}" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                            <DataGridTextColumn Header="单位"  Binding="{Binding FormParam.UnitName}" Width="50" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
-                                            <!--<DataGridTemplateColumn Header="添加到监测图" Width="*" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding DataContext.AddToChartCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" />
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>-->
+
+                                            <DataGridTextColumn Header="解析结果" Binding="{Binding Result}" Width="*"
+                                                                Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[5].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}"
+                                                                ElementStyle="{StaticResource CenterCellStyle}"/>
+
+                                            <DataGridTextColumn Header="原始值(Dec)" Binding="{Binding Value}" Width="*"
+                                                                Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[6].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}"
+                                                                ElementStyle="{StaticResource CenterCellStyle}"/>
+
+                                            <DataGridTextColumn Header="原始值(Bit)" Binding="{Binding ReadBinary}" Width="*"
+                                                                Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[7].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}"
+                                                                ElementStyle="{StaticResource CenterCellStyle}"/>
+
+                                            <DataGridTextColumn Header="单位" Binding="{Binding FormParam.UnitName}" Width="50"
+                                                                Visibility="{Binding Source={StaticResource DataContextProxy}, Path=Data.TableColumns[8].IsChecked, Converter={StaticResource Boolean2VisibilityConverter}}"
+                                                                ElementStyle="{StaticResource CenterCellStyle}"/>
                                         </DataGrid.Columns>
-
                                     </DataGrid>
-
                                 </DockPanel>
-
-                                <!-- 右下角拖拽柄 -->
-                                <!--<Thumb Width="14" Height="14"
-           HorizontalAlignment="Right" VerticalAlignment="Bottom"
-           Cursor="SizeNWSE" Opacity="0.9" Panel.ZIndex="10"
-           DragDelta="ResizeThumb_DragDelta">
-                                    <Thumb.Template>
-                                        <ControlTemplate TargetType="Thumb">
-                                            <Border BorderBrush="#999" BorderThickness="1" Background="#EEE" CornerRadius="2"/>
-                                        </ControlTemplate>
-                                    </Thumb.Template>
-                                </Thumb>-->
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        
     </Grid>
 </UserControl>

@@ -17,7 +17,7 @@
              xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
              xmlns:controls_Title="clr-namespace:Workbench.Controls.Controls.Title;assembly=Workbench.Controls"
              xmlns:controls_Scottplot="clr-namespace:Workbench.Controls.Controls.Scottplot;assembly=Workbench.Controls"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" x:Name="Root">
     <UserControl.Resources>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
         <Style x:Key="CenterCellStyle" TargetType="TextBlock">
@@ -33,67 +33,166 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                  VerticalScrollBarVisibility="Auto"
-                  CanContentScroll="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!-- 顶部控制条：行/列、布局方式、方向、对齐 -->
+        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+            <!-- 行/列（LostFocus 更新，避免输入中间报错） --> 
+            <TextBlock Text="行:" Style="{StaticResource ItemTitle}"/>
+            <TextBox Width="60" Margin="8,0" Height="30"
+              Text="{Binding GridRows, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+            <TextBlock Text="列:" Style="{StaticResource ItemTitle}"/>
+            <TextBox Width="60" Margin="8,0" Height="30"
+              Text="{Binding GridColumns, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+            
+            <!-- 布局切换 --><!--
+            <CheckBox Margin="16,0,0,0" Content="流式布局(Wrap)"
+                      IsChecked="{Binding UseWrapLayout, Mode=TwoWay}"/>
+
+            --><!-- WrapPanel 横/竖 --><!--
+            <ComboBox Width="90" Margin="8,0"
+                      SelectedValue="{Binding ItemOrientation, Mode=TwoWay}"
+                      SelectedValuePath="Tag">
+                <ComboBoxItem Content="横向" Tag="{x:Static Orientation.Horizontal}"/>
+                <ComboBoxItem Content="竖向" Tag="{x:Static Orientation.Vertical}"/>
+            </ComboBox>-->
+
+            <!-- 卡片在单元格内水平/垂直对齐 -->
+            <TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
+            <ComboBox Width="110" Margin="16,0,0,0" Height="30"
+          SelectedValue="{Binding ItemHorizontalAlignment, Mode=TwoWay}"
+          SelectedValuePath="Tag">
+                <ComboBoxItem Content="左" Tag="{x:Static HorizontalAlignment.Left}"/>
+                <ComboBoxItem Content="居中" Tag="{x:Static HorizontalAlignment.Center}"/>
+                <ComboBoxItem Content="右" Tag="{x:Static HorizontalAlignment.Right}"/>
+                <ComboBoxItem Content="拉伸" Tag="{x:Static HorizontalAlignment.Stretch}"/>
+            </ComboBox>
+            <TextBlock Text="垂直对齐:" Style="{StaticResource ItemTitle}"/>
+            <ComboBox Width="110" Margin="8,0" Height="30"
+          SelectedValue="{Binding ItemVerticalAlignment, Mode=TwoWay}"
+          SelectedValuePath="Tag">
+                <ComboBoxItem Content="上" Tag="{x:Static VerticalAlignment.Top}"/>
+                <ComboBoxItem Content="居中" Tag="{x:Static VerticalAlignment.Center}"/>
+                <ComboBoxItem Content="下" Tag="{x:Static VerticalAlignment.Bottom}"/>
+                <ComboBoxItem Content="拉伸" Tag="{x:Static VerticalAlignment.Stretch}"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- 主体列表 -->
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      CanContentScroll="False">
+
             <ItemsControl ItemsSource="{Binding WatchGroupsView}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="2"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+                <!-- 用 Style 动态切换 ItemsPanel（Uniform / Wrap） -->
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <!-- 默认：UniformGrid（行/列可绑定） -->
+                        <Setter Property="ItemsPanel">
+                            <Setter.Value>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid
+                                        Rows="{Binding DataContext.GridRows, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        Columns="{Binding DataContext.GridColumns, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
+                                </ItemsPanelTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                        <Style.Triggers>
+                            <!-- 勾选流式布局则改用 WrapPanel -->
+                            <DataTrigger Binding="{Binding DataContext.UseWrapLayout, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                                <Setter Property="ItemsPanel">
+                                    <Setter.Value>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel
+                                                Orientation="{Binding DataContext.ItemOrientation, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                ItemWidth="{Binding DataContext.CellWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                ItemHeight="{Binding DataContext.CellHeight, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
+                                        </ItemsPanelTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+
+                <!-- 每个 Item 容器对齐（可选，增强边界情况） -->
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="HorizontalAlignment"
+                                Value="{Binding DataContext.ItemContainerHorizontalAlignment, ElementName=Root}"/>
+                        <Setter Property="VerticalAlignment"
+                                Value="{Binding DataContext.ItemContainerVerticalAlignment, ElementName=Root}"/>
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+
+                <!-- ★不要再写固定 ItemsPanelTemplate（否则覆盖上面 Style） -->
+
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border x:Name="RootCard"
-    Width="{Binding ChartWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="680" MinHeight="300"
-    Height="{Binding ChartHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-    Background="White"
-    BorderBrush="#DDD" BorderThickness="1" CornerRadius="6"
-    Padding="8" Margin="8">
+                                HorizontalAlignment="{Binding DataContext.ItemHorizontalAlignment, ElementName=Root}"
+                                VerticalAlignment="{Binding DataContext.ItemVerticalAlignment, ElementName=Root}"
+                                Width="{Binding ChartWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                MinWidth="680" MinHeight="300"
+                                Height="{Binding ChartHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Background="White"
+                                BorderBrush="#DDD" BorderThickness="1" CornerRadius="6"
+                                Padding="8" Margin="8">
+
                             <Grid>
                                 <DockPanel LastChildFill="True" Grid.Column="1">
-                                    <Border Style="{StaticResource BorderClip}" Padding="2" DockPanel.Dock="Top" VerticalAlignment="Center"  BorderBrush="Transparent" Background="Transparent">
+                                    <Border Style="{StaticResource BorderClip}" Padding="2" DockPanel.Dock="Top" VerticalAlignment="Center" BorderBrush="Transparent" Background="Transparent">
                                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                             <Grid>
                                                 <Grid.RowDefinitions>
-                                                    <RowDefinition></RowDefinition>
-                                                    <RowDefinition></RowDefinition>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
                                                 </Grid.RowDefinitions>
+
                                                 <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                                    <!--<TextBlock Text="{Binding ChartName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
-                                                    <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                    <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"
+                                                                               StandText="{Binding ChartName}"
+                                                                               StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
-                                                    <!--<Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" 
-Margin="5,0,5,0" 
-Command="{Binding RenameCommand}"
-CommandParameter="Chart"/>-->
-                                                    <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                                    <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }" Margin="5,0,0,0" Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>
+                                                    <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值：" Margin="5,0,0,0"
+                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                    <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值：" Margin="5,0,0,0"
+                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                    <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值：" Margin="5,0,0,0"
+                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                    <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值：" Margin="5,0,0,0"
+                                                             hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                    <Button Style="{StaticResource ButtonPrimary.Small}" Content="设置"
+                                                            Background="{DynamicResource GenButtonBackgroundColor}"
+                                                            BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+                                                            hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+                                                            Margin="5,0,0,0"
+                                                            Command="{Binding SettingChartLimitCommand}"
+                                                            CommandParameter="{Binding}"/>
                                                 </StackPanel>
-                                                <StackPanel Grid.Row="1"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,0,0">
-                                                    <TextBox Text="{Binding ChartWidth}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽："  Margin="0,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="80" />
-                                                    <TextBlock Width="30"></TextBlock>
-                                                    <TextBox Text="{Binding ChartHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高："  Margin="5,0,0,0"
-hc:InfoElement.TitlePlacement="Left" Width="80" />
-                                                    <TextBlock Width="5"></TextBlock>
-                                                    <Button Visibility="Hidden"  Content="设置" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
 
+                                                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,0,0">
+                                                    <TextBox Text="{Binding ChartWidth}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽：" hc:InfoElement.TitlePlacement="Left" Width="80"/>
+                                                    <TextBlock Width="30"/>
+                                                    <TextBox Text="{Binding ChartHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高：" hc:InfoElement.TitlePlacement="Left" Width="80"/>
+                                                    <TextBlock Width="5"/>
+                                                    <Button Visibility="Hidden" Content="设置" Style="{StaticResource ButtonPrimary.Small}"
+                                                            Background="{DynamicResource GenButtonBackgroundColor}"
+                                                            BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+                                                            hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
                                                 </StackPanel>
                                             </Grid>
-
                                         </StackPanel>
                                     </Border>
+
                                     <Border Margin="0,5,0,0">
-                                        <!--<ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>-->
-                                        <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl2,Mode=TwoWay}"/>
+                                        <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl2, Mode=TwoWay}"/>
                                     </Border>
                                 </DockPanel>
                             </Grid>
@@ -102,6 +201,5 @@ hc:InfoElement.TitlePlacement="Left" Width="80" />
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-
     </Grid>
 </UserControl>
