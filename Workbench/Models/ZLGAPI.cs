@@ -640,18 +640,18 @@ namespace Workbench.Models
         }
 
 
-        [StructLayout(LayoutKind.Explicit)]
-        public struct _UDS_RESPONSE_union
-        {
-            [FieldOffset(0)]
-            public UDS_RESPONSE_Positive zudsPositive;
+        //[StructLayout(LayoutKind.Explicit)]
+        //public struct _UDS_RESPONSE_union
+        //{
+        //    [FieldOffset(0)]
+        //    public UDS_RESPONSE_Positive zudsPositive;
 
-            [FieldOffset(0)]
-            public UDS_RESPONSE_Negative zudsNegative;
+        //    [FieldOffset(0)]
+        //    public UDS_RESPONSE_Negative zudsNegative;
 
-            [FieldOffset(0)]
-            public UDS_RESPONSE_raw raw;
-        }
+        //    [FieldOffset(0)]
+        //    public UDS_RESPONSE_raw raw;
+        //}
 
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
