@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
 using Workbench.Events;
@@ -365,16 +366,18 @@ namespace Workbench.ViewModels.dw
                         await currentProject.CommService.SendAsync(calcResult.bytes);
                         break;
                     case Constants.I2C:
-                        if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                        if (ushort.TryParse(register.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
                         {
-                            await currentProject.CommService.WriteRegisterAsync(reg, WriteCurrentRegister.DecValue);
+                            await currentProject.CommService.WriteRegisterAsync(reg, register.DecValue);
                         }
                         break;
                     case Constants.CAN:
-                        byte[] byteArray = BitConverter.GetBytes(WriteCurrentRegister.DecValue);
-                        if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
+                        byte[] byteArray = BitConverter.GetBytes(register.DecValue);
+                        var frame = new List<byte>();
+                        if (ushort.TryParse(register.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
                         {
-                            await currentProject.CommService.WriteRegisterAsync(reg1, byteArray);
+                            UtilsFunc.WriteUInt32(register.DecValue, EndianMode.BigEndian, frame);
+                            await currentProject.CommService.WriteRegisterAsync(reg1, frame.ToArray());
                         }
                         break;
                 }

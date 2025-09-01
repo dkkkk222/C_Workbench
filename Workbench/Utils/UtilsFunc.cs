@@ -376,5 +376,49 @@ namespace Workbench.Utils
                 }
             }
         }
+
+        public static void WriteUInt16(ushort v, EndianMode mode, IList<byte> buf)
+        {
+            byte hi = (byte)(v >> 8);
+            byte lo = (byte)(v & 0xFF);
+            switch (mode)
+            {
+                case EndianMode.BigEndian: buf.Add(hi); buf.Add(lo); break;     // AB
+                case EndianMode.LittleEndian: buf.Add(lo); buf.Add(hi); break;     // BA
+                case EndianMode.ByteSwapInWord: buf.Add(lo); buf.Add(hi); break;     // 同Little（对16位）
+                case EndianMode.WordSwap: buf.Add(hi); buf.Add(lo); break;     // 对16位“词交换”无意义=BE
+            }
+        }
+
+        public static void WriteUInt32(uint v, EndianMode mode, IList<byte> buf)
+        {
+            byte a = (byte)((v >> 24) & 0xFF);
+            byte b = (byte)((v >> 16) & 0xFF);
+            byte c = (byte)((v >> 8) & 0xFF);
+            byte d = (byte)(v & 0xFF);
+            switch (mode)
+            {
+                case EndianMode.BigEndian: buf.Add(a); buf.Add(b); buf.Add(c); buf.Add(d); break; // ABCD
+                case EndianMode.LittleEndian: buf.Add(d); buf.Add(c); buf.Add(b); buf.Add(a); break; // DCBA
+                case EndianMode.WordSwap: buf.Add(c); buf.Add(d); buf.Add(a); buf.Add(b); break; // CDAB
+                case EndianMode.ByteSwapInWord: buf.Add(b); buf.Add(a); buf.Add(d); buf.Add(c); break; // BADC
+            }
+        }
+
+        public static void WriteFloat(float f, EndianMode mode, IList<byte> buf)
+        {
+            var bytes = BitConverter.GetBytes(f); // Windows下默认 LE: [d c b a]
+                                                  // 统一转换成 ABCD 再按模式排列
+            byte a, b, c, d;
+            if (BitConverter.IsLittleEndian)
+            {
+                d = bytes[0]; c = bytes[1]; b = bytes[2]; a = bytes[3];
+            }
+            else
+            {
+                a = bytes[0]; b = bytes[1]; c = bytes[2]; d = bytes[3];
+            }
+            WriteUInt32((uint)((a << 24) | (b << 16) | (c << 8) | d), mode, buf);
+        }
     }
 }

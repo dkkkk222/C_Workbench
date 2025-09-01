@@ -445,9 +445,11 @@ namespace Workbench.ViewModels.dw
                         break;
                     case Constants.CAN:
                         byte[] byteArray = BitConverter.GetBytes(WriteCurrentRegister.DecValue);
+                        var frame = new List<byte>();
                         if (ushort.TryParse(WriteCurrentRegister.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
                         {
-                            await currentProject.CommService.WriteRegisterAsync(reg1, byteArray);
+                            UtilsFunc.WriteUInt32(WriteCurrentRegister.DecValue, EndianMode.BigEndian, frame);
+                            await currentProject.CommService.WriteRegisterAsync(reg1, frame.ToArray());
                         }
                         break;
                 }

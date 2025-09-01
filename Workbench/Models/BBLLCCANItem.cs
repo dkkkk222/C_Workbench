@@ -25,4 +25,23 @@ namespace Workbench.Models
             set => SetProperty(ref val, value);
         }
     }
+
+    public class BBLLCCANBAUDItem : BindableBase
+    {
+        private string name = "";
+
+        public string Name
+        {
+            get => name;
+            set => SetProperty(ref name, value);
+        }
+
+        private BBLLCCANBaud val = default;
+
+        public BBLLCCANBaud Value
+        {
+            get => val;
+            set => SetProperty(ref val, value);
+        }
+    }
 }

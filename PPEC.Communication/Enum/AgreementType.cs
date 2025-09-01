@@ -12,4 +12,11 @@ namespace PPEC.Communication.Enum
         Tcp,
         CAN
     }
+    public enum EndianMode
+    {
+        BigEndian,       // ABCD
+        LittleEndian,    // DCBA
+        WordSwap,        // CDAB (32位把两个16位词对调)
+        ByteSwapInWord   // BADC (16位内的字节互换)
+    }
 }

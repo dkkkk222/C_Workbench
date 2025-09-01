@@ -35,6 +35,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
 
             //CAN口默认值
             SelectedCAN = _cANList.FirstOrDefault();
+            SelectedCANBaud = _cANBaudList.FirstOrDefault();
         }
         public string _connectStr = Constants.ConnectStr;
 
@@ -194,6 +195,25 @@ namespace Workbench.ViewModels.Content.ButtonBar
             set => SetProperty(ref _isSelectedProject, value);
         }
 
+        private ObservableCollection<BBLLCCANBAUDItem> _cANBaudList = CommEntity.BBLLCCANBAUDList;
+        public ObservableCollection<BBLLCCANBAUDItem> CANBaudList
+        {
+            get => _cANBaudList;
+            set => SetProperty(ref _cANBaudList, value);
+        }
+        private BBLLCCANBAUDItem _selectedCANBaud;
+        public BBLLCCANBAUDItem SelectedCANBaud
+        {
+            get => _selectedCANBaud;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                    ppec.SelectedBaudIndex = (int)value?.Value;
+                SetProperty(ref _selectedCANBaud, value);
+            }
+        }
+
         private ObservableCollection<BBLLCCANItem> _cANList = CommEntity.BBLLCCANList;
         public ObservableCollection<BBLLCCANItem> CANList
         {
@@ -209,7 +229,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             {
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
-                    ppec.PortName = value?.Name;
+                    ppec.SelectedCanId = (int)value?.Value;
                 SetProperty(ref _selectedCAN, value);
             }
         }

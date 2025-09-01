@@ -134,7 +134,7 @@ namespace Workbench.Models
             set => SetProperty(ref _SelectedDeviceId, value);
         }
 
-        private int _SelectedCanId = 1;
+        private int _SelectedCanId = 0;
         /// <summary>
         /// CANID
         /// </summary>
@@ -319,10 +319,11 @@ namespace Workbench.Models
                     BaudIndex = SelectedBaudIndex,     // 按你的映射
                     SendTimeoutMs = 400                // 可选
                 };
-
                 // 连接：USBCAN-2E-U(21), Dev0, CAN0, 500kbps(index=1)
-                var can = new CanCommService();
+                var can = new CanCommService1();
                 can.Connect($"CAN:{DeviceType}:{SelectedDeviceId}:{SelectedCanId}:{SelectedBaudIndex}");
+                CommService = can;
+                IsConnecting = true;
                 //can.FrameParser += (VCI_CAN_OBJ data) =>
                 //{
                 //    switch(data.ID)
@@ -347,8 +348,9 @@ namespace Workbench.Models
                 //await can.ResetAsync(useCanB: false, dest: 0xA0);
                 return true;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
+                IsConnecting = false;
                 return false;
             }
             

@@ -71,6 +71,14 @@
                                       Height="22"
                                       IsEnabled="{calc:Binding !IsConnected}"
                                       Visibility="{calc:Binding !IsModbusSelected,FalseToVisibility=Collapsed}"/>
+                            <TextBlock Width="5"></TextBlock>
+                            <ComboBox Width="120" ItemsSource="{Binding CANBaudList}" Style="{StaticResource ComboBoxExtend.Small}"
+                                         SelectedItem="{Binding SelectedCANBaud,Mode=TwoWay}"
+                                         DisplayMemberPath="Name"
+                                         SelectedValuePath="Value"
+                                         Height="22"
+                                         IsEnabled="{calc:Binding !IsConnected}"
+                                         Visibility="{calc:Binding !IsModbusSelected,FalseToVisibility=Collapsed}"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>

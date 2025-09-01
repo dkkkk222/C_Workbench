@@ -880,7 +880,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>-->
-                                        <!--<DataGridTemplateColumn Header="数据配置解析(Binary)" Width="*" MinWidth="160" >
+                                        <DataGridTemplateColumn Header="数据配置解析(Binary)" Width="*" MinWidth="160" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
@@ -902,7 +902,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>-->
+                                        </DataGridTemplateColumn>
                                     <DataGridTemplateColumn Header="配置"  Width="*" MinWidth="100" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumnsR[3].IsChecked,

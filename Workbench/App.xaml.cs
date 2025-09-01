@@ -64,7 +64,7 @@ namespace Workbench
         protected override void OnStartup(StartupEventArgs e)
         {
             HotLoadDatabase();
-            RegisteFluentMigrator();
+            //RegisteFluentMigrator();
             XmlConfigurator.Configure(new FileInfo("log4net.config"));
             _log.Info("Workbench started.");
             base.OnStartup(e);          
