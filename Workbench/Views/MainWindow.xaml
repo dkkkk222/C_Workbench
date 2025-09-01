@@ -6,6 +6,7 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         xmlns:comCtrl="clr-namespace:Common.Controls;assembly=Workbench.Controls"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
@@ -23,7 +24,7 @@
         </Style>
     </Window.Resources>
     <comCtrl:NoTitleBarWindow.TitleBarContent>
-        <Border Grid.Row="0" x:Name="CustomTitleBar" Style="{DynamicResource TitleBarBorder}">
+        <Border Grid.Row="0" x:Name="CustomTitleBar" Style="{DynamicResource TitleBarBorder}" Height="50">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -31,8 +32,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Margin="10,5" Background="{DynamicResource SecondaryBackgroundColor}">
-                    <Image Source="/Resource/jlism-fmgaz-001.ico" Width="30"/>
+                <Border Grid.Column="0" Margin="2,2,5,2"   Background="{DynamicResource SecondaryBackgroundColor}">
+                    <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/SDPC_LOGO.svg" 
+                Height="40" Width="110"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+                    </svgc:SvgViewbox>
                 </Border>
                 <Border Grid.Column="1">
                     <Menu Style="{DynamicResource MenuStyle}">

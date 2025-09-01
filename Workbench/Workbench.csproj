@@ -678,6 +678,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resource\jlism-fmgaz-001.ico" />
+    <Resource Include="Resource\Images\SVG\SDPC_LOGO.svg" />
     <Content Include="SDPC_LOGO.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
