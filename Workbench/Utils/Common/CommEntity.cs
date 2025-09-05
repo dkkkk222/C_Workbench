@@ -23,6 +23,21 @@ namespace Workbench.Utils.Common
             //    Value = ComConnectEnum.CAN,
             //}
         };
+
+        public static ObservableCollection<BBLLCCANBAUDItem> BBLLCCANTYPEList => new ObservableCollection<BBLLCCANBAUDItem>
+        {
+            new BBLLCCANBAUDItem()
+            {
+                Name = "USBCAN-2E-U",
+                Value = BBLLCCANBaud.A,
+            },
+            new BBLLCCANBAUDItem()
+            {
+                Name = "USBCAN2",
+                Value = BBLLCCANBaud.B,
+            }
+        };
+
         public static ObservableCollection<BBLLCCANBAUDItem> BBLLCCANBAUDList => new ObservableCollection<BBLLCCANBAUDItem>
         {
             new BBLLCCANBAUDItem()

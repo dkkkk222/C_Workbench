@@ -368,6 +368,7 @@
     <Compile Include="AvalonDock\PanesTemplateSelector.cs" />
     <Compile Include="Behaviors\InputMaskBehavior.cs" />
     <Compile Include="Communication\CanCommService.cs" />
+    <Compile Include="Communication\Ch347I2cCommService.cs" />
     <Compile Include="Communication\I2cCommService.cs" />
     <Compile Include="Communication\IBaseCommService.cs" />
     <Compile Include="Communication\SerialPortService.cs" />
@@ -405,6 +406,7 @@
     <Compile Include="Models\BBLLCCANItem.cs" />
     <Compile Include="Models\BBLLCCANPort.cs" />
     <Compile Include="Models\CANDevice.cs" />
+    <Compile Include="Models\Ch347Native.cs" />
     <Compile Include="Models\ComConnectType.cs" />
     <Compile Include="Models\Consts\CAN_Port.cs" />
     <Compile Include="Models\Consts\ConstString.cs" />
@@ -667,6 +669,12 @@
     </Resource>
     <Resource Include="Resource\jlism-fmgaz-001.ico" />
     <Resource Include="Resource\Images\SVG\SDPC_LOGO.svg" />
+    <Content Include="CH347DLL.DLL">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CH347DLLA64.DLL">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="SDPC_LOGO.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

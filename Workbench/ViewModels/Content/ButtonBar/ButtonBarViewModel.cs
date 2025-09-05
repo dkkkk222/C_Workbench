@@ -12,6 +12,11 @@ using Workbench.Utils.Common;
 using Workbench.Models;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using System;
+using Workbench.Communication;
+using System.Device.I2c;
+using System.Collections.Generic;
+using HandyControl.Tools.Extension;
 
 namespace Workbench.ViewModels.Content.ButtonBar
 {
@@ -36,6 +41,10 @@ namespace Workbench.ViewModels.Content.ButtonBar
             //CAN口默认值
             SelectedCAN = _cANList.FirstOrDefault();
             SelectedCANBaud = _cANBaudList.FirstOrDefault();
+            SelectedCANType = _BBLLCCANTYPEList.FirstOrDefault();
+            InitI2CBaud();
+            SelectedCommunicationI2CDevice = CommunicationI2CDeviceList.FirstOrDefault();
+            ChangeI2C();
         }
         public string _connectStr = Constants.ConnectStr;
 
@@ -52,6 +61,31 @@ namespace Workbench.ViewModels.Content.ButtonBar
             get => _connectIcon;
             set => SetProperty(ref _connectIcon, value);
         }
+        public void ChangeI2C()
+        {
+            CommunicationI2CList.Clear();
+            var devs = Ch347DeviceEnumerator.Enumerate(excludeMode3: false);
+            foreach (var d in devs)
+            {
+                CommunicationI2CList.Add(new BBLLCCANBAUDItem() {Value=0,Name= d.ToString() });
+            }
+            SelectedCommunicationI2CType= CommunicationI2CList.FirstOrDefault();
+        }
+
+        public void InitI2CBaud()
+        {
+            _communicationI2CClock.AddRange(new List<BBLLCCANBAUDItem>()
+            {
+                new BBLLCCANBAUDItem { Value = BBLLCCANBaud.A, Name = "20kHz" },
+                new BBLLCCANBAUDItem { Value = BBLLCCANBaud.B, Name = "100 kHz" },
+                new BBLLCCANBAUDItem { Value = BBLLCCANBaud.C, Name = "400 kHz" },
+                new BBLLCCANBAUDItem { Value = BBLLCCANBaud.D, Name = "750 kHz" },
+                new BBLLCCANBAUDItem { Value = BBLLCCANBaud.E, Name = "50 kHz" },
+                new BBLLCCANBAUDItem { Value = BBLLCCANBaud.F, Name = "200 kHz" },
+                new BBLLCCANBAUDItem { Value = BBLLCCANBaud.G, Name = "1M kHz" }
+            });
+            SelectedCommunicationI2CClock = CommunicationI2CClock[1];
+        }
         private void EventListeners()
         {
             _eventAggregator.GetEvent<SerialPortAddRemoveEvent>().Subscribe(() =>
@@ -63,6 +97,8 @@ namespace Workbench.ViewModels.Content.ButtonBar
                     SerialPortName = portName;
                 else
                     SerialPortName = PortList.FirstOrDefault();
+
+                ChangeI2C();
 
             }, ThreadOption.UIThread);
 
@@ -148,13 +184,115 @@ namespace Workbench.ViewModels.Content.ButtonBar
             }
         }
 
-        private ObservableCollection<string> _communicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN };
+        private ObservableCollection<string> _communicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN, Constants.I2C };
         public ObservableCollection<string> CommunicationTypeList
         {
             get => _communicationTypeList;
             set => SetProperty(ref _communicationTypeList, value);
         }
 
+
+        private ObservableCollection<string> _communicationI2CDeviceList = new ObservableCollection<string> { "0", "1","2", "3", "4", "5", "6", "7", "8" };
+        public ObservableCollection<string> CommunicationI2CDeviceList
+        {
+            get => _communicationI2CDeviceList;
+            set => SetProperty(ref _communicationI2CDeviceList, value);
+        }
+        private ObservableCollection<string> _communicationI2CSCL = new ObservableCollection<string> {"Enable", "Disable" };
+        public ObservableCollection<string> CommunicationI2CSCL
+        {
+            get => _communicationI2CSCL;
+            set => SetProperty(ref _communicationI2CSCL, value);
+        }
+
+        private ObservableCollection<BBLLCCANBAUDItem> _communicationI2CList = new ObservableCollection<BBLLCCANBAUDItem>();
+        public ObservableCollection<BBLLCCANBAUDItem> CommunicationI2CList
+        {
+            get => _communicationI2CList;
+            set => SetProperty(ref _communicationI2CList, value);
+        }
+
+        private ObservableCollection<BBLLCCANBAUDItem> _communicationI2CClock = new ObservableCollection<BBLLCCANBAUDItem>();
+        public ObservableCollection<BBLLCCANBAUDItem> CommunicationI2CClock
+        {
+            get => _communicationI2CClock;
+            set => SetProperty(ref _communicationI2CClock, value);
+        }
+        private string _selectCommunicationI2CSCL = "Disable";
+        public string SelectCommunicationI2CSCL
+        {
+            get => _selectCommunicationI2CSCL;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                {
+                    ppec.I2CSCL = value=="Disable"?"0":"1";
+                }
+                SetProperty(ref _selectCommunicationI2CSCL, value);
+            }
+        }
+
+        private string _selectedCommunicationI2CDevice = "";
+        public string SelectedCommunicationI2CDevice
+        {
+            get => _selectedCommunicationI2CDevice;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                {
+                    ppec.ConnectDeviceIndex = value;
+                }
+                SetProperty(ref _selectedCommunicationI2CDevice, value);                
+            } 
+        }
+        
+        private BBLLCCANBAUDItem _selectedCommunicationI2CClock;
+        public BBLLCCANBAUDItem SelectedCommunicationI2CClock
+        {
+            get => _selectedCommunicationI2CClock;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                {
+                    ppec.I2cBaud = (int)value.Value;
+                }
+
+                SetProperty(ref _selectedCommunicationI2CClock, value);
+            }
+        }
+        private BBLLCCANBAUDItem _selectedCommunicationI2CType ;
+        public BBLLCCANBAUDItem SelectedCommunicationI2CType
+        {
+            get => _selectedCommunicationI2CType;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                {
+                    ppec.I2cBusId = (int)value.Value;
+                }
+               
+                SetProperty(ref _selectedCommunicationI2CType, value);
+            } 
+        }
+        public string _Delay="0";
+        public string Delay
+        {
+            get => _Delay;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                {
+                    ppec.Delay = value;
+                }
+
+                SetProperty(ref _Delay, value);
+            }
+        }
         private string _selectedCommunicationType = Constants.SERIAL_PORT;
         public string SelectedCommunicationType
         {
@@ -162,10 +300,23 @@ namespace Workbench.ViewModels.Content.ButtonBar
             set
             {
                 IsModbusSelected = value == Constants.SERIAL_PORT;
-                PortTitle = value == Constants.SERIAL_PORT ? Constants.SERIAL_PORT : Constants.CAN_PORT;
+                //PortTitle = value == Constants.SERIAL_PORT ? Constants.SERIAL_PORT : Constants.CAN_PORT;
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                     ppec.CommunicationType = value;
+                if(value== Constants.SERIAL_PORT)
+                {
+                    ConnectType = 1;
+                    PortTitle = Constants.SERIAL_PORT;
+                }
+                if (value == Constants.CAN)
+                {
+                    ConnectType = 2; PortTitle = Constants.CAN_PORT;
+                }
+                if (value == Constants.I2C)
+                {
+                    ConnectType = 3; PortTitle = Constants.I2C;
+                }
                 SetProperty(ref _selectedCommunicationType, value);
             }
         }
@@ -175,6 +326,13 @@ namespace Workbench.ViewModels.Content.ButtonBar
         {
             get => _isModbusSelected;
             set => SetProperty(ref _isModbusSelected, value);
+        }
+
+        private int _connectType = 0;
+        public int ConnectType
+        {
+            get => _connectType;
+            set => SetProperty(ref _connectType, value);
         }
 
         private string _portTitle = Constants.SERIAL_PORT + "：";
@@ -201,6 +359,14 @@ namespace Workbench.ViewModels.Content.ButtonBar
             get => _cANBaudList;
             set => SetProperty(ref _cANBaudList, value);
         }
+
+        private ObservableCollection<BBLLCCANBAUDItem> _BBLLCCANTYPEList = CommEntity.BBLLCCANTYPEList;
+        public ObservableCollection<BBLLCCANBAUDItem> BBLLCCANTYPEList
+        {
+            get => _BBLLCCANTYPEList;
+            set => SetProperty(ref _BBLLCCANTYPEList, value);
+        }
+        
         private BBLLCCANBAUDItem _selectedCANBaud;
         public BBLLCCANBAUDItem SelectedCANBaud
         {
@@ -211,6 +377,31 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 if (ppec != null)
                     ppec.SelectedBaudIndex = (int)value?.Value;
                 SetProperty(ref _selectedCANBaud, value);
+            }
+        }
+
+        private BBLLCCANBAUDItem _selectedCANType;
+        public BBLLCCANBAUDItem SelectedCANType
+        {
+            get => _selectedCANType;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+
+                {
+                    switch((int)value?.Value)
+                    {
+                        case 0:
+                            ppec.DeviceType = 21;
+                            break;
+                        case 1:
+                            ppec.DeviceType = 4;
+                            break;
+                    }
+                }
+                    
+                SetProperty(ref _selectedCANType, value);
             }
         }
 

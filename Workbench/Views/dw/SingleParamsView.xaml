@@ -416,7 +416,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                             </Grid.ColumnDefinitions>
                                             <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
                                                 <!--<TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>-->
-                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="寄存器详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="写寄存器详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding WriteCurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
@@ -609,7 +609,7 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
                                             </Grid.ColumnDefinitions>
                                             <hc:UniformSpacingPanel Spacing="15" VerticalAlignment="Center">
                                                 <!--<TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>-->
-                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="寄存器详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="读寄存器详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                                 
                                                 <TextBlock Text="{Binding CurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>

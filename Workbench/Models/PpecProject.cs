@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MathNet.Numerics.LinearAlgebra.Factorization;
+using Newtonsoft.Json;
 using PPEC.Communication;
 using PPEC.Communication.Interface;
 using PPEC.Communication.Model;
@@ -92,7 +93,7 @@ namespace Workbench.Models
         }
 
         #region I2C
-        private int _i2cBusId = 1;
+        private int _i2cBusId = 0;
         /// <summary>
         /// 总线号
         /// </summary>
@@ -110,6 +111,35 @@ namespace Workbench.Models
         {
             get => _i2cAddrBits;
             set => SetProperty(ref _i2cAddrBits, value);
+        }
+        private string _Delay = "0";
+        public string Delay
+        {
+            get => _Delay;
+            set => SetProperty(ref _Delay, value);
+        }
+        private int _I2cBaud = 1;
+        /// <summary>
+        /// clock
+        /// </summary>
+        public int I2cBaud
+        {
+            get => _I2cBaud;
+            set => SetProperty(ref _I2cBaud, value);
+        }
+
+        private string _ConnectDeviceIndex = "0";
+        public string ConnectDeviceIndex
+        {
+            get => _ConnectDeviceIndex;
+            set => SetProperty(ref _ConnectDeviceIndex, value);
+        }
+
+        private string _I2CSCL = "0";
+        public string I2CSCL
+        {
+            get => _I2CSCL;
+            set => SetProperty(ref _I2CSCL, value);
         }
         #endregion
 
@@ -288,8 +318,10 @@ namespace Workbench.Models
 
             CommService = service;
 
-            var bytes = Utility.HexToBytes("D28C000AFFFFFFFFFFFFFF000AFF0003017050A9");
-            await CommService.SendAsync(bytes);
+            var calcResult = UtilsFunc.GetReadCommandByAddress("0170", Constants.Modbus);
+            await CommService.SendAsync(calcResult.bytes);
+            //var bytes = Utility.HexToBytes("D28C000AFFFFFFFFFFFFFF000AFF0003017050A9");
+            //await CommService.SendAsync(bytes);
             Thread.Sleep(TimeSpan.FromMilliseconds(500));
             var res = CommService.Read("0170");
             if (!res.HasValue)
@@ -350,6 +382,7 @@ namespace Workbench.Models
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message.ToString());
                 IsConnecting = false;
                 return false;
             }
@@ -358,14 +391,17 @@ namespace Workbench.Models
         }
         private async Task<bool> ConnectI2c()
         {
-            var service = new Workbench.Communication.I2cCommService();
+            // var service = new Workbench.Communication.I2cCommService();
 
             // 复用现有 IBaseCommService.Connect 的签名，portName 里塞 I2C 参数
-            string i2cPortToken = $"I2C:{I2cBusId}:{I2cAddrBits}";
-
+            //string i2cPortToken = $"I2C:{I2cBusId}:{I2cAddrBits}";
+            var service = new Workbench.Communication.Ch347I2cCommService();
             try
             {
-                service.Connect(i2cPortToken, 0, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+
+                string connectStr = string.Format($"CH347:{I2cBusId}:{ConnectDeviceIndex}:{I2cBaud}:{I2CSCL}:{Delay}:0:500:500");
+                service.Connect(connectStr);// ("CH347:0:3:1:0:0:0:500:500");
+                //service.Connect(i2cPortToken, 0, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
             }
             catch (Exception ex)
             {
@@ -377,13 +413,23 @@ namespace Workbench.Models
 
             CommService = service;
 
+            // 3) 通信复位
+            //await service.ResetAsync();
+
+            // 4) 写寄存器
+            //await service.WriteRegisterAsync(0x0170, 0x12345678);
+
+            // 5) 读寄存器
+            var val = await service.ReadRegisterAsync(0x0170);
+            Console.WriteLine($"0x0170 = 0x{val:X8}");
+
             // （可选）按协议先来一次通信复位
-            var i2c = (Workbench.Communication.I2cCommService)CommService;
-            await i2c.ResetAsync(120); // 芯片约100ms复位，这里等120ms
+            //var i2c = (Workbench.Communication.I2cCommService)CommService;
+            //await i2c.ResetAsync(120); // 芯片约100ms复位，这里等120ms
 
             // 按你的串口逻辑：读地址 0x0170 作为在线校验
-            ushort probeReg = 0x0170;
-            var val = await i2c.ReadRegisterAsync(probeReg);
+            //ushort probeReg = 0x0170;
+            //var val = await i2c.ReadRegisterAsync(probeReg);
             if (!val.HasValue)
             {
                 MessageBox.Show("板卡连接异常（I2C），请检查接线/地址", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);

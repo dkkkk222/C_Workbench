@@ -15,6 +15,7 @@ using Prism.Ioc;
 using Workbench.Views.Windows;
 using System.IO;
 using Prism.Commands;
+using Workbench.Communication;
 
 namespace Workbench.ViewModels
 {
@@ -42,6 +43,15 @@ namespace Workbench.ViewModels
             //rep.Parse(ExcelPath);
             //WZW--627
             InitDataList();
+            //TestI2C();
+
+        }
+        public void TestI2C()
+        {
+            var devs = Ch347DeviceEnumerator.Enumerate(excludeMode3: false);
+            foreach (var d in devs) Console.WriteLine(d);
+            //var devs = Ch347DeviceEnumerator.Enumerate(excludeMode3: false);
+            //foreach (var d in devs) Console.WriteLine(d);
         }
 
         public void UserOrAutoSaveProject()
