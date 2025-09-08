@@ -121,11 +121,11 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
         <Border Grid.Column="1" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel>
+            
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -404,18 +404,19 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                         <Border Grid.Column="1" Padding="55,0,20,0">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition ></RowDefinition>
-                                    <RowDefinition ></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition  Height="Auto"></RowDefinition>
+                                    <RowDefinition  Height="*"></RowDefinition>
                                 </Grid.RowDefinitions>
-                                <DockPanel LastChildFill="True">
+                                <DockPanel LastChildFill="True" Height="Auto">
                                     <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
+                                       
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition></ColumnDefinition>
                                                 <ColumnDefinition></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
-                                                <!--<TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>-->
                                                 <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="写寄存器详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                                 <TextBlock Text="{Binding WriteCurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                                 <TextBlock Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
@@ -427,7 +428,7 @@ IsEnabled="{Binding WriteCurrentRegister.AllowWrite}" HorizontalAlignment="Right
 hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                         </Grid>
                                     </Border>
-                                    <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0" Height="200" VerticalAlignment="Top">
+                                    <!--<Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0"   VerticalAlignment="Top">-->
                                         <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}" x:Name="BitGrid"
                                                    Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
                                                   AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
@@ -598,9 +599,11 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
 
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                    </Border>
+                                    <!--</Border>-->
                                 </DockPanel>
-                                <DockPanel LastChildFill="True" Grid.Row="1">
+                                <GridSplitter Grid.Row="1" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#10000000" ResizeDirection="Rows"></GridSplitter>
+
+                                <DockPanel LastChildFill="True" Grid.Row="2"  Height="Auto">
                                     <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -622,8 +625,8 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
 
 
                                     </Border>
-                                    <Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0"   Height="200" VerticalAlignment="Top">
-                                        <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" 
+                                    <!--<Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0"  VerticalAlignment="Top">-->
+                                        <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" Height="Auto"
                                                   Background="{DynamicResource DataGridBackgroundColor}"
                                                   AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                                   AlternationCount="2"
@@ -752,14 +755,15 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                    </Border>
+                                    <!--</Border>-->
                                 </DockPanel>
                             </Grid>
                            
                         </Border>
                     </Grid>
-                </StackPanel>
-                <hc:Divider Grid.Row="1" Margin="0,8"/>
+              
+                <GridSplitter Margin="0,8" Grid.Row="1" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#10000000" ResizeDirection="Rows"></GridSplitter>
+
                 <Border Grid.Row="2" Padding="2,2,20,2">
                     <DockPanel LastChildFill="True">
                         <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
@@ -772,7 +776,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </hc:UniformSpacingPanel>
                         </Border>
                         <DataGrid ItemsSource="{Binding ReadWriteHistory}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                  Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
+                                  Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"  Height="Auto"
                                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="{x:Type DataGridColumnHeader}"  >

@@ -171,7 +171,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
         <Border Background="{StaticResource AvalonDockAreaBackgroundColor}"   Grid.Column="1" Padding="0,8,28,8">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -192,12 +192,9 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                             </StackPanel>
                             
                         </Border>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <DataGrid  MaxHeight="200"  MinWidth="400" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
+                            
+                            <DataGrid    MinWidth="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="245" IsReadOnly="True"
                                          Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
                SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
@@ -404,13 +401,14 @@ SelectedValuePath="Id">
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                        </Grid>
+                        </Border>
 
 
                         <!--</StackPanel>-->
                     </DockPanel>
                 </Border>
-                <hc:Divider Grid.Row="1" Margin="0,5"/>
+                <GridSplitter Grid.Row="1" Margin="0,8" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#10000000" ResizeDirection="Rows"></GridSplitter>
+
                 <Grid Grid.Row="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
