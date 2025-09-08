@@ -18,6 +18,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="Bool2Vis"/>
+        <cvt:BoolToGridLengthStarOrZeroConverter x:Key="BoolToStarOrZero"/>
+        <cvt:BoolToGridLengthPixelOrZeroConverter x:Key="BoolTo10pxOrZero" Pixels="10"/>
+        <cvt:BoolToTextConverter x:Key="BoolToText"/>
         <DataTemplate DataType="{x:Type viewModels:BatchParamsViewModel}">
             <views:BatchParamsView />
         </DataTemplate>
@@ -410,8 +414,10 @@ CommandParameter="{Binding}"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="5"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition x:Name="SepCol" Width="0"/>
+                            <!-- 分隔列 -->
+                            <ColumnDefinition x:Name="RightCol" Width="0"/>
+                            <!-- 右侧详情 -->
                         </Grid.ColumnDefinitions>
 
                         <DockPanel LastChildFill="True" MinWidth="560">
@@ -428,9 +434,19 @@ CommandParameter="{Binding}"/>
                                            
                                             <Button Content="添加到序列" Style="{StaticResource ButtonPrimary}" Width="110"  Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                             Command="{Binding AddRegisterToSequenceCommand}"/>
-
-                                            <Button Content="查看配置" Style="{StaticResource ButtonPrimary}" Width="100"  Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource EnlargeGeometry}"
-                                                        Command="{Binding ConfigRegisterCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"/>
+                                            <!--EnlargeGeometry-->
+                                            <!--<Button Content="查看配置" Style="{StaticResource ButtonPrimary}" Width="100"  Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource EnlargeGeometry}"
+                                                        Command="{Binding ConfigRegisterCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"/>-->
+                                            <Button Content="{Binding IsConfigPaneOpen, Converter={StaticResource BoolToText}, ConverterParameter=查看配置|隐藏配置}"
+        Style="{StaticResource ButtonPrimary}" Width="100"
+        Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+        hc:IconElement.Geometry="{StaticResource EnlargeGeometry}"
+        Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"  Visibility="{c:Binding !IsConfigPaneOpen,FalseToVisibility=Collapsed}"/>
+                                            <Button Content="{Binding IsConfigPaneOpen, Converter={StaticResource BoolToText}, ConverterParameter=查看配置|隐藏配置}"
+Style="{StaticResource ButtonPrimary}" Width="100"
+Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+hc:IconElement.Geometry="{StaticResource CloseGeometry}"
+Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"  Visibility="{c:Binding IsConfigPaneOpen,FalseToVisibility=Collapsed}"/>
 
                                             <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
                                                 <hc:SplitButton.DropDownContent>
@@ -674,7 +690,15 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 </DataGrid.Columns>
                             </DataGrid>
                         </DockPanel>
-                        <GridSplitter Grid.Column="1" Width="10" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
+                        <GridSplitter x:Name="DetailSplitter"
+                  Grid.Column="1"
+                  Width="10"
+                  Background="Transparent"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Visibility="{Binding IsConfigPaneOpen, Converter={StaticResource Bool2Vis}}"
+                  DragCompleted="DetailSplitter_DragCompleted" />
+                        <!--<GridSplitter Grid.Column="1" Width="10" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>-->
                         <DockPanel LastChildFill="True" Grid.Column="2">
                             <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                                 <Grid> 

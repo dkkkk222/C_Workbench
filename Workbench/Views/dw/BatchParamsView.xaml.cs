@@ -28,6 +28,7 @@ namespace Workbench.Views.dw
     /// </summary>
     public partial class BatchParamsView : UserControl
     {
+        private GridLength _lastRightWidth = new GridLength(1, GridUnitType.Star);
         private const double PaneWidth = 324.0;
         public BatchParamsView()
         {
@@ -71,6 +72,15 @@ namespace Workbench.Views.dw
                     AnimatePane(isOpen);
                 });
             }
+            if (e.PropertyName == "IsConfigPaneOpen")
+            {
+                // 右侧详情开合：不用动画，直接设置列宽
+                Dispatcher.Invoke(() =>
+                {
+                    bool open = GetIsConfigPaneOpen();
+                    SetRightPane(open);
+                });
+            }
         }
 
         private bool GetIsLeftOpen()
@@ -80,12 +90,20 @@ namespace Workbench.Views.dw
             try { return (bool)(vm?.IsLeftOpen ?? false); }
             catch { return false; }
         }
-
+        private bool GetIsConfigPaneOpen()
+        {
+            dynamic vm = DataContext;
+            try { return (bool)(vm?.IsConfigPaneOpen ?? false); }
+            catch { return false; }
+        }
         private void ApplyInitialWidth()
         {
             LeftCol.Width = GetIsLeftOpen()
                 ? new GridLength(PaneWidth, GridUnitType.Pixel)
                 : new GridLength(0, GridUnitType.Pixel);
+
+            // 右侧（根据 VM 当前状态）
+            SetRightPane(GetIsConfigPaneOpen());
         }
 
         private void AnimatePane(bool open)
@@ -118,6 +136,44 @@ namespace Workbench.Views.dw
             };
 
             LeftCol.BeginAnimation(ColumnDefinition.WidthProperty, anim);
+        }
+
+        /// <summary>
+        /// 根据开关设置右侧详情与分隔列宽度，并记忆用户上次拖动的宽度
+        /// </summary>
+        private void SetRightPane(bool open)
+        {
+            if (RightCol == null || SepCol == null) return;
+
+            if (open)
+            {
+                // 展开：恢复上次宽度（首次用 *）
+                if (_lastRightWidth.Value <= 0)
+                {
+                    _lastRightWidth = new GridLength(1, GridUnitType.Star);
+                }
+
+                RightCol.Width = _lastRightWidth;
+                SepCol.Width = new GridLength(10); // 分隔列
+            }
+            else
+            {
+                // 收起：先记住当前宽度，再置 0
+                _lastRightWidth = RightCol.Width;
+                RightCol.Width = new GridLength(0);
+                SepCol.Width = new GridLength(0);
+            }
+        }
+
+        /// <summary>
+        /// 分隔条拖动完成后，记住右侧列当前宽度，供下次展开还原
+        /// </summary>
+        private void DetailSplitter_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            if (RightCol != null && RightCol.Width.Value > 0)
+            {
+                _lastRightWidth = RightCol.Width; // 很可能是像素宽度
+            }
         }
         #endregion
         private void BinaryTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)

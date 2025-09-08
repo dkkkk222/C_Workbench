@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Forms;
 using Workbench.Events;
@@ -44,6 +45,15 @@ namespace Workbench.ViewModels.dw
                 {
                     SetProperty(ref _isLeftOpen, value);
                 }
+            }
+        }
+        private bool _isConfigPaneOpen = true;               // 默认展开
+        public bool IsConfigPaneOpen
+        {
+            get => _isConfigPaneOpen;
+            set
+            {
+                SetProperty(ref _isConfigPaneOpen, value);
             }
         }
 
@@ -299,7 +309,48 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _singleParamTrees, value);
         }
 
+        public DelegateCommand<RegisterAddrInfo> ToggleConfigPaneCommand => new DelegateCommand<RegisterAddrInfo>((param) =>
+        {
+            var selected = param;
+            // 与右侧当前显示的是否同一寄存器？
+            bool same = IsSameRegister(selected, WriteCurrentRegister);
+            if (!same && selected != null)
+            {
+                // 用你已有的逻辑把“左侧选中项”灌到右侧详情
+                // 例如：WriteCurrentRegister = MapToRegisterDetail(selected);
+                //      或者调用你原先 ConfigRegisterCommand 里做的那段赋值代码
+                //ApplySelectionToConfigPane(selected);
+
+                WriteCurrentRegister = param;
+                // 强制展开
+                IsConfigPaneOpen = true;
+                return;
+            }
+            IsConfigPaneOpen = !IsConfigPaneOpen;
+        });
+        private static bool IsSameRegister(RegisterAddrInfo a, RegisterAddrInfo b)
+        {
+            if (a == null || b == null) return false;
+            if (ReferenceEquals(a, b)) return true;
+
+            // 优先按 AddressHex 比较（你两边通常都有这个字段）
+            var aAddr = GetStringProp(a, "AddressHex");
+            var bAddr = GetStringProp(b, "AddressHex");
+            if (!string.IsNullOrEmpty(aAddr) && !string.IsNullOrEmpty(bAddr))
+                return string.Equals(aAddr, bAddr, StringComparison.OrdinalIgnoreCase);
+
+            // 备用：按 Id 比较（如果你的模型有 Id）
+            var aId = GetStringProp(a, "Id");
+            var bId = GetStringProp(b, "Id");
+            if (!string.IsNullOrEmpty(aId) && !string.IsNullOrEmpty(bId))
+                return string.Equals(aId, bId, StringComparison.OrdinalIgnoreCase);
+
+            return false;
+        }
+        private static string GetStringProp(object o, string name)
+        => o?.GetType().GetProperty(name)?.GetValue(o)?.ToString();
         private DelegateCommand _closeCommand;
+
 
         public override DelegateCommand CloseCommand =>
             _closeCommand ?? (_closeCommand = new DelegateCommand(() =>
