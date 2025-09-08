@@ -68,7 +68,7 @@ namespace Workbench.ViewModels.dw
             _ReceiveTimer.Interval = 200;
             _ReceiveTimer.Elapsed += ReceiveTimer_Tick;
 
-            _recordTime.Interval = 500; // 设置触发间隔
+            _recordTime.Interval = 50; // 设置触发间隔
             _recordTime.Elapsed += RecordTime_Tick; // 设置触发事件
 
             _refTime.Interval = 1000; // 设置触发间隔

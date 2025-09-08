@@ -501,6 +501,8 @@ namespace Workbench.ViewModels.dw
         private DelegateCommand<BitField> _optionChangeCommand;
         public DelegateCommand<BitField> OptionChangeCommand => _optionChangeCommand ?? (_optionChangeCommand = new DelegateCommand<BitField>((param) =>
         {
+            if (param.SelectedValue == null)
+                return;
             var bnr = Utility.HexToBinaryStringLarge(param.SelectedValue, param.Length);
             param.WriteBinary = bnr;
             //UpdateBinaryString(param.Name, param.EndBit, param.StartBit, bnr);

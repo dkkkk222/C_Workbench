@@ -179,7 +179,10 @@ namespace Workbench.Views
             if (r == MessageBoxResult.Yes)
             {
                 viewModel.UserOrAutoSaveProject();
-            }            
+            }
+            var ppec = _projectManager.GetCachePPEC();
+            ppec.Disconnect();
+            _projectManager.SetCurrentPpec(ppec);
         }
     }
 
