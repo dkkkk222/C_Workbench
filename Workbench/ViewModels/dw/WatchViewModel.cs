@@ -62,7 +62,7 @@ namespace Workbench.ViewModels.dw
             pms = new ParameterMonitorService(30) { CurrentProject = _projectManager.CurrentProject };
             pms.Enable();
             NormalizeWatchCharts();
-            _timer.Interval = 200; // 设置触发间隔
+            _timer.Interval = 50; // 设置触发间隔
             _timer.Elapsed += Timer_Tick; // 设置触发事件
 
             _ReceiveTimer.Interval = 200;
@@ -1058,7 +1058,7 @@ namespace Workbench.ViewModels.dw
                             //开始存储，记录历史记录
                             pipeLineIng.Enqueue(new Sample
                             {
-                                TimestampUtcMs = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds,
+                                TimestampUtcMs = (long)(DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds,
                                 Values = tempdic,
                             });
                         }

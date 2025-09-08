@@ -25,7 +25,7 @@ namespace Workbench.Models
         {
             Param = p ?? throw new ArgumentNullException(nameof(p));
             Duration = d;
-            StartUtc = DateTime.UtcNow;
+            StartUtc = DateTime.Now;
         }
 
         public bool Expired() =>

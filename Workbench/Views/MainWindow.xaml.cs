@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Prism.Events;
 using Prism.Services.Dialogs;
+using System;
 using System.Windows;
 using Workbench.Events;
 using Workbench.Utils;
@@ -172,17 +173,28 @@ namespace Workbench.Views
 
         private void NoTitleBarWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            _eventAggregator.GetEvent<CloseConnectEvent>().Publish();
-            var viewModel = DataContext as MainWindowViewModel;
-            var r = MessageBox.Show("是否保存工程？", "提示",
-                           MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (r == MessageBoxResult.Yes)
+           
+            try
             {
-                viewModel.UserOrAutoSaveProject();
+                _eventAggregator.GetEvent<CloseConnectEvent>().Publish();
+                var viewModel = DataContext as MainWindowViewModel;
+                var r = MessageBox.Show("是否保存工程？", "提示",
+                               MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (r == MessageBoxResult.Yes)
+                {
+                    viewModel.UserOrAutoSaveProject();
+                }                
             }
-            var ppec = _projectManager.GetCachePPEC();
-            ppec.Disconnect();
-            _projectManager.SetCurrentPpec(ppec);
+            catch(Exception ex)
+            {
+
+            }
+            finally 
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                ppec.Disconnect();
+                _projectManager.SetCurrentPpec(ppec);
+            }
         }
     }
 

@@ -280,7 +280,10 @@ namespace Workbench.Communication
                     _cache.Clear();
                 }
             }
-            catch { throw; }
+            catch 
+            { 
+                throw;
+            }
         }
 
         public void Dispose() => Close();
