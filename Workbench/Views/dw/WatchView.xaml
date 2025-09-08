@@ -183,10 +183,10 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
 
                                 <!--<TextBlock Text="监测数据配置" FontSize="{StaticResource SubHeadFontSize}"/>-->
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
+                                <Button Style="{StaticResource ButtonDefault.Small}" Width="116"
         ToolTip="展开/收起寄存器目录" Content="展开寄存器目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
         Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource  AlignLeftGeometry}"/>
-                                <Button Style="{StaticResource ButtonDefault.Small}" Width="86"
+                                <Button Style="{StaticResource ButtonDefault.Small}" Width="116"
 ToolTip="展开/收起寄存器目录" Content="收起寄存器目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
 Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />
                             </StackPanel>

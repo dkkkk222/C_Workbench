@@ -142,9 +142,16 @@ namespace Workbench.ViewModels.Content.ButtonBar
             });
             _eventAggregator.GetEvent<CloseConnectEvent>().Subscribe(() =>
             {
+                if(IsConnected)
+                {
+                    var ppec = _projectManager.GetCachePPEC();
+                    ppec.Disconnect();
+                    _projectManager.SetCurrentPpec(ppec);
+                }
                 ConnectIcon = Constants.ConnectIcon;
                 ConnectStr = Constants.ConnectStr;
                 IsConnected = false;
+                
             });
         }
 
@@ -501,6 +508,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             _projectManager.SetCurrentPpec(ppec);
             IsConnected = false;
         }
+
         private void InitTheme()
         {
             IsDarkTheme = true;
