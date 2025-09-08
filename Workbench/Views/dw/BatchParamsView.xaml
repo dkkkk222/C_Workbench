@@ -414,17 +414,18 @@ CommandParameter="{Binding}"/>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <DockPanel LastChildFill="True" MinWidth="400">
+                        <DockPanel LastChildFill="True" MinWidth="560">
 
                             <Border Style="{StaticResource BorderCircular}" DockPanel.Dock="Top"  Margin="5,10,0,5"  BorderBrush="Transparent" Background="Transparent">
                                 <DockPanel LastChildFill="True">
                                     <hc:UniformSpacingPanel  DockPanel.Dock="Left" Spacing="5">
                                         <!--<TextBlock Text="序列配置详情:" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
                                         <controls_Title:StandTitle  Padding="0,5,0,0"  BordMargin="0,0,5,0" StandText="序列配置详情 :" StandFontSize="{DynamicResource SubHeadFontSize}"/>
-                                        <TextBlock Padding="0,5,0,0"  Text="{Binding CurrentSequence.Name}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                        <TextBlock Padding="0,5,0,0"  Text="{Binding CurrentSequence.Name}" ToolTip="{Binding CurrentSequence.Name}"  TextTrimming="CharacterEllipsis"  MaxWidth="100"  FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
                                     </hc:UniformSpacingPanel>
                                     <Border Margin="0,0,10,0">
                                         <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
+                                           
                                             <Button Content="添加到序列" Style="{StaticResource ButtonPrimary}" Width="110"  Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
                                             Command="{Binding AddRegisterToSequenceCommand}"/>
 
@@ -624,14 +625,13 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[2].IsChecked,
                                                         Converter={StaticResource Boolean2VisibilityConverter}}"/>
-                                    <DataGridTextColumn Header="寄存器名称" Binding="{Binding Name}"  Width="*" MinWidth="120"  Visibility="{Binding 
+                                    <DataGridTextColumn Header="寄存器名称" Binding="{Binding Name}"  Width="Auto" MinWidth="120"  Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[3].IsChecked,
                                                         Converter={StaticResource Boolean2VisibilityConverter}}">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="ToolTip" Value="{Binding Name}"/>
-                                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
