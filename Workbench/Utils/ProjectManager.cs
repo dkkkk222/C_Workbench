@@ -202,6 +202,14 @@ namespace Workbench.Utils
             {
                 content = File.ReadAllText(filePath);
                 var openProject = JsonHelper.DeserializeObject<PpecProject>(content);
+                
+                string directoryPath = Path.GetDirectoryName(filePath);
+                openProject.Path= directoryPath;               
+                var newPathProject=JsonHelper.SerializeObject(openProject, new JsonSerializerSettings()
+                {
+                    ContractResolver = new IgnorePropertyContractResolver(new[] { "_isSelected", "IsSelected" })
+                });
+
                 //var isHaveChipType = InitDataStaticService.Instance.ChipTypeSource.FirstOrDefault(x => x.Value.ToString() == openProject.Chip.ChipId);
                 //验证ID改为验证名称
                 var isHaveChipType = InitDataStaticService.Instance.ChipTypeSource.FirstOrDefault(x => x.Name.ToString() == openProject.Chip.ChipName);
@@ -212,7 +220,7 @@ namespace Workbench.Utils
                     return true;
                 }
                 //更新最近文件列表中的时间
-                _fileHandler.UpdateRecentFileDatetime(content);
+                _fileHandler.UpdateRecentFileDatetime(newPathProject);
          
                 _eventAggregator.GetEvent<AddedProjectEvent>().Publish(openProject);
             }

@@ -190,8 +190,16 @@ namespace Workbench.Utils
                 return;
             var recentFile = recentFiles.FirstOrDefault(t => t.UID == project.UID);
             if(recentFile!=null)
+            {
                 recentFile.DateTime = DateTime.Now;
-            SaveRecentFiles(recentFiles);
+                recentFile.DirPath = project.Path;
+                SaveRecentFiles(recentFiles);
+            }
+            else
+            {
+                AddToRecentFile(project.Name, project.Path, project.UID);
+            }
+            
         }
 
         internal string GetDefaultFilePath()

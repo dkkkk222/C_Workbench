@@ -74,10 +74,7 @@ namespace Workbench.ViewModels.dw
             _refTime.Interval = 1000; // 设置触发间隔
             _refTime.Elapsed += RefTime_Tick; // 设置触发事件
 
-
             EventListener();
-
-
 
             foreach (var group in WatchGroups)
             {

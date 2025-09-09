@@ -52,17 +52,19 @@
                                     <TextBlock Text="&#xe614;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
+                            <!--IsEnabled="{Binding HasPpec}"-->
                             <MenuItem x:Name="SaveProject" 
                                       Header="保存" 
-                                      IsEnabled="{Binding HasPpec}" Style="{DynamicResource MenuItemStyle}"
+                                      Style="{DynamicResource MenuItemStyle}"
                                       Click="SaveProject_Click">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xe627;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
+                            <!--IsEnabled="{Binding HasPpec}"-->
                             <MenuItem x:Name="SaveAsProject" 
                                       Header="另存为"  Style="{DynamicResource MenuItemStyle}"
-                                      IsEnabled="{Binding HasPpec}"
+                                 
                                       Click="SaveAsProject_Click">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xe628;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
