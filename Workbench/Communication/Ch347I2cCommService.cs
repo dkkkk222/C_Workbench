@@ -242,8 +242,8 @@ namespace Workbench.Communication
             _addrW = (byte)((_dev7 << 1) | 0x00);
             _addrR = (byte)((_dev7 << 1) | 0x01);
             //可以读取的设备地址 A0 和A1。
-            _addrR = 160;
-            _addrW = 160;
+            //_addrR = 160;
+            //_addrW = 160;
             // 打开设备（返回句柄）
             var h = Ch347Native.CH347OpenDevice(_index);
             if (h == IntPtr.Zero || h == Ch347Native.INVALID_HANDLE_VALUE)
@@ -363,7 +363,7 @@ namespace Workbench.Communication
 
         // ============== 兼容你项目里的 IBaseCommService ==============
 
-        public uint? Read(string hexAddress)
+        public uint? Read1(string hexAddress)
         {
             if (string.IsNullOrWhiteSpace(hexAddress)) return null;
             if (!ushort.TryParse(hexAddress, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
@@ -371,6 +371,16 @@ namespace Workbench.Communication
             var t = ReadRegisterAsync(reg);
             t.Wait();
             return t.Result;
+        }
+
+        public uint? Read(string hexAddress)
+        {
+            if (string.IsNullOrWhiteSpace(hexAddress)) return null;
+            if (!ushort.TryParse(hexAddress, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                return null;
+            var res = TryGetCached(hexAddress, out object value);
+            if (!res) return null;
+            return (uint)value;
         }
 
         public bool TryGetCached(string hexAddress, out object value)
