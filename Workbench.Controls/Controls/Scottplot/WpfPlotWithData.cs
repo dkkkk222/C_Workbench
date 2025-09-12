@@ -50,7 +50,7 @@ namespace Workbench.Controls.Controls.Scottplot
             this.Plot.Axes.Bottom.Label.Alignment = Alignment.MiddleRight;
             this.Plot.Axes.Bottom.Label.OffsetX = 270;
             this.Plot.Axes.Left.Label.Alignment = Alignment.UpperCenter;
-            this.Plot.Axes.Left.Label.OffsetY = -170;
+            this.Plot.Axes.Left.Label.OffsetY = -140;
             Plot.Font.Automatic();
 
             //// change figure colors
