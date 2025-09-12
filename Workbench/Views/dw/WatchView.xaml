@@ -171,9 +171,9 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
         <Border Background="{StaticResource AvalonDockAreaBackgroundColor}"   Grid.Column="1" Padding="0,8,28,8">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="1*"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2*"/>
                 </Grid.RowDefinitions>
                 <Border Grid.Row="0">
                     <DockPanel LastChildFill="True">
@@ -442,7 +442,7 @@ SelectedValuePath="Id">
                                    ItemsSource="{Binding WatchGroups}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}">
                                 <TabControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Header}"/>
+                                        <TextBlock Text="{Binding Header}"  FontWeight="Black"/>
                                     </DataTemplate>
                                 </TabControl.ItemTemplate>
                                 <TabControl.ContentTemplate>
@@ -727,7 +727,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                
                                 <TabControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Header}"/>
+                                        <TextBlock Text="{Binding Header}" FontWeight="Black"/>
                                     </DataTemplate>
                                 </TabControl.ItemTemplate>
                                 <TabControl.ContentTemplate>

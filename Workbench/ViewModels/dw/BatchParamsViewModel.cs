@@ -308,7 +308,20 @@ namespace Workbench.ViewModels.dw
             get => _singleParamTrees;
             set => SetProperty(ref _singleParamTrees, value);
         }
-
+        public void ChangeIsConfigPaneOpen(RegisterAddrInfo param)
+        {
+            var selected = param;
+            bool same = IsSameRegister(selected, WriteCurrentRegister);
+            if(same && selected != null)
+            {
+                IsConfigPaneOpen = true;
+            }
+            else
+            {
+                WriteCurrentRegister = param;
+                IsConfigPaneOpen = true;
+            }
+        }
         public DelegateCommand<RegisterAddrInfo> ToggleConfigPaneCommand => new DelegateCommand<RegisterAddrInfo>((param) =>
         {
             var selected = param;

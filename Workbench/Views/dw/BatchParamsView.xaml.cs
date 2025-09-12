@@ -533,5 +533,12 @@ namespace Workbench.Views.dw
             return tpl;
         }
         #endregion
+
+        private void SequenceGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var viewModel = DataContext as BatchParamsViewModel;
+            var selItem = SequenceGrid.SelectedItem as RegisterAddrInfo;
+            viewModel.ChangeIsConfigPaneOpen(selItem);
+        }
     }
 }

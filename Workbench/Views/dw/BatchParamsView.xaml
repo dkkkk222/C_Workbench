@@ -474,13 +474,13 @@ Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedI
                             <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
                                   AlternationCount="2"   Background="{DynamicResource DataGridBackgroundColor}"  ColumnHeaderHeight="30"
                                       RowHeaderWidth="60" LoadingRow="SequenceGrid_LoadingRow" Sorting="SequenceGrid_Sorting"
-                                      Loaded="SequenceGrid_OnLoaded"
-                              CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
-                                <i:Interaction.Triggers>
+                                      Loaded="SequenceGrid_OnLoaded" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0" SelectionChanged="SequenceGrid_SelectionChanged">
+                                <!--<i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseDoubleClick">
                                         <i:InvokeCommandAction Command="{Binding ConfigRegisterCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}" />
                                     </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                                </i:Interaction.Triggers>-->
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}"  >
                                         <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
@@ -633,7 +633,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
 
-                                    <DataGridTextColumn Header="分类" Binding="{Binding Category}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}" Visibility="{Binding 
+                                    <DataGridTextColumn Header="分类" Binding="{Binding Category}"  Width="*" MinWidth="60" ElementStyle="{StaticResource CenterCellStyle}" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[1].IsChecked,
                                                         Converter={StaticResource Boolean2VisibilityConverter}}"/>
@@ -641,7 +641,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[2].IsChecked,
                                                         Converter={StaticResource Boolean2VisibilityConverter}}"/>
-                                    <DataGridTextColumn Header="寄存器名称" Binding="{Binding Name}"  Width="Auto" MinWidth="120"  Visibility="{Binding 
+                                    <DataGridTextColumn Header="寄存器名称" Binding="{Binding Name}"  Width="Auto" MinWidth="180"  Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[3].IsChecked,
                                                         Converter={StaticResource Boolean2VisibilityConverter}}">
@@ -649,6 +649,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="ToolTip" Value="{Binding Name}"/>
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="TextTrimming" Value="None"/>
+                                                <Setter Property="TextWrapping" Value="NoWrap"/>
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
