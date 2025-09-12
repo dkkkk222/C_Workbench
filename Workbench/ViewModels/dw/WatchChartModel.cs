@@ -29,7 +29,12 @@ namespace Workbench.ViewModels.dw
             get { return _id; }
             set { SetProperty(ref _id, value); }
         }
-
+        private int _order;
+        public int Order
+        {
+            get => _order;
+            set => SetProperty(ref _order, value);
+        }
         private string _header;
         public string Header
         {
@@ -70,7 +75,7 @@ namespace Workbench.ViewModels.dw
 
 
         private double _chartWidth = 680;   // 初始宽
-        private double _chartHeight = 360;   // 初始高
+        private double _chartHeight = 450;   // 初始高
         public double ChartWidth
         {
             get => _chartWidth;
@@ -86,8 +91,8 @@ namespace Workbench.ViewModels.dw
             get => _chartHeight;
             set
             {
-                if (value < 360)
-                    value = 360;
+                if (value < 450)
+                    value = 450;
                 SetProperty(ref _chartHeight, value);
             }
         }

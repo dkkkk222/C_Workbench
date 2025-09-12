@@ -413,6 +413,7 @@
     <Compile Include="Models\Consts\ConstString.cs" />
     <Compile Include="Models\Consts\SequenceStatement.cs" />
     <Compile Include="Models\ContextMenuItem.cs" />
+    <Compile Include="Models\DragDropReorderBehavior.cs" />
     <Compile Include="Models\dw\Sequence.cs" />
     <Compile Include="Models\dw\SingleParamHistory.cs" />
     <Compile Include="Models\dw\CategoryTree.cs" />

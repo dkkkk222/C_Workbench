@@ -103,6 +103,7 @@ namespace Workbench.ViewModels.dw
             SyncCurrentChartTab();
             HasRealCharts = _watchChartGroupsForTab.Count > 0;
             ReLoadChartTable();
+            InitOrderAndSort();
         }
         private static WatchChartModel CreatePlaceholder() => new WatchChartModel("监测图")
         {
@@ -686,12 +687,13 @@ namespace Workbench.ViewModels.dw
         {
             var baseName = $"表{WatchGroups.Count + 1}";
             var header = MakeUniqueHeader(baseName);
-
+            var maxOrder = WatchGroups.Any() ? WatchGroups.Max(g => g.Order) : 0;
             WatchGroups.Add(new WatchGroup(_dialogService, session_id)
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Header = header,
-                TableColumns = InitTableColumns()
+                TableColumns = InitTableColumns(),
+                Order = maxOrder + 1,
             });
 
             if (CurrentTab == null)
@@ -725,10 +727,14 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
         {
             int nameCount = WatchChartGroups.Count == 1 ? 1 : WatchChartGroups.Count;
+            var maxOrder = WatchChartGroups.Any(c => c.Id != "placeholder")
+       ? WatchChartGroups.Where(c => c.Id != "placeholder").Max(c => c.Order)
+       : 0;
             WatchChartModel wpfPlotControl = new WatchChartModel("监测图", _dialogService, session_id)
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Header = $"图{nameCount}",
+                Order = maxOrder + 1,
             };
             WatchChartGroups.Add(wpfPlotControl);
             if (CurrentChartTab == null || IsPlaceholder(CurrentChartTab))
@@ -1215,6 +1221,42 @@ namespace Workbench.ViewModels.dw
             else
             {
                 CurrentRegister = null;
+            }
+        }
+
+        private void InitOrderAndSort()
+        {
+            // WatchGroups
+            if (WatchGroups != null)
+            {
+                // 初始化缺省 Order（按当前顺序补齐）
+                for (int i = 0; i < WatchGroups.Count; i++)
+                    if (WatchGroups[i].Order == 0 && i > 0) WatchGroups[i].Order = i; // 按需适配你的默认值策略
+
+                var viewGroups = System.Windows.Data.CollectionViewSource.GetDefaultView(WatchGroups);
+                viewGroups.SortDescriptions.Clear();
+                viewGroups.SortDescriptions.Add(new SortDescription(nameof(WatchGroup.Order), ListSortDirection.Ascending));
+            }
+
+            // WatchChartGroups
+            if (WatchChartGroups != null)
+            {
+                // 占位项（未选中）固定最前
+                foreach (var c in WatchChartGroups)
+                    if (c.Id == "placeholder") c.Order = int.MinValue;
+
+                for (int i = 0; i < WatchChartGroups.Count; i++)
+                    if (WatchChartGroups[i].Order == 0 && WatchChartGroups[i].Id != "placeholder")
+                        WatchChartGroups[i].Order = i; // 初始化
+
+                // 默认视图排序（ItemsControl 会用到默认视图）
+                var viewCharts = System.Windows.Data.CollectionViewSource.GetDefaultView(WatchChartGroups);
+                viewCharts.SortDescriptions.Clear();
+                viewCharts.SortDescriptions.Add(new SortDescription(nameof(WatchChartModel.Order), ListSortDirection.Ascending));
+
+                // 你的 Tab 专用视图也加上排序（原来只有 Filter）
+                _watchChartGroupsForTab.SortDescriptions.Clear();
+                _watchChartGroupsForTab.SortDescriptions.Add(new SortDescription(nameof(WatchChartModel.Order), ListSortDirection.Ascending));
             }
         }
     }

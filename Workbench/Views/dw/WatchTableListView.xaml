@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Workbench.Views.dw"
              mc:Ignorable="d" 
+             xmlns:local_Model="clr-namespace:Workbench.Models"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
              xmlns:cvt="clr-namespace:Workbench.Converters"
@@ -42,20 +43,7 @@
                      Text="{Binding GridRows, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
             <TextBlock Text="列:" Style="{StaticResource ItemTitle}"/>
             <TextBox Width="60" Margin="8,0" Height="30"
-                     Text="{Binding GridColumns, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-
-            <!-- 布局方式 --><!--
-            <CheckBox Margin="16,0,0,0" Content="流式布局(Wrap)"
-                      IsChecked="{Binding UseWrapLayout, Mode=TwoWay}"/>
-
-            --><!-- WrapPanel 横/竖方向 --><!--
-            <TextBlock Text="横/竖方向:" Style="{StaticResource ItemTitle}"/>
-            <ComboBox Width="90" Margin="8,0"
-                      SelectedValue="{Binding ItemOrientation, Mode=TwoWay}"
-                      SelectedValuePath="Tag">
-                <ComboBoxItem Content="横向" Tag="{x:Static Orientation.Horizontal}"/>
-                <ComboBoxItem Content="竖向" Tag="{x:Static Orientation.Vertical}"/>
-            </ComboBox>-->
+                     Text="{Binding GridColumns, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" /> 
 
             <!-- 卡片在单元格内水平/垂直对齐 -->
             <TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
@@ -85,7 +73,9 @@
                       CanContentScroll="False">
 
             <ItemsControl ItemsSource="{Binding WatchGroups, Mode=TwoWay}">
-
+                <i:Interaction.Behaviors>
+                    <local_Model:DragDropReorderBehavior/>
+                </i:Interaction.Behaviors>
                 <!-- 使用 Style 切换 ItemsPanel（Uniform / Wrap），并显式绑定到 ItemsControl.DataContext -->
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">

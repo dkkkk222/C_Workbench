@@ -136,15 +136,25 @@ namespace Workbench.ViewModels.dw
         public void OnDialogOpened(IDialogParameters parameters)
         {
             WatchViewModel = parameters.GetValue<WatchViewModel>("viewModel");
+            foreach (var c in WatchViewModel.WatchChartGroups)
+                if (c.Id == "placeholder")
+                    c.Order = int.MinValue;
             WatchGroups = WatchViewModel.WatchChartGroups;
 
             // ★ 列表页用独立视图（不会影响默认视图）
             WatchGroupsView = new ListCollectionView(WatchViewModel.WatchChartGroups);
             WatchGroupsView.Filter = o => o is WatchChartModel m && !IsPlaceholder(m);
+
+            // ★关键：按 Order 排序（拖拽时交换 Order 才会重排）
+            WatchGroupsView.SortDescriptions.Clear();
+            WatchGroupsView.SortDescriptions.Add(
+                new SortDescription(nameof(WatchChartModel.Order), ListSortDirection.Ascending));
+
             WatchGroupsView.Refresh();
 
             // 监听集合变化，自动刷新过滤
             WatchViewModel.WatchChartGroups.CollectionChanged += OnChartsChanged;
+           
         }
         private void OnChartsChanged(object sender, NotifyCollectionChangedEventArgs e)
         => WatchGroupsView?.Refresh();

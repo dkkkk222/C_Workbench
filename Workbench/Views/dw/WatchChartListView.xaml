@@ -8,6 +8,7 @@
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              mc:Ignorable="d" 
+             xmlns:local_Model="clr-namespace:Workbench.Models"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
              xmlns:cvt="clr-namespace:Workbench.Converters"
@@ -88,6 +89,9 @@
                       CanContentScroll="False">
 
             <ItemsControl ItemsSource="{Binding WatchGroupsView}">
+                <i:Interaction.Behaviors>
+                    <local_Model:DragDropReorderBehavior/>
+                </i:Interaction.Behaviors>
                 <!-- 用 Style 动态切换 ItemsPanel（Uniform / Wrap） -->
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
@@ -139,7 +143,7 @@
                                 HorizontalAlignment="{Binding DataContext.ItemHorizontalAlignment, ElementName=Root}"
                                 VerticalAlignment="{Binding DataContext.ItemVerticalAlignment, ElementName=Root}"
                                 Width="{Binding ChartWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                MinWidth="680" MinHeight="300"
+                                MinWidth="380" MinHeight="300"
                                 Height="{Binding ChartHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Background="White"
                                 BorderBrush="#DDD" BorderThickness="1" CornerRadius="6"
@@ -191,7 +195,7 @@
                                         </StackPanel>
                                     </Border>
 
-                                    <Border Margin="0,5,0,0">
+                                    <Border Margin="0,1,0,0">
                                         <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl2, Mode=TwoWay}"/>
                                     </Border>
                                 </DockPanel>
