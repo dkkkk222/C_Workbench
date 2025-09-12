@@ -264,6 +264,8 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                 {
+                    if (value == null)
+                        return;
                     ppec.I2cBaud = (int)value.Value;
                 }
 
@@ -279,6 +281,8 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                 {
+                    if (value == null)
+                        return;
                     ppec.I2cBusId = (int)value.Value;
                 }
                
@@ -298,6 +302,22 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 }
 
                 SetProperty(ref _Delay, value);
+            }
+        }
+
+        public string _CanDelay = "5";
+        public string CanDelay
+        {
+            get => _CanDelay;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                {
+                    ppec.CanDelay = value;
+                }
+
+                SetProperty(ref _CanDelay, value);
             }
         }
         private string _selectedCommunicationType = Constants.SERIAL_PORT;

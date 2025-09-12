@@ -27,6 +27,7 @@ namespace Workbench.Communication
         /// 数据解析器
         /// </summary>
         public Func<byte[], (string key, object value)> DataParser { get; set; }
+        public string Delay { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void Connect(string portName, int baudRate = 115200, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One)
         {

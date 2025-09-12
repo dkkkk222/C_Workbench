@@ -31,7 +31,10 @@ namespace Workbench.Communication
         private Task _rxLoop;
 
         private CanConnectOptions _opts;
-
+        public string Delay
+        {
+            get; set;
+        }
         public bool IsConnected => _devHandle != IntPtr.Zero && _chnHandles.TryGetValue(_currentCanId, out var h) && h != IntPtr.Zero;
 
         /// <summary> key：4位HEX寄存器地址（比如 "0170"）；value：解析后的十进制数据（uint 或其它 object） </summary>
@@ -318,7 +321,7 @@ namespace Workbench.Communication
 
             uint id = ArbId.Build(busB, InfoType.WriteCmd, DT.Write, 0x00, dest);
             _lastTxRawId = id;
-
+            
             byte dl = 0x06;
             byte dt = DT.Write;
             byte w0 = (byte)((regAddr >> 8) & 0xFF);
@@ -333,8 +336,10 @@ namespace Workbench.Communication
 
             // 连续发送两帧
             var ok1 = await SendAsync(f1);
-           
+            Console.WriteLine("ok1");
+            await Task.Delay(int.Parse(Delay));
             var ok2 = ok1 && await SendAsync(f2);
+            Console.WriteLine("ok2");
             if (!ok2) throw new Exception("写命令发送失败");
 
             if (delayMs > 0) await Task.Delay(delayMs);
@@ -342,6 +347,7 @@ namespace Workbench.Communication
             // 缓存
             uint u = ((uint)value4[0] << 24) | ((uint)value4[1] << 16) | ((uint)value4[2] << 8) | value4[3];
             var key = regAddr.ToString("X4");
+            Console.WriteLine("key"+ key);
             _cache.AddOrUpdate(key, u, (_, __) => u);
         }
 

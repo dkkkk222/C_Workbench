@@ -210,6 +210,8 @@ namespace Workbench.Communication
 
         public bool IsConnected => _opened;
 
+        public string Delay { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         private static int Build7BitAddress(int addrBits)
         {
             if (addrBits < 0 || addrBits > 7) throw new ArgumentOutOfRangeException(nameof(addrBits));

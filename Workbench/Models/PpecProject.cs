@@ -120,6 +120,13 @@ namespace Workbench.Models
             get => _Delay;
             set => SetProperty(ref _Delay, value);
         }
+
+        private string _CanDelay = "5";
+        public string CanDelay
+        {
+            get => _CanDelay;
+            set => SetProperty(ref _CanDelay, value);
+        }
         private int _I2cBaud = 1;
         /// <summary>
         /// clock
@@ -367,6 +374,7 @@ namespace Workbench.Models
                 };
                 // 连接：USBCAN-2E-U(21), Dev0, CAN0, 500kbps(index=1)
                 var can = new CanCommService1();
+                can.Delay = CanDelay;
                 can.Connect($"CAN:{DeviceType}:{SelectedDeviceId}:{SelectedCanId}:{SelectedBaudIndex}");
                 CommService = can;
                 IsConnecting = true;

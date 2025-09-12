@@ -9,6 +9,7 @@ namespace Workbench.Communication
 {
     public interface IBaseCommService : IDisposable
     {
+        string Delay{get; set;}
         bool IsConnected { get; }
         void Connect(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits);
         Task<bool> SendAsync(byte[] data);

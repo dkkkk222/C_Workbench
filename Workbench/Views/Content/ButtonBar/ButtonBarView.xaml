@@ -96,6 +96,12 @@
                                              Height="22"
                                              IsEnabled="{calc:Binding !IsConnected}"
                                              Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}"/>
+                            <StackPanel Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}"  Height="22"  IsEnabled="{calc:Binding !IsConnected}">
+                                <TextBlock Text="每次间隔(ms):" Foreground="White" Style="{StaticResource ItemTitle}"/>
+                                <TextBox Style="{StaticResource TextBoxExtend.Small}" Width="100"   Height="22"   Text="{Binding CanDelay}" 
+             Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}"/>
+
+                            </StackPanel>
                             <!-- I2C -->                             
                             <ComboBox Width="200" ItemsSource="{Binding CommunicationI2CList}" Style="{StaticResource ComboBoxExtend.Small}"
                                      SelectedItem="{Binding SelectedCommunicationI2CType,Mode=TwoWay}"

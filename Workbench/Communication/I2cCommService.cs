@@ -22,6 +22,8 @@ namespace Workbench.Communication
 
         public bool IsConnected => _device != null;
 
+        public string Delay { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         /// <summary>可选：与串口版保持习惯一致的缓存（最近一次读/写的寄存器值）</summary>
         private ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
 
