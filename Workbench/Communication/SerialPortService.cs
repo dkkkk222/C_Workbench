@@ -6,11 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
+using log4net;
+using Workbench.ViewModels.dw;
 
 namespace Workbench.Communication
 {
     public class SerialPortService : IBaseCommService
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(SerialPortService));
         private SerialPort _serialPort;
 
         public bool IsConnected => _serialPort != null && _serialPort.IsOpen;
@@ -45,8 +48,9 @@ namespace Workbench.Communication
                 _serialPort.DataReceived += OnDataReceived;
                 _serialPort.Open();
             }
-            catch
+            catch(Exception ex)
             {
+                _log.Info(ex);
                 throw;
             }
         }

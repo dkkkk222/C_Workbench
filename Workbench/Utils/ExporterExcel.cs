@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
+using log4net;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using PPEC.Communication.DB.Provided;
 using PPEC.Communication.Model;
 using Workbench.Db;
 
@@ -15,102 +17,112 @@ namespace Workbench.Utils
 {
     public class ExporterExcel
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(ExporterExcel));
         public void ExportSessionToExcel_MergedByTimeAndId(string sessionId, string xlsxDirectory, int page = 200_000)
         {
-            using (var db = new DbContext())
+            try
             {
-                // 1) 取出：本 session 用到的 paramId -> name（名称可重复，仅用于显示）；列由 paramId 确定
-                var id2name = GetParamNameMapForSession(db, sessionId); // Dictionary<string, string>
 
-                // 列顺序：按 paramId 排（也可改成按 name 再按 id 排，但列键仍是 id）
-                //var headerIds = id2name.Keys.OrderBy(id => id, StringComparer.Ordinal).ToList();
-                var headerIds = id2name.Keys
-                                   .OrderBy(id => id2name[id] ?? "", StringComparer.Ordinal)
-                                   .ThenBy(id => id, StringComparer.Ordinal)
-                                   .ToList();
-
-                // 列显示标签：Name(paramId)。若无名称则仅显示 paramId
-                var headerLabels = headerIds
-                    .Select(id => {
-                        string n;
-                        return id2name.TryGetValue(id, out n) && !string.IsNullOrWhiteSpace(n)
-                            ? $"{n}"
-                            : id;
-                    })
-                    .ToList();
-
-                // paramId -> 列序号
-                var id2col = new Dictionary<string, int>(StringComparer.Ordinal);
-                for (int i = 0; i < headerIds.Count; i++) id2col[headerIds[i]] = i;
-
-                using (var wb = new XSSFWorkbook())
+                using (var db = new DbContext())
                 {
-                    var sh = wb.CreateSheet("Data");
-                    int rowIdx = 0;
+                    // 1) 取出：本 session 用到的 paramId -> name（名称可重复，仅用于显示）；列由 paramId 确定
+                    var id2name = GetParamNameMapForSession(db, sessionId); // Dictionary<string, string>
 
-                    // 2) 写表头
-                    var header = sh.CreateRow(rowIdx++);
-                    header.CreateCell(0).SetCellValue("时间");
-                    for (int i = 0; i < headerLabels.Count; i++)
-                        header.CreateCell(i + 1).SetCellValue(headerLabels[i]);
+                    // 列顺序：按 paramId 排（也可改成按 name 再按 id 排，但列键仍是 id）
+                    //var headerIds = id2name.Keys.OrderBy(id => id, StringComparer.Ordinal).ToList();
+                    var headerIds = id2name.Keys
+                                       .OrderBy(id => id2name[id] ?? "", StringComparer.Ordinal)
+                                       .ThenBy(id => id, StringComparer.Ordinal)
+                                       .ToList();
 
-                    // 3) 分页读取 + 按“时间合并行”
-                    long lastTs = -1;
-                    long lastFid = 0;
+                    // 列显示标签：Name(paramId)。若无名称则仅显示 paramId
+                    var headerLabels = headerIds
+                        .Select(id => {
+                            string n;
+                            return id2name.TryGetValue(id, out n) && !string.IsNullOrWhiteSpace(n)
+                                ? $"{n}"
+                                : id;
+                        })
+                        .ToList();
 
-                    long currentTs = -1;
-                    double?[] currentLine = null; // 与 headerIds 同长度
+                    // paramId -> 列序号
+                    var id2col = new Dictionary<string, int>(StringComparer.Ordinal);
+                    for (int i = 0; i < headerIds.Count; i++) id2col[headerIds[i]] = i;
 
-                    while (true)
+                    using (var wb = new XSSFWorkbook())
                     {
-                        var chunk = ReadChunkByTime(db, sessionId, lastTs, lastFid, page); // List<FlatRow>
-                        if (chunk.Count == 0) break;
+                        var sh = wb.CreateSheet("Data");
+                        int rowIdx = 0;
 
-                        foreach (var rec in chunk)
+                        // 2) 写表头
+                        var header = sh.CreateRow(rowIdx++);
+                        header.CreateCell(0).SetCellValue("时间");
+                        for (int i = 0; i < headerLabels.Count; i++)
+                            header.CreateCell(i + 1).SetCellValue(headerLabels[i]);
+
+                        // 3) 分页读取 + 按“时间合并行”
+                        long lastTs = -1;
+                        long lastFid = 0;
+
+                        long currentTs = -1;
+                        double?[] currentLine = null; // 与 headerIds 同长度
+
+                        while (true)
                         {
-                            // 新时间戳：先把上一时间的聚合行写出
-                            if (currentTs != -1 && rec.TsUtcMs != currentTs)
+                            var chunk = ReadChunkByTime(db, sessionId, lastTs, lastFid, page); // List<FlatRow>
+                            if (chunk.Count == 0) break;
+
+                            foreach (var rec in chunk)
                             {
-                                WriteCurrentLine(sh, ref rowIdx, currentTs, currentLine);
-                                currentTs = -1;
-                                currentLine = null;
+                                // 新时间戳：先把上一时间的聚合行写出
+                                if (currentTs != -1 && rec.TsUtcMs != currentTs)
+                                {
+                                    WriteCurrentLine(sh, ref rowIdx, currentTs, currentLine);
+                                    currentTs = -1;
+                                    currentLine = null;
+                                }
+
+                                // 初始化当前时间的缓冲行
+                                if (currentTs == -1)
+                                {
+                                    currentTs = rec.TsUtcMs;
+                                    currentLine = new double?[headerIds.Count];
+                                }
+
+                                // 以 paramId 定位列，最后值覆盖
+                                int col;
+                                if (id2col.TryGetValue(rec.ParamId, out col))
+                                {
+                                    currentLine[col] = rec.Val;
+                                }
+                                // 若某 paramId 不在 id2col（极少数晚到头的情况），可选择忽略或动态扩列（此处忽略）
                             }
 
-                            // 初始化当前时间的缓冲行
-                            if (currentTs == -1)
-                            {
-                                currentTs = rec.TsUtcMs;
-                                currentLine = new double?[headerIds.Count];
-                            }
-
-                            // 以 paramId 定位列，最后值覆盖
-                            int col;
-                            if (id2col.TryGetValue(rec.ParamId, out col))
-                            {
-                                currentLine[col] = rec.Val;
-                            }
-                            // 若某 paramId 不在 id2col（极少数晚到头的情况），可选择忽略或动态扩列（此处忽略）
+                            // 更新分页游标
+                            var last = chunk[chunk.Count - 1];
+                            lastTs = last.TsUtcMs;
+                            lastFid = last.FrameId;
                         }
 
-                        // 更新分页游标
-                        var last = chunk[chunk.Count - 1];
-                        lastTs = last.TsUtcMs;
-                        lastFid = last.FrameId;
-                    }
+                        // 末尾补写
+                        if (currentTs != -1 && currentLine != null)
+                        {
+                            WriteCurrentLine(sh, ref rowIdx, currentTs, currentLine);
+                        }
 
-                    // 末尾补写
-                    if (currentTs != -1 && currentLine != null)
-                    {
-                        WriteCurrentLine(sh, ref rowIdx, currentTs, currentLine);
+                        // 4) 保存
+                        Directory.CreateDirectory(xlsxDirectory);
+                        var fileName = "数据监测表-历史.xlsx";
+                        var filePath = System.IO.Path.Combine(xlsxDirectory, fileName);
+                        using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                            wb.Write(fs);
                     }
-
-                    // 4) 保存
-                    Directory.CreateDirectory(xlsxDirectory);
-                    var fileName = "数据监测表-历史.xlsx";
-                    var filePath = System.IO.Path.Combine(xlsxDirectory, fileName);
-                    using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                        wb.Write(fs);
+                    _log.Info("下载完成");
                 }
+            }
+            catch (Exception ex) 
+            {
+                _log.Error(ex);
             }
         }
         public void ExportSessionToExcel_MergedByTimeAndName(string sessionId, string xlsxPath, int page = 200_000)

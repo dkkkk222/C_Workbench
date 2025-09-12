@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra.Factorization;
+﻿using log4net;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using Newtonsoft.Json;
 using PPEC.Communication;
 using PPEC.Communication.Interface;
@@ -19,6 +20,7 @@ namespace Workbench.Models
 {
     public class PpecProject : BindableBase
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(PpecProject));
         public string UID { get; set; }
         private string _name;
         public string Name
@@ -297,46 +299,58 @@ namespace Workbench.Models
         private async Task<bool> ConnectSerialPort()
         {
             var service = new SerialPortService();
-            //连接串口
-            service.Connect(PortName);
-            //接收数据解析规则
-            service.DataParser += (byte[] data) =>
+            try
             {
-                string hex = Utility.ToHexString(data);
+                
+                //连接串口
+                service.Connect(PortName);
+                //接收数据解析规则
+                service.DataParser += (byte[] data) =>
+                {
+                    string hex = Utility.ToHexString(data);
 
-                byte[] addressBytes = new byte[2];
-                Array.Copy(data, 16, addressBytes, 0, 2);
-                string addressHex = Utility.ToHexString(addressBytes);
+                    byte[] addressBytes = new byte[2];
+                    Array.Copy(data, 16, addressBytes, 0, 2);
+                    string addressHex = Utility.ToHexString(addressBytes);
 
-                byte[] dataBytes = new byte[4];
-                Array.Copy(data, 18, dataBytes, 0, 4);
-                string dataStr = Utility.ToHexString(dataBytes);
-                var decValue = Utility.ParseHexToUInt(dataStr);
+                    byte[] dataBytes = new byte[4];
+                    Array.Copy(data, 18, dataBytes, 0, 4);
+                    string dataStr = Utility.ToHexString(dataBytes);
+                    var decValue = Utility.ParseHexToUInt(dataStr);
 
-                return (addressHex, decValue);
-            };
+                    return (addressHex, decValue);
+                };
 
-            CommService = service;
+                CommService = service;
 
-            var calcResult = UtilsFunc.GetReadCommandByAddress("0170", Constants.Modbus);
-            await CommService.SendAsync(calcResult.bytes);
-            //var bytes = Utility.HexToBytes("D28C000AFFFFFFFFFFFFFF000AFF0003017050A9");
-            //await CommService.SendAsync(bytes);
-            Thread.Sleep(TimeSpan.FromMilliseconds(500));
-            var res = CommService.Read("0170");
-            if (!res.HasValue)
+                var calcResult = UtilsFunc.GetReadCommandByAddress("0170", Constants.Modbus);
+                await CommService.SendAsync(calcResult.bytes);
+                //var bytes = Utility.HexToBytes("D28C000AFFFFFFFFFFFFFF000AFF0003017050A9");
+                //await CommService.SendAsync(bytes);
+                Thread.Sleep(TimeSpan.FromMilliseconds(500));
+                var res = CommService.Read("0170");
+                if (!res.HasValue)
+                {
+                    MessageBox.Show("板卡连接异常，请检查", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    IsConnecting = false;
+                    service.Close();
+                    return false;
+                }
+                else
+                {
+                    IsTrueConnected = CommService.IsConnected;
+                    IsConnecting = true;
+                    return true;
+                }
+            }
+            catch(Exception ex)
             {
-                MessageBox.Show("板卡连接异常，请检查", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 IsConnecting = false;
                 service.Close();
+                _log.Error(ex);
                 return false;
             }
-            else
-            {
-                IsTrueConnected = CommService.IsConnected;
-                IsConnecting = true;
-                return true;
-            }
+            
         }
 
         public async Task<bool> ConnectCan()
