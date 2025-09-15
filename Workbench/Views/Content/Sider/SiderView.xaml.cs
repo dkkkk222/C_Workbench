@@ -53,18 +53,25 @@ namespace Workbench.Views.Content.Sider
             }
 
             var projectInfo = viewModel.Projects.FirstOrDefault(t => t.UID == nodeData.ProjectId);
-            viewModel.RightSelectProject = projectInfo;//右键选中的工程
-
-            if (nodeData.Level == ProjectLevel.Project)
-                ShowProjectContextMenu(nodeData);
-            else if (nodeData.Level == ProjectLevel.PPEC)
-                ShowPPECContextMenu(nodeData);
-            else
-            {         
-                viewModel.SaveProjectName = ConstString.SaveProjectName + projectInfo.Name;
-                viewModel.DelProjectName = ConstString.RemoveProjectName + projectInfo.Name;
-                viewModel.RightSelectProject = projectInfo;
+            if(nodeData.Level== "Project"&& projectInfo==null)
+            {
+                viewModel.RightSelectProject = nodeData;
             }
+            else
+            {
+                viewModel.RightSelectProject = projectInfo;//右键选中的工程
+            }
+
+
+            //if (nodeData.Level == ProjectLevel.Project)
+            //{     
+            //    ShowProjectContextMenu(nodeData);
+            //}                
+            //else if (nodeData.Level == ProjectLevel.PPEC)
+            //    ShowPPECContextMenu(nodeData); 
+
+            viewModel.SaveProjectName = ConstString.SaveProjectName + viewModel.RightSelectProject.Name;
+            viewModel.DelProjectName = ConstString.RemoveProjectName + viewModel.RightSelectProject.Name;
         }
 
         private void ShowPPECContextMenu(PpecProject nodeData)
@@ -131,7 +138,16 @@ namespace Workbench.Views.Content.Sider
         {
             if (seletectedItem.Level == ProjectLevel.Project)
             {
-                _projectManager.CurrentProject = seletectedItem;
+                if(string.IsNullOrEmpty(seletectedItem.Path))
+                {
+              
+                    _projectManager.CurrentProject = viewModel.Projects.FirstOrDefault(t => t.UID == seletectedItem.ProjectId);
+                }
+                else
+                {
+                    _projectManager.CurrentProject = seletectedItem;
+                }
+                    
                 _projectManager.CurrentPPEC = null;
             }
             else if (seletectedItem.Level == ProjectLevel.PPEC)

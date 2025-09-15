@@ -34,22 +34,55 @@
                                     <TextBlock Text="芯片类型 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource CreateWindowStyle}"/>
                                     <TextBlock Width="10"></TextBlock>
                                     <ComboBox ItemsSource="{Binding ChipTypeSource}" SelectedItem="{Binding SelectChipType}" DisplayMemberPath="Name"
-                                              Style="{StaticResource ComboBoxExtend}" Width="350"/>
+                                             Width="350">
+                                        <ComboBox.Style>
+                                            <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend}">
+                                                <Style.Triggers>
+                                                    <!-- 获得焦点时变色 -->
+                                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBox.Style>
+                                    </ComboBox>
                                 </StackPanel>
                             </Border>
                             <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="工程名称 : " HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource CreateWindowStyle}"/>
                                     <TextBlock Width="10"></TextBlock>
-                                    <TextBox Text="{Binding FileName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" Width="350"
-                                             hc:InfoElement.Placeholder="请输入工程名称"/>
+                                    <TextBox Text="{Binding FileName,Mode=TwoWay}"  Width="350"
+                                             hc:InfoElement.Placeholder="请输入工程名称">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
+                                                <Style.Triggers>
+                                                    <!-- 获得焦点时变色 -->
+                                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
                                 </StackPanel>
                             </Border>
                             <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="工程路径 : " HorizontalAlignment="Center"  VerticalAlignment="Center"  Style="{DynamicResource CreateWindowStyle}"/>
                                     <TextBlock Width="10"></TextBlock>
-                                    <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350" Style="{StaticResource TextBoxExtend}"/>
+                                    <TextBox Text="{Binding FilePath,Mode=TwoWay}" Width="350"  >
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
+                                                <Style.Triggers>
+                                                    <!-- 获得焦点时变色 -->
+                                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
                                     <Button Grid.Column="1" Margin="8,0,0,0" Padding="4" Command="{Binding BrowseCommand}">
                                         <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/open.svg" 
                                                 Height="18"
@@ -77,7 +110,8 @@
                                     <RichTextBox  Width="350" Height="100">
                                         <FlowDocument>
                                             <Paragraph>
-                                                <Run Text="{Binding ProjectMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <Run Text="{Binding ProjectMark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                </Run>
                                             </Paragraph>
                                         </FlowDocument>
                                     </RichTextBox>

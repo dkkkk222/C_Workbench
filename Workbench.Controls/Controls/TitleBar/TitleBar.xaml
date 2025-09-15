@@ -20,7 +20,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Border Grid.Column="0" Margin="10,5">
-                    <Image Source="/Resource/jlism-fmgaz-001.ico"/>
+                    <!--<Image Source="/Resource/jlism-fmgaz-001.ico"/>-->
                 </Border>
                 <Border Grid.Column="1">
                     <ContentPresenter Content="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" VerticalAlignment="Center"/>

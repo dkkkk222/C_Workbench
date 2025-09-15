@@ -147,12 +147,17 @@ namespace Workbench.ViewModels.Content.Sider
 
         public DelegateCommand SaveAsProjectCommand => new DelegateCommand(() =>
         {
-            if (RightSelectProject == null)
+            if (RightSelectProject == null && _projectManager.CurrentProject == null)
             {
                 MessageBox.Show("请选择要保存的芯片!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Question);
                 return;
             }
-            _projectManager.SaveAsProject(RightSelectProject);
+            var saveProject = RightSelectProject;
+            if (saveProject == null)
+            {
+                saveProject = _projectManager.CurrentProject;
+            }
+            _projectManager.SaveAsProject(saveProject);
         });
 
         #endregion

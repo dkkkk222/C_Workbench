@@ -86,7 +86,7 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true" SourceName="Bd">
-                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource TreeViewItemSelectedBackgroundColor}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource LeftTreeViewTitleBackgroundColor}"/>
                         </Trigger>
                         <Trigger Property="IsExpanded" Value="false">
                             <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
@@ -95,14 +95,14 @@
                             <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="true">
-                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource TreeViewItemSelectedBackgroundColor}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource LeftTreeViewTitleBackgroundColor}"/>
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsSelected" Value="true"/>
                                 <Condition Property="IsSelectionActive" Value="false"/>
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource TreeViewItemSelectedBackgroundColor}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource LeftTreeViewTitleBackgroundColor}"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Opacity" Value=".4" />

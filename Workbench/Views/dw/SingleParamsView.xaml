@@ -75,7 +75,17 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                         
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
-                <hc:SearchBar Grid.Row="2" Style="{StaticResource SearchBarPlus}" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                <hc:SearchBar Grid.Row="2"   hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                    <hc:SearchBar.Style>
+                        <Style TargetType="hc:SearchBar" BasedOn="{StaticResource SearchBarPlus}">
+                            <Style.Triggers>
+                                <!-- 获得焦点时变色 -->
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </hc:SearchBar.Style>
                     <hc:SearchBar.Text>
                         <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
                     </hc:SearchBar.Text>
@@ -499,7 +509,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                                 <Condition Property="IsSelected" Value="True"/>
                                                                 <Condition Property="IsMouseOver" Value="False"/>
                                                             </MultiTrigger.Conditions>
-                                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                    <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
                                                             <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                             <!-- 白字 -->
                                                             <Setter Property="BorderThickness" Value="0"/>
@@ -512,7 +522,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                                 <Condition Property="IsSelected" Value="True"/>
                                                                 <Condition Property="IsMouseOver" Value="True"/>
                                                             </MultiTrigger.Conditions>
-                                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                    <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
                                                             <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                             <Setter Property="BorderThickness" Value="0"/>
                                                         </MultiTrigger>
@@ -581,9 +591,19 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <StackPanel VerticalAlignment="Center">
-                                                                <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}" DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                                <ComboBox  ItemsSource="{Binding Options}" DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
 Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalAlignment="Center">
-                                                                    <i:Interaction.Triggers>
+                                                            <ComboBox.Style>
+                                                                <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
+                                                                    <Style.Triggers>
+                                                                        <!-- 获得焦点时变色 -->
+                                                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </ComboBox.Style>
+                                                            <i:Interaction.Triggers>
                                                                         <i:EventTrigger EventName="SelectionChanged">
                                                                             <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                          CommandParameter="{Binding}" />
@@ -591,7 +611,18 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
                                                                     </i:Interaction.Triggers>
                                                                 </ComboBox>
                                                                 <TextBox VerticalAlignment="Center" PreviewTextInput="HexBox_PreviewTextInput" Text="{Binding WriteHex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" LostFocus="HexListValueText_LostFocus"
-                                                                         InputMethod.IsInputMethodEnabled="False" Style="{StaticResource TextBoxExtend.Small}" Visibility="{c:Binding 'Options.Count==0',FalseToVisibility=Collapsed}"></TextBox>
+                                                                         InputMethod.IsInputMethodEnabled="False"   Visibility="{c:Binding 'Options.Count==0',FalseToVisibility=Collapsed}">
+                                                            <TextBox.Style>
+                                                                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                                                    <Style.Triggers>
+                                                                        <!-- 获得焦点时变色 -->
+                                                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBox.Style>
+                                                        </TextBox>
                                                             </StackPanel>                                                            
                                                         </DataTemplate>
                                                     </DataGridTemplateColumn.CellTemplate>
@@ -712,7 +743,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 <Condition Property="IsSelected" Value="True"/>
                                                                 <Condition Property="IsMouseOver" Value="False"/>
                                                             </MultiTrigger.Conditions>
-                                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                    <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
                                                             <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                             <!-- 白字 -->
                                                             <Setter Property="BorderThickness" Value="0"/>
@@ -725,7 +756,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 <Condition Property="IsSelected" Value="True"/>
                                                                 <Condition Property="IsMouseOver" Value="True"/>
                                                             </MultiTrigger.Conditions>
-                                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                                    <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
                                                             <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                             <Setter Property="BorderThickness" Value="0"/>
                                                         </MultiTrigger>
@@ -857,7 +888,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 <Condition Property="IsSelected" Value="True"/>
                                                 <Condition Property="IsMouseOver" Value="False"/>
                                             </MultiTrigger.Conditions>
-                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                            <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
                                             <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                             <!-- 白字 -->
                                             <Setter Property="BorderThickness" Value="0"/>
@@ -870,7 +901,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 <Condition Property="IsSelected" Value="True"/>
                                                 <Condition Property="IsMouseOver" Value="True"/>
                                             </MultiTrigger.Conditions>
-                                            <Setter Property="Background" Value="{StaticResource TreeViewItemSelectedBackgroundColor}"/>
+                                            <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
                                             <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                             <Setter Property="BorderThickness" Value="0"/>
                                         </MultiTrigger>
