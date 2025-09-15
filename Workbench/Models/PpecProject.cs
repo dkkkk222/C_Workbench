@@ -91,7 +91,13 @@ namespace Workbench.Models
         public string CommunicationType
         {
             get { return _communicationType; }
-            set { SetProperty(ref _communicationType, value); }
+            set
+            {
+                if (SetProperty(ref _communicationType, value))
+                { 
+                
+                }
+            }
         }
 
         #region I2C
@@ -454,7 +460,7 @@ namespace Workbench.Models
             //var val = await i2c.ReadRegisterAsync(probeReg);
             if (!val.HasValue)
             {
-                MessageBox.Show("板卡连接异常（I2C），请检查接线/地址", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("板卡连接异常（I2C）无法正常读取寄存器数据，请检查接线/地址", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 IsConnecting = false;
                 service.Close();
                 return false;

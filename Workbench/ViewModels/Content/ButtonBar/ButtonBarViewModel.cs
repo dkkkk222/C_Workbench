@@ -61,16 +61,55 @@ namespace Workbench.ViewModels.Content.ButtonBar
             get => _connectIcon;
             set => SetProperty(ref _connectIcon, value);
         }
+        #region 连接属性初始化
+        public void ChangeUart()
+        {
+            var ppec = _projectManager.GetCachePPEC();
+            if (ppec != null)
+            {
+                ppec.PortName = SerialPortName;
+            }                
+        }
         public void ChangeI2C()
         {
             CommunicationI2CList.Clear();
             var devs = Ch347DeviceEnumerator.Enumerate(excludeMode3: false);
             foreach (var d in devs)
             {
-                CommunicationI2CList.Add(new BBLLCCANBAUDItem() {Value=0,Name= d.ToString() });
+                CommunicationI2CList.Add(new BBLLCCANBAUDItem() { Value = 0, Name = d.ToString() });
             }
-            SelectedCommunicationI2CType= CommunicationI2CList.FirstOrDefault();
+            SelectedCommunicationI2CType = CommunicationI2CList.FirstOrDefault();
+
+            var ppec = _projectManager.GetCachePPEC();
+            if (ppec != null)
+            {
+                ppec.ConnectDeviceIndex = SelectedCommunicationI2CDevice;
+                ppec.I2cBaud = (int)SelectedCommunicationI2CClock.Value;
+                ppec.I2CSCL = SelectCommunicationI2CSCL == "Disable" ? "0" : "1";
+                ppec.Delay = Delay;
+            }
         }
+
+        public void ChangeCan()
+        {
+            var ppec = _projectManager.GetCachePPEC();
+            if (ppec != null)
+            {
+                ppec.SelectedCanId = (int)SelectedCANBaud.Value;
+                switch ((int)SelectedCANType.Value)
+                {
+                    case 0:
+                        ppec.DeviceType = 21;
+                        break;
+                    case 1:
+                        ppec.DeviceType = 4;
+                        break;
+                }
+                ppec.SelectedBaudIndex = (int)SelectedCANBaud.Value;
+                ppec.CanDelay = CanDelay;
+            }
+        }
+        #endregion
 
         public void InitI2CBaud()
         {
@@ -99,6 +138,8 @@ namespace Workbench.ViewModels.Content.ButtonBar
                     SerialPortName = PortList.FirstOrDefault();
 
                 ChangeI2C();
+                ChangeCan();
+                ChangeUart();
 
             }, ThreadOption.UIThread);
 
@@ -335,14 +376,17 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 {
                     ConnectType = 1;
                     PortTitle = Constants.SERIAL_PORT;
+                    ChangeUart();
                 }
                 if (value == Constants.CAN)
                 {
                     ConnectType = 2; PortTitle = Constants.CAN_PORT;
+                    ChangeCan();
                 }
                 if (value == Constants.I2C)
                 {
                     ConnectType = 3; PortTitle = Constants.I2C;
+                    ChangeI2C();
                 }
                 SetProperty(ref _selectedCommunicationType, value);
             }
