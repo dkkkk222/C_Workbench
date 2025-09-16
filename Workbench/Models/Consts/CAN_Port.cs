@@ -8,8 +8,8 @@ namespace Workbench.Models.Consts
 {
     public static class CAN_Port
     {
-        public const string Can0 = "Can0";
-        public const string Can1 = "Can1";
+        public const string Can0 = "A";
+        public const string Can1 = "B";
         public const string Can2 = "Can2";
         public const string Can3 = "Can3";
         public const string Can4 = "Can4";

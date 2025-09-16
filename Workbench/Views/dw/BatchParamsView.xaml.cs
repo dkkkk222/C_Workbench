@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -540,5 +541,52 @@ namespace Workbench.Views.dw
             var selItem = SequenceGrid.SelectedItem as RegisterAddrInfo;
             viewModel.ChangeIsConfigPaneOpen(selItem);
         }
+
+        #region 配置详情文本框的事件
+        private static readonly Regex _hexRegex = new Regex("^[0-9a-fA-F]+$",
+                                                   RegexOptions.Compiled);
+        private void HexBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // 非法字符直接拦截
+            if (!_hexRegex.IsMatch(e.Text))
+            {
+                e.Handled = true;
+                return;
+            }
+            if (sender is TextBox tb && tb.DataContext is BitField row)
+            {
+                int bits = row.Length;
+                int maxHexDigits = (int)Math.Ceiling(bits / 4.0);
+                string next = Utility.BuildNextHex(tb, e.Text);
+                if (next.Length > maxHexDigits)
+                {
+                    e.Handled = true;
+                    return;
+                }
+                ulong max = bits <= 0 ? 0UL : (bits >= 64 ? ulong.MaxValue : ((1UL << bits) - 1UL));
+                if (Utility.TryParseHexU64(next, out var val) && val > max)
+                {
+                    e.Handled = true;
+                    return;
+                }
+                //tb.SelectedText = e.Text.ToUpperInvariant();
+                e.Handled = false;
+            }
+        }
+
+        private async void HexListValueText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var viewModel = DataContext as BatchParamsViewModel;
+            if (viewModel.WriteCurrentRegister == null)
+                return;
+            var sb = new StringBuilder();
+            if (sender is TextBox tb && tb.DataContext is BitField row)
+            {
+                var binValue = Utility.HexToBinaryStringLarge(row.WriteHex, row.Length);
+                row.WriteBinary = binValue;
+                await viewModel.UpdateWriteRegister(row.Name, row.EndBit, row.StartBit, binValue);
+            }
+        }
+        #endregion
     }
 }

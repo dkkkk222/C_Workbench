@@ -72,6 +72,18 @@
                                       Height="22"
                                       IsEnabled="{calc:Binding !IsConnected}"
                                       Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}"/>
+                            <TextBlock Text="通信速率：" Style="{DynamicResource ButtonBarTitleStyle}" Margin="10,0,0,0"/>
+                            <ComboBox ItemsSource="{Binding BuandList}" Width="120" Style="{StaticResource ComboBoxExtend.Small}"
+                                      SelectedItem="{Binding BuandName, Mode=TwoWay}"
+                                      Height="22"
+                                      IsEnabled="{calc:Binding !IsConnected}"
+                                      Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}"/>        
+                            <StackPanel Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}"  Height="22"  IsEnabled="{calc:Binding !IsConnected}">
+                                <TextBlock Text="帧间隔设置(ms):" Foreground="White" Style="{StaticResource ItemTitle}" Width="100"/>
+                                <TextBox Style="{StaticResource TextBoxExtend.Small}" Width="100"   Height="22"   Text="{Binding Delay}" 
+                        Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}"/>
+
+                            </StackPanel>
                             <!-- CAN口 -->
                             <ComboBox Width="120" ItemsSource="{Binding CANList}" Style="{StaticResource ComboBoxExtend.Small}"
                                       SelectedItem="{Binding SelectedCAN,Mode=TwoWay}"
@@ -97,7 +109,7 @@
                                              IsEnabled="{calc:Binding !IsConnected}"
                                              Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}"/>
                             <StackPanel Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}"  Height="22"  IsEnabled="{calc:Binding !IsConnected}">
-                                <TextBlock Text="每次间隔(ms):" Foreground="White" Style="{StaticResource ItemTitle}"/>
+                                <TextBlock Text="帧间隔设置(ms):" Foreground="White" Style="{StaticResource ItemTitle}"  Width="100"/>
                                 <TextBox Style="{StaticResource TextBoxExtend.Small}" Width="100"   Height="22"   Text="{Binding CanDelay}" 
              Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}"/>
 
@@ -143,7 +155,7 @@
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==3',FalseToVisibility=Collapsed}"  Height="22"  IsEnabled="{calc:Binding !IsConnected}">
-                                <TextBlock Text="延时(ms):" Foreground="White" Style="{StaticResource ItemTitle}"/>
+                                <TextBlock Text="帧间隔设置(ms):" Foreground="White" Style="{StaticResource ItemTitle}"  Width="100"/>
                                 <TextBox Style="{StaticResource TextBoxExtend.Small}" Width="100"   Height="22"   Text="{Binding Delay}" 
                                          Visibility="{calc:Binding 'ConnectType==3',FalseToVisibility=Collapsed}"/>
 

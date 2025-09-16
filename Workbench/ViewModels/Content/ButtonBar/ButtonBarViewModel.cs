@@ -36,8 +36,16 @@ namespace Workbench.ViewModels.Content.ButtonBar
             InitTheme();
             EventListeners();
             PortList.AddRange(SerialPortHelper.GetPortNames());
+            _buandList.AddRange(new List<int>()
+            {
+                115200,
+                9600,
+                19200,
+                38400,
+                57600
+            });
             SerialPortName = PortList.FirstOrDefault();
-
+            BuandName = _buandList.FirstOrDefault();
             //CAN口默认值
             SelectedCAN = _cANList.FirstOrDefault();
             SelectedCANBaud = _cANBaudList.FirstOrDefault();
@@ -68,7 +76,8 @@ namespace Workbench.ViewModels.Content.ButtonBar
             if (ppec != null)
             {
                 ppec.PortName = SerialPortName;
-            }                
+                ppec.BuandName = BuandName;
+            }
         }
         public void ChangeI2C()
         {
@@ -151,8 +160,18 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 if (ppec != null)
                 {
                     SelectedCommunicationType = string.IsNullOrEmpty(ppec.CommunicationType) ? Constants.SERIAL_PORT : ppec.CommunicationType;
-                    if (ppec.CommunicationType == Constants.SERIAL_PORT && !string.IsNullOrEmpty(ppec.PortName))
-                        SerialPortName = ppec.PortName;
+                    if (ppec.CommunicationType == Constants.SERIAL_PORT|| ppec.CommunicationType == Constants.OldSERIAL_PORT)
+                    { 
+                        if (!string.IsNullOrEmpty(ppec.PortName))
+                        {
+                            SerialPortName = ppec.PortName;
+                        }
+                        if (ppec.BuandName>0)
+                        {
+                            BuandName = ppec.BuandName;
+                        }
+                    }
+                        
                 }
                 //if (!string.IsNullOrEmpty(treeItemLevel) && treeItemLevel != ProjectLevel.Project)
                 //{
@@ -213,6 +232,23 @@ namespace Workbench.ViewModels.Content.ButtonBar
         {
             get => _isConnected;
             set => SetProperty(ref _isConnected, value);
+        }
+
+        private ObservableCollection<int> _buandList = new ObservableCollection<int>();
+        public ObservableCollection<int> BuandList
+        {
+            get { return _buandList; }
+            set { SetProperty(ref _buandList, value); }
+        }
+
+        private int _buandName;
+        public int BuandName
+        {
+            get => _buandName;
+            set
+            {
+                SetProperty(ref _buandName, value);
+            }
         }
 
         private ObservableCollection<string> _portList = new ObservableCollection<string>();
@@ -372,7 +408,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                     ppec.CommunicationType = value;
-                if(value== Constants.SERIAL_PORT)
+                if(value== Constants.SERIAL_PORT|| value == Constants.OldSERIAL_PORT)
                 {
                     ConnectType = 1;
                     PortTitle = Constants.SERIAL_PORT;
@@ -589,6 +625,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                     return;
                 }
                 ppec.PortName = SerialPortName;
+                ppec.BuandName = BuandName;
                 bool result = await ppec.ConnectAsync();
                 IsConnected = result;
                 if (IsConnected)

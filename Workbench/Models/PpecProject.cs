@@ -212,7 +212,15 @@ namespace Workbench.Models
                 SetProperty(ref _portName, value);
             }
         }
-
+        private int _buandName = 115200;
+        public int BuandName
+        {
+            get { return _buandName; }
+            set
+            {
+                SetProperty(ref _buandName, value);
+            }
+        }
         private ITopologyMaster _master;
         public ITopologyMaster Master
         {
@@ -297,12 +305,14 @@ namespace Workbench.Models
         {
             switch (CommunicationType)
             {
+                case Constants.OldSERIAL_PORT:
                 case Constants.SERIAL_PORT:
                     return await ConnectSerialPort();
                 case Constants.I2C:
                     return await ConnectI2c();
                 case Constants.CAN:
                     return await ConnectCan();
+
                 default:
                     break;
             }
@@ -316,7 +326,7 @@ namespace Workbench.Models
             {
                 
                 //连接串口
-                service.Connect(PortName);
+                service.Connect(PortName, BuandName);
                 //接收数据解析规则
                 service.DataParser += (byte[] data) =>
                 {

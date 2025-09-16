@@ -132,14 +132,14 @@ namespace Workbench.Views.dw
             {
                 int bits = row.Length;
                 int maxHexDigits = (int)Math.Ceiling(bits / 4.0);
-                string next = BuildNextHex(tb, e.Text);
+                string next = Utility.BuildNextHex(tb, e.Text);
                 if (next.Length > maxHexDigits)
                 {
                     e.Handled = true;
                     return;
                 }
                 ulong max = bits <= 0 ? 0UL : (bits >= 64 ? ulong.MaxValue : ((1UL << bits) - 1UL));
-                if (TryParseHexU64(next, out var val) && val > max)
+                if (Utility.TryParseHexU64(next, out var val) && val > max)
                 {
                     e.Handled = true;
                     return;
@@ -148,51 +148,8 @@ namespace Workbench.Views.dw
                 e.Handled = false;
             }
         }
-        private static bool TryParseHexU64(string hex, out ulong value)
-        {
-            hex = hex?.Trim() ?? string.Empty;
-            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-                hex = hex.Substring(2);
-            return ulong.TryParse(hex, System.Globalization.NumberStyles.HexNumber,
-                                  System.Globalization.CultureInfo.InvariantCulture, out value);
-        }
-        private static string BuildNextHex(TextBox tb, string input)
-        {
-            string text = tb.Text ?? string.Empty;
-            // 预期替换掉当前选中区
-            int selStart = tb.SelectionStart;
-            int selLen = tb.SelectionLength;
-            var before = selStart > 0 ? text.Substring(0, selStart) : string.Empty;
-            var after = (selStart + selLen < text.Length) ? text.Substring(selStart + selLen) : string.Empty;
-            return (before + input + after).Trim();
-        }
-        public static List<string> HexListToBinary(IEnumerable<string> hexList, int padToBits = 0)
-        {
-            var list = new List<string>();
-            foreach (var raw in hexList)
-            {
-                if (string.IsNullOrWhiteSpace(raw)) { list.Add(string.Empty); continue; }
-                var hex = raw.Trim().Replace(" ", "");
-                if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase)) hex = hex.Substring(2);
-
-                if (!System.Numerics.BigInteger.TryParse(hex,
-                    System.Globalization.NumberStyles.HexNumber,
-                    System.Globalization.CultureInfo.InvariantCulture, out var bi))
-                {
-                    list.Add(string.Empty);
-                    continue;
-                }
-
-                string bin = bi.IsZero ? "0" : string.Concat(bi.ToByteArray()
-                    .Select(b => Convert.ToString(b, 2).PadLeft(8, '0'))).TrimStart('0');
-
-                if (padToBits > 0 && bin.Length < padToBits)
-                    bin = bin.PadLeft(padToBits, '0');
-
-                list.Add(bin);
-            }
-            return list;
-        }
+       
+ 
         private void HexListValueText_LostFocus(object sender, RoutedEventArgs e)
         {
             var viewModel = DataContext as SingleParamsViewModel;

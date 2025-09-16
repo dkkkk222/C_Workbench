@@ -688,11 +688,11 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <DataGridTemplateColumn Header="数据(HEX)" Width="*" MinWidth="110" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[4].IsChecked,
-                                                        Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                        Converter={StaticResource Boolean2VisibilityConverter}}" IsReadOnly="True">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBox Text="{Binding HexValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"
-                                                        
+                                                        IsReadOnly="True"
                                                  LostFocus="HexValueText_LostFocus">
                                                     <TextBox.Style>
                                                         <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
@@ -711,7 +711,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <DataGridTemplateColumn Header="数据(Binary)" Width="*" MinWidth="648" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[5].IsChecked,
-                                                        Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                        Converter={StaticResource Boolean2VisibilityConverter}}" IsReadOnly="True">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <ItemsControl ItemsSource="{Binding BinaryList,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
@@ -723,7 +723,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,10,0,0">
-                                                                <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" Style="{StaticResource TextBox.Small}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+                                                                <TextBox hc:BorderElement.CornerRadius="0" IsReadOnly="True" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" Style="{StaticResource TextBox.Small}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
                                                                 <TextBlock Text="{Binding Display}" HorizontalAlignment="Center" FontSize="9"/>
                                                             </StackPanel>
                                                         </DataTemplate>
@@ -750,7 +750,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <hc:UniformSpacingPanel Spacing="15">
                                         <!--<TextBlock Text="寄存器详情" FontSize="{StaticResource SubHeadFontSize}"/>-->
                                      
-                                        <controls_Title:StandTitle Padding="0,5,0,0" BordMargin="0,0,5,0" StandText="寄存器详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                        <controls_Title:StandTitle Padding="0,5,0,0" BordMargin="0,0,5,0" StandText="寄存器配置详情" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                         <TextBlock Padding="0,5,0,0"  Text="{Binding WriteCurrentRegister.AddressHex}" FontSize="{StaticResource SubHeadFontSize}"/>
                                         <TextBlock Padding="0,5,0,0"  Text=":" FontSize="{StaticResource SubHeadFontSize}"/>
                                         <TextBlock Padding="0,5,0,3"  Text="{Binding WriteCurrentRegister.Name}" FontSize="{StaticResource SubHeadFontSize}"/>
@@ -976,10 +976,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 <DataTemplate>
                                                     <StackPanel VerticalAlignment="Center">
                                                         <ComboBox Style="{StaticResource ComboBoxExtend.Small}" ItemsSource="{Binding Options}"
-      DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择"
-      SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-      Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}"
-      >
+                                                          DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择"
+                                                          SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                          Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" >
                                                             <i:Interaction.Triggers>
                                                                 <i:EventTrigger EventName="SelectionChanged">
                                                                     <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
@@ -987,7 +986,20 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 </i:EventTrigger>
                                                             </i:Interaction.Triggers>
                                                         </ComboBox>
-                                                    </StackPanel>
+                                                    <TextBox VerticalAlignment="Center" PreviewTextInput="HexBox_PreviewTextInput" Text="{Binding WriteHex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" LostFocus="HexListValueText_LostFocus"
+                 InputMethod.IsInputMethodEnabled="False"   Visibility="{c:Binding 'Options.Count==0',FalseToVisibility=Collapsed}">
+                                                        <TextBox.Style>
+                                                            <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                                                <Style.Triggers>
+                                                                    <!-- 获得焦点时变色 -->
+                                                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                                        <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBox.Style>
+                                                    </TextBox>
+                                                </StackPanel>
                                                    
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>

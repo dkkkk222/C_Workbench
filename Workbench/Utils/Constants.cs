@@ -8,16 +8,17 @@ namespace Workbench.Utils
 {
     public class Constants
     {
+        public const string OldSERIAL_PORT = "串口";
         //串口
-        public const string SERIAL_PORT = "串口";
+        public const string SERIAL_PORT = "UART";
         //I2C
         public const string I2C = "I2C";
 
         //CAN口
-        public const string CAN_PORT = "CAN口";
+        public const string CAN_PORT = "CAN";
 
         //Modbus
-        public const string Modbus = "串口";//"Modbus";
+        public const string Modbus = "UART";//"Modbus";
 
         //CAN
         public const string CAN = "CAN";
