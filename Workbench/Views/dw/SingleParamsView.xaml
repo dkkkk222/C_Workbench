@@ -495,15 +495,18 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                                     <Setter Property="BorderThickness" Value="0,0,0,1" />
                                                     <Setter Property="SnapsToDevicePixels" Value="True" />
-                                                    <Style.Triggers>
+                                            <Setter Property="FontWeight" Value="Normal"/>
+                                            <Style.Triggers>
                                                         <Trigger Property="AlternationIndex" Value="1">
                                                             <Setter Property="Background" Value="{StaticResource DataGridRowAltBackgroundColor}"/>
                                                         </Trigger>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
                                                         </Trigger>
-
-                                                        <!-- 选中（鼠标不在上面） -->
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </Trigger>
+                                                <!-- 选中（鼠标不在上面） -->
                                                         <MultiTrigger>
                                                             <MultiTrigger.Conditions>
                                                                 <Condition Property="IsSelected" Value="True"/>
@@ -728,16 +731,20 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                                     <Setter Property="BorderThickness" Value="0,0,0,1" />
-                                                    <Setter Property="SnapsToDevicePixels" Value="True" />
-                                                    <Style.Triggers>
+                                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                                            <!-- 新增：默认不加粗 -->
+                                            <Setter Property="FontWeight" Value="Normal"/>
+                                            <Style.Triggers>
                                                         <Trigger Property="AlternationIndex" Value="1">
                                                             <Setter Property="Background" Value="{StaticResource DataGridRowAltBackgroundColor}"/>
                                                         </Trigger>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
                                                         </Trigger>
-
-                                                        <!-- 选中（鼠标不在上面） -->
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </Trigger>
+                                                <!-- 选中（鼠标不在上面） -->
                                                         <MultiTrigger>
                                                             <MultiTrigger.Conditions>
                                                                 <Condition Property="IsSelected" Value="True"/>
@@ -874,6 +881,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                     <Setter Property="BorderThickness" Value="0,0,0,1" />
                                     <Setter Property="SnapsToDevicePixels" Value="True" />
+                                    <!-- 新增：默认不加粗 -->
+                                    <Setter Property="FontWeight" Value="Normal"/>
                                     <Style.Triggers>
                                         <Trigger Property="AlternationIndex" Value="1">
                                             <Setter Property="Background" Value="{StaticResource DataGridRowAltBackgroundColor}"/>
@@ -881,7 +890,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
                                         </Trigger>
-
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </Trigger>
                                         <!-- 选中（鼠标不在上面） -->
                                         <MultiTrigger>
                                             <MultiTrigger.Conditions>

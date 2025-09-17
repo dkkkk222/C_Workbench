@@ -247,9 +247,14 @@
                                                 <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                                 <Setter Property="BorderThickness" Value="0,0,0,1" />
                                                 <Setter Property="SnapsToDevicePixels" Value="True" />
+                                                <!-- 新增：默认不加粗 -->
+                                                <Setter Property="FontWeight" Value="Normal"/>
                                                 <Style.Triggers>
                                                     <Trigger Property="AlternationIndex" Value="1">
                                                         <Setter Property="Background" Value="{StaticResource DataGridRowAltBackgroundColor}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter Property="FontWeight" Value="Bold"/>
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
@@ -259,8 +264,8 @@
                                                             <Condition Property="IsSelected" Value="True"/>
                                                             <Condition Property="IsMouseOver" Value="False"/>
                                                         </MultiTrigger.Conditions>
-                                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                        <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                         <Setter Property="BorderThickness" Value="0"/>
                                                     </MultiTrigger>
                                                     <MultiTrigger>
@@ -268,8 +273,8 @@
                                                             <Condition Property="IsSelected" Value="True"/>
                                                             <Condition Property="IsMouseOver" Value="True"/>
                                                         </MultiTrigger.Conditions>
-                                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                                        <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                                         <Setter Property="BorderThickness" Value="0"/>
                                                     </MultiTrigger>
                                                 </Style.Triggers>

@@ -71,8 +71,8 @@
                                       SelectedItem="{Binding SerialPortName, Mode=TwoWay}"
                                       Height="22"
                                       IsEnabled="{calc:Binding !IsConnected}"
-                                      Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}"/>
-                            <TextBlock Text="通信速率：" Style="{DynamicResource ButtonBarTitleStyle}" Margin="10,0,0,0"/>
+                                      Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}" />
+                            <TextBlock Text="通信速率：" Style="{DynamicResource ButtonBarTitleStyle}" Margin="10,0,0,0"  Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}"/>
                             <ComboBox ItemsSource="{Binding BuandList}" Width="120" Style="{StaticResource ComboBoxExtend.Small}"
                                       SelectedItem="{Binding BuandName, Mode=TwoWay}"
                                       Height="22"

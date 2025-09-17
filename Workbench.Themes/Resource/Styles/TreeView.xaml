@@ -77,7 +77,7 @@
                                 <ContentPresenter x:Name="PART_Header" ContentSource="Header"
                                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </DockPanel>
 
                         </Border>
@@ -96,6 +96,7 @@
                         </Trigger>
                         <Trigger Property="IsSelected" Value="true">
                             <Setter Property="Background" TargetName="Bd" Value="{DynamicResource LeftTreeViewTitleBackgroundColor}"/>
+                            <Setter TargetName="PART_Header" Property="TextElement.FontWeight" Value="Bold"/>
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -103,6 +104,7 @@
                                 <Condition Property="IsSelectionActive" Value="false"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" TargetName="Bd" Value="{DynamicResource LeftTreeViewTitleBackgroundColor}"/>
+                            <Setter TargetName="PART_Header" Property="TextElement.FontWeight" Value="Bold"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Opacity" Value=".4" />
