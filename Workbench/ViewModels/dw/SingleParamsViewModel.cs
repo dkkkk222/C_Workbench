@@ -300,6 +300,7 @@ namespace Workbench.ViewModels.dw
                 var calcResult = UtilsFunc.GetReadCommandByAddress(CurrentRegister.AddressHex, currentProject.CommunicationType);
                 switch (currentProject.CommunicationType)
                 {
+                    case Constants.OldSERIAL_PORT:
                     case Constants.Modbus:
                         await currentProject.CommService.SendAsync(calcResult.bytes);
                         break;
@@ -365,6 +366,7 @@ namespace Workbench.ViewModels.dw
                 var calcResult = UtilsFunc.GetWriteCommandByAddress(CurrentRegister.AddressHex, currentProject.CommunicationType, CurrentRegister.DecValue);
                 switch (currentProject.CommunicationType)
                 {
+                    case Constants.OldSERIAL_PORT:
                     case Constants.Modbus:
                         await currentProject.CommService.SendAsync(calcResult.bytes);
                         break;
@@ -434,6 +436,7 @@ namespace Workbench.ViewModels.dw
                 var calcResult = UtilsFunc.GetWriteCommandByAddress(WriteCurrentRegister.AddressHex, currentProject.CommunicationType, WriteCurrentRegister.DecValue);
                 switch (currentProject.CommunicationType)
                 {
+                    case Constants.OldSERIAL_PORT:
                     case Constants.Modbus:
                         await currentProject.CommService.SendAsync(calcResult.bytes);
                         break;

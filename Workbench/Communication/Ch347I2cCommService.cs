@@ -343,7 +343,7 @@ namespace Workbench.Communication
         public async Task<uint?> ReadRegisterAsync(ushort regAddr, bool _unused = false, byte _unused2 = 0xA0, int timeoutMs = 20)
         {
             if (!IsConnected) return null;
-            var write = new byte[] { _addrR, (byte)(regAddr >> 8), (byte)(regAddr & 0xFF) };
+            var write = new byte[] { _addrW, (byte)(regAddr >> 8), (byte)(regAddr & 0xFF) };
             var read = new byte[4];
             bool ok = await Task.Run(() => Ch347Native.CH347StreamI2C(_index, (uint)write.Length, write, (uint)read.Length, read));
             if (!ok) return null;

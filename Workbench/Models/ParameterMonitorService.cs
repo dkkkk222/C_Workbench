@@ -8,7 +8,9 @@ using System.Management;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 using PPEC.Communication.Model;
+using Workbench.Communication;
 using Workbench.Db.Tables;
 using Workbench.Utils;
 
@@ -30,11 +32,12 @@ namespace Workbench.Models
 
         public bool Expired() =>
             Duration != Timeout.InfiniteTimeSpan &&
-            DateTime.UtcNow - StartUtc >= Duration;
+            DateTime.Now - StartUtc >= Duration;
     }
     #endregion
     public sealed class ParameterMonitorService
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(SerialPortService));
         /* 线程安全监测池：Key = 参数 Id，Value = WatchItem */
         public readonly ConcurrentDictionary<string, WatchItem> _watching =
             new ConcurrentDictionary<string, WatchItem>();
@@ -124,50 +127,59 @@ namespace Workbench.Models
                     {
                         var id = kv.Key;
                         var item = kv.Value;
-                        sw.Restart();
-
-                        /* 1️⃣ 下发 */
-                        var cmd = UtilsFunc.GetReadCommandByAddress(
-                                      item.Param.AddressHex,
-                                      CurrentProject.CommunicationType);
-
-                        switch (CurrentProject.CommunicationType)
+                        try
                         {
-                            case Constants.Modbus:
-                                await CurrentProject.CommService.SendAsync(cmd.bytes);
-                                break;
-                            case Constants.I2C:
-                                if (ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
-                                {
-                                    await CurrentProject.CommService.ReadRegisterAsync(reg);
-                                }
-                                //CurrentProject.CommService.Read(item.Param.AddressHex);
-                                break;
-                            case Constants.CAN:
-                                if (ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
-                                {
-                                    await CurrentProject.CommService.ReadRegisterAsync(reg1);
-                                }
-                                break;
-                            default:
-                                await CurrentProject.CommService.SendAsync(cmd.bytes);
-                                break;
+                            sw.Restart();
+
+                            /* 1️⃣ 下发 */
+                            var cmd = UtilsFunc.GetReadCommandByAddress(
+                                          item.Param.AddressHex,
+                                          CurrentProject.CommunicationType);
+
+                            switch (CurrentProject.CommunicationType)
+                            {
+                                case Constants.OldSERIAL_PORT:
+                                case Constants.Modbus:
+                                    await CurrentProject.CommService.SendAsync(cmd.bytes);
+                                    break;
+                                case Constants.I2C:
+                                    if (ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg))
+                                    {
+                                        await CurrentProject.CommService.ReadRegisterAsync(reg);
+                                    }
+                                    //CurrentProject.CommService.Read(item.Param.AddressHex);
+                                    break;
+                                case Constants.CAN:
+                                    if (ushort.TryParse(item.Param.AddressHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort reg1))
+                                    {
+                                        await CurrentProject.CommService.ReadRegisterAsync(reg1);
+                                    }
+                                    break;
+                                default:
+                                    await CurrentProject.CommService.SendAsync(cmd.bytes);
+                                    break;
+                            }
+
+
+
+                            /* 2️⃣ 是否到期？到期就移除 */
+                            if (item.Expired())
+                            {
+                                _watching[id].Param.IsStartRecord = false;
+                                _watching.TryRemove(id, out _);
+                            }
+
+
+                            /* 3️⃣ 补足间隔 */
+                            var gap = _intervalMs - (int)sw.ElapsedMilliseconds;
+                            if (gap > 0)
+                                await Task.Delay(gap, token).ConfigureAwait(false);
                         }
-
-                       
-
-                        /* 2️⃣ 是否到期？到期就移除 */
-                        if (item.Expired())
+                        catch (Exception ex) 
                         {
-                            _watching[id].Param.IsStartRecord = false;
-                            _watching.TryRemove(id, out _);
+                            _log.Error(ex);
                         }
-                            
-
-                        /* 3️⃣ 补足间隔 */
-                        var gap = _intervalMs - (int)sw.ElapsedMilliseconds;
-                        if (gap > 0)
-                            await Task.Delay(gap, token).ConfigureAwait(false);
+                        
                     }
 
                     /* 如果循环结束后集合为空 → 自动停 */

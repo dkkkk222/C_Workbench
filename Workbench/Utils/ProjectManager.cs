@@ -374,6 +374,7 @@ namespace Workbench.Utils
             ITopologyMaster master = null;
             switch (cachePpec.CommunicationType)
             {
+                case Constants.OldSERIAL_PORT:
                 case Constants.Modbus:
                     master = _container.Resolve<ITopologyMaster>();
                     master.Id = GetMasterId(cachePpec.Label);
@@ -555,21 +556,31 @@ namespace Workbench.Utils
         internal void SetRegisterValue(string registerName, uint value)
         {
             var register = CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == registerName);
-            register.DecValue = value;
-            register.HexValue = Utility.DecToHex(value);
-            var tpl = Utility.ParseDecToBinary(value);
-            register.BinaryStr = tpl.binaryString;
-            var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
-            register.BinaryArray.Clear();
-            register.BinaryArray.AddRange(list);
-
-            ResolveBitFields(register);
+            System.Windows.Application.Current?.Dispatcher.InvokeAsync(() =>
+            {
+                register.DecValue = value;
+                register.HexValue = Utility.DecToHex(value);
+                var tpl = Utility.ParseDecToBinary(value);
+                register.BinaryStr = tpl.binaryString;
+                var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));
+                register.BinaryArray.Clear();
+                register.BinaryArray.AddRange(list);
+                var mirror = CurrentProject?.CategoryRegisters?
+                        .FirstOrDefault(r => r.AddressDec == register.AddressDec);
+                if (mirror != null && !ReferenceEquals(mirror, register))
+                {
+                    mirror.DecValue = value; // 若 HexValue 为派生属性，这一条就够了
+                    mirror.HexValue = Utility.DecToHex(value);
+                }
+                ResolveBitFields(register);
+            });
+            
         }
 
         internal void SetWriteRegisterValue(RegisterAddrInfo writeRegister,string registerName, uint value)
         {
             writeRegister.DecValue = value;
-            writeRegister.HexValue = Utility.DecToHex(value);
+            //writeRegister.HexValue = Utility.DecToHex(value);
             var tpl = Utility.ParseDecToBinary(value);
             writeRegister.BinaryStr = tpl.binaryString;
             var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));

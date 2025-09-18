@@ -330,6 +330,8 @@ namespace Workbench.Models
                 //接收数据解析规则
                 service.DataParser += (byte[] data) =>
                 {
+                    if (data == null || data.Length < 22)
+                        return (string.Empty, 0u);
                     string hex = Utility.ToHexString(data);
 
                     byte[] addressBytes = new byte[2];

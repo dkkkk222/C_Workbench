@@ -16,7 +16,7 @@
              xmlns:local_Model="clr-namespace:Workbench.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
+    <UserControl.Resources>       
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="CenterCellStyle" TargetType="TextBlock">
@@ -805,7 +805,18 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 Margin="5,0,0,0"  Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>-->
                                                             </StackPanel>
                                                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,0">
-                                                                <TextBox Text="{Binding Chart1MinX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                                <TextBox Text="{Binding Chart1MinX}"   hc:InfoElement.Title="X最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" >
+                                                                    <TextBox.Style>
+                                                                        <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                                                            <Style.Triggers>
+                                                                                <!-- 获得焦点时变色 -->
+                                                                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                                                </Trigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBox.Style>
+                                                                </TextBox>
                                                                 <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                                 <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
                                                                 <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />

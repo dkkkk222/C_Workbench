@@ -43,7 +43,7 @@ namespace Workbench.ViewModels.dw
         private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly IDialogService _dialogService;
-        public int RefreshInterval = 500;//UI更新间隔
+        public int RefreshInterval = 50;//UI更新间隔
         public System.Timers.Timer _timer = new System.Timers.Timer();
         public System.Timers.Timer _ReceiveTimer = new System.Timers.Timer();
         public System.Timers.Timer _recordTime = new System.Timers.Timer();
@@ -59,19 +59,19 @@ namespace Workbench.ViewModels.dw
             WatchGroups = _projectManager.CurrentProject.WatchGroups;
             WatchChartGroups = _projectManager.CurrentProject.WatchChartGroups;
             CategoryRegisters = _projectManager.CurrentProject.CategoryRegisters;
-            pms = new ParameterMonitorService(30) { CurrentProject = _projectManager.CurrentProject };
+            pms = new ParameterMonitorService(10) { CurrentProject = _projectManager.CurrentProject };
             pms.Enable();
             NormalizeWatchCharts();
             _timer.Interval = 50; // 设置触发间隔
             _timer.Elapsed += Timer_Tick; // 设置触发事件
 
-            _ReceiveTimer.Interval = 200;
+            _ReceiveTimer.Interval = 100;
             _ReceiveTimer.Elapsed += ReceiveTimer_Tick;
 
             _recordTime.Interval = 50; // 设置触发间隔
             _recordTime.Elapsed += RecordTime_Tick; // 设置触发事件
 
-            _refTime.Interval = 1000; // 设置触发间隔
+            _refTime.Interval = 500; // 设置触发间隔
             _refTime.Elapsed += RefTime_Tick; // 设置触发事件
 
             EventListener();
@@ -1083,18 +1083,18 @@ namespace Workbench.ViewModels.dw
                 System.Windows.Application.Current.Dispatcher.InvokeAsync(() => {
                     foreach (var group in WatchGroups.ToArray())
                     {
-                        foreach (var field in group.BitFields)
+                        var fields = group.BitFields?.ToArray() ?? Array.Empty<PPEC.Communication.Model.BitField>();
+                        foreach (var field in fields)
                         {
-                            if (field.TableId != null)
+                            if (field.TableId == null) continue;
+                            // 注意：这里用的是寄存器Id做键
+                            if (field.AddressId != null && pms._watching.ContainsKey(field.AddressId))
                             {
-                                if (pms._watching.ContainsKey(field.AddressId))
+                                var chart = WatchChartGroups.FirstOrDefault(x => x.Id == field.TableId);
+                                if (chart != null)
                                 {
-                                    var fieldChart = WatchChartGroups.Where(x => x.Id == field.TableId).FirstOrDefault();//找到参数所在的波形图
-                                    if (fieldChart != null)
-                                    {
-                                        fieldChart.WpfPlotControl2.UpdateData(field.Desc, field.Result);
-                                        fieldChart.WpfPlotControl.UpdateData(field.Desc, field.Result);
-                                    }
+                                    chart.WpfPlotControl2.UpdateData(field.Desc, field.Result);
+                                    chart.WpfPlotControl.UpdateData(field.Desc, field.Result);
                                 }
                             }
                         }
@@ -1120,15 +1120,14 @@ namespace Workbench.ViewModels.dw
             {
                 foreach (var group in WatchGroups.ToArray())
                 {
-                    foreach (var field in group.BitFields)
+                    var fields = group.BitFields?.ToArray() ?? Array.Empty<PPEC.Communication.Model.BitField>();
+                    foreach (var field in fields)
                     {
                         var unitValue = _projectManager.CurrentProject.CommService?.Read(field.AddressHexName);
-                        if (unitValue == null)
-                            continue;
-                        _projectManager.SetRegisterValue(field.Name, unitValue.Value);                        
+                        if (unitValue == null) continue;
+                        _projectManager.SetRegisterValue(field.Name, unitValue.Value);
                     }
                 }
-
             }
             catch (Exception ex)
             {

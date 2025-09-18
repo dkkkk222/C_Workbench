@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 using PPEC.Communication.Common;
 using PPEC.Communication.Config;
 using PPEC.Communication.Enum;
@@ -16,6 +17,7 @@ namespace PPEC.Communication
 {
     public sealed class SerialCommChannel : ICommChannel
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(SerialCommChannel));
         private readonly SerialPort _sp;
         private readonly byte[] _rxBuf = new byte[65536];
 
@@ -102,7 +104,8 @@ namespace PPEC.Communication
             }
             catch (Exception ex)
             {
-                RaiseChannelFaulted(ex);
+                _log.Error(ex);
+                //RaiseChannelFaulted(ex);
             }
         }
 

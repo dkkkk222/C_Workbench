@@ -101,8 +101,6 @@ namespace PPEC.Communication.Model
             {
                 if (SetProperty(ref _hexValue, value))
                 {
-                    //var ui = Utility.ParseHexToUInt(value);
-                    //_decValue = ui;
                 }
             }
         }

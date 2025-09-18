@@ -355,13 +355,17 @@ namespace Workbench.ViewModels.Content.ButtonBar
             get => _selectedCommunicationI2CType;
             set
             {
-                var ppec = _projectManager.GetCachePPEC();
-                if (ppec != null)
+                if(_projectManager!=null)
                 {
-                    if (value == null)
-                        return;
-                    ppec.I2cBusId = (int)value.Value;
+                    var ppec = _projectManager.GetCachePPEC();
+                    if (ppec != null)
+                    {
+                        if (value == null)
+                            return;
+                        ppec.I2cBusId = (int)value.Value;
+                    }
                 }
+                
                
                 SetProperty(ref _selectedCommunicationI2CType, value);
             } 

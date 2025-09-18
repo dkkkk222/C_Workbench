@@ -220,6 +220,7 @@ namespace Workbench.Utils
         {
             switch (commType)
             {
+                case Constants.OldSERIAL_PORT:
                 case Constants.Modbus:
                     return GetReadCommandUsart(addressHex);
                 default:

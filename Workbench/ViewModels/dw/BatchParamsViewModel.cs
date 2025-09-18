@@ -426,6 +426,7 @@ namespace Workbench.ViewModels.dw
                 var calcResult = UtilsFunc.GetWriteCommandByAddress(register.AddressHex, currentProject.CommunicationType, register.DecValue);
                 switch (currentProject.CommunicationType)
                 {
+                    case Constants.OldSERIAL_PORT:
                     case Constants.Modbus:
                         await currentProject.CommService.SendAsync(calcResult.bytes);
                         break;
