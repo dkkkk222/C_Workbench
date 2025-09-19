@@ -482,5 +482,25 @@ namespace Workbench.Models
             IsConnecting = true;
             return true;
         }
+
+
+        #region 会话ID
+        public RecordingSession ActiveSession { get; private set; }
+        public string ActiveSessionId => ActiveSession?.SessionId;
+
+        // 确保有一个会话（没有就创建）
+        public void EnsureSession()
+        {
+            if (ActiveSession == null)
+                ActiveSession = new RecordingSession();
+        }
+
+        // 结束当前会话（断开连接或用户手动结束时调用）
+        public void CloseSession()
+        {
+            ActiveSession?.Dispose();
+            ActiveSession = null;
+        }
+        #endregion
     }
 }

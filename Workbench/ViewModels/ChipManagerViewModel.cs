@@ -130,6 +130,7 @@ namespace Workbench.ViewModels
                     Name = ChipName,
                     IsDeleted = "A",
                     FileName = FilePath,
+                    SDPCfileName= ParseFilePath,
                     Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                 };
                 using (var db = new DbContext())

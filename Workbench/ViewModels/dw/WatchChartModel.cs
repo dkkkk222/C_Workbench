@@ -15,7 +15,7 @@ namespace Workbench.ViewModels.dw
 {
     public class WatchChartModel:BindableBase
     {
-        public string Session_id { get; set; }
+        private string Session_id { get; set; }
         private IDialogService _dialogService;
         public WatchChartModel(string chartName, IDialogService dialogService=null, string session_id = null)
         {

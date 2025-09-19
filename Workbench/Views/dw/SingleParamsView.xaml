@@ -565,36 +565,13 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                 <DataGridTextColumn Header="名称" Binding="{Binding Desc}" Width="*" MinWidth="150" ElementStyle="{StaticResource CenterCellStyle}"/>
                                                 <!--<DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}" Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>-->
                                                 <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>                                               
-                                                <!--<DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}" Width="*" MinWidth="100" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                <DataGridTemplateColumn Header="数据配置解析(Binary)" Visibility="{Binding Path=Data.HasOptionsColumn,  Source={StaticResource DataContextProxy}, Converter={StaticResource Boolean2VisibilityConverter}}"  Width="*" MinWidth="100" >
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                                                                <TextBox Style="{StaticResource TextBoxExtend.Small}" HorizontalAlignment="Stretch" hc:InfoElement.Placeholder="请输入"
-                                                            MaxLength="{Binding Length}" Text="{Binding WriteBinary}"
-                                                            behaviors:InputMaskBehavior.IsBinaryOnly="True"
-                                                            LostFocus="TextBox_LostFocus"
-                                                            IsEnabled="{Binding IsTextbox}"
-                                                            Visibility="{c:Binding 'RangeMin==null',FalseToVisibility=Collapsed}"/>
-                                                                <hc:NumericUpDown Minimum="{Binding RangeMin}" Maximum="{Binding RangeMax}"
-                                                                     Style="{StaticResource NumericUpDownExtend.Small}"
-                                                                     hc:InfoElement.Placeholder="请输入"
-                                                                     LostFocus="NumericUpDown_LostFocus"
-                                                                     Visibility="{c:Binding 'RangeMin!=null and RangeMax!=null',FalseToVisibility=Collapsed}">
-                                                                    <hc:NumericUpDown.Value>
-                                                                        <Binding Path="WriteBinary" UpdateSourceTrigger="PropertyChanged"/>
-                                                                    </hc:NumericUpDown.Value>
-                                                                </hc:NumericUpDown>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>-->
-                                                
+                                                                                                
                                                 <DataGridTemplateColumn Header="配置"  Width="*" MinWidth="100">
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <StackPanel VerticalAlignment="Center">
-                                                                <ComboBox  ItemsSource="{Binding Options}" DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                        <ComboBox  ItemsSource="{Binding Options}" IsEnabled="{Binding DataContext.WriteCurrentRegister.AllowWrite,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                   DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
 Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalAlignment="Center">
                                                             <ComboBox.Style>
                                                                 <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
@@ -613,7 +590,7 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
                                                                         </i:EventTrigger>
                                                                     </i:Interaction.Triggers>
                                                                 </ComboBox>
-                                                                <TextBox VerticalAlignment="Center" PreviewTextInput="HexBox_PreviewTextInput" Text="{Binding WriteHex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" LostFocus="HexListValueText_LostFocus"
+                                                        <TextBox VerticalAlignment="Center" IsEnabled="{Binding DataContext.WriteCurrentRegister.AllowWrite,RelativeSource={RelativeSource AncestorType=UserControl}}"  PreviewTextInput="HexBox_PreviewTextInput" Text="{Binding WriteHex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" LostFocus="HexListValueText_LostFocus"
                                                                          InputMethod.IsInputMethodEnabled="False"   Visibility="{c:Binding 'Options.Count==0',FalseToVisibility=Collapsed}">
                                                             <TextBox.Style>
                                                                 <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">

@@ -96,10 +96,10 @@
                             </Button>
                         </StackPanel>
                     </Border>
-                    <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center" Margin="5,0,0,0">
+                    <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center" Margin="0,0,20,0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                            <TextBox Text="{Binding ParseFilePath,Mode=TwoWay}" Width="350" 
-                 hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="解析要求文件:" hc:InfoElement.Necessary="True"
+                            <TextBox Text="{Binding ParseFilePath,Mode=TwoWay}" Width="370" 
+                 hc:InfoElement.Placeholder="请输入或选择文件路径" hc:InfoElement.Title="参数解析要求文件:" hc:InfoElement.Necessary="True"
                  hc:InfoElement.TitlePlacement="Left">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
@@ -261,30 +261,40 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         </DataGrid.RowStyle>
                         <!-- 定义列 -->
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="芯片名称" Binding="{Binding Name}" Width="100" >
+                            <DataGridTextColumn Header="芯片类型名称" Binding="{Binding Name}" Width="100" >
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="ToolTip" Value="{Binding Desc}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Name}"/>
                                         <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                                         <Setter Property="HorizontalAlignment" Value="Left"/>
                                         <Setter Property="VerticalAlignment" Value="Center"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="寄存器说明文件" Binding="{Binding FileName}" Width="*" >
+                            <DataGridTextColumn Header="寄存器说明文件" Binding="{Binding FileName}" Width="130" >
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="ToolTip" Value="{Binding Desc}"/>
+                                        <Setter Property="ToolTip" Value="{Binding FileName}"/>
                                         <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                                         <Setter Property="HorizontalAlignment" Value="Left"/>
                                         <Setter Property="VerticalAlignment" Value="Center"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="日期" Binding="{Binding Datetime}" Width="150" >
+                            <DataGridTextColumn Header="参数解析要求文件" Binding="{Binding SDPCfileName}" Width="130" >
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="ToolTip" Value="{Binding Desc}"/>
+                                        <Setter Property="ToolTip" Value="{Binding SDPCfileName}"/>
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="日期" Binding="{Binding Datetime}" Width="120" >
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="ToolTip" Value="{Binding Datetime}"/>
                                         <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                                         <Setter Property="HorizontalAlignment" Value="Left"/>
                                         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -298,8 +308,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                                             <hc:UniformSpacingPanel Spacing="10">
                                                 <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
-                                                <Button Content="芯片手册" Style="{StaticResource ButtonInfo.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource   EyeOpenGeometry}" Click="ShowDoc_Click"/>
-                                                <Button Content="上传手册" Style="{StaticResource ButtonInfo.Small}" Background="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource   EyeOpenGeometry}" Click="UpdateDoc_Click"/>
+                                                <Button Content="查看手册" Style="{StaticResource ButtonInfo.Small}" Background="{DynamicResource GenButtonBackgroundColor}"   Click="ShowDoc_Click"/>
+                                                <Button Content="上传手册" Style="{StaticResource ButtonInfo.Small}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"  Click="UpdateDoc_Click"/>
                                             </hc:UniformSpacingPanel>
                                             <TextBlock Width="10"></TextBlock>
                                             <hc:UniformSpacingPanel Spacing="10">

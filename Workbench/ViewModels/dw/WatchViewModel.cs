@@ -37,6 +37,19 @@ using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Workbench.ViewModels.dw
 {
+    public sealed class RecordingSession : IDisposable
+    {
+        public string SessionId { get; }
+        public IngestPipeline Pipeline { get; }
+
+        public RecordingSession(string sessionId = null)
+        {
+            SessionId = sessionId ?? Guid.NewGuid().ToString("N");
+            Pipeline = new IngestPipeline(SessionId);
+        }
+
+        public void Dispose() => Pipeline?.Dispose();
+    }
     public class WatchViewModel : AvaDocument
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(WatchViewModel));
@@ -50,7 +63,7 @@ namespace Workbench.ViewModels.dw
         public System.Timers.Timer _refTime = new System.Timers.Timer();
         private CancellationTokenSource _cts = new CancellationTokenSource();
         public IngestPipeline pipeLineIng { get; set; }
-        public string session_id { get; set; }
+        private string session_id { get; set; }
         public WatchViewModel(IEventAggregator eventAggregator, ProjectManager projectManager, IDialogService dialogService)
         {
             _projectManager = projectManager;
@@ -59,6 +72,7 @@ namespace Workbench.ViewModels.dw
             WatchGroups = _projectManager.CurrentProject.WatchGroups;
             WatchChartGroups = _projectManager.CurrentProject.WatchChartGroups;
             CategoryRegisters = _projectManager.CurrentProject.CategoryRegisters;
+            _projectManager.CurrentProject.EnsureSession();
             pms = new ParameterMonitorService(10) { CurrentProject = _projectManager.CurrentProject };
             pms.Enable();
             NormalizeWatchCharts();
@@ -80,8 +94,10 @@ namespace Workbench.ViewModels.dw
             {
                 group.Inject(dialogService);
             }
-            session_id = Guid.NewGuid().ToString();
-            pipeLineIng = new IngestPipeline(session_id);
+            //session_id = Guid.NewGuid().ToString();
+            //pipeLineIng = new IngestPipeline(session_id);
+            session_id = _projectManager.CurrentProject.ActiveSessionId;
+            pipeLineIng = _projectManager.CurrentProject.ActiveSession.Pipeline;
 
             _watchChartGroupsForTab = new ListCollectionView(WatchChartGroups);
             _watchChartGroupsForTab.Filter = o => o is WatchChartModel m && !IsPlaceholder(m);
@@ -688,7 +704,7 @@ namespace Workbench.ViewModels.dw
             var baseName = $"表{WatchGroups.Count + 1}";
             var header = MakeUniqueHeader(baseName);
             var maxOrder = WatchGroups.Any() ? WatchGroups.Max(g => g.Order) : 0;
-            WatchGroups.Add(new WatchGroup(_dialogService, session_id)
+            WatchGroups.Add(new WatchGroup(_dialogService, session_id,_projectManager)
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Header = header,
@@ -770,6 +786,31 @@ namespace Workbench.ViewModels.dw
             }, nameof(ShowChartListWindows));
         });
 
+        public DelegateCommand HistoryDownloadCommand => new DelegateCommand(() =>
+        {
+            try
+            {
+                var fbd = new FolderBrowserDialog();
+                fbd.Description = "请选择保存路径";
+                var result = fbd.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    var path = fbd.SelectedPath;
+                    string currentSessionID = null;
+                    if (_projectManager != null)
+                    {
+                        currentSessionID = _projectManager.CurrentProject.ActiveSessionId;
+                    }
+
+                    ExporterExcel exporterExcel = new ExporterExcel();
+                    exporterExcel.ExportSessionToExcel_MergedByTimeAndId(currentSessionID, path);
+                    //HistoryToExcel(path);
+                }
+            }
+            catch (Exception ex) 
+            { 
+            }
+        });
 
         private ObservableCollection<TableColumn> InitTableColumns()
         {
@@ -900,6 +941,11 @@ namespace Workbench.ViewModels.dw
 
         });
 
+        public DelegateCommand<object> SelectAllCommand => new DelegateCommand<object>((e) =>
+        {
+            SingleParamTrees.SetAllLeavesChecked((bool)e);
+        });
+
         #region Method
         /// <summary>
         /// 波形图参数添加
@@ -971,35 +1017,41 @@ namespace Workbench.ViewModels.dw
         {
             var sw = new System.Diagnostics.Stopwatch();
 
-            while (!token.IsCancellationRequested)
+            try
             {
-                sw.Restart();
-
-                // 拍快照，防止枚举时集合被修改
-                var snapshot = WatchGroups.ToArray();
-
-                // ★ 这里完全在后台线程跑 — 不阻塞 UI
-                foreach (var group in snapshot)
+                while (!token.IsCancellationRequested)
                 {
-                    await UpdateGroupAsync(group, token);
-                }
-                //if (pms._watching.Count == 0)
-                //{
-                //    await StopUiLoopAsync();
-                //}
-                // 补偿延时
-                try
-                {
+                    sw.Restart();
+
+                    // 拍快照，防止枚举时集合被修改
+                    var snapshot = WatchGroups.ToArray();
+
+                    // ★ 这里完全在后台线程跑 — 不阻塞 UI
+                    foreach (var group in snapshot)
+                    {
+                        await UpdateGroupAsync(group, token);
+                    }
+                    //if (pms._watching.Count == 0)
+                    //{
+                    //    await StopUiLoopAsync();
+                    //}
+                    // 补偿延时
+
                     var remain = periodMs - (int)sw.ElapsedMilliseconds;
                     if (remain > 0)
                         await Task.Delay(remain, token);
+
                 }
-                catch(Exception ex)
-                {
-                    _log.Warn(ex);
-                }
-                
             }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                // 正常取消，不记为错误
+            }
+            catch (Exception ex)
+            {
+                _log.Error("UiLoop crashed", ex);
+                throw;
+            }            
         }
 
         public async Task UpdateGroupAsync(WatchGroup group, CancellationToken token)
@@ -1186,7 +1238,6 @@ namespace Workbench.ViewModels.dw
                 _refTime.Stop();
                 pms.Disable();
                 StopUiLoopAsync().ConfigureAwait(false);
-
             });
         }
         #endregion

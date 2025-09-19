@@ -102,7 +102,8 @@ namespace Workbench.Utils
             {
                 RemoveTabAndProject(project);
             }
-            
+
+            CurrentProject.CloseSession();
         }
         public void RemoveTabAndProject(PpecProject project)
         {

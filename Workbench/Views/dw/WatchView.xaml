@@ -73,7 +73,21 @@
                         <RadioButton GroupName="OrderBy" Content="按名称" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
              IsChecked="{Binding IsOrderByName, Mode=TwoWay}"/>
                         <RadioButton GroupName="OrderBy" Content="按地址" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"
-             IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/> 
+             IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
+                        <CheckBox Content="全选/反选" Command="{Binding SelectAllCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
+                            <CheckBox.Style>
+                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="false">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
                 <!--<StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
@@ -205,7 +219,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                         <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
                             
                             <DataGrid    MinWidth="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-               CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="245" IsReadOnly="True"
+               CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="200" IsReadOnly="True"
                                          Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
                SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <DataGrid.ColumnHeaderStyle>
@@ -449,14 +463,14 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         <!--</StackPanel>-->
                     </DockPanel>
                 </Border>
-                <GridSplitter Grid.Row="1" Margin="0,8" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#10000000" ResizeDirection="Rows"></GridSplitter>
+                <GridSplitter Grid.Row="1" Margin="15,10,10,10" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#10000000" ResizeDirection="Rows"></GridSplitter>
 
                 <Grid Grid.Row="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0">
+                    <Border Grid.Row="0" Padding="15,0,0,0">
                         <StackPanel Orientation="Horizontal">
                             <Button Content="增加数据监测表" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
                    HorizontalAlignment="Left" hc:IconElement.Width="14"
@@ -476,7 +490,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         </StackPanel>
 
                     </Border>
-                    <Border Grid.Row="1"  Background="{StaticResource AvalonDockAreaBackgroundColor}">
+                    <Border Grid.Row="1" Padding="15,0,5,0" Background="{StaticResource AvalonDockAreaBackgroundColor}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -512,7 +526,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                             </StackPanel>
                                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
                                                                 <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
-                                                                Command="{Binding HistoryDownloadCommand}"/>
+                                                                Command="{Binding DataContext.HistoryDownloadCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                                                 <TextBlock Width="10"></TextBlock>
                                                                 <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
                                                                     <hc:SplitButton.DropDownContent>

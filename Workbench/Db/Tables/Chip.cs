@@ -19,6 +19,9 @@ namespace Workbench.Db.Tables
 
         [Column("file_name", CanBeNull = false)]
         public string FileName { get; set; }
+
+        [Column("sdpc_file_name", CanBeNull = false)]
+        public string SDPCfileName { get; set; }
         [Column("doc_filepath", CanBeNull = false)]
         public string DocFilePath { get; set; }
 

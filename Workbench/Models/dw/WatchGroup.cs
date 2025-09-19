@@ -24,9 +24,11 @@ namespace Workbench.Models.dw
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(WatchGroup));
         private IDialogService _dialogService;
-        public string Session_id { get; set; }
-        public WatchGroup(IDialogService dialogService,string session_id)
+        private ProjectManager _projectManager;
+        private string Session_id { get; set; }
+        public WatchGroup(IDialogService dialogService,string session_id,ProjectManager projectManager)
         {
+            _projectManager = projectManager;
             _dialogService = dialogService;
             Session_id = session_id;
         }
@@ -276,8 +278,14 @@ namespace Workbench.Models.dw
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 var path = fbd.SelectedPath;
+                string currentSessionID = null;
+                if(_projectManager!=null)
+                {
+                    currentSessionID = _projectManager.CurrentProject.ActiveSessionId;
+                }
+                
                 ExporterExcel exporterExcel = new ExporterExcel();
-                exporterExcel.ExportSessionToExcel_MergedByTimeAndId(Session_id, path);
+                exporterExcel.ExportSessionToExcel_MergedByTimeAndId(currentSessionID, path);
                 //HistoryToExcel(path);
             }
         });

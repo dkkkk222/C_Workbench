@@ -24,6 +24,7 @@ namespace Workbench.Migrations
                 .WithColumn("id").AsString().PrimaryKey()
                 .WithColumn("name").AsString(64).NotNullable()
                 .WithColumn("file_name").AsString().NotNullable()
+                .WithColumn("sdpc_file_name").AsString().Nullable()
                 .WithColumn("doc_filepath").AsString().Nullable()
                 .WithColumn("datetime").AsString().NotNullable()
                 .WithColumn("is_deleted").AsString(2).NotNullable();
@@ -105,6 +106,7 @@ namespace Workbench.Migrations
                 name = "ChipA",
                 is_deleted = "A",
                 file_name = fileName,
+                sdpc_file_name= SDPCfileName,
                 datetime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             });
 

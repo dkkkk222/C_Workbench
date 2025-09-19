@@ -1,4 +1,5 @@
 ﻿using AvalonDock.Controls;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -24,29 +25,37 @@ namespace Workbench.Views.Content
         private async void DocTab_PreviewMouseLeftButtonDown(
            object sender, MouseButtonEventArgs e)
         {
-            var tab = (LayoutDocumentTabItem)sender;
-            var next = tab.LayoutItem?.Model as AvaDocument;
-            if (next == null) return;
-
-            var vm = (ContentViewModel)DataContext; // 你的 VM
-            if (vm.ActiveDocument?.Project?.PPEC_Id != next.Project?.PPEC_Id &&
-                vm._projectManager.CurrentProject.IsConnecting)
+            try
             {
-                var r = MessageBox.Show(
-                    "切换芯片后必须断开原有芯片连接，确认断开？",
-                    "确认", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var tab = sender as LayoutDocumentTabItem;
+                var next = tab.LayoutItem?.Model as AvaDocument;
+                if (next == null) return;
 
-                if (r == MessageBoxResult.No)
+                var vm = DataContext as ContentViewModel; // 你的 VM
+                if (vm.ActiveDocument?.Project?.PPEC_Id != next.Project?.PPEC_Id &&
+                    vm._projectManager.CurrentProject.IsConnecting)
                 {
-                    e.Handled = true;        // ★ 直接拦截
-                    return;
-                }
+                    var r = MessageBox.Show(
+                        "切换芯片后必须断开原有芯片连接，确认断开？",
+                        "确认", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                // 先拦截，异步断开后再手动激活
-                e.Handled = true;
-                await vm.AsyncDisConnect();
-                next.IsActive = true;        // 断开成功后再切
+                    if (r == MessageBoxResult.No)
+                    {
+                        e.Handled = true;        // ★ 直接拦截
+                        return;
+                    }
+
+                    // 先拦截，异步断开后再手动激活
+                    e.Handled = true;
+                    await vm.AsyncDisConnect();
+                    next.IsActive = true;        // 断开成功后再切
+                }
             }
+            catch (Exception ex)
+            { 
+            
+            }
+           
         }
 
         private void CloseOthers_Click(object sender, System.Windows.RoutedEventArgs e)

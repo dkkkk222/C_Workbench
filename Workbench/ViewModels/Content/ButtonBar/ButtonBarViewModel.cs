@@ -106,7 +106,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             {
                 ppec.ConnectDeviceIndex = SelectedCommunicationI2CDevice;
                 ppec.I2cBaud = (int)SelectedCommunicationI2CClock.Value;
-                ppec.I2CSCL = SelectCommunicationI2CSCL == "Disable" ? "0" : "1";
+                ppec.I2CSCL = SelectCommunicationI2CSCL == "禁止" ? "0" : "1";
                 ppec.Delay = Delay;
             }
         }
@@ -294,7 +294,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             get => _communicationI2CDeviceList;
             set => SetProperty(ref _communicationI2CDeviceList, value);
         }
-        private ObservableCollection<string> _communicationI2CSCL = new ObservableCollection<string> { "Enable", "Disable" };
+        private ObservableCollection<string> _communicationI2CSCL = new ObservableCollection<string> { "使能", "禁止" };
         public ObservableCollection<string> CommunicationI2CSCL
         {
             get => _communicationI2CSCL;
@@ -314,7 +314,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             get => _communicationI2CClock;
             set => SetProperty(ref _communicationI2CClock, value);
         }
-        private string _selectCommunicationI2CSCL = "Disable";
+        private string _selectCommunicationI2CSCL = "禁止";
         public string SelectCommunicationI2CSCL
         {
             get => _selectCommunicationI2CSCL;
@@ -323,7 +323,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                 {
-                    ppec.I2CSCL = value == "Disable" ? "0" : "1";
+                    ppec.I2CSCL = value == "禁止" ? "0" : "1";
                 }
                 SetProperty(ref _selectCommunicationI2CSCL, value);
             }
@@ -596,6 +596,11 @@ namespace Workbench.ViewModels.Content.ButtonBar
         public DelegateCommand ConnectCommand =>
             _connectCommand ?? (_connectCommand = new DelegateCommand(async () =>
             {
+                if (_projectManager.CurrentProject == null)
+                {
+                    MessageBox.Show("尚未选择工程");
+                    return;
+                }
                 if (_projectManager.CurrentProject.IsConnecting)
                 {
                     await CloseConnect();
