@@ -244,6 +244,7 @@
     <Compile Include="Model\RegValue.cs" />
     <Compile Include="Model\Sample.cs" />
     <Compile Include="Model\ShowParams.cs" />
+    <Compile Include="Model\SingleThreadInvoker.cs" />
     <Compile Include="Model\TopoConfigMeta.cs" />
     <Compile Include="Model\UartProtocolHandler.cs" />
     <Compile Include="NullLogger.cs" />

@@ -17,6 +17,7 @@ using Workbench.Communication;
 using System.Device.I2c;
 using System.Collections.Generic;
 using HandyControl.Tools.Extension;
+using System.Windows.Documents;
 
 namespace Workbench.ViewModels.Content.ButtonBar
 {
@@ -63,7 +64,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
         }
 
         public string _connectIcon = Constants.ConnectIcon;
-       
+
         public string ConnectIcon
         {
             get => _connectIcon;
@@ -81,13 +82,24 @@ namespace Workbench.ViewModels.Content.ButtonBar
         }
         public void ChangeI2C()
         {
-            CommunicationI2CList.Clear();
-            var devs = Ch347DeviceEnumerator.Enumerate(excludeMode3: false);
-            foreach (var d in devs)
+
+            //if (_projectManager != null && _projectManager.CurrentProject != null && _projectManager.CurrentProject.CommService != null && _projectManager.CurrentProject.CommService.IsConnected)
+
+            if (_projectManager?.CurrentProject?.CommService?.IsConnected == true)
             {
-                CommunicationI2CList.Add(new BBLLCCANBAUDItem() { Value = 0, Name = d.ToString() });
+
             }
-            SelectedCommunicationI2CType = CommunicationI2CList.FirstOrDefault();
+            else
+            { 
+                CommunicationI2CList.Clear();
+                var devs = Ch347DeviceEnumerator.Enumerate(excludeMode3: false);
+                foreach (var d in devs)
+                {
+                    CommunicationI2CList.Add(new BBLLCCANBAUDItem() { Value = 0, Name = d.ToString() });
+                }
+                SelectedCommunicationI2CType = CommunicationI2CList.FirstOrDefault();
+            }
+
 
             var ppec = _projectManager.GetCachePPEC();
             if (ppec != null)
@@ -160,18 +172,18 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 if (ppec != null)
                 {
                     SelectedCommunicationType = string.IsNullOrEmpty(ppec.CommunicationType) ? Constants.SERIAL_PORT : ppec.CommunicationType;
-                    if (ppec.CommunicationType == Constants.SERIAL_PORT|| ppec.CommunicationType == Constants.OldSERIAL_PORT)
-                    { 
+                    if (ppec.CommunicationType == Constants.SERIAL_PORT || ppec.CommunicationType == Constants.OldSERIAL_PORT)
+                    {
                         if (!string.IsNullOrEmpty(ppec.PortName))
                         {
                             SerialPortName = ppec.PortName;
                         }
-                        if (ppec.BuandName>0)
+                        if (ppec.BuandName > 0)
                         {
                             BuandName = ppec.BuandName;
                         }
                     }
-                        
+
                 }
                 //if (!string.IsNullOrEmpty(treeItemLevel) && treeItemLevel != ProjectLevel.Project)
                 //{
@@ -202,7 +214,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             });
             _eventAggregator.GetEvent<CloseConnectEvent>().Subscribe(() =>
             {
-                if(IsConnected)
+                if (IsConnected)
                 {
                     var ppec = _projectManager.GetCachePPEC();
                     ppec.Disconnect();
@@ -211,7 +223,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 ConnectIcon = Constants.ConnectIcon;
                 ConnectStr = Constants.ConnectStr;
                 IsConnected = false;
-                
+
             });
         }
 
@@ -276,13 +288,13 @@ namespace Workbench.ViewModels.Content.ButtonBar
         }
 
 
-        private ObservableCollection<string> _communicationI2CDeviceList = new ObservableCollection<string> { "0", "1","2", "3", "4", "5", "6", "7", "8" };
+        private ObservableCollection<string> _communicationI2CDeviceList = new ObservableCollection<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8" };
         public ObservableCollection<string> CommunicationI2CDeviceList
         {
             get => _communicationI2CDeviceList;
             set => SetProperty(ref _communicationI2CDeviceList, value);
         }
-        private ObservableCollection<string> _communicationI2CSCL = new ObservableCollection<string> {"Enable", "Disable" };
+        private ObservableCollection<string> _communicationI2CSCL = new ObservableCollection<string> { "Enable", "Disable" };
         public ObservableCollection<string> CommunicationI2CSCL
         {
             get => _communicationI2CSCL;
@@ -311,7 +323,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                 {
-                    ppec.I2CSCL = value=="Disable"?"0":"1";
+                    ppec.I2CSCL = value == "Disable" ? "0" : "1";
                 }
                 SetProperty(ref _selectCommunicationI2CSCL, value);
             }
@@ -328,10 +340,10 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 {
                     ppec.ConnectDeviceIndex = value;
                 }
-                SetProperty(ref _selectedCommunicationI2CDevice, value);                
-            } 
+                SetProperty(ref _selectedCommunicationI2CDevice, value);
+            }
         }
-        
+
         private BBLLCCANBAUDItem _selectedCommunicationI2CClock;
         public BBLLCCANBAUDItem SelectedCommunicationI2CClock
         {
@@ -349,13 +361,13 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 SetProperty(ref _selectedCommunicationI2CClock, value);
             }
         }
-        private BBLLCCANBAUDItem _selectedCommunicationI2CType ;
+        private BBLLCCANBAUDItem _selectedCommunicationI2CType;
         public BBLLCCANBAUDItem SelectedCommunicationI2CType
         {
             get => _selectedCommunicationI2CType;
             set
             {
-                if(_projectManager!=null)
+                if (_projectManager != null)
                 {
                     var ppec = _projectManager.GetCachePPEC();
                     if (ppec != null)
@@ -365,12 +377,12 @@ namespace Workbench.ViewModels.Content.ButtonBar
                         ppec.I2cBusId = (int)value.Value;
                     }
                 }
-                
-               
+
+
                 SetProperty(ref _selectedCommunicationI2CType, value);
-            } 
+            }
         }
-        public string _Delay="0";
+        public string _Delay = "0";
         public string Delay
         {
             get => _Delay;
@@ -412,7 +424,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                     ppec.CommunicationType = value;
-                if(value== Constants.SERIAL_PORT|| value == Constants.OldSERIAL_PORT)
+                if (value == Constants.SERIAL_PORT || value == Constants.OldSERIAL_PORT)
                 {
                     ConnectType = 1;
                     PortTitle = Constants.SERIAL_PORT;
@@ -477,7 +489,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             get => _BBLLCCANTYPEList;
             set => SetProperty(ref _BBLLCCANTYPEList, value);
         }
-        
+
         private BBLLCCANBAUDItem _selectedCANBaud;
         public BBLLCCANBAUDItem SelectedCANBaud
         {
@@ -501,7 +513,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 if (ppec != null)
 
                 {
-                    switch((int)value?.Value)
+                    switch ((int)value?.Value)
                     {
                         case 0:
                             ppec.DeviceType = 21;
@@ -511,7 +523,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                             break;
                     }
                 }
-                    
+
                 SetProperty(ref _selectedCANType, value);
             }
         }
@@ -584,7 +596,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
         public DelegateCommand ConnectCommand =>
             _connectCommand ?? (_connectCommand = new DelegateCommand(async () =>
             {
-                if(_projectManager.CurrentProject.IsConnecting)
+                if (_projectManager.CurrentProject.IsConnecting)
                 {
                     await CloseConnect();
                     ConnectIcon = Constants.ConnectIcon;
@@ -596,7 +608,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                     //ConnectIcon = Constants.DisConnectIcon;
                     //ConnectStr = Constants.DisConnectStr;
                 }
-                    
+
             }));
 
         #endregion
@@ -623,7 +635,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             try
             {
                 var ppec = _projectManager.GetCachePPEC();
-                if(ppec==null)
+                if (ppec == null)
                 {
                     MessageBox.Show("请选择工程后再连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;

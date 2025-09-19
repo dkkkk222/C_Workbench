@@ -46,13 +46,6 @@ namespace Workbench.ViewModels
             //TestI2C();
 
         }
-        public void TestI2C()
-        {
-            var devs = Ch347DeviceEnumerator.Enumerate(excludeMode3: false);
-            foreach (var d in devs) Console.WriteLine(d);
-            //var devs = Ch347DeviceEnumerator.Enumerate(excludeMode3: false);
-            //foreach (var d in devs) Console.WriteLine(d);
-        }
 
         public void UserOrAutoSaveProject()
         { 

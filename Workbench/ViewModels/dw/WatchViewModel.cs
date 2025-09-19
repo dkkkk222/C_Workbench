@@ -988,9 +988,17 @@ namespace Workbench.ViewModels.dw
                 //    await StopUiLoopAsync();
                 //}
                 // 补偿延时
-                var remain = periodMs - (int)sw.ElapsedMilliseconds;
-                if (remain > 0)
-                    await Task.Delay(remain, token);
+                try
+                {
+                    var remain = periodMs - (int)sw.ElapsedMilliseconds;
+                    if (remain > 0)
+                        await Task.Delay(remain, token);
+                }
+                catch(Exception ex)
+                {
+                    _log.Warn(ex);
+                }
+                
             }
         }
 

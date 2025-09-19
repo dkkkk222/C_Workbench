@@ -145,8 +145,8 @@ namespace Workbench.Communication
     public static class Ch347DeviceEnumerator
     {
         public static List<Ch347Device> Enumerate(int maxIndex = 32, bool excludeMode3 = false)
-        {
-            var list = new List<Ch347Device>();
+        {            
+            var list = new List<Ch347Device>();          
             for (uint i = 0; i < maxIndex; i++)
             {
                 var h = Ch347Native.CH347OpenDevice(i);
