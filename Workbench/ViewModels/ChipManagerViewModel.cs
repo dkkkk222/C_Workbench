@@ -10,6 +10,7 @@ using LinqToDB.Data;
 using log4net;
 using PPEC.Communication.Common;
 using PPEC.Communication.DB;
+using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
@@ -24,12 +25,13 @@ namespace Workbench.ViewModels
     public class ChipManagerViewModel : BindableBase, IDialogAware
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(App));
-
+        private ProjectManager _projectManager;
         public MainServices mainService { get; set; }
 
         private readonly IMapper _mapper;
-        public ChipManagerViewModel(FileHandler fileHandler, IContainerProvider containerProvider, IMapper mapper)
+        public ChipManagerViewModel(FileHandler fileHandler, IContainerProvider containerProvider, IMapper mapper,ProjectManager projectManager)
         {
+            _projectManager = projectManager;
             _mapper = mapper;
         }
         public ObservableCollection<Chip> _chips = new ObservableCollection<Chip>();
@@ -191,6 +193,68 @@ namespace Workbench.ViewModels
             }
         }
 
+        public async Task RebuildChipMetadataAsync(string chipId)
+        {
+            List<RegisterMeta> excelData = _projectManager.CurrentProject.Chip.ChipRegisterInfo;
+            using var db = new DbContext();
+            using var tr = db.BeginTransaction();
+
+            // 先找出当前芯片的 Reg/Bit/Option
+            var oldRegisters = await db.Registers.Where(r => r.ChipId == chipId).ToListAsync();
+            var oldRegIds = oldRegisters.Select(r => r.Id).ToList();
+            var oldBits = await db.RegisterBits.Where(b => oldRegIds.Contains(b.RegisterId)).ToListAsync();
+            var oldBitIds = oldBits.Select(b => b.Id).ToList();
+
+            // 删除（Options -> Bits -> Registers）
+            await db.RegisterBitOptions.Where(o => oldBitIds.Contains(o.RegisterBitId)).DeleteAsync();
+            await db.RegisterBits.Where(b => oldRegIds.Contains(b.RegisterId)).DeleteAsync();
+            await db.Registers.Where(r => r.ChipId == chipId).DeleteAsync();
+
+            // 用“导入”的数据重建（此处把 ID 用导入工程的，如果导入不带 ID 就新建/或用确定性ID）
+            var registers = new List<Register>();
+            var registerBits = new List<RegisterBit>();
+            var registerBitOptions = new List<RegisterBitOption>();
+
+            foreach (var meta in excelData)
+            {
+                var reg = _mapper.Map<Register>(meta.AddrInfo);
+                if (string.IsNullOrWhiteSpace(reg.Id))
+                    reg.Id = Guid.NewGuid().ToString("N");
+                reg.ChipId = chipId;
+                registers.Add(reg);
+
+                foreach (var bf in meta.AddrInfo.BitFields)
+                {
+                    var bit = _mapper.Map<RegisterBit>(bf);
+                    if (string.IsNullOrWhiteSpace(bit.Id))
+                        bit.Id = Guid.NewGuid().ToString("N");
+                    bit.RegisterId = reg.Id;
+
+                    bit.ParamA = bf.FormParam.ParamA.ToString();
+                    bit.ParamB = bf.FormParam.ParamB.ToString();
+                    bit.ParamC = bf.FormParam.ParamC;
+                    bit.ParamName = bf.FormParam.ParamName;
+                    bit.UnitName = bf.FormParam.UnitName;
+
+                    registerBits.Add(bit);
+
+                    foreach (var opt in bf.Options)
+                    {
+                        var optRow = _mapper.Map<RegisterBitOption>(opt);
+                        if (string.IsNullOrWhiteSpace(optRow.Id))
+                            optRow.Id = Guid.NewGuid().ToString("N");
+                        optRow.RegisterBitId = bit.Id;
+                        registerBitOptions.Add(optRow);
+                    }
+                }
+            }
+
+            await db.BulkCopyAsync(registers);
+            await db.BulkCopyAsync(registerBits);
+            await db.BulkCopyAsync(registerBitOptions);
+
+            tr.Commit();
+        }
         public async Task UpdateChipDoc(Chip e)
         {
             using (var db = new DbContext())
