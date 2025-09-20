@@ -21,6 +21,17 @@
         <DataTemplate DataType="{x:Type viewModels:SingleParamsViewModel}">
             <views:SingleParamsView />
         </DataTemplate>
+        <Style x:Key="TextBoxStyleNew" TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
+          
+                    <Style.Triggers>
+                        <!-- 获得焦点时变色 -->
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                        </Trigger>
+                    </Style.Triggers>
+              
+            
+        </Style>
         <Style x:Key="ItemTitle" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextAlignment" Value="Right"/>
@@ -163,7 +174,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="分类:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"  IsEnabled="False"
+                                        <TextBox Style="{StaticResource TextBoxStyleNew}" Width="200"    IsReadOnly="True"
                                                      Text="{Binding CurrentRegister.Category}"/>
 
                                         </StackPanel>
@@ -171,15 +182,15 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="名称:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True" 
-                                                     Text="{Binding CurrentRegister.Name}" IsEnabled="False"/>
+                                        <TextBox Style="{StaticResource TextBoxStyleNew}" Width="200" IsReadOnly="True" 
+                                                     Text="{Binding CurrentRegister.Name}" />
 
                                         </StackPanel>
                                     </Border>
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="地址:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"  IsEnabled="False"
+                                        <TextBox Style="{StaticResource TextBoxStyleNew}" Width="200" IsReadOnly="True"   
                                                      Text="{Binding CurrentRegister.AddressHex}"/>
 
                                         </StackPanel>
@@ -187,23 +198,23 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="读写:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox Style="{StaticResource TextBoxExtend}" Width="200" IsReadOnly="True"  IsEnabled="False"
+                                        <TextBox Style="{StaticResource TextBoxStyleNew}" Width="200" IsReadOnly="True"   
                                                         Text="{Binding CurrentRegister.RW}"/>
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
+                                        <StackPanel Orientation="Horizontal" >
                                             <TextBlock Text="读数据HEX:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox x:Name="ReadHexValueText" Text="{Binding CurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" 
-                                                     hc:InfoElement.Placeholder="请输入" Width="200" />
+                                        <TextBox x:Name="ReadHexValueText" Text="{Binding CurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxStyleNew}" 
+                                                     hc:InfoElement.Placeholder="请输入" Width="200" IsReadOnly="True"/>
                                         </StackPanel>
                                     </Border>
                                     <Border>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="写数据HEX:" Style="{StaticResource ItemTitle}"/>
-                                            <TextBox x:Name="HexValueText" Text="{Binding WriteCurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxExtend}" 
-                  hc:InfoElement.Placeholder="请输入" Width="200" LostFocus="HexValueText_LostFocus"  IsEnabled="False"
-                                                 PreviewTextInput="HexBox_PreviewTextInput" />
+                                        <TextBox x:Name="HexValueText" Text="{Binding WriteCurrentRegister.HexValue,Mode=TwoWay}" Style="{StaticResource TextBoxStyleNew}" 
+                  hc:InfoElement.Placeholder="请输入" Width="200"  IsReadOnly="True"
+                                                />
                                         </StackPanel>
                                     </Border>
                                 </hc:UniformSpacingPanel>
@@ -211,7 +222,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                             <Border Margin="0,10,0,0">
                                 <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5">
                                     <Border>
-                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
+                                        <StackPanel Orientation="Horizontal" >
                                             <TextBlock Text="数据Binary:" Style="{StaticResource ItemTitle}"/>
                                             <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[0],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
@@ -222,7 +233,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
 
-                                                        <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+                                                        <TextBox hc:BorderElement.CornerRadius="0" IsReadOnly="True" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}"  />
 
                                                    
                                                       </DataTemplate>
@@ -262,7 +273,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
+                                        <StackPanel Orientation="Horizontal"  >
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
                                             <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[1],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
@@ -273,7 +284,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+                                                    <TextBox hc:BorderElement.CornerRadius="0"  IsReadOnly="True"  BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}"  />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
@@ -311,7 +322,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
+                                        <StackPanel Orientation="Horizontal"  >
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
                                             <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[2],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
@@ -322,7 +333,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+                                                    <TextBox hc:BorderElement.CornerRadius="0"  IsReadOnly="True"  BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}"  />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
@@ -360,7 +371,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </StackPanel>
                                     </Border>
                                     <Border>
-                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
+                                        <StackPanel Orientation="Horizontal"  >
                                             <TextBlock Text="" Style="{StaticResource ItemTitle}"/>
                                             <ItemsControl ItemsSource="{Binding WriteCurrentRegister.BinaryArray[3],Mode=TwoWay}">
                                                 <ItemsControl.ItemsPanel>
@@ -371,7 +382,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBox hc:BorderElement.CornerRadius="0" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
+                                                    <TextBox hc:BorderElement.CornerRadius="0"  IsReadOnly="True"  BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}"  />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>

@@ -24,7 +24,7 @@
         </Style>
     </Window.Resources>
     <comCtrl:NoTitleBarWindow.TitleBarContent>
-        <Border Grid.Row="0" x:Name="CustomTitleBar" Style="{DynamicResource TitleBarBorder}" Height="50">
+        <Border Grid.Row="0" x:Name="CustomTitleBar" Style="{DynamicResource TitleBarBorder}" Height="45">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
