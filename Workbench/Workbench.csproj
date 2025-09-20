@@ -470,6 +470,7 @@
     <Compile Include="ViewModels\dw\WatchTableListViewModel.cs" />
     <Compile Include="ViewModels\dw\WatchViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\PassWordViewModel.cs" />
     <Compile Include="ViewModels\RecentFileViewModel.cs" />
     <Compile Include="ViewModels\RenameViewModel.cs" />
     <Compile Include="Views\ChipManagerView.xaml.cs">
@@ -517,6 +518,9 @@
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PassWordView.xaml.cs">
+      <DependentUpon>PassWordView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RecentFileView.xaml.cs">
       <DependentUpon>RecentFileView.xaml</DependentUpon>
     </Compile>
@@ -528,6 +532,9 @@
     </Compile>
     <Compile Include="Views\Windows\CreateProjectWindow.xaml.cs">
       <DependentUpon>CreateProjectWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\PassWordWindow.xaml.cs">
+      <DependentUpon>PassWordWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Windows\RecentFileWindow.xaml.cs">
       <DependentUpon>RecentFileWindow.xaml</DependentUpon>
@@ -556,7 +563,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PassWordView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\RenameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\PassWordWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

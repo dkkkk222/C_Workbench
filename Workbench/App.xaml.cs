@@ -180,7 +180,9 @@ namespace Workbench
             containerRegistry.RegisterDialogWindow<RecentFileWindow>(nameof(RecentFileWindow));
             containerRegistry.RegisterDialog<RecentFileView, RecentFileViewModel>();
             containerRegistry.RegisterDialogWindow<RenameWindow>(nameof(RenameWindow));
+            containerRegistry.RegisterDialogWindow<PassWordWindow>(nameof(PassWordWindow));
             containerRegistry.RegisterDialog<RenameView, RenameViewModel>();
+            containerRegistry.RegisterDialog<PassWordView, PassWordViewModel>();
         }
 
         private void CatchException()

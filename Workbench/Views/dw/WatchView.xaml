@@ -202,6 +202,7 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                 <Border Grid.Row="0">
                     <DockPanel LastChildFill="True">
                         <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
+                        
                             <StackPanel Orientation="Horizontal">
                                 <controls_Title:StandTitle Padding="0,0,0,0" x:Name="tbx_control" BordMargin="0,0,5,0" StandText="监测数据配置" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
@@ -213,6 +214,15 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                                 <Button Style="{StaticResource ButtonDefault.Small}" Width="116"
 ToolTip="展开/收起寄存器目录" Content="收起寄存器目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
 Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />
+
+                                <TextBlock Width="10"></TextBlock>
+                                <Button Content="全部开始监测" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
+HorizontalAlignment="Left" hc:IconElement.Width="14" 
+Command="{Binding StartAllCommand}"/>
+                                <TextBlock Width="10"></TextBlock>
+                                <Button Content="全部停止监测" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"  
+HorizontalAlignment="Right" hc:IconElement.Width="14" 
+Command="{Binding StopAllCommand}"/>
                             </StackPanel>
                             
                         </Border>
@@ -463,7 +473,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         <!--</StackPanel>-->
                     </DockPanel>
                 </Border>
-                <GridSplitter Grid.Row="1" Margin="15,10,10,10" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#10000000" ResizeDirection="Rows"></GridSplitter>
+                <GridSplitter Grid.Row="1" Margin="15,10,10,10" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource GridSplitterBordColor}" ResizeDirection="Rows"></GridSplitter>
 
                 <Grid Grid.Row="2">
                     <Grid.RowDefinitions>
@@ -781,8 +791,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </DataTemplate>
                                 </TabControl.ContentTemplate>
                             </hc:TabControl>
-                            
-                            <GridSplitter Grid.Column="1" Width="10" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
+
+                            <GridSplitter Grid.Column="1" Margin="0,5,0,0" Width="2" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
                             <hc:TabControl Grid.Row="2" Grid.Column="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" 
                                            IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
         ItemsSource="{Binding WatchChartGroupsForTab}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentChartTab}"

@@ -639,7 +639,42 @@ namespace Workbench.ViewModels.dw
         {
             LoadRegisters();
         }));
-
+        public DelegateCommand StopAllCommand => new DelegateCommand(() =>
+        {
+            foreach (var param in CategoryRegisters)
+            {
+                if (param.IsStartRecord)
+                {
+                    pms.StopRecord(param.Id);
+                    param.IsStartRecord = false;
+                }
+            }
+        });
+        public DelegateCommand StartAllCommand => new DelegateCommand(() =>
+        {
+            if (!_projectManager.CurrentProject.IsConnecting)
+            {
+                System.Windows.Forms.MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            foreach(var param in CategoryRegisters)
+            {
+                if(!param.IsStartRecord)
+                {
+                    param.IsStartRecord = true;
+                    double recordTime = param.RecordTime;
+                    if (param.RecordTimeTypeItem == ((int)RecordTimeType.Hour).ToString())
+                    {
+                        recordTime = param.RecordTime * 60 * 60;
+                    }
+                    if (param.RecordTimeTypeItem == ((int)RecordTimeType.Min).ToString())
+                    {
+                        recordTime = param.RecordTime * 60;
+                    }
+                    pms.StartRecord(param, TimeSpan.FromSeconds(recordTime));                    
+                }                
+            }
+        });
         private DelegateCommand<RegisterAddrInfo> _beginRecordCommand;
         /// <summary>
         /// 开始记录

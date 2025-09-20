@@ -165,10 +165,18 @@ namespace Workbench.Views
         private void ShowChipCommand_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
-            _dialogService.Show(nameof(ChipManagerView), new DialogParameters(), result =>
+            _dialogService.Show(nameof(PassWordView), new DialogParameters(), result =>
             {
+                if (result.Result == ButtonResult.OK)
+                {
+                    _dialogService.Show(nameof(ChipManagerView), new DialogParameters(), result =>
+                    {
 
-            }, nameof(ChipManagerWindow));
+                    }, nameof(ChipManagerWindow));
+                }
+            }, nameof(PassWordWindow));
+
+            
         }
 
         private void NoTitleBarWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

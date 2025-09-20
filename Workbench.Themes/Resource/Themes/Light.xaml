@@ -139,4 +139,6 @@
     <SolidColorBrush x:Key="RowHoverBrushOdd"  Color="#EEF6FF"/>
     <SolidColorBrush x:Key="RowSelectedBrush" Color="#3D7EFF"/>
     <SolidColorBrush x:Key="RowSelectedForeground" Color="White"/>
+
+    <SolidColorBrush x:Key="GridSplitterBordColor" Color="#2000"/>
 </ResourceDictionary>
