@@ -78,6 +78,7 @@ namespace Workbench.ViewModels.dw
             pms = new ParameterMonitorService(registerDelay) { CurrentProject = _projectManager.CurrentProject };
             pms.Enable();
             NormalizeWatchCharts();
+            NormalizeWatchTable();
             _timer.Interval = 50; // 设置触发间隔
             _timer.Elapsed += Timer_Tick; // 设置触发事件
 
@@ -120,6 +121,28 @@ namespace Workbench.ViewModels.dw
             _watchChartGroupsForTab.Refresh();
             SyncCurrentChartTab();
             HasRealCharts = _watchChartGroupsForTab.Count > 0;
+
+            #region Table的未选中
+            _watchGroupsForTab = new ListCollectionView(WatchGroups);
+            _watchGroupsForTab.Filter = o => o is WatchGroup m && !IsPlaceholderTable(m);
+            if (WatchGroups != null && _tableGroupsChangedHandler != null)
+                WatchGroups.CollectionChanged -= _tableGroupsChangedHandler;
+            _tableGroupsChangedHandler = (s, e) =>
+            {
+                System.Windows.Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    _watchGroupsForTab?.Refresh();
+                    SyncCurrentTableTab();
+                    HasRealTables = _watchGroupsForTab?.Count > 0;
+                });
+            };
+
+            WatchGroups.CollectionChanged += _tableGroupsChangedHandler;
+
+            _watchGroupsForTab.Refresh();
+            SyncCurrentTableTab();
+            HasRealTables = _watchGroupsForTab.Count > 0;
+            #endregion
             ReLoadChartTable();
             InitOrderAndSort();
         }
@@ -128,6 +151,15 @@ namespace Workbench.ViewModels.dw
             Id = "placeholder",
             Header = "未选中"
         };
+        private WatchGroup CreatePlaceholderTable()
+        {
+             var temp= new WatchGroup(_dialogService,session_id,_projectManager)
+                {
+                    Id = "placeholder",
+                    Header = "未选中"
+                };
+            return temp;
+        }
         private void NormalizeWatchCharts()
         {
             if (WatchChartGroups == null) return;
@@ -140,8 +172,21 @@ namespace Workbench.ViewModels.dw
             if (!WatchChartGroups.Any(IsPlaceholder))
                 WatchChartGroups.Insert(0, CreatePlaceholder());
         }
+        private void NormalizeWatchTable()
+        {
+            if (WatchGroups == null) return;
+
+            // 移除多余占位
+            var dups = WatchGroups.Where(IsPlaceholderTable).Skip(1).ToList();
+            foreach (var d in dups) WatchGroups.Remove(d);
+
+            // 没有就补一个
+            if (!WatchGroups.Any(IsPlaceholderTable))
+                WatchGroups.Insert(0, CreatePlaceholderTable());
+        }
 
         private NotifyCollectionChangedEventHandler _chartGroupsChangedHandler;
+        private NotifyCollectionChangedEventHandler _tableGroupsChangedHandler;
         private void SyncCurrentChartTab()
         {
             if (_watchChartGroupsForTab.Count == 0)
@@ -158,17 +203,48 @@ namespace Workbench.ViewModels.dw
                 CurrentChartTab = (WatchChartModel)_watchChartGroupsForTab.GetItemAt(0);
             }
         }
+        private void SyncCurrentTableTab()
+        {
+            if (_watchGroupsForTab.Count == 0)
+            {
+                if (CurrentTab != null) CurrentTab = null;
+                return;
+            }
+
+            // 当前未选/占位/或不在视图中：选第一个真实项
+            if (CurrentTab == null
+                || IsPlaceholderTable(CurrentTab)
+                || !_watchGroupsForTab.Contains(CurrentTab))
+            {
+                CurrentTab = (WatchGroup)_watchGroupsForTab.GetItemAt(0);
+            }
+        }
         private static bool IsPlaceholder(WatchChartModel m)
     => m != null && string.Equals(m.Header, "未选中", StringComparison.Ordinal);
         // TabControl 专用视图（独立于默认视图，不会影响 ComboBox）
         private readonly ListCollectionView _watchChartGroupsForTab;
         public ICollectionView WatchChartGroupsForTab => _watchChartGroupsForTab;
 
+
+        private static bool IsPlaceholderTable(WatchGroup m)
+   => m != null && string.Equals(m.Header, "未选中", StringComparison.Ordinal);
+        // TabControl 专用视图（独立于默认视图，不会影响 ComboBox）
+        private readonly ListCollectionView _watchGroupsForTab;
+        public ICollectionView WatchGroupsForTab => _watchGroupsForTab;
+
+
         private bool _hasRealCharts;
         public bool HasRealCharts
         {
             get => _hasRealCharts;
             set => SetProperty(ref _hasRealCharts, value);
+        }
+
+        private bool _hasRealTables;
+        public bool HasRealTables
+        {
+            get => _hasRealTables;
+            set => SetProperty(ref _hasRealTables, value);
         }
         #region Property
         public bool _isActive = false;
@@ -496,6 +572,7 @@ namespace Workbench.ViewModels.dw
         {
             var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == current.Title);
             var isHaveAdd = CategoryRegisters.Where(x => x.AddressDec == register.AddressDec).FirstOrDefault();
+            register.TableId = "placeholder";
             if (isHaveAdd == null)
                 CategoryRegisters.Add(register);
         }
@@ -641,6 +718,32 @@ namespace Workbench.ViewModels.dw
         {
             LoadRegisters();
         }));
+        public DelegateCommand<object> CloseChartCommand => new DelegateCommand<object>((e) =>
+        {
+            if (e is WatchChartModel chartToClose)
+            {
+                // 从 WatchGroups 集合中移除选中的选项卡
+                WatchChartGroups.Remove(chartToClose);
+                // （可选）如果需要，更新 CurrentTab 指向另一个有效选项卡
+                if (CurrentChartTab == chartToClose)
+                {
+                    CurrentChartTab = WatchChartGroups.FirstOrDefault();
+                }
+            }
+        });
+        public DelegateCommand<object> CloseTabCommand => new DelegateCommand<object>((e) =>
+        {
+            if (e is WatchGroup tabToClose)
+            {
+                // 从 WatchGroups 集合中移除选中的选项卡
+                WatchGroups.Remove(tabToClose);
+                // （可选）如果需要，更新 CurrentTab 指向另一个有效选项卡
+                if (CurrentTab == tabToClose)
+                {
+                    CurrentTab = WatchGroups.FirstOrDefault();
+                }
+            }
+        });
         public DelegateCommand StopAllCommand => new DelegateCommand(() =>
         {
             foreach (var param in CategoryRegisters)
@@ -734,11 +837,11 @@ namespace Workbench.ViewModels.dw
                 ChangeChartVisble2(selectChart.WpfPlotControl2, e.Desc);
                 ChangeChartVisble2(selectChart.WpfPlotControl, e.Desc);                
             }
-        });
+        }); 
         private DelegateCommand _addWatchGroupCommand;
         public DelegateCommand AddWatchGroupCommand => _addWatchGroupCommand ?? (_addWatchGroupCommand = new DelegateCommand(() =>
         {
-            var baseName = $"表{WatchGroups.Count + 1}";
+            var baseName = $"表{WatchGroups.Where(x=>x.Id!= "placeholder").Count() + 1}";
             var header = MakeUniqueHeader(baseName);
             var maxOrder = WatchGroups.Any() ? WatchGroups.Max(g => g.Order) : 0;
             WatchGroups.Add(new WatchGroup(_dialogService, session_id,_projectManager)
@@ -871,6 +974,7 @@ namespace Workbench.ViewModels.dw
         private DelegateCommand<RegisterAddrInfo> _tableChangeCommand;
         public DelegateCommand<RegisterAddrInfo> TableChangeCommand => _tableChangeCommand ?? (_tableChangeCommand = new DelegateCommand<RegisterAddrInfo>((param) =>
         {
+            var tab = WatchGroups.FirstOrDefault(t => t.Id == param.TableId);
             //清除原tab中的数据
             var groups = WatchGroups.Where(t => t.BitFields.Any(t => t.Name == param.Name));
             foreach (var group in groups)
@@ -899,10 +1003,12 @@ namespace Workbench.ViewModels.dw
                 group.WpfPlotControl2.Refresh();
             }
 
-            //找到Tab
-            var tab = WatchGroups.FirstOrDefault(t => t.Id == param.TableId);
+            
+            //找到Tab 
             if (tab == null)
                 return;
+            if (tab.Header == "未选中")
+            { }
             //遍历寄存器下的BitField
             foreach (var bf in param.BitFields)
             {
@@ -1324,13 +1430,19 @@ namespace Workbench.ViewModels.dw
             // WatchGroups
             if (WatchGroups != null)
             {
+                foreach (var c in WatchGroups)
+                    if (c.Id == "placeholder") c.Order = int.MinValue;
                 // 初始化缺省 Order（按当前顺序补齐）
                 for (int i = 0; i < WatchGroups.Count; i++)
-                    if (WatchGroups[i].Order == 0 && i > 0) WatchGroups[i].Order = i; // 按需适配你的默认值策略
+                    if (WatchGroups[i].Order == 0 && WatchGroups[i].Id != "placeholder") 
+                        WatchGroups[i].Order = i; // 按需适配你的默认值策略
 
                 var viewGroups = System.Windows.Data.CollectionViewSource.GetDefaultView(WatchGroups);
                 viewGroups.SortDescriptions.Clear();
                 viewGroups.SortDescriptions.Add(new SortDescription(nameof(WatchGroup.Order), ListSortDirection.Ascending));
+
+                _watchGroupsForTab.SortDescriptions.Clear();
+                _watchGroupsForTab.SortDescriptions.Add(new SortDescription(nameof(WatchGroup.Order), ListSortDirection.Ascending));
             }
 
             // WatchChartGroups

@@ -508,13 +508,19 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 <ColumnDefinition Width="5"></ColumnDefinition>
                                 <ColumnDefinition Width="1.3*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
-                                   ItemsSource="{Binding WatchGroups}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}">
-                                <TabControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Header}"  FontWeight="Black"/>
+                            <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="False" IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
+                                   ItemsSource="{Binding WatchGroupsForTab}" ShowOverflowButton="False"  IsScrollable="True"  OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}" Visibility="{Binding HasRealTables, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TabControl.ItemTemplate> 
+                                    <DataTemplate >
+                                        <StackPanel Orientation="Horizontal" Width="Auto">
+                                            <TextBlock Text="{Binding Header}"  FontWeight="Black"/>
+                                            <Button   Margin="130,0,0,0" Foreground="Black" Style="{StaticResource ButtonPrimary.Small}" BorderBrush="Transparent" Background="Transparent" hc:IconElement.Geometry="{StaticResource CloseGeometry}" Command="{Binding DataContext.CloseTabCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+
+                                        </StackPanel>
+
                                     </DataTemplate>
                                 </TabControl.ItemTemplate>
+                                
                                 <TabControl.ContentTemplate>
                                     <DataTemplate>
                                         <Border Padding="5" Background="{StaticResource AvalonDockAreaBackgroundColor}">
@@ -794,14 +800,17 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </hc:TabControl>
 
                             <GridSplitter Grid.Column="1" Margin="0,5,0,0" Width="2" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
-                            <hc:TabControl Grid.Row="2" Grid.Column="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="True" 
-                                           IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
+                            <hc:TabControl Grid.Row="2" Grid.Column="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="False" 
+                                           IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}" IsScrollable="True" ShowOverflowButton="False"
         ItemsSource="{Binding WatchChartGroupsForTab}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentChartTab}"
                                            Visibility="{Binding HasRealCharts, Converter={StaticResource BooleanToVisibilityConverter}}">
                                
                                 <TabControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Header}" FontWeight="Black"/>
+                                        <StackPanel Orientation="Horizontal" Width="Auto">
+                                            <TextBlock Text="{Binding Header}" FontWeight="Black"/>
+                                            <Button   Margin="130,0,0,0" Foreground="Black" Style="{StaticResource ButtonPrimary.Small}" BorderBrush="Transparent" Background="Transparent" hc:IconElement.Geometry="{StaticResource CloseGeometry}" Command="{Binding DataContext.CloseChartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </TabControl.ItemTemplate>
                                 <TabControl.ContentTemplate>
