@@ -47,7 +47,7 @@ namespace Workbench.ViewModels.dw
                 }
             }
         }
-        private bool _isConfigPaneOpen = true;               // 默认展开
+        private bool _isConfigPaneOpen = false;               // 默认展开
         public bool IsConfigPaneOpen
         {
             get => _isConfigPaneOpen;
@@ -348,12 +348,12 @@ namespace Workbench.ViewModels.dw
             bool same = IsSameRegister(selected, WriteCurrentRegister);
             if(same && selected != null)
             {
-                IsConfigPaneOpen = true;
+                //IsConfigPaneOpen = true;
             }
             else
             {
                 WriteCurrentRegister = param;
-                IsConfigPaneOpen = true;
+                //IsConfigPaneOpen = true;
             }
         }
         public DelegateCommand<RegisterAddrInfo> ToggleConfigPaneCommand => new DelegateCommand<RegisterAddrInfo>((param) =>
