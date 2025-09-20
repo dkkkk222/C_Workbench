@@ -126,7 +126,13 @@ namespace Workbench.Models
             get => _Delay;
             set => SetProperty(ref _Delay, value);
         }
-
+        private string _RegisterDelay = "10";
+        public string RegisterDelay
+        {
+            get => _RegisterDelay;
+            set => SetProperty(ref _RegisterDelay, value);
+        }
+        
         private string _CanDelay = "5";
         public string CanDelay
         {

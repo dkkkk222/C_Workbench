@@ -382,6 +382,21 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 SetProperty(ref _selectedCommunicationI2CType, value);
             }
         }
+        public string _RegisterDelay = "10";
+        public string RegisterDelay
+        {
+            get => _RegisterDelay;
+            set
+            {
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                {
+                    ppec.RegisterDelay = value;
+                }
+
+                SetProperty(ref _RegisterDelay, value);
+            }
+        }
         public string _Delay = "0";
         public string Delay
         {

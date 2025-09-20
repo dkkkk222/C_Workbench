@@ -220,16 +220,17 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
 HorizontalAlignment="Left" hc:IconElement.Width="14" 
 Command="{Binding StartAllCommand}"/>
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Content="全部停止监测" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"  
-HorizontalAlignment="Right" hc:IconElement.Width="14" 
+                                <Button Content="全部停止监测" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"  
+HorizontalAlignment="Right" hc:IconElement.Width="14"  
 Command="{Binding StopAllCommand}"/>
+                                
                             </StackPanel>
                             
                         </Border>
                         <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
                             
                             <DataGrid    MinWidth="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-               CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="200" IsReadOnly="True"
+               CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="200" IsReadOnly="True"   RowHeight="40"
                                          Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
                SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <DataGrid.ColumnHeaderStyle>
@@ -291,7 +292,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 </DataGrid.CellStyle>
                                 <DataGrid.RowStyle>
                                     <Style TargetType="DataGridRow">
-                                        <Setter Property="Height" Value="35"/>
+                                        <Setter Property="Height" Value="40"/>
                                         <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                         <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                         <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
@@ -561,7 +562,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         </DockPanel>
                                                     </Border>
                                                     <DataGrid ItemsSource="{Binding BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"
+                                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" RowHeight="40"
                                                      Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
                                                       SelectedItem="{Binding CurrentSequence}"  ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                       x:Name="MyDataGrid">
@@ -623,7 +624,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         </DataGrid.CellStyle>
                                                         <DataGrid.RowStyle>
                                                             <Style TargetType="DataGridRow">
-                                                                <Setter Property="Height" Value="35"/>
+                                                                <Setter Property="Height" Value="40"/>
                                                                 <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                                                 <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                                                 <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />

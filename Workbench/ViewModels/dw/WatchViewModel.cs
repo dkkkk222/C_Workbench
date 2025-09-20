@@ -73,7 +73,9 @@ namespace Workbench.ViewModels.dw
             WatchChartGroups = _projectManager.CurrentProject.WatchChartGroups;
             CategoryRegisters = _projectManager.CurrentProject.CategoryRegisters;
             _projectManager.CurrentProject.EnsureSession();
-            pms = new ParameterMonitorService(10) { CurrentProject = _projectManager.CurrentProject };
+            int registerDelay = 10;
+            registerDelay=int.Parse(projectManager.CurrentProject.RegisterDelay);
+            pms = new ParameterMonitorService(registerDelay) { CurrentProject = _projectManager.CurrentProject };
             pms.Enable();
             NormalizeWatchCharts();
             _timer.Interval = 50; // 设置触发间隔

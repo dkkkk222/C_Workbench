@@ -217,7 +217,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                     </DockPanel>
                                 </Border>
                                 <DataGrid ItemsSource="{Binding SequenceList}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"  Height="Auto"
+                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"  RowHeight="40"   Height="Auto"
                                        Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
                                       SelectedItem="{Binding CurrentSequence}">
                                     <DataGrid.ColumnHeaderStyle>
@@ -246,7 +246,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                             <Setter Property="Background" Value="Transparent"/>
                                             <Setter Property="BorderThickness" Value="0"/>
                                             <Setter Property="BorderBrush" Value="Transparent"/>
-                                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>                                            
                                             <!-- 前景色跟随行 -->
                                             <Setter Property="Foreground"
 Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
@@ -279,7 +279,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </DataGrid.CellStyle>
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow">
-                                            <Setter Property="Height" Value="30"/>
+                                            <Setter Property="Height" Value="40"/>
                                             <Setter Property="Tag" Value="{Binding Path=DataContext,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                             <Setter Property="ContextMenu">
                                                 <Setter.Value>
@@ -299,7 +299,7 @@ CommandParameter="{Binding}"/>
                                             <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                             <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                             <Setter Property="BorderThickness" Value="0,0,0,1" />
-                                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                                            <Setter Property="SnapsToDevicePixels" Value="True" /> 
                                             <!-- 新增：默认不加粗 -->
                                             <Setter Property="FontWeight" Value="Normal"/>
                                             <Style.Triggers>
@@ -508,7 +508,7 @@ Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedI
 
                             <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
                                   AlternationCount="2"   Background="{DynamicResource DataGridBackgroundColor}"  ColumnHeaderHeight="30"
-                                      RowHeaderWidth="60" LoadingRow="SequenceGrid_LoadingRow" Sorting="SequenceGrid_Sorting"
+                                      RowHeaderWidth="60" LoadingRow="SequenceGrid_LoadingRow" Sorting="SequenceGrid_Sorting" RowHeight="40"
                                       Loaded="SequenceGrid_OnLoaded" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0" SelectionChanged="SequenceGrid_SelectionChanged">
                                 <!--<i:Interaction.Triggers>
@@ -785,7 +785,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                             <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}" AutoGenerateColumns="False"  ColumnHeaderHeight="30"
                                            Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
-                         CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
+                         CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0" RowHeight="40">
 
                                     <DataGrid.ColumnHeaderStyle>
                                         <Style TargetType="{x:Type DataGridColumnHeader}"  >

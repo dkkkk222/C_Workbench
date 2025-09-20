@@ -442,7 +442,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                     <!--<Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0"   VerticalAlignment="Top">-->
                                         <DataGrid ItemsSource="{Binding WriteCurrentRegister.BitFields}" x:Name="BitGrid"
                                                    Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
-                                                  AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}" 
+                                                  AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}" RowHeight="40"
                          CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False">
                                             <DataGrid.Resources>
                                                 <utils:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
@@ -490,7 +490,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                             </DataGrid.CellStyle>
                                             <DataGrid.RowStyle>
                                                 <Style TargetType="DataGridRow">
-                                                    <Setter Property="Height" Value="30"/>
+                                                    <Setter Property="Height" Value="40"/>
                                                     <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                                     <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
@@ -639,7 +639,7 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
                                     </Border>
                                     <!--<Border Background="{DynamicResource DarkDefaultBrush}" Margin="0,5,0,0"  VerticalAlignment="Top">-->
                                         <DataGrid ItemsSource="{Binding CurrentRegister.BitFields}" Height="Auto"
-                                                  Background="{DynamicResource DataGridBackgroundColor}"
+                                                  Background="{DynamicResource DataGridBackgroundColor}" RowHeight="40"
                                                   AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                                   AlternationCount="2"
                                                   CanUserSortColumns="False" 
@@ -704,7 +704,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataGrid.CellStyle>
                                             <DataGrid.RowStyle>
                                                 <Style TargetType="DataGridRow">
-                                                    <Setter Property="Height" Value="30"/>
+                                                    <Setter Property="Height" Value="40"/>
                                                     <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                                     <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
@@ -792,7 +792,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </hc:UniformSpacingPanel>
                         </Border>
                         <DataGrid ItemsSource="{Binding ReadWriteHistory}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                  Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"  Height="Auto"
+                                  Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"  RowHeight="40" Height="Auto"
                                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="{x:Type DataGridColumnHeader}"  >
@@ -853,7 +853,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </DataGrid.CellStyle>
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow">
-                                    <Setter Property="Height" Value="30"/>
+                                    <Setter Property="Height" Value="40"/>
                                     <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                                     <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
