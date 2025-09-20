@@ -225,6 +225,40 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _writeCurrentRegister, value);
         }
 
+        private string _AllTime = "50";
+        public string AllTime
+        {
+            get => _AllTime;
+            set => SetProperty(ref _AllTime, value);
+        }
+
+        public DelegateCommand SettingAllTimeCommand => new DelegateCommand(() =>
+        {
+            if (string.IsNullOrEmpty(AllTime))
+            {
+                HandyControl.Controls.MessageBox.Show("请输入正确的数值!");
+                return;
+            }
+            int setTime = 1;
+            if (int.TryParse(AllTime, out setTime))
+            {
+                if (setTime < 1)
+                {
+                    HandyControl.Controls.MessageBox.Show("请输入大于等于1的数值!");
+                    return;
+                }
+                foreach (var reg in SequenceList)
+                {
+                    reg.ParamPushInterval = setTime;
+                }
+            }
+            else
+            {
+                HandyControl.Controls.MessageBox.Show("请输入正确的数值!");
+                return;
+            }
+        });
+
         public DelegateCommand<object> SelectAllCommand => new DelegateCommand<object>((e) =>
         {
             SingleParamTrees.SetAllLeavesChecked((bool)e);

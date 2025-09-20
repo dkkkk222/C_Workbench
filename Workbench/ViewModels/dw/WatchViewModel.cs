@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Workbench.Controls.Controls.Scottplot;
 using Workbench.Db;
@@ -315,7 +316,12 @@ namespace Workbench.ViewModels.dw
             get => _currentTab;
             set => SetProperty(ref _currentTab, value);
         }
-
+        private WatchGroup _SelectTab;
+        public WatchGroup SelectTab
+        {
+            get => _SelectTab;
+            set => SetProperty(ref _SelectTab, value);
+        }
         private WatchChartModel _currentChartTab = null;
         public WatchChartModel CurrentChartTab
         {
@@ -380,6 +386,12 @@ namespace Workbench.ViewModels.dw
         {
             get => _pms;
             set => SetProperty(ref _pms, value);
+        }
+        private string _AllTime="1";
+        public string AllTime
+        {
+            get => _AllTime;
+            set => SetProperty(ref _AllTime, value);
         }
         #endregion
 
@@ -702,6 +714,79 @@ namespace Workbench.ViewModels.dw
             UtilsFunc.SyncTreeCheckNode(currentTreeNode, CategoryRegisters);
         }
         #endregion
+        public DelegateCommand SettingAllTimeCommand => new DelegateCommand(() =>
+        {
+            if(string.IsNullOrEmpty(AllTime))
+            {
+                HandyControl.Controls.MessageBox.Show("请输入正确的数值!");
+                return;
+            }
+            int setTime = 1;
+            if (int.TryParse(AllTime,out setTime))
+            { 
+                if(setTime<1)
+                {
+                    HandyControl.Controls.MessageBox.Show("请输入大于等于1的数值!");
+                    return;
+                }
+                foreach(var reg in CategoryRegisters)
+                {
+                    reg.RecordTime = setTime;
+                }
+            }
+            else
+            {
+                HandyControl.Controls.MessageBox.Show("请输入正确的数值!");
+                return;
+            }
+        });
+        public DelegateCommand SettingAllTableCommand => new DelegateCommand(() =>
+        {
+            foreach (var reg in CategoryRegisters)
+            {
+                var tab = WatchGroups.FirstOrDefault(t => t.Id == reg.TableId);
+                //清除原tab中的数据
+                var groups = WatchGroups.Where(t => t.BitFields.Any(t => t.Name == reg.Name));
+                foreach (var group in groups)
+                {
+                    var remain = group.BitFields.Where(t => t.Name != reg.Name).ToList();
+                    group.BitFields.Clear();
+                    group.BitFields.AddRange(remain);
+
+                    var labels = group.WpfPlotControl.Plot.GetPlottables();
+                    var labels2 = group.WpfPlotControl2.Plot.GetPlottables();
+                    foreach (var lengLabel in labels)
+                    {
+                        if (lengLabel is Scatter sc)
+                        {
+                            sc.IsVisible = false;
+                        }
+                    }
+                    foreach (var lengLabel in labels2)
+                    {
+                        if (lengLabel is Scatter sc)
+                        {
+                            sc.IsVisible = false;
+                        }
+                    }
+                    group.WpfPlotControl.Refresh();
+                    group.WpfPlotControl2.Refresh();
+                }
+
+                reg.TableId = SelectTab.Id;
+                //找到Tab 
+                if (tab == null)
+                    return;
+                //遍历寄存器下的BitField
+                foreach (var bf in reg.BitFields)
+                {
+                    var clone = JsonHelper.DeepClone(bf);
+                    clone.AddressHexName = reg.AddressHex;
+                    clone.AddressId = reg.Id;
+                    SelectTab.BitFields.Add(clone);
+                }
+            }
+        });
         private DelegateCommand _closeCommand;
 
         public override DelegateCommand CloseCommand =>

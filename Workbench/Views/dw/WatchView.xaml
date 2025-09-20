@@ -202,32 +202,68 @@ SelectedItem="{Binding CategoryAddress}" DisplayMemberPath="Label" SelectedValue
                 <Border Grid.Row="0">
                     <DockPanel LastChildFill="True">
                         <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
-                        
-                            <StackPanel Orientation="Horizontal">
+
+                            <DockPanel LastChildFill="True">
                                 <controls_Title:StandTitle Padding="0,0,0,0" x:Name="tbx_control" BordMargin="0,0,5,0" StandText="监测数据配置" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
                                 <!--<TextBlock Text="监测数据配置" FontSize="{StaticResource SubHeadFontSize}"/>-->
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Style="{StaticResource ButtonDefault.Small}" Width="116"
+                                <Button Style="{StaticResource ButtonDefault.Small}" Width="116" Margin="0,0,0,6"
         ToolTip="展开/收起寄存器目录" Content="展开寄存器目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
         Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource  AlignLeftGeometry}"/>
-                                <Button Style="{StaticResource ButtonDefault.Small}" Width="116"
+                                <Button Style="{StaticResource ButtonDefault.Small}" Width="116" Margin="0,0,0,6"
 ToolTip="展开/收起寄存器目录" Content="收起寄存器目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
 Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />
-
+                                <TextBox Text="{Binding AllTime,Mode=TwoWay}"  hc:InfoElement.Title="批量设置参数："  Margin="5,0,0,6" hc:InfoElement.TitlePlacement="Left" Width="130" >
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                            <Style.Triggers>
+                                                <!-- 获得焦点时变色 -->
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                                <Button Content="批量设置时间" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
+HorizontalAlignment="Left" hc:IconElement.Width="14"  Margin="5,0,0,6"
+Command="{Binding SettingAllTimeCommand}"/>
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Content="全部开始监测" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
+                                <ComboBox ItemsSource="{Binding WatchGroups,Mode=TwoWay}" 
+                                     DisplayMemberPath="Header" SelectedValue="{Binding SelectTab,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
+                                            <Style.Triggers>
+                                                <!-- 获得焦点时变色 -->
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                </Trigger>
+                                                <!-- 下拉展开时变色 -->
+                                                <Trigger Property="IsDropDownOpen" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
+                                <TextBlock Width="10"></TextBlock>
+                                <Button Content="批量设置表" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
+HorizontalAlignment="Left" hc:IconElement.Width="14"  Margin="5,0,0,6"
+Command="{Binding SettingAllTableCommand}"/>
+                                <TextBlock Width="10"></TextBlock>
+                                <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
+                                    <Button Content="全部开始监测" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
 HorizontalAlignment="Left" hc:IconElement.Width="14" 
-Command="{Binding StartAllCommand}"/>
-                                <TextBlock Width="10"></TextBlock>
-                                <Button Content="全部停止监测" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"  
+Command="{Binding StartAllCommand}"/> 
+                                <Button Content="全部停止监测" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"  
 HorizontalAlignment="Right" hc:IconElement.Width="14"  
 Command="{Binding StopAllCommand}"/>
-                                
-                            </StackPanel>
+                                </hc:UniformSpacingPanel>
+                            </DockPanel>
                             
                         </Border>
-                        <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
+                        <!--<Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">-->
                             
                             <DataGrid    MinWidth="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" MinHeight="200" IsReadOnly="True"   RowHeight="40"
@@ -468,7 +504,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                        </Border>
+                        <!--</Border>-->
 
 
                         <!--</StackPanel>-->
