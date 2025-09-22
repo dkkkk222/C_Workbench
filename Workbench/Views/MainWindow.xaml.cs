@@ -3,6 +3,7 @@ using Prism.Events;
 using Prism.Services.Dialogs;
 using System;
 using System.Windows;
+using System.Windows.Forms;
 using Workbench.Events;
 using Workbench.Utils;
 using Workbench.ViewModels;
@@ -143,6 +144,7 @@ namespace Workbench.Views
         {
             e.Handled = true;
             _projectManager.SaveProject(_projectManager.CurrentProject);
+            System.Windows.Forms.MessageBox.Show("保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         /// <summary>
@@ -154,6 +156,7 @@ namespace Workbench.Views
         {
             e.Handled = true;
             _projectManager.SaveAsProject(_projectManager.CurrentProject);
+            System.Windows.Forms.MessageBox.Show("保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         #endregion
@@ -186,7 +189,7 @@ namespace Workbench.Views
             {
                 _eventAggregator.GetEvent<CloseConnectEvent>().Publish();
                 var viewModel = DataContext as MainWindowViewModel;
-                var r = MessageBox.Show("是否保存工程？", "提示",
+                var r = System.Windows.MessageBox.Show("是否保存工程？", "提示",
                                MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (r == MessageBoxResult.Yes)
                 {
@@ -200,8 +203,11 @@ namespace Workbench.Views
             finally 
             {
                 var ppec = _projectManager.GetCachePPEC();
-                ppec.Disconnect();
-                _projectManager.SetCurrentPpec(ppec);
+                if(ppec!=null)
+                {
+                    ppec.Disconnect();
+                    _projectManager.SetCurrentPpec(ppec);
+                }                
             }
         }
     }

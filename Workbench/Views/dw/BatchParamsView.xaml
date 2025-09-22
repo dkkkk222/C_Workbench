@@ -712,11 +712,11 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <DataGridTemplateColumn Header="数据(HEX)" Width="*" MinWidth="110" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[4].IsChecked,
-                                                        Converter={StaticResource Boolean2VisibilityConverter}}" IsReadOnly="True">
+                                                        Converter={StaticResource Boolean2VisibilityConverter}}"  >
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBox Text="{Binding HexValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"
-                                                        IsReadOnly="True"
+                                                        
                                                  LostFocus="HexValueText_LostFocus">
                                                     <TextBox.Style>
                                                         <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
@@ -938,16 +938,6 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
-                                        <!--<DataGridTextColumn Header="数据(Binary)" Binding="{Binding ReadBinary}"  Width="*" MinWidth="100">
-                                            <DataGridTextColumn.ElementStyle>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="ToolTip" Value="{Binding ReadBinary}"/>
-                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                                    <Setter Property="HorizontalAlignment" Value="Left"/>
-                                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                                </Style>
-                                            </DataGridTextColumn.ElementStyle>
-                                        </DataGridTextColumn>-->
                                     <DataGridTextColumn Header="数据(HEX)" Binding="{Binding ReadHex}"  Width="*" MinWidth="100" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumnsR[2].IsChecked,
@@ -961,16 +951,6 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 </Style>
                                             </DataGridTextColumn.ElementStyle>
                                         </DataGridTextColumn>
-                                        <!--<DataGridTextColumn Header="解析" Binding="{Binding ResolveStr}"  Width="*" MinWidth="70">
-                                            <DataGridTextColumn.ElementStyle>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="ToolTip" Value="{Binding ResolveStr}"/>
-                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                                    <Setter Property="HorizontalAlignment" Value="Left"/>
-                                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                                </Style>
-                                            </DataGridTextColumn.ElementStyle>
-                                        </DataGridTextColumn>-->
                                         <DataGridTemplateColumn Header="数据配置解析(Binary)" Width="*" MinWidth="160" Visibility="Hidden">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>

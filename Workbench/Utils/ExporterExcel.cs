@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Shapes;
 using log4net;
 using NPOI.SS.UserModel;
@@ -119,6 +120,7 @@ namespace Workbench.Utils
                             wb.Write(fs);
                     }
                     _log.Info("下载完成");
+                    MessageBox.Show("历史数据下载完成!");
                 }
             }
             catch (Exception ex) 

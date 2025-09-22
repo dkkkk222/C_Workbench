@@ -17,7 +17,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Threading.Tasks; 
 using System.Windows.Forms;
 using System.Windows.Input;
 using Workbench.Events;
@@ -456,12 +456,13 @@ namespace Workbench.ViewModels.dw
                         }
                         break;
                 }
+                var tempHex = Utility.DecToHex(WriteCurrentRegister.DecValue);
                 //await currentProject.CommService.SendAsync(calcResult.bytes);
                 var history = new SingleParamHistory
                 {
                     ReadWrite = "W",
                     Address = WriteCurrentRegister.AddressHex,
-                    Hex = WriteCurrentRegister.HexValue,
+                    Hex = tempHex,//WriteCurrentRegister.HexValue,
                     Name = WriteCurrentRegister.Name,
                     State = "正常",
                     Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
@@ -500,6 +501,17 @@ namespace Workbench.ViewModels.dw
                 HistoryToExcel(path);
             }
         }));
+
+        public DelegateCommand CleraHistoryCommand => new DelegateCommand(() =>
+        {
+            var result = System.Windows.Forms.MessageBox.Show("是否清除历史记录!", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                _projectManager.CurrentProject.ReadWriteHistory.Clear();
+                ReadWriteHistory.Clear();
+            }
+                
+        });
 
         private DelegateCommand<BitField> _optionChangeCommand;
         public DelegateCommand<BitField> OptionChangeCommand => _optionChangeCommand ?? (_optionChangeCommand = new DelegateCommand<BitField>((param) =>

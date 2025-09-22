@@ -581,7 +581,7 @@ namespace Workbench.Utils
         internal void SetWriteRegisterValue(RegisterAddrInfo writeRegister,string registerName, uint value)
         {
             writeRegister.DecValue = value;
-            //writeRegister.HexValue = Utility.DecToHex(value);
+            writeRegister.HexValue = Utility.DecToHex(value);
             var tpl = Utility.ParseDecToBinary(value);
             writeRegister.BinaryStr = tpl.binaryString;
             var list = tpl.binaryArray.Select(t => new ObservableCollection<BitOption>(t));

@@ -147,7 +147,7 @@
                                 hc:IconElement.Geometry="{StaticResource SaveGeometry}" hc:IconElement.Width="13"/>
                     </StackPanel>
                 </Border>
-                <Border Grid.Row="2" Padding="10">
+                <Border Grid.Row="2" Padding="0,0,0,0">
                     <DataGrid x:Name="DeviceDataGrid"
                               Style="{StaticResource DataGrid.Small}"
                   AutoGenerateColumns="False"
@@ -301,7 +301,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTemplateColumn Header="管理" Width="270" >
+                            <DataGridTemplateColumn Header="管理" Width="320" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
@@ -315,7 +315,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <hc:UniformSpacingPanel Spacing="10">
                                                 <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
                                                 <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}" Click="Delete_Click"/>
-                                                <Button Content="重建参数是" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}" Click="Rebuild_Click"/>
+                                                <Button Content="关联参数" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}" Click="Rebuild_Click"/>
                                             </hc:UniformSpacingPanel>
                                             
                                         </StackPanel>

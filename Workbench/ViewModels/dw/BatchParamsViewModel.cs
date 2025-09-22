@@ -532,6 +532,7 @@ namespace Workbench.ViewModels.dw
         }));
         public async Task UpdateWriteRegister(string name, int endBit, int startBit, string replaceStr)
         {
+            WriteCurrentRegister.BinaryStr=Utility.ParseDecToBinary(WriteCurrentRegister.DecValue).binaryString;
             var bs = WriteCurrentRegister.BinaryStr;
            
             var str = Utility.ReplaceBitsInString(bs, endBit, startBit, replaceStr);

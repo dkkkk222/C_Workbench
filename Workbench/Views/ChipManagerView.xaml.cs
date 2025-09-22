@@ -260,7 +260,7 @@ namespace Workbench.Views
             }
 
         }
-        private void Rebuild_Click(object sender, RoutedEventArgs e)
+        private async void Rebuild_Click(object sender, RoutedEventArgs e)
         {
             var tb = sender as FrameworkElement;
             var chip = tb?.DataContext as Chip;
@@ -268,7 +268,11 @@ namespace Workbench.Views
             var result = MessageBox.Show($"确定要重建芯片{chip.Name}参数关系吗？该重建会用当前工程参数信息覆盖所选芯片，请慎重操作！", "确认重建",
                                MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
-                vm.RebuildChipMetadataAsync(chip.Id);
+            {
+                await vm.RebuildChipMetadataAsync(chip.Id);
+                MessageBox.Show("关联参数完成!");
+            }
+              
         }
     }
 }
