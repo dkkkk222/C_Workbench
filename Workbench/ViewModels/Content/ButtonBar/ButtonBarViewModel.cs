@@ -669,6 +669,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                     ConnectIcon = Constants.DisConnectIcon;
                     ConnectStr = Constants.DisConnectStr;
                 }
+                _eventAggregator.GetEvent<OnConnctedEvent>().Publish();
             }
             catch (System.Exception ex)
             {

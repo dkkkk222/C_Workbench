@@ -93,7 +93,8 @@ namespace Workbench.Utils
         /// <param name="project"></param>
         public async Task RemoveProject(PpecProject project)
         {
-            if(CurrentProject.UID== project.UID)//移除当前工程，先要断开连接
+            CurrentProject.CloseSession();
+            if (CurrentProject.UID== project.UID)//移除当前工程，先要断开连接
             {
                 await AsyncDisConnect();
                 RemoveTabAndProject(project);
@@ -103,7 +104,6 @@ namespace Workbench.Utils
                 RemoveTabAndProject(project);
             }
 
-            CurrentProject.CloseSession();
         }
         public void RemoveTabAndProject(PpecProject project)
         {

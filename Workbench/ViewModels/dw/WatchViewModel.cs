@@ -261,24 +261,33 @@ namespace Workbench.ViewModels.dw
                 {
                     if (value)
                     {
-                        _timer.Start();
-                        _ReceiveTimer.Start();
-                        _recordTime.Start();
-                        _refTime.Start();
-                        pms.Enable();
-                        StartUiLoop(RefreshInterval);
+                        StartRecordTimer();
                     }
                     else
                     {
-                        _timer.Stop();
-                        _ReceiveTimer.Stop();
-                        _recordTime.Stop();
-                        _refTime.Stop();
-                        pms.Disable();
-                        StopUiLoopAsync().ConfigureAwait(false);
+                        StopRecordTimer();
                     }
                 }
             }
+        }
+
+        private void StartRecordTimer()
+        {
+            _timer.Start();
+            _ReceiveTimer.Start();
+            _recordTime.Start();
+            _refTime.Start();
+            pms.Enable();
+            StartUiLoop(RefreshInterval);
+        }
+        private void StopRecordTimer()
+        {
+            _timer.Stop();
+            _ReceiveTimer.Stop();
+            _recordTime.Stop();
+            _refTime.Stop();
+            pms.Disable();
+            StopUiLoopAsync().ConfigureAwait(false);
         }
 
         private string _addressKeyword;
@@ -744,6 +753,8 @@ namespace Workbench.ViewModels.dw
         {
             foreach (var reg in CategoryRegisters)
             {
+                if (reg.TableId == SelectTab.Id)
+                    continue;
                 var tab = WatchGroups.FirstOrDefault(t => t.Id == reg.TableId);
                 //清除原tab中的数据
                 var groups = WatchGroups.Where(t => t.BitFields.Any(t => t.Name == reg.Name));
@@ -778,13 +789,13 @@ namespace Workbench.ViewModels.dw
                 if (tab == null)
                     return;
                 //遍历寄存器下的BitField
-                foreach (var bf in reg.BitFields)
-                {
-                    var clone = JsonHelper.DeepClone(bf);
-                    clone.AddressHexName = reg.AddressHex;
-                    clone.AddressId = reg.Id;
-                    SelectTab.BitFields.Add(clone);
-                }
+                //foreach (var bf in reg.BitFields)
+                //{
+                //    var clone = JsonHelper.DeepClone(bf);
+                //    clone.AddressHexName = reg.AddressHex;
+                //    clone.AddressId = reg.Id;
+                //    SelectTab.BitFields.Add(clone);
+                //}
             }
         });
         private DelegateCommand _closeCommand;
@@ -847,7 +858,11 @@ namespace Workbench.ViewModels.dw
                 System.Windows.Forms.MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            foreach(var param in CategoryRegisters)
+            if(!_timer.Enabled)
+            {
+                StartRecordTimer();
+            }
+            foreach (var param in CategoryRegisters)
             {
                 if(!param.IsStartRecord)
                 {
@@ -875,6 +890,10 @@ namespace Workbench.ViewModels.dw
             {
                 System.Windows.Forms.MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
+            }
+            if (!_timer.Enabled)
+            {
+                StartRecordTimer();
             }
             double recordTime = param.RecordTime;
             if (param.RecordTimeTypeItem == ((int)RecordTimeType.Hour).ToString())
@@ -1467,6 +1486,12 @@ namespace Workbench.ViewModels.dw
                 pms.Disable();
                 StopUiLoopAsync().ConfigureAwait(false);
             });
+            _eventAggregator.GetEvent<OnConnctedEvent>().Subscribe(() =>
+            {
+                if(pms!=null)
+                    pms._intervalMs = int.Parse(_projectManager.CurrentProject.RegisterDelay);
+            });
+            
         }
         #endregion
         public override void LoadData()

@@ -395,6 +395,7 @@
     <Compile Include="Events\ConnectionChangeEvent.cs" />
     <Compile Include="Events\CurrentPpecChangedEvent.cs" />
     <Compile Include="Events\DoubleClickTreeNodeEvent.cs" />
+    <Compile Include="Events\OnConnctedEvent.cs" />
     <Compile Include="Events\RefreshRecentFileEvent.cs" />
     <Compile Include="Events\RemovePpecEvent.cs" />
     <Compile Include="Events\RemoveProjectFromSiderEvent.cs" />

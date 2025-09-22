@@ -47,7 +47,7 @@ namespace Workbench.Models
         private CancellationTokenSource _cts;
         private volatile bool _enabled = false;
 
-        private readonly int _intervalMs;         // 每条下发间隔 (ms)
+        public int _intervalMs;         // 每条下发间隔 (ms)
         public PpecProject CurrentProject { get; set; }
 
         public ParameterMonitorService(int intervalMs = 20)
@@ -66,6 +66,10 @@ namespace Workbench.Models
         {
             _enabled = false;
             StopLoop();
+        }
+        public bool IsEnable()
+        {
+            return _enabled;
         }
         #endregion
 
