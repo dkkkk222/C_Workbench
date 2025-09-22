@@ -146,6 +146,7 @@ namespace Workbench.ViewModels.dw
             #endregion
             ReLoadChartTable();
             InitOrderAndSort();
+            SelectTab = WatchGroups[0];
         }
         private static WatchChartModel CreatePlaceholder() => new WatchChartModel("监测图")
         {
