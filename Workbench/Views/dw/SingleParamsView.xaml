@@ -555,7 +555,7 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                     <Setter Property="Padding" Value="10,0,0,0"/>
                                                     <Setter Property="Margin" Value="0,0,12,0"/>
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                                    <Setter Property="BorderThickness" Value="0,0,0,1" />                                            
+                                                    <Setter Property="BorderThickness" Value="1,0,0,1" />                                            
                                         </Style>
                                             </DataGrid.ColumnHeaderStyle>
                                             <DataGrid.Columns>
@@ -667,7 +667,7 @@ Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalA
                                                     <Setter Property="Padding" Value="10,0,0,0"/>
                                                     <Setter Property="Margin" Value="0,0,12,0"/>
                                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                                    <Setter Property="BorderThickness" Value="1,0,0,1" />
                                                 </Style>
                                             </DataGrid.ColumnHeaderStyle>
                                             <DataGrid.Resources>
@@ -794,8 +794,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                 <Border Grid.Row="2" Padding="2,2,20,2">
                     <DockPanel LastChildFill="True">
                         <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
-                            <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
-                                <!--<TextBlock Text="历史数据" FontSize="14"/>-->
+                            <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center"> 
                                 <controls_Title:StandTitle Padding="0,5,0,0" BordMargin="0,0,5,0" StandText="历史数据" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
                                 <Button Content="下载" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
@@ -818,7 +817,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     <Setter Property="Padding" Value="10,0,0,0"/>
                                     <Setter Property="Margin" Value="0,0,12,0"/>
                                     <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                    <Setter Property="BorderThickness" Value="1,0,0,1" />
                                 </Style>
                             </DataGrid.ColumnHeaderStyle>
                             <DataGrid.Resources>

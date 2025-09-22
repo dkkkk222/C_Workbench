@@ -280,7 +280,7 @@ Command="{Binding StopAllCommand}"/>
                                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                                         <Setter Property="FontSize" Value="13"/> 
                                         <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                        <Setter Property="BorderThickness" Value="1,0,0,1" />
                                     </Style>
                                 </DataGrid.ColumnHeaderStyle>
                                 <DataGrid.Resources>
@@ -619,7 +619,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 <Setter Property="Padding" Value="0,0,0,0"/>
                                                                 <Setter Property="Margin" Value="0,0,0,0"/>
                                                                 <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                                                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                                                <Setter Property="BorderThickness" Value="1,0,0,1" />
                                                             </Style>
                                                         </DataGrid.ColumnHeaderStyle>
                                                         <DataGrid.Resources>

@@ -187,7 +187,7 @@
         <Border Grid.Column="1" Padding="0,8,28,8">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/> 
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -247,7 +247,7 @@ Command="{Binding SettingAllTimeCommand}"/>
                                             <Setter Property="Padding" Value="10,0,0,0"/>
                                             <Setter Property="Margin" Value="0,0,12,0"/>
                                             <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                            <Setter Property="BorderThickness" Value="1,0,0,1" />
                                         </Style>
                                     </DataGrid.ColumnHeaderStyle>
                                     <DataGrid.Resources>
@@ -543,7 +543,7 @@ Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedI
                                         <Setter Property="Padding" Value="10,0,0,0"/>
                                         <Setter Property="Margin" Value="0,0,12,0"/>
                                         <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                        <Setter Property="BorderThickness" Value="0,0,0,1" />                                       
+                                        <Setter Property="BorderThickness" Value="1,0,0,1" />                                       
                                     </Style>
                                 </DataGrid.ColumnHeaderStyle>
                                 <DataGrid.Resources>
@@ -814,7 +814,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <Setter Property="Padding" Value="10,0,0,0"/>
                                             <Setter Property="Margin" Value="0,0,12,0"/>
                                             <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                            <Setter Property="BorderThickness" Value="1,0,0,1" />
                                         </Style>
                                     </DataGrid.ColumnHeaderStyle>
                                 <DataGrid.Resources>
