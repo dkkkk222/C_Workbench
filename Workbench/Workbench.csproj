@@ -61,7 +61,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resource\jlism-fmgaz-001.ico</ApplicationIcon>
+    <ApplicationIcon>processor_103541.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -686,6 +686,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resource\jlism-fmgaz-001.ico" />
+    <Resource Include="processor_103541.ico" />
     <Content Include="Resource\Images\SVG\SDPC_LOGO.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
