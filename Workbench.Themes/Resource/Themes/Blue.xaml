@@ -116,7 +116,7 @@
     <!--按钮颜色-->
     <SolidColorBrush x:Key="StartButtonBackground" Color="#4CAF50"/>
     <SolidColorBrush x:Key="StopButtonBackground" Color="#F7931D"/>
-    
+    <SolidColorBrush x:Key="DelButtonBackground" Color="#DB3340"/>
     <!--首页最近工程文字-->
     <SolidColorBrush x:Key="IndexPageFontBackground" Color="#315985"/>
     

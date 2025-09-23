@@ -47,10 +47,11 @@ namespace Workbench.Controls.Controls.Scottplot
             Plot.XLabel(XAxisName, 22);
             Plot.YLabel(YAxisName, 22);
 
-            this.Plot.Axes.Bottom.Label.Alignment = Alignment.MiddleRight;
-            this.Plot.Axes.Bottom.Label.OffsetX = 270;
-            this.Plot.Axes.Left.Label.Alignment = Alignment.UpperCenter;
-            this.Plot.Axes.Left.Label.OffsetY = -140;
+            this.Plot.Axes.Bottom.Label.Alignment = Alignment.UpperRight;
+            //this.Plot.Axes.Bottom.Label.Alignment = Alignment.MiddleRight;
+            //this.Plot.Axes.Bottom.Label.OffsetX = 270;
+            this.Plot.Axes.Left.Label.Alignment = Alignment.UpperRight;
+            //this.Plot.Axes.Left.Label.OffsetY = -140;
             Plot.Font.Automatic();
 
             //// change figure colors

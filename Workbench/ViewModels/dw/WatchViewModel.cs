@@ -1232,7 +1232,23 @@ namespace Workbench.ViewModels.dw
 
         public DelegateCommand<object> SelectAllCommand => new DelegateCommand<object>((e) =>
         {
-            SingleParamTrees.SetAllLeavesChecked((bool)e);
+            var isAllCheck = (bool)e;
+            var deepMaxLevels = SingleParamTrees.GetMaxDepthLeaves();
+            foreach (var treeItem in deepMaxLevels)
+            {
+                if (treeItem.IsCheck == isAllCheck)
+                    continue;
+                if (isAllCheck)
+                {
+                    
+                    AddRegisterForCheck(treeItem);
+                }
+                else
+                {
+                    RemoveRegisterForCheck(treeItem);
+                }
+                treeItem.IsCheck = isAllCheck;
+            }
         });
 
         #region Method

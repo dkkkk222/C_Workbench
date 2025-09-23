@@ -239,8 +239,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <Condition Property="IsSelected" Value="True"/>
                                             <Condition Property="IsMouseOver" Value="False"/>
                                         </MultiTrigger.Conditions>
-                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                        <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                         <!-- 白字 -->
                                         <Setter Property="BorderThickness" Value="0"/>
                                         <!-- 去掉分割线 -->
@@ -252,8 +252,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <Condition Property="IsSelected" Value="True"/>
                                             <Condition Property="IsMouseOver" Value="True"/>
                                         </MultiTrigger.Conditions>
-                                        <Setter Property="Background" Value="{StaticResource RowSelectedBrush}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource RowSelectedForeground}"/>
+                                        <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
                                         <Setter Property="BorderThickness" Value="0"/>
                                     </MultiTrigger>
                                 </Style.Triggers>

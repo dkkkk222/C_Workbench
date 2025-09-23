@@ -490,12 +490,12 @@ CommandParameter="{Binding}"/>
                                                         Command="{Binding ConfigRegisterCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"/>-->
                                             <Button Content="{Binding IsConfigPaneOpen, Converter={StaticResource BoolToText}, ConverterParameter=查看配置|隐藏配置}"
         Style="{StaticResource ButtonPrimary}" Width="100"
-        Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+        Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"
         hc:IconElement.Geometry="{StaticResource EnlargeGeometry}"
         Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"  Visibility="{c:Binding !IsConfigPaneOpen,FalseToVisibility=Collapsed}"/>
                                             <Button Content="{Binding IsConfigPaneOpen, Converter={StaticResource BoolToText}, ConverterParameter=查看配置|隐藏配置}"
 Style="{StaticResource ButtonPrimary}" Width="100"
-Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"
 hc:IconElement.Geometry="{StaticResource CloseGeometry}"
 Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"  Visibility="{c:Binding IsConfigPaneOpen,FalseToVisibility=Collapsed}"/>
 
