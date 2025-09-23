@@ -163,6 +163,11 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref wpfPlotControl, value);
         }
 
+        public void Inject(IDialogService dialogService)
+        {
+            _dialogService = dialogService;         // 重建命令
+        }
+
         private DelegateCommand<object> _settingChartLimitCommand;
         [JsonIgnore]
         public DelegateCommand<object> SettingChartLimitCommand =>

@@ -207,7 +207,7 @@
 ToolTip="展开/收起寄存器目录" Content="收起寄存器目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
 Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />
 
-                                        <TextBox Text="{Binding AllTime,Mode=TwoWay}"  hc:InfoElement.Title="批量设置参数："  Margin="5,0,0,6" hc:InfoElement.TitlePlacement="Left" Width="130" >
+                                        <TextBox Text="{Binding AllTime,Mode=TwoWay}"   Margin="5,0,0,6" hc:InfoElement.TitlePlacement="Left" Width="60" >
                                             <TextBox.Style>
                                                 <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
                                                     <Style.Triggers>

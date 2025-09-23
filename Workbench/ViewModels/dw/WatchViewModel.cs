@@ -1,6 +1,7 @@
 ﻿using Force.DeepCloner;
 using HandyControl.Controls;
 using log4net;
+using Newtonsoft.Json;
 using NPOI.SS.Formula.Functions;
 using NPOI.Util;
 using NPOI.XSSF.Streaming.Values;
@@ -95,6 +96,10 @@ namespace Workbench.ViewModels.dw
             EventListener();
 
             foreach (var group in WatchGroups)
+            {
+                group.Inject(dialogService);
+            }
+            foreach (var group in WatchChartGroups)
             {
                 group.Inject(dialogService);
             }
@@ -249,6 +254,33 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref _hasRealTables, value);
         }
         #region Property
+        private ObservableCollection<BitOption> _RecordTimeSource = new ObservableCollection<BitOption>() {
+
+            new BitOption()
+        {
+             Value = 0,Key="0",Display="小时"
+        },
+            new BitOption()
+        {
+             Value = 1,Key="1",Display="分钟"
+        },
+            new BitOption()
+        {
+            Value = 2,Key="2",Display="秒"
+        },
+        };
+        [JsonIgnore]
+        public ObservableCollection<BitOption> RecordTimeSource
+        {
+            get => _RecordTimeSource;
+            set => SetProperty(ref _RecordTimeSource, value);
+        }
+        private string _SelectRecordTimeType;
+        public string SelectRecordTimeType
+        {
+            get => _SelectRecordTimeType;
+            set => SetProperty(ref _SelectRecordTimeType, value);
+        }
         public bool _isActive = false;
         public override bool IsActive
         {
@@ -724,6 +756,15 @@ namespace Workbench.ViewModels.dw
             UtilsFunc.SyncTreeCheckNode(currentTreeNode, CategoryRegisters);
         }
         #endregion
+
+        public DelegateCommand SettingAllUnitCommand => new DelegateCommand(() =>
+        {
+            foreach (var reg in CategoryRegisters)
+            {
+                reg.RecordTimeTypeItem = SelectRecordTimeType;
+            }
+        });
+
         public DelegateCommand SettingAllTimeCommand => new DelegateCommand(() =>
         {
             if(string.IsNullOrEmpty(AllTime))
