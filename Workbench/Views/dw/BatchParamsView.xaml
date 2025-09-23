@@ -761,7 +761,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         </DockPanel>
                         <GridSplitter x:Name="DetailSplitter"
                   Grid.Column="1"
-                  Width="2" Margin="0,0,0,0"
+                  Width="5" Margin="0,0,0,0"
                   Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"  Visibility="{Binding IsConfigPaneOpen, Converter={StaticResource Bool2Vis}}"
                   DragCompleted="DetailSplitter_DragCompleted" />
