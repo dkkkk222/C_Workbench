@@ -334,6 +334,19 @@ namespace PPEC.Communication.Model
 
         public string AddressHexName { get; set; }
 
+        public string _SourceHex;
+        /// <summary>
+        /// 原始寄存器值
+        /// </summary>
+        public string SourceHex 
+        { 
+            get=> _SourceHex;
+            set
+            {
+                SetProperty(ref _SourceHex, value);
+            }
+        }
+
         [JsonIgnore]
         public bool IsTextbox => FieldType == PPEC.Communication.Enum.FieldType.None;
 

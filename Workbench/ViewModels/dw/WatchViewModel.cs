@@ -98,6 +98,7 @@ namespace Workbench.ViewModels.dw
             foreach (var group in WatchGroups)
             {
                 group.Inject(dialogService);
+                group.TableColumns = InitTableColumns();
             }
             foreach (var group in WatchChartGroups)
             {
@@ -1101,14 +1102,14 @@ namespace Workbench.ViewModels.dw
         private ObservableCollection<TableColumn> InitTableColumns()
         {
             var target = new ObservableCollection<TableColumn>();
-            string[] arr = new string[] { "序号", "名称", "寄存器地址(HEX)", "解析范围", "解析要求", "解析结果", "原始值(Dec)", "原始值(Bit)", "单位", "添加到监测图" };
+            string[] arr = new string[] { "序号", "名称", "寄存器地址(HEX)","寄存器值(HEX)", "解析内容(bit)", "解析要求", "解析结果", "解析内容(hex)", "解析内容(binery)", "单位", "添加到监测图" };
             for (int i = 0; i < arr.Length; i++)
             {
                 var tab = new TableColumn()
                 {
                     Name = arr[i],
                 };
-                if (arr[i] == "原始值(Dec)" || arr[i] == "原始值(Bit)")
+                if (arr[i] == "解析内容(hex)" || arr[i] == "解析内容(binery)")
                 {
                     tab.IsChecked = false;
                 }
@@ -1376,6 +1377,7 @@ namespace Workbench.ViewModels.dw
                         if (!Equals(field.Result, newField.Result)) { field.Result = newField.Result; anyChanged = true; }
                         if (!Equals(field.ReadBinary, newField.ReadBinary)) { field.ReadBinary = newField.ReadBinary; anyChanged = true; }
                         if (!Equals(field.Value, newField.Value)) { field.Value = newField.Value; anyChanged = true; }
+                        if (!Equals(field.SourceHex, newField.SourceHex)) { field.SourceHex = newField.SourceHex; anyChanged = true; }
                     }
                 }
             }, System.Windows.Threading.DispatcherPriority.Background);

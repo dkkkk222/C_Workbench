@@ -252,7 +252,7 @@ namespace PPEC.Communication
             return BitConverter.GetBytes(crc);
         }
 
-        public static void FillBitFieldValues(uint rawValue, IList<BitField> bitFields)
+        public static void FillBitFieldValues(uint rawValue, IList<BitField> bitFields,string HexValue=null)
         {
             if (bitFields == null) throw new ArgumentNullException(nameof(bitFields));
 
@@ -263,6 +263,7 @@ namespace PPEC.Communication
                     throw new ArgumentOutOfRangeException(
                         $"无效位区间: [{bf.StartBit}-{bf.EndBit}]");
 
+                bf.SourceHex = HexValue;
                 // 该字段所占的位宽
                 int len = bf.Length;                // = EndBit - StartBit + 1
 
@@ -677,51 +678,46 @@ namespace PPEC.Communication
         }
     }
 
-    public static class CloneHelper
-    {
-        public static RegisterMeta DeepClone(this RegisterMeta original)
-        {
-            return new RegisterMeta
-            {
-                AddrInfo = new RegisterAddrInfo
-                {
-                    AddressDec = original.AddrInfo.AddressDec,
-                    AddressHex = original.AddrInfo.AddressHex,
-                    Category = original.AddrInfo.Category,
-                    SubCategory = original.AddrInfo.SubCategory,
-                    Name = original.AddrInfo.Name,
-                    RW = original.AddrInfo.RW,
-                    ResetValue = original.AddrInfo.ResetValue,
-                    ResetDecValue = original.AddrInfo.ResetDecValue,
-                    Value = original.AddrInfo.Value?.ToArray(),
-                    DecValue = original.AddrInfo.DecValue,
-                    HexValue = original.AddrInfo.HexValue,
-                    BitFields =new ObservableCollection<BitField>( original.AddrInfo.BitFields
-                        .Select(bf => new BitField
-                        {
-                            StartBit = bf.StartBit,
-                            EndBit = bf.EndBit,
-                            Desc = bf.Desc,
-                            ExtraNote = bf.ExtraNote,
-                            //Options = bf.Options?.Select(opt => new BitOption
-                            //{
-                            //    Value = opt.Value,
-                            //    Display = opt.Display
-                            //}).ToList(),
-                            RangeMin = bf.RangeMin,
-                            RangeMax = bf.RangeMax,
-                            FormParam = bf.FormParam == null ? null : new FormulaParam
-                            {
-                                ParamName = bf.FormParam.ParamName,
-                                ParamA = bf.FormParam.ParamA,
-                                ParamB = bf.FormParam.ParamB,
-                                UnitName = bf.FormParam.UnitName
-                            },
-                            Value = bf.Value,
-                            Result = bf.Result
-                        }))
-                }
-            };
-        }
-    }
+    //public static class CloneHelper
+    //{
+    //    public static RegisterMeta DeepClone(this RegisterMeta original)
+    //    {
+    //        return new RegisterMeta
+    //        {
+    //            AddrInfo = new RegisterAddrInfo
+    //            {
+    //                AddressDec = original.AddrInfo.AddressDec,
+    //                AddressHex = original.AddrInfo.AddressHex,
+    //                Category = original.AddrInfo.Category,
+    //                SubCategory = original.AddrInfo.SubCategory,
+    //                Name = original.AddrInfo.Name,
+    //                RW = original.AddrInfo.RW,
+    //                ResetValue = original.AddrInfo.ResetValue,
+    //                ResetDecValue = original.AddrInfo.ResetDecValue,
+    //                Value = original.AddrInfo.Value?.ToArray(),
+    //                DecValue = original.AddrInfo.DecValue,
+    //                HexValue = original.AddrInfo.HexValue,
+    //                BitFields =new ObservableCollection<BitField>( original.AddrInfo.BitFields
+    //                    .Select(bf => new BitField
+    //                    {
+    //                        StartBit = bf.StartBit,
+    //                        EndBit = bf.EndBit,
+    //                        Desc = bf.Desc,
+    //                        ExtraNote = bf.ExtraNote,
+    //                        RangeMin = bf.RangeMin,
+    //                        RangeMax = bf.RangeMax,
+    //                        FormParam = bf.FormParam == null ? null : new FormulaParam
+    //                        {
+    //                            ParamName = bf.FormParam.ParamName,
+    //                            ParamA = bf.FormParam.ParamA,
+    //                            ParamB = bf.FormParam.ParamB,
+    //                            UnitName = bf.FormParam.UnitName
+    //                        },
+    //                        Value = bf.Value,
+    //                        Result = bf.Result
+    //                    }))
+    //            }
+    //        };
+    //    }
+    //}
 }

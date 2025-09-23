@@ -573,7 +573,7 @@ namespace Workbench.Utils
                     mirror.DecValue = value; // 若 HexValue 为派生属性，这一条就够了
                     mirror.HexValue = Utility.DecToHex(value);
                 }
-                ResolveBitFields(register);
+                ResolveBitFields(register, register.HexValue);
             });
             
         }
@@ -588,10 +588,10 @@ namespace Workbench.Utils
             writeRegister.BinaryArray.Clear();
             writeRegister.BinaryArray.AddRange(list);
 
-            ResolveBitFields(writeRegister);
+            ResolveBitFields(writeRegister, writeRegister.HexValue);
         }
 
-        private void ResolveBitFields(RegisterAddrInfo register)
+        private void ResolveBitFields(RegisterAddrInfo register,string sourceHex=null)
         {
             foreach (var bf in register.BitFields)
             {
@@ -614,6 +614,7 @@ namespace Workbench.Utils
                     var dec = Utility.BinaryToDec(bf.ReadBinary);
                     bf.ResolveStr = dec.ToString();
                 }
+                bf.SourceHex = sourceHex;
             }
         }
     }

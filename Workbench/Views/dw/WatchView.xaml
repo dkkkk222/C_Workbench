@@ -753,21 +753,20 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 </DataGridTemplateColumn.CellTemplate>
 
                                                                 <!-- 编辑状态 -->
-                                                                <DataGridTemplateColumn.CellEditingTemplate>
+                                                                <!--<DataGridTemplateColumn.CellEditingTemplate>
                                                                     <DataTemplate>
                                                                         <TextBox Text="{Binding Desc, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                                                             <i:Interaction.Triggers>
                                                                                 <i:EventTrigger EventName="GotFocus">
                                                                                     <i:InvokeCommandAction Command="{Binding DataContext.CaptureOldNameCommand,  RelativeSource={RelativeSource AncestorType=UserControl}}"  CommandParameter="{Binding}"/>
                                                                                 </i:EventTrigger>
-                                                                                <!-- 失焦时触发命令（完成编辑） -->
                                                                                 <i:EventTrigger EventName="LostFocus">
                                                                                     <i:InvokeCommandAction   Command="{Binding DataContext.NameEditedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
                                                                                 </i:EventTrigger>
                                                                             </i:Interaction.Triggers>
                                                                         </TextBox>
                                                                     </DataTemplate>
-                                                                </DataGridTemplateColumn.CellEditingTemplate>
+                                                                </DataGridTemplateColumn.CellEditingTemplate>-->
                                                             </DataGridTemplateColumn>
                                                             <DataGridTemplateColumn Header="寄存器地址(HEX)" Width="Auto"
                                                                             Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
@@ -777,8 +776,15 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-                                                            <DataGridTemplateColumn Header="解析范围" Width="75"
-                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                            <DataGridTextColumn Header="寄存器值(HEX)" Width="Auto" IsReadOnly="True" Binding="{Binding SourceHex}" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}">
+                                                                <!--<DataGridTextColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock HorizontalAlignment="Center" Text="{Binding SourceHex,Mode=TwoWay}" VerticalAlignment="Center"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTextColumn.CellTemplate>-->
+                                                            </DataGridTextColumn>
+                                                            <DataGridTemplateColumn Header="解析内容(bit)" Width="75"
+                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -793,22 +799,22 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-                                                            <DataGridTemplateColumn Header="解析要求" Width="Auto"  MinWidth="70"  Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
+                                                            <DataGridTemplateColumn Header="解析要求" Width="Auto"  MinWidth="70"  Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" HorizontalAlignment="Center" Margin="0,0,0,0">
                                                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                                <TextBlock Text="{Binding FormParam.ParamName}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                                <TextBlock Text="{Binding FormParam.ParamName}" TextWrapping="Wrap"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                             </StackPanel>
                                                                         </ScrollViewer>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-                                                            <DataGridTextColumn Header="解析结果" Binding="{Binding Result}"   MinWidth="70" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                            <DataGridTextColumn Header="原始值(Dec)" Binding="{Binding Value}" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                            <DataGridTextColumn Header="原始值(Bit)" Binding="{Binding ReadBinary}" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                                            <DataGridTextColumn Header="单位"  Binding="{Binding FormParam.UnitName}"   MinWidth="50" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
-                                                            <DataGridTemplateColumn Header="添加到监测图" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                            <DataGridTextColumn Header="解析结果" Binding="{Binding Result}"  IsReadOnly="True" MinWidth="70" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                            <DataGridTextColumn Header="解析内容(hex)" Binding="{Binding Value}" IsReadOnly="True" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                            <DataGridTextColumn Header="解析内容(binery)" Binding="{Binding ReadBinary}" IsReadOnly="True" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                            <DataGridTextColumn Header="单位"  Binding="{Binding FormParam.UnitName}"  IsReadOnly="True" MinWidth="50" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
+                                                            <DataGridTemplateColumn Header="添加到监测图" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[10].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
