@@ -48,7 +48,7 @@
             <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="300" Background="{StaticResource AvalonDockAreaBackgroundColor}" HorizontalAlignment="Left" Padding="8">
+        <Border Grid.Column="0" Width="324" Background="{StaticResource AvalonDockAreaBackgroundColor}" HorizontalAlignment="Left" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -184,7 +184,7 @@
                     <DockPanel LastChildFill="True">
                         <Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">
 
-                            <DockPanel LastChildFill="True" Margin="-8,0,0,0">
+                            <DockPanel LastChildFill="True" Margin="-8,0,-10,0">
                                 <controls_Title:StandTitle Padding="0,0,0,0" x:Name="tbx_control" BordMargin="0,0,5,0" StandText="监测数据配置" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
                                 <!--<TextBlock Text="监测数据配置" FontSize="{StaticResource SubHeadFontSize}"/>-->
@@ -223,6 +223,19 @@ Command="{Binding SettingAllTimeCommand}"/>
                                             </Style.Triggers>
                                         </Style>
                                     </ComboBox.Style>
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItem.Small}">                                             
+                                            <Style.Triggers>
+                                                <!-- 修改选中项的背景颜色 -->
+                                                <Trigger Property="ComboBoxItem.IsSelected" Value="True"> 
+                                                    <Setter Property="Background" Value="Red"/>
+                                                    <!-- 这里设置为你需要的颜色 -->
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <!-- 可选：设置选中项的前景色 -->
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
                                 </ComboBox>
                                 <TextBlock Width="10"></TextBlock>
                                 <Button Content="批量设置时间单位" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
@@ -265,7 +278,7 @@ Command="{Binding StopAllCommand}"/>
                         <!--<Border Style="{StaticResource BorderTipPrimary}" DockPanel.Dock="Top"  Background="Transparent" BorderBrush="Transparent">-->
                             
                             <DataGrid    MinWidth="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-               CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,4,0" MinHeight="200" IsReadOnly="True"   RowHeight="40"
+               CanUserSortColumns="False" CanUserAddRows="False" Margin="0,0,0,0" MinHeight="200" IsReadOnly="True"   RowHeight="40"
                                          Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
                SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <DataGrid.ColumnHeaderStyle>
@@ -510,7 +523,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         <!--</StackPanel>-->
                     </DockPanel>
                 </Border>
-                <GridSplitter Grid.Row="1" Margin="0,10,4,10" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource GridSplitterBordColor}" ResizeDirection="Rows"></GridSplitter>
+                <GridSplitter Grid.Row="1" Margin="0,10,0,10" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource GridSplitterBordColor}" ResizeDirection="Rows"></GridSplitter>
 
                 <Grid Grid.Row="2">
                     <Grid.RowDefinitions>
@@ -537,7 +550,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         </StackPanel>
 
                     </Border>
-                    <Border Grid.Row="1" Padding="0,0,5,0" Background="{StaticResource AvalonDockAreaBackgroundColor}">
+                    <Border Grid.Row="1" Padding="0,0,0,0" Background="{StaticResource AvalonDockAreaBackgroundColor}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"></ColumnDefinition>

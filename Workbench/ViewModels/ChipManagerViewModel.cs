@@ -108,15 +108,27 @@ namespace Workbench.ViewModels
                 }
             }
 
-            Loading = true;
-            await Task.Run(async () =>
+            try
             {
-                await HandleChipAsync();
-            });
+                Loading = true;
+                await Task.Run(async () =>
+                {
+                    await HandleChipAsync();
+                });
 
-            ClearForm();
-            await InitChips();
-            Loading = false;
+                ClearForm();
+                await InitChips();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("新建类型异常，详情请查看日志", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _log.Error(ex);
+            }
+            finally
+            {
+                Loading = false;
+            }
+            
         });
 
         private async Task HandleChipAsync()

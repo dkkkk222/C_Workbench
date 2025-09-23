@@ -330,7 +330,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
         </Border>
         <Grid Visibility="{calc:Binding Loading,FalseToVisibility=Collapsed}">
-            <Border Background="{StaticResource DarkDefaultBrush}" Opacity=".5"></Border>
+            <Border Background="{StaticResource GenButtonBackgroundColor}" Opacity=".5"></Border>
             <hc:LoadingCircle/>
         </Grid>
     </Grid>

@@ -61,9 +61,10 @@
             <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="324" Background="{StaticResource AvalonDockAreaBackgroundColor}" Padding="8">
+        <Border Grid.Column="0" Width="324" HorizontalAlignment="Left" Background="{StaticResource AvalonDockAreaBackgroundColor}" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -86,7 +87,18 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                         
                     </hc:UniformSpacingPanel>
                 </hc:UniformSpacingPanel>
-                <hc:SearchBar Grid.Row="2"   hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,5">
+                    <Border>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="5"></TextBlock>
+                            <!--<TextBlock Text="当前选中寄存器:"   VerticalAlignment="Center"/>-->
+                            <TextBlock Text="{Binding CurrentRegister.AddressHex}"   VerticalAlignment="Center"/>
+                            <TextBlock Text=" : "   VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding CurrentRegister.Name}"   VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                    <hc:SearchBar Grid.Row="3"   hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
                     <hc:SearchBar.Style>
                         <Style TargetType="hc:SearchBar" BasedOn="{StaticResource SearchBarPlus}">
                             <Style.Triggers>
@@ -101,7 +113,7 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                         <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
                     </hc:SearchBar.Text>
                 </hc:SearchBar>
-                <Border Margin="0,5,0,0" Grid.Row="3">
+                <Border Margin="0,5,0,0" Grid.Row="4">
                     <TreeView ItemsSource="{Binding SingleParamTrees}" Background="{DynamicResource InLeftTreeViewBackGround}"> 
                         <TreeView.Resources>
                             <!-- ★ 继承原样式，只追加两个 Setter -->
@@ -139,7 +151,7 @@ IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}"/>
                 </Border>
             </Grid>
         </Border>
-        <Border Grid.Column="1" Padding="8">
+        <Border Grid.Column="1" Padding="0,8,8,8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>

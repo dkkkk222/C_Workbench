@@ -53,7 +53,7 @@
             <ColumnDefinition Name="LeftCol" Width="0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions> 
-        <Border Grid.Column="0" Width="300" HorizontalAlignment="Left" Background="{StaticResource AvalonDockAreaBackgroundColor}" Padding="8">
+        <Border Grid.Column="0" Width="324" HorizontalAlignment="Left" Background="{StaticResource AvalonDockAreaBackgroundColor}" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -184,7 +184,7 @@
             </Grid>
         </Border>
         
-        <Border Grid.Column="1" Padding="0,8,28,8">
+        <Border Grid.Column="1" Padding="2,8,28,8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
