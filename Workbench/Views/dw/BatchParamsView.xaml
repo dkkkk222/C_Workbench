@@ -443,12 +443,32 @@ CommandParameter="{Binding}"/>
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                     <TextBlock Text="选择"/>
                                                     <CheckBox IsChecked="{Binding Path=DataContext.CheckAll,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                          Margin="5,0,0,0"/>
+                                                          Margin="5,0,0,0">
+                                                        <CheckBox.Style>
+                                                            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                                                                        <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                                    </DataTrigger> 
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </CheckBox.Style>
+                                                    </CheckBox>
                                                 </StackPanel>
                                             </DataGridTemplateColumn.Header>
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
+                                                    <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left">
+                                                        <CheckBox.Style>
+                                                            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                                                                        <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                                    </DataTrigger> 
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </CheckBox.Style>
+                                                    </CheckBox>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
