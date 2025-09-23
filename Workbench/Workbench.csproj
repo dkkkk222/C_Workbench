@@ -686,6 +686,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resource\jlism-fmgaz-001.ico" />
+    <Content Include="Resource\Images\SVG\SDPC_LOGO.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resource\Images\SVG\SDPC_LOGO.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -704,6 +707,7 @@
     <Content Include="Resource\Images\SVG\processor_103541.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resource\Images\SVG\sdpc_logo1.svg" />
     <Content Include="SDPC_LOGO.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

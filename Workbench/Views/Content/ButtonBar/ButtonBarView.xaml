@@ -18,7 +18,7 @@
 
         </Style>
     </UserControl.Resources>
-    <Grid Height="45" Background="{DynamicResource SecondaryBackgroundColor}">
+    <Grid Height="35" Background="{DynamicResource SecondaryBackgroundColor}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>

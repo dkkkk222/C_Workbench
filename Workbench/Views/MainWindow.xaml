@@ -24,7 +24,7 @@
         </Style>
     </Window.Resources>
     <comCtrl:NoTitleBarWindow.TitleBarContent>
-        <Border Grid.Row="0" x:Name="CustomTitleBar" Style="{DynamicResource TitleBarBorder}" Height="45">
+        <Border Grid.Row="0" x:Name="CustomTitleBar" Style="{DynamicResource TitleBarBorder}" Height="35">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -32,12 +32,15 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Margin="2,2,5,2"   Background="{DynamicResource SecondaryBackgroundColor}">
-                    <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/SDPC_LOGO.svg" 
-                Height="40" Width="110"
+                <Border Grid.Column="0" Margin="7,2,0,2" >
+                    <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/sdpc_logo1.svg" 
+                Height="30" Width="90" Margin="0,0,0,0"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
                     </svgc:SvgViewbox>
+                    <!--<Image Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/SDPC_LOGO.png" Height="40" Width="110"
+VerticalAlignment="Center"
+HorizontalAlignment="Center"/>-->
                 </Border>
                 <Border Grid.Column="1">
                     <Menu Style="{DynamicResource MenuStyle}">

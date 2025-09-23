@@ -716,7 +716,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBox Text="{Binding HexValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"
-                                                        
+                                                        IsReadOnly="True"
                                                  LostFocus="HexValueText_LostFocus">
                                                     <TextBox.Style>
                                                         <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
@@ -747,8 +747,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="0,10,0,0">
-                                                                <TextBox hc:BorderElement.CornerRadius="0" IsReadOnly="True" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" Style="{StaticResource TextBox.Small}" PreviewTextInput="BinaryTextBox_PreviewTextInput" DataObject.Pasting="BinaryTextBox_Pasting" LostFocus="BinaryTextBox_LostFocus"/>
-                                                                <TextBlock Text="{Binding Display}" HorizontalAlignment="Center" FontSize="9"/>
+                                                                <TextBox hc:BorderElement.CornerRadius="0" IsReadOnly="True" BorderBrush="{StaticResource AvalonDockPannelBordBrush}" Text="{Binding Value}" Style="{StaticResource TextBox.Small}" />
+                                                                <TextBlock Text="{Binding Display}"  HorizontalAlignment="Center" FontSize="9"/>
                                                             </StackPanel>
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
