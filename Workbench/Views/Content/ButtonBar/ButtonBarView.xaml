@@ -45,13 +45,7 @@
                         <TextBlock Text="{Binding ConnectIcon,Mode=TwoWay}" 
                                    FontFamily="{StaticResource Iconfont}" 
                                    Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>
-                    <!--<Button Style="{StaticResource ButtonBarStyle}" 
-                            ToolTip="断开" 
-                            Command="{Binding DisconnectCommand}"
-                            IsEnabled="{Binding IsConnected}">
-                        <TextBlock Text="&#xe64d;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource ButtonBarIconStyle}"/>
-                    </Button>-->
+                    </Button> 
                     <Border Style="{StaticResource VerticalSeparatorStyle}"/>
                     <!-- 通讯方式 -->
                     <Border Margin="8,0,0,0">

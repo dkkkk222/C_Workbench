@@ -228,6 +228,8 @@ Command="{Binding SettingAllTimeCommand}"/>
                                                     Command="{Binding AddSequenceCommand}"/>
                                                 <Button Content="批量下发" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}" hc:IconElement.Geometry="{StaticResource AllGeometry}"
                                                         Command="{Binding BatchSendCommand}"/>
+                                                <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                                                                Command="{Binding BatchDelCommand}"/>
                                             </hc:UniformSpacingPanel>
                                         </Border>
                                     </DockPanel>
@@ -458,7 +460,9 @@ CommandParameter="{Binding}"/>
                                             </DataGridTemplateColumn.Header>
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left">
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                        <TextBlock Text="选择" Visibility="Hidden"/>
+                                                        <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0">
                                                         <CheckBox.Style>
                                                             <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                                                                 <Style.Triggers>
@@ -469,6 +473,7 @@ CommandParameter="{Binding}"/>
                                                             </Style>
                                                         </CheckBox.Style>
                                                     </CheckBox>
+                                                    </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -519,6 +524,8 @@ Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResourc
 hc:IconElement.Geometry="{StaticResource CloseGeometry}"
 Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedItem, ElementName=SequenceGrid}"  Visibility="{c:Binding IsConfigPaneOpen,FalseToVisibility=Collapsed}"/>
 
+                                            <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                Command="{Binding BatchDelRegisterCommand}"/>
                                             <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
                                                 <hc:SplitButton.DropDownContent>
                                                     <ItemsControl ItemsSource="{Binding TableColumns}">
@@ -773,6 +780,43 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="*">
+                                        <DataGridTemplateColumn.Header>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <TextBlock Text="选择"/>
+                                                <CheckBox IsChecked="{Binding Path=DataContext.CheckAllResister,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                  Margin="5,0,0,0">
+                                                    <CheckBox.Style>
+                                                        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                                                                    <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </CheckBox.Style>
+                                                </CheckBox>
+                                            </StackPanel>
+                                        </DataGridTemplateColumn.Header>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"  HorizontalAlignment="Left">
+                                                    <TextBlock Text="选择" Visibility="Hidden"/>
+                                                    <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Margin="10,0,0,0">
+                                                    <CheckBox.Style>
+                                                        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                                                                    <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </CheckBox.Style>
+                                                </CheckBox>
+                                                </StackPanel>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>

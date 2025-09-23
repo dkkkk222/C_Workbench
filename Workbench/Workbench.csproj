@@ -736,6 +736,10 @@
     <None Include="Resource\workbench_user_manual.pdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="SDPC_B10状态监测配置表_20250923.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="SDPC_B10状态监测配置表_20250923-1.xlsx" />
     <None Include="SDPC_workbench软件数据监控表_zby0715.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

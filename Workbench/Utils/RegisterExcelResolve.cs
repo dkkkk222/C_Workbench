@@ -123,10 +123,10 @@ namespace Workbench.Utils
                 var AddressList = target.Where(x => x.AddrInfo.AddressHex == addressHex).FirstOrDefault();
                 if (AddressList == null)
                     continue;
-                var bitSE = GetBitInfo(row.GetCell(5).StringCellValue);//bit位起始
-                var showFormula = row.GetCell(6).StringCellValue;
+                var bitSE = GetBitInfo(row.GetCell(4).StringCellValue);//bit位起始
+                var showFormula = row.GetCell(5).StringCellValue;
                 var formula = GetFormulaParam(showFormula);//公式
-                var unit = row.GetCell(8).StringCellValue;//单位
+                var unit = row.GetCell(6).StringCellValue;//单位
 
                 var selectBitFields = AddressList.AddrInfo.BitFields.Where(x => x.StartBit == bitSE.startBit && x.EndBit == bitSE.endBit).FirstOrDefault();
                 if (selectBitFields == null)

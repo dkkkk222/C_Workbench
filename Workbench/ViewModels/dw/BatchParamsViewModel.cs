@@ -314,6 +314,20 @@ namespace Workbench.ViewModels.dw
             }
         }
 
+        private bool _checkAllResister = false;
+        public bool CheckAllResister
+        {
+            get => _checkAllResister;
+            set
+            {
+                SetProperty(ref _checkAllResister, value);
+                foreach(var item in CurrentSequence.Items)
+                {
+                    item.IsChecked= value;
+                }
+            }
+        }
+
         private string _treeKeyword;
         public string TreeKeyword
         {
@@ -448,6 +462,42 @@ namespace Workbench.ViewModels.dw
                 });
             }
         }));
+
+        public DelegateCommand BatchDelCommand => new DelegateCommand(async () =>
+        {
+            var result= MessageBox.Show("是否批量删除序列", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if(result==DialogResult.Yes)
+            {               
+                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    try
+                    {
+                        var tempRemove = SequenceList.Where(t => t.IsChecked).ToArray();
+                        foreach (var seq in tempRemove)
+                        {
+                            SequenceList.Remove(seq);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    
+                    }                    
+                });             
+            }
+        });
+
+        public DelegateCommand BatchDelRegisterCommand => new DelegateCommand(async  () =>
+        {
+            var result = MessageBox.Show("是否批量删除序列详情", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result != DialogResult.Yes)
+                return;
+            var delSeq = CurrentSequence.Items.Where(t => t.IsChecked).ToArray();
+            foreach (var item in delSeq)
+            {
+                CurrentSequence.Items.Remove(item);
+            }
+            CollectionViewSource.GetDefaultView(CurrentSequence.Items).Refresh();
+        });
 
         private async Task SendSequence(Sequence param)
         {

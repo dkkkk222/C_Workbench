@@ -93,7 +93,9 @@ namespace Workbench.Migrations
             #endregion
 
             string fileName = "B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类.xlsx";
-            string SDPCfileName = "SDPC_workbench软件数据监控表_zby0715.xlsx";
+            string SDPCfileName1 = "SDPC_workbench软件数据监控表_zby0715.xlsx";
+            string SDPCfileName = "SDPC_B10状态监测配置表_20250923.xlsx";
+
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
             string SDPCfilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileName);
             RegisterExcelResolve registerExcelResolve = new RegisterExcelResolve();

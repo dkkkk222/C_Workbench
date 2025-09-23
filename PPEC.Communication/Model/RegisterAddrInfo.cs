@@ -126,6 +126,13 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _tableId, value);
         }
 
+        private bool _isChecked = false;
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set => SetProperty(ref _isChecked, value);
+        }
+
         private string _binaryStr = string.Concat(Enumerable.Range(0, 32).Select(t => "0"));
         /// <summary>
         /// 二进制字符串
