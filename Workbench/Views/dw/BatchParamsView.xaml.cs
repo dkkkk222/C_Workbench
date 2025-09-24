@@ -29,7 +29,7 @@ namespace Workbench.Views.dw
     /// </summary>
     public partial class BatchParamsView : UserControl
     {
-        private GridLength _lastRightWidth = new GridLength(1, GridUnitType.Star);
+        private GridLength _lastRightWidth = new GridLength(1.1, GridUnitType.Star);
         private const double PaneWidth = 324.0;
         public BatchParamsView()
         {
@@ -151,9 +151,8 @@ namespace Workbench.Views.dw
                 // 展开：恢复上次宽度（首次用 *）
                 if (_lastRightWidth.Value <= 0)
                 {
-                    _lastRightWidth = new GridLength(1, GridUnitType.Star);
+                    _lastRightWidth = new GridLength(1.1, GridUnitType.Star);
                 }
-
                 RightCol.Width = _lastRightWidth;
                 SepCol.Width = new GridLength(10); // 分隔列
             }

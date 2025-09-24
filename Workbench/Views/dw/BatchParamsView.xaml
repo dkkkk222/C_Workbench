@@ -614,7 +614,7 @@ Command="{Binding ToggleConfigPaneCommand}" CommandParameter="{Binding SelectedI
 
                             <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding CurrentSequence.Items}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
                                   AlternationCount="2"   Background="{DynamicResource DataGridBackgroundColor}"  ColumnHeaderHeight="20"
-                                      RowHeaderWidth="60" LoadingRow="SequenceGrid_LoadingRow" Sorting="SequenceGrid_Sorting" RowHeight="40"
+                                      RowHeaderWidth="40" LoadingRow="SequenceGrid_LoadingRow" Sorting="SequenceGrid_Sorting" RowHeight="40"
                                       Loaded="SequenceGrid_OnLoaded" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0" SelectionChanged="SequenceGrid_SelectionChanged">
                                 <!--<i:Interaction.Triggers>
@@ -846,7 +846,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Width="*">
+                                    <DataGridTemplateColumn Width="*" MinWidth="50">
                                         <DataGridTemplateColumn.Header>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                 <TextBlock Text="选择"/>
