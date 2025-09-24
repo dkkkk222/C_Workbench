@@ -260,7 +260,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
-                                <Button Content="批量设置时间" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
+                                <Button Content="批量设置时间" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource ShowPageButtonBackgroundColor}" BorderBrush="{DynamicResource ShowPageButtonBackgroundColor}"   
 HorizontalAlignment="Left" hc:IconElement.Width="14"  Margin="5,0,0,6"
 Command="{Binding SettingAllTimeCommand}"/>
                                 <TextBlock Width="10"></TextBlock>
@@ -269,7 +269,7 @@ Command="{Binding SettingAllTimeCommand}"/>
                                    
                                 </ComboBox>
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Content="批量设置时间单位" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
+                                <Button Content="批量设置时间单位" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource ShowPageButtonBackgroundColor}" BorderBrush="{DynamicResource ShowPageButtonBackgroundColor}"   
 HorizontalAlignment="Left" hc:IconElement.Width="14"  Margin="0,0,0,6"
 Command="{Binding SettingAllUnitCommand}"/>
                                 <TextBlock Width="10"></TextBlock>
@@ -278,7 +278,7 @@ Command="{Binding SettingAllUnitCommand}"/>
                                      
                                 </ComboBox>
                                 <TextBlock Width="10"></TextBlock>
-                                <Button Content="批量设置表" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
+                                <Button Content="批量设置表" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource ShowPageButtonBackgroundColor}" BorderBrush="{DynamicResource ShowPageButtonBackgroundColor}"   
 HorizontalAlignment="Left" hc:IconElement.Width="14"  Margin="5,0,0,6"
 Command="{Binding SettingAllTableCommand}"/>
                                 <TextBlock Width="10"></TextBlock>

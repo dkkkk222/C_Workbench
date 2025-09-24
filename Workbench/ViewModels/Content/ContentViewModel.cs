@@ -6,6 +6,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Unity;
@@ -30,10 +31,10 @@ namespace Workbench.ViewModels.Content
             _eventAggregator = eventAggregator;
             _projectManager = projectManager;
 
-            var homeViewModel = container.Resolve<HomeViewModel>();
-            homeViewModel.Title = "首页";
-
-            Documents = new ObservableCollection<AvaDocument>() { homeViewModel };
+            //var homeViewModel = _container.Resolve<HomeViewModel>();
+            //homeViewModel.Title = "首页";
+            Documents = new ObservableCollection<AvaDocument>();
+            //Documents.Add(homeViewModel);
             EventLisen();
         }
 
@@ -93,6 +94,23 @@ namespace Workbench.ViewModels.Content
                 {
                     Documents.Remove(item);
                 }
+            });
+            _eventAggregator.GetEvent<ShowHomePageEvent>().Subscribe(() =>
+            {
+                var isHave = Documents.Where(x => x.Title == "首页").FirstOrDefault();
+                if(isHave==null)
+                {
+                    var homeViewModel = _container.Resolve<HomeViewModel>();
+                    homeViewModel.Title = "首页";
+                    homeViewModel.IsActive = true;
+                    homeViewModel.ContentId = Guid.NewGuid().ToString();
+                    Documents.Add(homeViewModel);
+                }
+                else
+                {
+                    isHave.IsActive = true;
+                }
+                
             });
         }
 

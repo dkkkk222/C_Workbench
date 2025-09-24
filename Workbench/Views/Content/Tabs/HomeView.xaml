@@ -4,9 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:homeTitle="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
+             xmlns:viewModels="clr-namespace:Workbench.ViewModels.Content.Tabs"
+             xmlns:views="clr-namespace:Workbench.Views.Content.Tabs"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
+            <views:HomeView />
+        </DataTemplate>
+    </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Border Background="{DynamicResource HomeBackgroundColor}" Padding="40,20">
             <Grid>

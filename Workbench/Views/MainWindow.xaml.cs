@@ -155,8 +155,9 @@ namespace Workbench.Views
         private void SaveAsProject_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
-            _projectManager.SaveAsProject(_projectManager.CurrentProject);
-            System.Windows.Forms.MessageBox.Show("保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var isSuc=_projectManager.SaveAsProject(_projectManager.CurrentProject);
+            if(isSuc)
+                System.Windows.Forms.MessageBox.Show("保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         #endregion
@@ -209,6 +210,16 @@ namespace Workbench.Views
                     _projectManager.SetCurrentPpec(ppec);
                 }                
             }
+        }
+          
+        private void SvgViewbox_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            _eventAggregator.GetEvent<ShowHomePageEvent>().Publish();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ShowHomePageEvent>().Publish();
         }
     }
 

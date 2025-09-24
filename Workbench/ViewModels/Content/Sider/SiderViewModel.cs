@@ -157,7 +157,9 @@ namespace Workbench.ViewModels.Content.Sider
             {
                 saveProject = _projectManager.CurrentProject;
             }
-            _projectManager.SaveAsProject(saveProject);
+            var isSuc=_projectManager.SaveAsProject(saveProject);
+            if (isSuc)
+                System.Windows.Forms.MessageBox.Show("保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         });
 
         #endregion

@@ -112,7 +112,7 @@ namespace Workbench.ViewModels.Content.Tabs
                 {
 
                 }, nameof(RecentFileWindow));
-            }));
+            }));         
 
         private DelegateCommand _closeCommand;
 

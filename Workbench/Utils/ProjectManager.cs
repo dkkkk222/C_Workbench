@@ -269,12 +269,12 @@ namespace Workbench.Utils
         /// 另存为
         /// </summary>
         /// <param name="saveAsProject"></param>
-        internal void SaveAsProject(PpecProject saveAsProject)
+        internal bool SaveAsProject(PpecProject saveAsProject)
         {
             if (saveAsProject == null)
             {
                 MessageBox.Show("请选择待保存项目", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                return false;
             }
 
             PpecProject saveAsFileProject = null;
@@ -283,7 +283,7 @@ namespace Workbench.Utils
                 Title = "另存为",
                 Filter = "Files (*.sdpc)|*.sdpc|All Files (*.*)|*.*"
             };
-            if (saveFileDialog.ShowDialog() != true) return;
+            if (saveFileDialog.ShowDialog() != true) return false;
             var fileName = saveFileDialog.FileName;
             try
             {
@@ -295,7 +295,7 @@ namespace Workbench.Utils
                     if (OpenedProjectList.Any(t => t.UID == saveAsFileProject.UID))
                     {
                         MessageBox.Show("不能覆盖已打开的工程文件", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
+                        return false;
                     }
                 }
 
@@ -311,10 +311,12 @@ namespace Workbench.Utils
                 _fileHandler.AppendToRecentFile(project, saveAsFileProject?.UID);
                 //保存文件
                 SaveProject(project);
+                return true;
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message);
+                return false;
             }
         }
 

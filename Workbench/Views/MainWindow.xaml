@@ -22,6 +22,19 @@
         <Style x:Key="MenuItemIcon" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="16"/>
         </Style>
+        <Style x:Key="CustomMenuItemStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MenuItemStyle}">
+            <Style.Triggers>
+                <!-- 修改 IsHighlighted 为 true 时的行为 -->
+                <Trigger Property="IsHighlighted" Value="True">
+                    <!-- 修改背景色为新的动态资源 -->
+                    <Setter Property="Background" Value="{DynamicResource MenuItemDropHighLight}" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <!-- 修改其他属性，根据需求进行添加 -->
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="BorderBrush" Value="Red"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <comCtrl:NoTitleBarWindow.TitleBarContent>
         <Border Grid.Row="0" x:Name="CustomTitleBar" Style="{DynamicResource TitleBarBorder}" Height="35">
@@ -32,17 +45,25 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Margin="7,2,0,2" >
-                    <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/sdpc_logo1.svg" 
-                Height="30" Width="90" Margin="0,0,0,0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center">
-                    </svgc:SvgViewbox>
-                    <!--<Image Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/SDPC_LOGO.png" Height="40" Width="110"
+                <!--<Border Grid.Column="0" Margin="0,2,0,2" >-->
+                <Menu Style="{DynamicResource MenuStyle}" Width="90">
+                    <MenuItem   Style="{DynamicResource MenuItemStyle2}">
+                       
+                        <MenuItem.Icon>
+                            <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/SDPC_LOGON.svg" 
+Height="15" Width="90" Margin="0,0,0,0"
 VerticalAlignment="Center"
-HorizontalAlignment="Center"/>-->
-                </Border>
-                <Border Grid.Column="1">
+HorizontalAlignment="Center" MouseLeftButtonDown="SvgViewbox_MouseLeftButtonDown" >
+                            </svgc:SvgViewbox>
+                        </MenuItem.Icon>
+                       
+                    </MenuItem>
+                </Menu>
+                
+                  
+      
+                <!--</Border>-->
+                <Border Grid.Column="1" Margin="-10,0,0,0">
                     <Menu Style="{DynamicResource MenuStyle}">
                         <MenuItem Header="文件(_F)" Style="{DynamicResource MenuItemStyle}">
                             <MenuItem x:Name="NewProject" Header="新建" Click="NewProject_Click" Style="{DynamicResource MenuItemStyle}">

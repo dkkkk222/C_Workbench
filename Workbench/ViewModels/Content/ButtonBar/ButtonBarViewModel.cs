@@ -597,7 +597,9 @@ namespace Workbench.ViewModels.Content.ButtonBar
         public DelegateCommand SaveAsProjectCommand =>
             _saveAsProjectCommand ?? (_saveAsProjectCommand = new DelegateCommand(() =>
             {
-                _projectManager.SaveAsProject(_projectManager.CurrentProject);
+                var isSuc=_projectManager.SaveAsProject(_projectManager.CurrentProject);
+                if (isSuc)
+                    System.Windows.Forms.MessageBox.Show("保存成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }));
 
         private DelegateCommand _disconnectCommand;

@@ -28,6 +28,8 @@ using Workbench.Db.IService;
 using Workbench.Db.Service;
 using Workbench.ViewModels.dw;
 using Workbench.Views.dw;
+using Workbench.ViewModels.Content;
+using Workbench.ViewModels.Content.Tabs;
 
 namespace Workbench
 {
@@ -142,6 +144,12 @@ namespace Workbench
         protected override void OnInitialized()
         {
             base.OnInitialized();
+            var cv=Container.Resolve<ContentViewModel>();
+            var homeViewModel = Container.Resolve<HomeViewModel>();
+            homeViewModel.Title = "首页";
+            homeViewModel.IsActive = true;
+            homeViewModel.ContentId = Guid.NewGuid().ToString(); 
+            cv.Documents.Add(homeViewModel);
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -152,6 +160,9 @@ namespace Workbench
             containerRegistry.RegisterSingleton<ProjectManager>();
             containerRegistry.RegisterSingleton<FileHandler>();
             containerRegistry.RegisterSingleton<MainServices>();
+            
+            containerRegistry.RegisterSingleton<ContentViewModel>(); 
+            containerRegistry.RegisterSingleton<HomeViewModel>();
             //containerRegistry.RegisterSingleton<WatchViewModel>();
             containerRegistry.RegisterSingleton<ICpService, CpService>();
             //containerRegistry.RegisterSingleton<SmlsContext>(() => new SmlsContext($@"Data Source={AppDomain.CurrentDomain.BaseDirectory}smls_vision.db;Version=3"));

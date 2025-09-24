@@ -400,6 +400,7 @@
     <Compile Include="Events\RemovePpecEvent.cs" />
     <Compile Include="Events\RemoveProjectFromSiderEvent.cs" />
     <Compile Include="Events\SerialPortAddRemoveEvent.cs" />
+    <Compile Include="Events\ShowHomePageEvent.cs" />
     <Compile Include="Events\TabChangeEvent.cs" />
     <Compile Include="Events\TreeViewSelectedEvent.cs" />
     <Compile Include="Migrations\OnInitial.cs" />
@@ -709,6 +710,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resource\Images\SVG\sdpc_logo1.svg" />
+    <Resource Include="Resource\Images\SVG\SDPC_LOGON.svg" />
     <Content Include="SDPC_LOGO.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
