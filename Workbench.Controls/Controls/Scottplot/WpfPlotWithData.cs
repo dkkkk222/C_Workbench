@@ -10,6 +10,11 @@ using ScottPlot.WPF;
 using ScottPlot.Plottables;
 using ScottPlot;
 using System.Text.RegularExpressions;
+using Microsoft.SqlServer.Server;
+using Prism.Services.Dialogs;
+using System.Windows;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace Workbench.Controls.Controls.Scottplot
 {
@@ -71,6 +76,10 @@ namespace Workbench.Controls.Controls.Scottplot
             Refresh();
             DeviceIP = deviceIP;
             DeviceProt = deviceProt;
+
+            
+            base.MouseRightButtonDown -= WpfPlotSteamBase_MouseRightButtonDown;
+            base.MouseRightButtonDown += WpfPlotSteamBase_MouseRightButtonDown;
         }
         #region 右键
         private void WpfPlotSteamBase_MouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -88,6 +97,18 @@ namespace Workbench.Controls.Controls.Scottplot
 
             item = new MenuItem() { Header = "开始" };
             item.Click += (o, i) => StartUpdate();
+            cm.Items.Add(item);
+
+            item = new MenuItem() { Header = "自动缩放" };
+            item.Click += (o, i) => Autoscale();
+            cm.Items.Add(item);
+
+            item = new MenuItem() { Header = "新窗口打开" };
+            item.Click += (o, i) => OpenInNewWindow();
+            cm.Items.Add(item);
+
+            item = new MenuItem() { Header = "复制到剪贴板" };
+            item.Click += (o, i) => CopyImageToClipboard();
             cm.Items.Add(item);
 
             item = new MenuItem() { Header = "保存图片" };
@@ -108,7 +129,45 @@ namespace Workbench.Controls.Controls.Scottplot
             };
 
             if (sfd.ShowDialog() is true)
-                Plot.Save(sfd.FileName, 80, 80);
+            {
+                try
+                {
+                    ImageFormat format;
+                    format = ImageFormats.FromFilename(sfd.FileName);
+                    PixelSize lastRenderSize = Plot.RenderManager.LastRender.FigureRect.Size;
+                    Plot.Save(sfd.FileName, (int)lastRenderSize.Width, (int)lastRenderSize.Height, format);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Image save failed", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }        
+            }
+                
+        }
+        public void CopyImageToClipboard()
+        {
+            PixelSize lastRenderSize = Plot.RenderManager.LastRender.FigureRect.Size;
+            ScottPlot.Image bmp = Plot.GetImage((int)lastRenderSize.Width, (int)lastRenderSize.Height);
+            byte[] bmpBytes = bmp.GetImageBytes();
+
+            using MemoryStream ms = new();
+            ms.Write(bmpBytes, 0, bmpBytes.Length);
+            BitmapImage bmpImage = new();
+            bmpImage.BeginInit();
+            bmpImage.StreamSource = ms;
+            bmpImage.EndInit();
+            Clipboard.SetImage(bmpImage);
+        }
+        public void OpenInNewWindow()
+        {
+            WpfPlotViewer.Launch(Plot, "Interactive Plot");
+            Refresh();
+        }
+        public void Autoscale()
+        {
+            Plot.Axes.AutoScale();
+            Refresh();
         }
         public void StopUpdate()
         {
