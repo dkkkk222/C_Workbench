@@ -12,6 +12,8 @@ using Microsoft.Xaml.Behaviors;
 using HandyControl.Expression.Shapes;
 using System.Windows.Data;
 using Workbench.ViewModels.dw;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace Workbench.Models
 {
@@ -61,6 +63,13 @@ namespace Workbench.Models
                 Math.Abs(current.Y - _dragStart.Y) < SystemParameters.MinimumVerticalDragDistance)
                 return;
 
+            // 判断鼠标是否位于 DataGrid 横向滚动条区域
+            if (IsMouseOverHorizontalScrollbar(e))
+            {
+                // 如果鼠标位于滚动条区域，跳过拖拽
+                return;
+            }
+
             _isDragging = true;
             try
             {
@@ -72,6 +81,27 @@ namespace Workbench.Models
                 _isDragging = false;
                 _dragItem = null;
             }
+        }
+
+        // 判断鼠标是否位于横向滚动条区域
+        private bool IsMouseOverHorizontalScrollbar(MouseEventArgs e)
+        {
+            // 获取 DataGrid 的滚动条区域
+            var scrollViewer = AssociatedObject.FindVisualChild<ScrollViewer>();
+            if (scrollViewer != null)
+            {
+                var scrollBar = scrollViewer.FindVisualChild<ScrollBar>();
+                if (scrollBar != null)
+                {
+                    var mousePos = e.GetPosition(scrollViewer);
+                    if (mousePos.Y > scrollViewer.ActualHeight - scrollBar.ActualHeight)
+                    {
+                        // 如果鼠标位于横向滚动条区域，返回 true
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private void OnDragOver(object sender, DragEventArgs e)
@@ -228,6 +258,34 @@ namespace Workbench.Models
             }
             prop.SetValue(item, max + 1);
             view.Refresh();
+        }
+    }
+    public static class VisualTreeHelperExtensions
+    {
+        public static T FindVisualChild<T>(this DependencyObject parent) where T : DependencyObject
+        {
+            // 检查父元素是否为 null
+            if (parent == null)
+                return null;
+
+            // 遍历父元素的子元素
+            T child = null;
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var childObject = VisualTreeHelper.GetChild(parent, i);
+                child = childObject as T;
+
+                if (child != null)
+                    break;
+                else
+                {
+                    // 递归检查子元素的子元素
+                    child = FindVisualChild<T>(childObject);
+                    if (child != null)
+                        break;
+                }
+            }
+            return child;
         }
     }
 }
