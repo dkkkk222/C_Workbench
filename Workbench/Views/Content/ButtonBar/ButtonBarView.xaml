@@ -17,6 +17,56 @@
             <Setter Property="Padding" Value="0,0,8,0"/>
 
         </Style>
+        <!-- ComboBoxItem 样式 -->
+        <Style x:Key="CustomComboBoxItemStyle" TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItem.Small}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+     Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" 
+     CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- 选中项鼠标悬停时的背景色 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="False"/>
+                        <Condition Property="UIElement.IsMouseOver" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Value="{DynamicResource SecondaryRegionBrush}" Property="Background"/>
+                </MultiTrigger>
+                <!-- 选中项的背景颜色 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Value="{DynamicResource PrimaryBrush}" Property="Background"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </MultiTrigger>
+                <!-- 设置选中项的背景颜色 -->
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBackgroundColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!-- ComboBox 样式 -->
+        <Style x:Key="CustomComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource CustomComboBoxItemStyle}" />
+            <Style.Triggers>
+                <!-- 获得焦点时变色 -->
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid Height="35" Background="{DynamicResource SecondaryBackgroundColor}">
         <Grid.ColumnDefinitions>
@@ -51,7 +101,7 @@
                     <Border Margin="8,0,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="通讯方式：" Style="{DynamicResource ButtonBarTitleStyle}"/>
-                            <ComboBox Width="100" ItemsSource="{Binding CommunicationTypeList}" Style="{StaticResource ComboBoxExtend.Small}"
+                            <ComboBox Width="100" ItemsSource="{Binding CommunicationTypeList}" Style="{StaticResource CustomComboBoxStyle}"
                                       SelectedItem="{Binding SelectedCommunicationType}"
                                       IsEnabled="{calc:Binding !IsConnected}"
                                       Height="22"/>
@@ -61,13 +111,13 @@
                     <Border Margin="10,0,0,0" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="{Binding PortTitle}" Style="{DynamicResource ButtonBarTitleStyle}"/>
-                            <ComboBox ItemsSource="{Binding PortList}" Width="120" Style="{StaticResource ComboBoxExtend.Small}"
+                            <ComboBox ItemsSource="{Binding PortList}" Width="120" Style="{StaticResource CustomComboBoxStyle}"
                                       SelectedItem="{Binding SerialPortName, Mode=TwoWay}"
                                       Height="22"
                                       IsEnabled="{calc:Binding !IsConnected}"
                                       Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}" />
                             <TextBlock Text="通信速率：" Style="{DynamicResource ButtonBarTitleStyle}" Margin="10,0,0,0"  Visibility="{calc:Binding 'ConnectType==1',FalseToVisibility=Collapsed}"/>
-                            <ComboBox ItemsSource="{Binding BuandList}" Width="120" Style="{StaticResource ComboBoxExtend.Small}"
+                            <ComboBox ItemsSource="{Binding BuandList}" Width="120" Style="{StaticResource CustomComboBoxStyle}"
                                       SelectedItem="{Binding BuandName, Mode=TwoWay}"
                                       Height="22"
                                       IsEnabled="{calc:Binding !IsConnected}"
@@ -80,7 +130,7 @@
 
                             </StackPanel>
                             <!-- CAN口 -->
-                            <ComboBox Width="120" ItemsSource="{Binding CANList}" Style="{StaticResource ComboBoxExtend.Small}"
+                            <ComboBox Width="120" ItemsSource="{Binding CANList}" Style="{StaticResource CustomComboBoxStyle}"
                                       SelectedItem="{Binding SelectedCAN,Mode=TwoWay}"
                                       DisplayMemberPath="Name"
                                       SelectedValuePath="Value"
@@ -91,7 +141,7 @@
                             <StackPanel  Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}" 
                                         Margin="0,0,0,0" Height="22"  IsEnabled="{calc:Binding !IsConnected}">
                             <TextBlock Text="通信速率:" Foreground="White" Style="{StaticResource ItemTitle}" Width="80"/>
-                            <ComboBox Width="120" ItemsSource="{Binding CANBaudList}" Style="{StaticResource ComboBoxExtend.Small}"
+                                <ComboBox Width="120" ItemsSource="{Binding CANBaudList}" Style="{StaticResource CustomComboBoxStyle}"
                                          SelectedItem="{Binding SelectedCANBaud,Mode=TwoWay}"
                                          DisplayMemberPath="Name"
                                          SelectedValuePath="Value"
@@ -102,7 +152,7 @@
                             <StackPanel  Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}" 
             Margin="0,0,0,0" Height="22"  IsEnabled="{calc:Binding !IsConnected}">
                                 <TextBlock Text="设备驱动:" Foreground="White" Style="{StaticResource ItemTitle}" Width="80"/>
-                                <ComboBox Width="120" ItemsSource="{Binding BBLLCCANTYPEList}" Style="{StaticResource ComboBoxExtend.Small}"
+                                <ComboBox Width="120" ItemsSource="{Binding BBLLCCANTYPEList}" Style="{StaticResource CustomComboBoxStyle}"
                                              SelectedItem="{Binding SelectedCANType,Mode=TwoWay}"
                                              DisplayMemberPath="Name"
                                              SelectedValuePath="Value"
@@ -116,8 +166,8 @@
              Visibility="{calc:Binding 'ConnectType==2',FalseToVisibility=Collapsed}"/>
 
                             </StackPanel>
-                            <!-- I2C -->                             
-                            <ComboBox Width="200" ItemsSource="{Binding CommunicationI2CList}" Style="{StaticResource ComboBoxExtend.Small}"
+                            <!-- I2C -->
+                            <ComboBox Width="200" ItemsSource="{Binding CommunicationI2CList}" Style="{StaticResource CustomComboBoxStyle}"
                                      SelectedItem="{Binding SelectedCommunicationI2CType,Mode=TwoWay}"
                                      DisplayMemberPath="Name"
                                      SelectedValuePath="Value"
@@ -129,7 +179,7 @@
                             <TextBlock Width="5"></TextBlock>                          
                             <StackPanel  Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==3',FalseToVisibility=Collapsed}">
                                 <TextBlock Text="时钟速率:" Foreground="White" Width="70" Style="{StaticResource ItemTitle}"/>
-                                <ComboBox Width="100" ItemsSource="{Binding CommunicationI2CClock}" Style="{StaticResource ComboBoxExtend.Small}"
+                                <ComboBox Width="100" ItemsSource="{Binding CommunicationI2CClock}" Style="{StaticResource CustomComboBoxStyle}"
                                       SelectedItem="{Binding SelectedCommunicationI2CClock,Mode=TwoWay}"   
                                         DisplayMemberPath="Name"
                                         SelectedValuePath="Value"
@@ -140,7 +190,7 @@
                             <TextBlock Width="5"></TextBlock>
                             <StackPanel Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==3',FalseToVisibility=Collapsed}">
                                 <TextBlock Text="从机地址:" Foreground="White" Width="70" Style="{StaticResource ItemTitle}"/>
-                                <ComboBox Width="100" ItemsSource="{Binding CommunicationI2CDeviceList}" Style="{StaticResource ComboBoxExtend.Small}"
+                                <ComboBox Width="100" ItemsSource="{Binding CommunicationI2CDeviceList}" Style="{StaticResource CustomComboBoxStyle}"
                         SelectedItem="{Binding SelectedCommunicationI2CDevice,Mode=TwoWay}"        
                         Height="22"
                         IsEnabled="{calc:Binding !IsConnected}"
@@ -149,7 +199,7 @@
                             <TextBlock Width="5"></TextBlock>
                             <StackPanel  Orientation="Horizontal"   Visibility="{calc:Binding 'ConnectType==3',FalseToVisibility=Collapsed}">
                                 <TextBlock Text="时钟延展:" Foreground="White" Width="70" Style="{StaticResource ItemTitle}"/>
-                                <ComboBox Width="100" ItemsSource="{Binding CommunicationI2CSCL}" Style="{StaticResource ComboBoxExtend.Small}"
+                                <ComboBox Width="100" ItemsSource="{Binding CommunicationI2CSCL}" Style="{StaticResource CustomComboBoxStyle}"
                                   SelectedItem="{Binding SelectCommunicationI2CSCL,Mode=TwoWay}"        
                                   Height="22"
                                   IsEnabled="{calc:Binding !IsConnected}"

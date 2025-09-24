@@ -42,6 +42,59 @@
                                 From="300" To="0"
                                 Duration="0:0:0.18"/>
         </Storyboard>
+
+        <!-- ComboBoxItem 样式 -->
+        <Style x:Key="CustomComboBoxItemStyle" TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItem.Small}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+                Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" 
+                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- 选中项鼠标悬停时的背景色 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="False"/>
+                        <Condition Property="UIElement.IsMouseOver" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Value="{DynamicResource SecondaryRegionBrush}" Property="Background"/>
+                </MultiTrigger>
+                <!-- 选中项的背景颜色 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Value="{DynamicResource PrimaryBrush}" Property="Background"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </MultiTrigger>
+                <!-- 设置选中项的背景颜色 -->
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBackgroundColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!-- ComboBox 样式 -->
+        <Style x:Key="CustomComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource CustomComboBoxItemStyle}" />
+            <Style.Triggers>
+                <!-- 获得焦点时变色 -->
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -211,53 +264,18 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
 HorizontalAlignment="Left" hc:IconElement.Width="14"  Margin="5,0,0,6"
 Command="{Binding SettingAllTimeCommand}"/>
                                 <TextBlock Width="10"></TextBlock>
-                                <ComboBox  ItemsSource="{Binding RecordTimeSource}" DisplayMemberPath="Display"  Width="70"
+                                <ComboBox  ItemsSource="{Binding RecordTimeSource}" DisplayMemberPath="Display"  Width="70" Style="{DynamicResource CustomComboBoxStyle}"
            SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding SelectRecordTimeType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                                    <ComboBox.Style>
-                                        <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
-                                            <Style.Triggers>
-                                                <!-- 获得焦点时变色 -->
-                                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBox.Style>
-                                    <ComboBox.ItemContainerStyle>
-                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItem.Small}">                                             
-                                            <Style.Triggers>
-                                                <!-- 修改选中项的背景颜色 -->
-                                                <Trigger Property="ComboBoxItem.IsSelected" Value="True"> 
-                                                    <Setter Property="Background" Value="Red"/>
-                                                    <!-- 这里设置为你需要的颜色 -->
-                                                    <Setter Property="Foreground" Value="White"/>
-                                                    <!-- 可选：设置选中项的前景色 -->
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBox.ItemContainerStyle>
+                                   
                                 </ComboBox>
                                 <TextBlock Width="10"></TextBlock>
                                 <Button Content="批量设置时间单位" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
 HorizontalAlignment="Left" hc:IconElement.Width="14"  Margin="0,0,0,6"
 Command="{Binding SettingAllUnitCommand}"/>
                                 <TextBlock Width="10"></TextBlock>
-                                <ComboBox ItemsSource="{Binding WatchGroups,Mode=TwoWay}"  Width="70"
+                                <ComboBox ItemsSource="{Binding WatchGroups,Mode=TwoWay}"  Width="70" Style="{DynamicResource CustomComboBoxStyle}"
                                      DisplayMemberPath="Header" SelectedValue="{Binding SelectTab,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
-                                    <ComboBox.Style>
-                                        <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
-                                            <Style.Triggers>
-                                                <!-- 获得焦点时变色 -->
-                                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                                </Trigger>
-                                                <!-- 下拉展开时变色 -->
-                                                <Trigger Property="IsDropDownOpen" Value="True">
-                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBox.Style>
+                                     
                                 </ComboBox>
                                 <TextBlock Width="10"></TextBlock>
                                 <Button Content="批量设置表" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
@@ -447,18 +465,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         </hc:NumericUpDown.Value>
                                                     </hc:NumericUpDown>
                                                     <TextBlock Text="" VerticalAlignment="Center" Width="5"/>
-                                                    <ComboBox  ItemsSource="{Binding RecordTimeSource}" DisplayMemberPath="Display" 
+                                                <ComboBox  ItemsSource="{Binding RecordTimeSource}" DisplayMemberPath="Display" Style="{StaticResource CustomComboBoxStyle}"
                                                               SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding RecordTimeTypeItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center">
-                                                        <ComboBox.Style>
-                                                            <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
-                                                                <Style.Triggers>
-                                                                    <!-- 获得焦点时变色 -->
-                                                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                                                        <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                                                    </Trigger> 
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </ComboBox.Style>
+                                                         
                                                     </ComboBox>
                                                 </StackPanel>
                                             </DataTemplate>
@@ -486,23 +495,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel VerticalAlignment="Center">
-                                                    <ComboBox ItemsSource="{Binding Path=DataContext.WatchGroups,RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                <ComboBox ItemsSource="{Binding Path=DataContext.WatchGroups,RelativeSource={RelativeSource AncestorType=UserControl}}" Style="{StaticResource CustomComboBoxStyle}"
                                                               DisplayMemberPath="Header" SelectedValue="{Binding TableId,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Id" >
-                                                        <ComboBox.Style>
-                                                            <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
-                                                                <Style.Triggers>
-                                                                    <!-- 获得焦点时变色 -->
-                                                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                                                        <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                                                    </Trigger>
-                                                                    <!-- 下拉展开时变色 -->
-                                                                    <Trigger Property="IsDropDownOpen" Value="True">
-                                                                        <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                                                        
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </ComboBox.Style>
+                                                       
                                                         <i:Interaction.Triggers>
                                                             <i:EventTrigger EventName="SelectionChanged">
                                                                 <i:InvokeCommandAction Command="{Binding DataContext.TableChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
@@ -605,7 +600,20 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                             <ItemsControl.ItemTemplate>
                                                                                 <DataTemplate>
                                                                                     <Border Padding="8,0">
-                                                                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                                                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                                                                            <CheckBox.Style>
+                                                                                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                                                                    <Style.Triggers>
+                                                                                                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
+                                                                                                            <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                                                                        </DataTrigger>
+                                                                                                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="false">
+                                                                                                            <Setter Property="Background" Value="Transparent"/>
+                                                                                                        </DataTrigger>
+                                                                                                    </Style.Triggers>
+                                                                                                </Style>
+                                                                                            </CheckBox.Style>
+                                                                                        </CheckBox>
                                                                                     </Border>
                                                                                 </DataTemplate>
                                                                             </ItemsControl.ItemTemplate>
@@ -777,11 +785,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
                                                             <DataGridTextColumn Header="寄存器值(HEX)" Width="Auto" IsReadOnly="True" Binding="{Binding SourceHex}" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}">
-                                                                <!--<DataGridTextColumn.CellTemplate>
-                                                                    <DataTemplate>
-                                                                        <TextBlock HorizontalAlignment="Center" Text="{Binding SourceHex,Mode=TwoWay}" VerticalAlignment="Center"/>
-                                                                    </DataTemplate>
-                                                                </DataGridTextColumn.CellTemplate>-->
+                                                             
                                                             </DataGridTextColumn>
                                                             <DataGridTemplateColumn Header="解析内容(bit)" Width="75"
                                                                             Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
@@ -819,7 +823,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                     <DataTemplate>
                                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                             <ComboBox ItemsSource="{Binding Path=DataContext.WatchChartGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                                                    DisplayMemberPath="Header"  SelectedValuePath="Id" MinWidth="70"
+                                                                                                    DisplayMemberPath="Header"  SelectedValuePath="Id" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}"
                                                                                       SelectedValue="{Binding SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                                                           
                                                                                 <i:Interaction.Triggers>
@@ -828,19 +832,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                              
                                                                                     </i:EventTrigger>
                                                                                 </i:Interaction.Triggers>
-                                                                                <ComboBox.Style>
-                                                                                    <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
-                                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                                        <Style.Triggers>
-                                                                                            <DataTrigger Binding="{Binding Desc}" Value="无">
-                                                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                                                            </DataTrigger>
-                                                                                            <DataTrigger Binding="{Binding Desc}" Value="预留">
-                                                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                                                            </DataTrigger>
-                                                                                        </Style.Triggers>
-                                                                                    </Style>
-                                                                                </ComboBox.Style>
+                                                                                 
                                                                             </ComboBox>
                                                                         </StackPanel>
                                                                     </DataTemplate>

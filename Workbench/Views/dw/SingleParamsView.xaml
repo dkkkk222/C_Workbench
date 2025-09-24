@@ -55,6 +55,56 @@
                                        From="324" To="0"
                                        Duration="0:0:0.18"/>
         </Storyboard>
+        <!-- ComboBoxItem 样式 -->
+        <Style x:Key="CustomComboBoxItemStyle" TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItem.Small}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+     Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" 
+     CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- 选中项鼠标悬停时的背景色 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="False"/>
+                        <Condition Property="UIElement.IsMouseOver" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Value="{DynamicResource SecondaryRegionBrush}" Property="Background"/>
+                </MultiTrigger>
+                <!-- 选中项的背景颜色 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Value="{DynamicResource PrimaryBrush}" Property="Background"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </MultiTrigger>
+                <!-- 设置选中项的背景颜色 -->
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBackgroundColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!-- ComboBox 样式 -->
+        <Style x:Key="CustomComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource CustomComboBoxItemStyle}" />
+            <Style.Triggers>
+                <!-- 获得焦点时变色 -->
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid  >
         <Grid.ColumnDefinitions>
@@ -601,19 +651,10 @@ hc:IconElement.Geometry="{StaticResource PushGeometry}" Click="Button_Click" />
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <StackPanel VerticalAlignment="Center">
-                                                        <ComboBox  ItemsSource="{Binding Options}" IsEnabled="{Binding DataContext.WriteCurrentRegister.AllowWrite,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        <ComboBox  ItemsSource="{Binding Options}" Style="{StaticResource CustomComboBoxStyle}" IsEnabled="{Binding DataContext.WriteCurrentRegister.AllowWrite,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                                    DisplayMemberPath="Display" SelectedValuePath="Key" hc:InfoElement.Placeholder="请选择" SelectedValue="{Binding SelectedValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
 Visibility="{c:Binding 'Options.Count>0',FalseToVisibility=Collapsed}" VerticalAlignment="Center">
-                                                            <ComboBox.Style>
-                                                                <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
-                                                                    <Style.Triggers>
-                                                                        <!-- 获得焦点时变色 -->
-                                                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                                                        </Trigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </ComboBox.Style>
+                                                             
                                                             <i:Interaction.Triggers>
                                                                         <i:EventTrigger EventName="SelectionChanged">
                                                                             <i:InvokeCommandAction Command="{Binding DataContext.OptionChangeCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}" 
