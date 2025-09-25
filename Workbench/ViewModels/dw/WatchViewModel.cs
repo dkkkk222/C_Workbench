@@ -343,7 +343,7 @@ namespace Workbench.ViewModels.dw
         //        Id = Guid.NewGuid().ToString("N"),
         //        Header = $"未选中",
         //    }};
-        public ObservableCollection<WatchChartModel> _watchChartGroups = new ObservableCollection<WatchChartModel>();
+        private ObservableCollection<WatchChartModel> _watchChartGroups = new ObservableCollection<WatchChartModel>();
         /// <summary>
         /// 数据监测图列表
         /// </summary>
@@ -352,6 +352,18 @@ namespace Workbench.ViewModels.dw
             get => _watchChartGroups;
             set => SetProperty(ref _watchChartGroups, value);
         }
+
+        private string _selectedChartValue =null;
+        /// <summary>
+        /// 数据监测图列表
+        /// </summary>
+        public string SelectedChartValue
+        {
+            get => _selectedChartValue;
+            set => SetProperty(ref _selectedChartValue, value);
+        }
+
+        
 
         private WatchGroup _currentTab;
         public WatchGroup CurrentTab
@@ -764,6 +776,56 @@ namespace Workbench.ViewModels.dw
             {
                 reg.RecordTimeTypeItem = SelectRecordTimeType;
             }
+        });
+
+        public DelegateCommand<object> BatchChartCommand => new DelegateCommand<object>((e) =>
+        {
+            try
+            {
+                if (e == null) return;
+
+                var selectedItem = WatchChartGroups.Where(x=>x.Id== SelectedChartValue).FirstOrDefault();
+                if (selectedItem == null) return;
+                var cb = e  as WatchGroup;
+                if (cb == null) return;
+                var selectTable = WatchChartGroups.FirstOrDefault(x => x.Id == selectedItem.Id);
+               foreach (var bitfile in cb.BitFields)
+               {
+                    var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == bitfile.TableId);
+                    if (selectedItem.Header == "未选中" && selectedItem.Id != bitfile.TableId)
+                    {
+                        if (selectChart == null)
+                            continue;
+                        ChangeChartVisible(selectChart.WpfPlotControl2, false, bitfile.Desc);
+                        ChangeChartVisible(selectChart.WpfPlotControl, false, bitfile.Desc);
+                        bitfile.TableId = null;
+                        bitfile.SelectedChartValue = null;
+                    }
+                    else
+                    {
+                        if (selectedItem.Id != bitfile.TableId)
+                        {
+                            if (selectChart != null)
+                            {
+                                ChangeChartVisible(selectChart.WpfPlotControl2, false, bitfile.Desc);
+                                ChangeChartVisible(selectChart.WpfPlotControl, false, bitfile.Desc);
+                            }
+                            if (selectTable != null)
+                            {
+                                ChangeChartVisble2(selectTable.WpfPlotControl2, bitfile.Desc);
+                                ChangeChartVisble2(selectTable.WpfPlotControl, bitfile.Desc);
+                                bitfile.TableId = selectedItem.Id;
+                                bitfile.SelectedChartValue= selectedItem.Id;
+                            }
+                        }
+                    }
+               }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+
         });
 
         public DelegateCommand SettingAllTimeCommand => new DelegateCommand(() =>

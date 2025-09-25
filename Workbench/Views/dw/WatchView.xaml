@@ -584,9 +584,21 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 Margin="5,3,0,0" 
                                                                 Command="{Binding RenameCommand}"
                                                                 CommandParameter="Table"/>
+                                                                
                                                             </StackPanel>
+                                                        
                                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+ 
+                                                                <ComboBox ItemsSource="{Binding Path=DataContext.WatchChartGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         DisplayMemberPath="Header"  SelectedValuePath="Id" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
+           SelectedValue="{Binding DataContext.SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource AncestorType=UserControl}}">
+
+                                                                </ComboBox>
+                                                                <TextBlock Width="10"></TextBlock>
+                                                                <Button DockPanel.Dock="Right" Content="批量设置图" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource ShowPageButtonBackgroundColor}" BorderBrush="{DynamicResource ShowPageButtonBackgroundColor}" 
+ Command="{Binding DataContext.BatchChartCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                                                <TextBlock Width="10"></TextBlock>
+                                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                                 Command="{Binding DataContext.HistoryDownloadCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                                                 <TextBlock Width="10"></TextBlock>
                                                                 <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
@@ -759,22 +771,6 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                         <TextBlock Text="{Binding Desc}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
-
-                                                                <!-- 编辑状态 -->
-                                                                <!--<DataGridTemplateColumn.CellEditingTemplate>
-                                                                    <DataTemplate>
-                                                                        <TextBox Text="{Binding Desc, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                                                            <i:Interaction.Triggers>
-                                                                                <i:EventTrigger EventName="GotFocus">
-                                                                                    <i:InvokeCommandAction Command="{Binding DataContext.CaptureOldNameCommand,  RelativeSource={RelativeSource AncestorType=UserControl}}"  CommandParameter="{Binding}"/>
-                                                                                </i:EventTrigger>
-                                                                                <i:EventTrigger EventName="LostFocus">
-                                                                                    <i:InvokeCommandAction   Command="{Binding DataContext.NameEditedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
-                                                                                </i:EventTrigger>
-                                                                            </i:Interaction.Triggers>
-                                                                        </TextBox>
-                                                                    </DataTemplate>
-                                                                </DataGridTemplateColumn.CellEditingTemplate>-->
                                                             </DataGridTemplateColumn>
                                                             <DataGridTemplateColumn Header="寄存器地址(HEX)" Width="Auto"
                                                                             Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
