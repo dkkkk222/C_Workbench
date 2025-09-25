@@ -860,11 +860,28 @@ namespace Workbench.ViewModels.dw
             {
                 if (reg.TableId == SelectTab.Id)
                     continue;
+               
                 var tab = WatchGroups.FirstOrDefault(t => t.Id == reg.TableId);
                 //清除原tab中的数据
                 var groups = WatchGroups.Where(t => t.BitFields.Any(t => t.Name == reg.Name));
+               
                 foreach (var group in groups)
                 {
+                    if (SelectTab.Id == "placeholder")
+                    {                       
+                        foreach (var bitFidle in group.BitFields)
+                        {
+                            var isHave=WatchChartGroups.FirstOrDefault(x => x.Id == bitFidle.TableId);
+                            if(isHave!=null)
+                            {
+                                bitFidle.TableId = null;
+                                bitFidle.SelectedChartValue = null;
+                                ChangeChartVisible(isHave.WpfPlotControl2, false, bitFidle.Desc);
+                                ChangeChartVisible(isHave.WpfPlotControl, false, bitFidle.Desc);
+                            }                            
+                        }
+                    }
+
                     var remain = group.BitFields.Where(t => t.Name != reg.Name).ToList();
                     group.BitFields.Clear();
                     group.BitFields.AddRange(remain);
@@ -888,7 +905,9 @@ namespace Workbench.ViewModels.dw
                     group.WpfPlotControl.Refresh();
                     group.WpfPlotControl2.Refresh();
                 }
-
+                
+                //ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Desc);
+                //ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
                 reg.TableId = SelectTab.Id;
                 //找到Tab 
                 if (tab == null)
@@ -1297,7 +1316,8 @@ namespace Workbench.ViewModels.dw
         {
             var isAllCheck = (bool)e;
             var deepMaxLevels = SingleParamTrees.GetMaxDepthLeaves();
-            foreach (var treeItem in deepMaxLevels)
+            var orderTree = deepMaxLevels.Where(x=>x.Type== CategoryTreeType.Register).OrderBy(x => int.Parse(x.AddressDec)).ToList();
+            foreach (var treeItem in orderTree)
             {
                 if (treeItem.IsCheck == isAllCheck)
                     continue;

@@ -46,12 +46,12 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <!--<Border Grid.Column="0" Margin="0,2,0,2" >-->
-                <Menu Style="{DynamicResource MenuStyle}" Width="90">
+                <Menu Style="{DynamicResource MenuStyle}" Width="90" Margin="0,0,0,0" VerticalAlignment="Center">
                     <MenuItem   Style="{DynamicResource MenuItemStyle2}">
                        
                         <MenuItem.Icon>
                             <svgc:SvgViewbox Source="pack://application:,,,/Workbench;component/Resource/Images/SVG/SDPC_LOGON.svg" 
-Height="15" Width="90" Margin="0,0,0,0"
+Height="15" Width="90" Margin="0,-2,0,0"
 VerticalAlignment="Center"
 HorizontalAlignment="Center" MouseLeftButtonDown="SvgViewbox_MouseLeftButtonDown" >
                             </svgc:SvgViewbox>
