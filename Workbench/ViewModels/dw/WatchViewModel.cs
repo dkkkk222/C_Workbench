@@ -950,6 +950,7 @@ namespace Workbench.ViewModels.dw
         {
             if (e is WatchChartModel chartToClose)
             {
+                RemoveTabChart(chartToClose);
                 // 从 WatchGroups 集合中移除选中的选项卡
                 WatchChartGroups.Remove(chartToClose);
                 // （可选）如果需要，更新 CurrentTab 指向另一个有效选项卡
@@ -959,6 +960,47 @@ namespace Workbench.ViewModels.dw
                 }
             }
         });
+        public DelegateCommand<object> CloseOthersChartCommand => new DelegateCommand<object>((e) =>
+        {
+            if (e is WatchChartModel chartToClose)
+            {
+                foreach (var group in WatchChartGroups.ToArray())
+                {
+                    if (group.Id == chartToClose.Id || group.Id == "placeholder")
+                        continue;
+                    RemoveTabChart(group);
+                    WatchChartGroups.Remove(group);
+                }                    
+            }
+        });
+        public DelegateCommand<object> CloseAllChartCommand => new DelegateCommand<object>((e) =>
+        {
+            foreach (var group in WatchChartGroups.ToArray())
+            {
+                if (group.Id == "placeholder")
+                    continue;
+                RemoveTabChart(group);
+                WatchChartGroups.Remove(group);
+            }
+        });
+        public void RemoveTabChart(WatchChartModel thisChartTab)
+        {
+            var chartParams=thisChartTab.WpfPlotControl.Plot.GetPlottables().OfType<Scatter>();
+            var chartParams2 = thisChartTab.WpfPlotControl2.Plot.GetPlottables().OfType<Scatter>();
+            foreach (var group in WatchGroups.ToArray())
+            {
+                foreach (var field in group.BitFields)
+                {
+                    var isHave=chartParams.Where(x => x.LegendText == field.Desc).FirstOrDefault();
+                    var isHave2 = chartParams2.Where(x => x.LegendText == field.Desc).FirstOrDefault();
+                    if(isHave!=null)
+                    {
+                        field.TableId = null;
+                        field.SelectedChartValue = null;
+                    }
+                }
+            }
+        }
         public DelegateCommand<object> CloseTabCommand => new DelegateCommand<object>((e) =>
         {
             if (e is WatchGroup tabToClose)
@@ -1014,8 +1056,8 @@ namespace Workbench.ViewModels.dw
                 // 从 WatchGroups 集合中移除选中的选项卡
                 foreach (var group in WatchGroups.ToArray())
                 {
-                if (group.Id== "placeholder")
-                        continue;
+                    if (group.Id== "placeholder")
+                            continue;
                     RemoveChartWhereClose(group);
                     WatchGroups.Remove(group);
                 }
@@ -1166,16 +1208,33 @@ namespace Workbench.ViewModels.dw
 
             return candidate;
         }
+        private string MakeUniqueHeaderChart(string baseName)
+        {
+            var exists = new HashSet<string>(WatchChartGroups.Select(x => x.Header));
+            if (!exists.Contains(baseName)) return baseName;
+
+            int i = 1;
+            string candidate;
+            do
+            {
+                candidate = $"{baseName}-{i}";
+                i++;
+            } while (exists.Contains(candidate));
+
+            return candidate;
+        }
         public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
         {
-            int nameCount = WatchChartGroups.Count == 1 ? 1 : WatchChartGroups.Count;
+            var baseName = $"表{WatchChartGroups.Where(x => x.Id != "placeholder").Count() + 1}";
+            var header = MakeUniqueHeaderChart(baseName);
             var maxOrder = WatchChartGroups.Any(c => c.Id != "placeholder")
        ? WatchChartGroups.Where(c => c.Id != "placeholder").Max(c => c.Order)
        : 0;
+
             WatchChartModel wpfPlotControl = new WatchChartModel("监测图", _dialogService, session_id)
             {
                 Id = Guid.NewGuid().ToString("N"),
-                Header = $"图{nameCount}",
+                Header = header,
                 Order = maxOrder + 1,
             };
             WatchChartGroups.Add(wpfPlotControl);

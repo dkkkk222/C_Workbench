@@ -876,7 +876,31 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                            IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}" IsScrollable="True" ShowOverflowButton="False"
         ItemsSource="{Binding WatchChartGroupsForTab}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentChartTab}"
                                            Visibility="{Binding HasRealCharts, Converter={StaticResource BooleanToVisibilityConverter}}"  ShowContextMenu="False">
-                               
+                                <!--<hc:TabControl.ItemContainerStyle>
+                                    <Style TargetType="TabItem">
+                                        <EventSetter Event="PreviewMouseRightButtonDown" Handler="TabItem_OnRightClickSelect"/>
+                                        <Setter Property="Tag"
+                    Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                                        <Setter Property="ContextMenu">
+                                            <Setter.Value>
+                                                <ContextMenu>
+                                                    <MenuItem Header="关闭"
+                                  Command="{Binding PlacementTarget.Tag.CloseChartCommand,
+                                                    RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding}" />
+                                                    <MenuItem Header="关闭其它"
+                                  Command="{Binding PlacementTarget.Tag.CloseOthersChartCommand,
+                                                    RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding}" />
+                                                    <MenuItem Header="关闭所有"
+                                  Command="{Binding PlacementTarget.Tag.CloseAllChartCommand,
+                                                    RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                                </ContextMenu>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </hc:TabControl.ItemContainerStyle>-->
                                 <TabControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Width="Auto">
