@@ -554,7 +554,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </Grid.ColumnDefinitions>
                             <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="False" IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
                                    ItemsSource="{Binding WatchGroupsForTab}"   ShowOverflowButton="False" IsScrollable="True" ShowContextMenu="False" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}" Visibility="{Binding HasRealTables, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <!--<hc:TabControl.ItemContainerStyle>
+                                <hc:TabControl.ItemContainerStyle>
                                     <Style TargetType="TabItem"> 
                                         <EventSetter Event="PreviewMouseRightButtonDown" Handler="TabItem_OnRightClickSelect"/>
                                         <Setter Property="Tag"
@@ -578,7 +578,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </Setter.Value>
                                         </Setter>
                                     </Style>
-                                </hc:TabControl.ItemContainerStyle>-->
+                                </hc:TabControl.ItemContainerStyle>
                                 <TabControl.ItemTemplate> 
                                     <DataTemplate>                                        
                                         <StackPanel Orientation="Horizontal" Width="Auto">
@@ -605,10 +605,10 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                         <DockPanel>
                                                             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                                                 <!--<TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
-                                                                <controls_Title:StandTitle Padding="0,5,0,0" BordMargin="0,0,5,0" StandText="{Binding TableName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                                <controls_Title:StandTitle Padding="0,3,0,0" BordMargin="0,0,5,0" StandText="{Binding TableName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
                                                                 <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
-                                                                Margin="5,3,0,0" 
+                                                                Margin="5,0,0,0" 
                                                                 Command="{Binding RenameCommand}"
                                                                 CommandParameter="Table"/>
                                                                 
@@ -837,7 +837,34 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-                                                            <DataGridTextColumn Header="解析结果" Binding="{Binding Result}"  IsReadOnly="True" MinWidth="70" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                                            <!--<DataGridTextColumn Header="解析结果" Binding="{Binding Result}"  IsReadOnly="True" MinWidth="70" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>-->
+                                                            
+                                                            <DataGridTemplateColumn Header="解析结果" 
+                                                                   IsReadOnly="True" 
+                                                                   MinWidth="30"  
+                                                                   Width="80"
+                                                                   Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock  >
+                                                                            <TextBlock.Style>
+                                                                                <Style TargetType="TextBlock" BasedOn="{StaticResource CenterCellStyle}">
+                                                                                    <Setter Property="Text" Value="{Binding Result}" />
+                                                                                    <Setter Property="ToolTip" Value="{Binding Result}"/>
+                                                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding FormParam.ParamSymbol}" Value="DicString">
+                                                                                            <Setter Property="Text" Value="{Binding StringResult}" />
+                                                                                            <Setter Property="ToolTip" Value="{Binding StringResult}"/>
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </TextBlock.Style>
+                                                                        </TextBlock>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
                                                             <DataGridTextColumn Header="解析内容(HEX)" Binding="{Binding Value}" IsReadOnly="True" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
                                                             <DataGridTextColumn Header="解析内容(Binery)" Binding="{Binding ReadBinary}" IsReadOnly="True" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
                                                             <DataGridTextColumn Header="单位"  Binding="{Binding FormParam.UnitName}"  IsReadOnly="True" MinWidth="50" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
@@ -876,7 +903,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                            IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}" IsScrollable="True" ShowOverflowButton="False"
         ItemsSource="{Binding WatchChartGroupsForTab}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentChartTab}"
                                            Visibility="{Binding HasRealCharts, Converter={StaticResource BooleanToVisibilityConverter}}"  ShowContextMenu="False">
-                                <!--<hc:TabControl.ItemContainerStyle>
+                                <hc:TabControl.ItemContainerStyle>
                                     <Style TargetType="TabItem">
                                         <EventSetter Event="PreviewMouseRightButtonDown" Handler="TabItem_OnRightClickSelect"/>
                                         <Setter Property="Tag"
@@ -900,7 +927,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </Setter.Value>
                                         </Setter>
                                     </Style>
-                                </hc:TabControl.ItemContainerStyle>-->
+                                </hc:TabControl.ItemContainerStyle>
                                 <TabControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Width="Auto">
@@ -927,7 +954,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                 <RowDefinition></RowDefinition>
                                                                 <RowDefinition></RowDefinition>
                                                             </Grid.RowDefinitions>
-                                                            <StackPanel Orientation="Horizontal">
+                                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                                                                 <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
                                                                 <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Margin="5,0,5,0"  Command="{Binding RenameCommand}" CommandParameter="Chart"/>

@@ -8,7 +8,7 @@ using PPEC.Communication.Enum;
 
 namespace PPEC.Communication.Common
 {
-    internal class UtilHelper
+    public static class UtilHelper
     {
         private const ushort Poly = 0x1021;
 
@@ -68,8 +68,61 @@ namespace PPEC.Communication.Common
                 case FormulaEnum.None:
                     result = result * paramA;
                     break;
+
             }
             return result;
+        }
+        public static bool TryGetByDecimalKey(Dictionary<string, string> dict, uint decimalKey, out string value)
+        {
+            value = null;
+            var formats = new[]
+            {
+            $"0x{decimalKey:X}",
+            $"0x{decimalKey:x}",
+            $"0x{decimalKey:X4}",
+            $"0x{decimalKey:x4}",
+            decimalKey.ToString()
+        };
+
+            foreach (var format in formats)
+            {
+                if (dict.TryGetValue(format, out value))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        public static Dictionary<string, string> ParseExcelDataToDictionary(string excelData)
+        {
+            var result = new Dictionary<string, string>();
+
+            try
+            {
+                if (string.IsNullOrEmpty(excelData))
+                    return null;
+                // 按换行符分割
+                var lines = excelData.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var line in lines)
+                {
+                    // 找到第一个冒号的位置进行分割
+                    var colonIndex = line.IndexOf(':');
+                    if (colonIndex > 0)
+                    {
+                        var key = line.Substring(0, colonIndex).Trim();
+                        var value = line.Substring(colonIndex + 1).Trim();
+                        result[key] = value;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 

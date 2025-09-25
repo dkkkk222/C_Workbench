@@ -1619,10 +1619,18 @@ namespace Workbench.ViewModels.dw
                     {
                         foreach (var newField in param.BitFields.ToArray())
                         {
-                            var tempdic = new Dictionary<string, double>();
+                            var tempdic = new Dictionary<string, string>();
                             if (newField.Id == null)
                                 continue;
-                            tempdic.Add(newField.Id, newField.Result);
+                            if(newField.FormParam.ParamSymbol== FormulaEnum.DicString)
+                            {
+                                tempdic.Add(newField.Id, newField.StringResult);
+                            }
+                            else
+                            {
+                                tempdic.Add(newField.Id, newField.Result.ToString());
+                            }
+                                
                             //开始存储，记录历史记录
                             pipeLineIng.Enqueue(new Sample
                             {

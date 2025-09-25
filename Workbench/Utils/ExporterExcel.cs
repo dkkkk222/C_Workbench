@@ -66,7 +66,7 @@ namespace Workbench.Utils
                         long lastFid = 0;
 
                         long currentTs = -1;
-                        double?[] currentLine = null; // 与 headerIds 同长度
+                        string[] currentLine = null; // 与 headerIds 同长度
 
                         while (true)
                         {
@@ -87,7 +87,7 @@ namespace Workbench.Utils
                                 if (currentTs == -1)
                                 {
                                     currentTs = rec.TsUtcMs;
-                                    currentLine = new double?[headerIds.Count];
+                                    currentLine = new string[headerIds.Count];
                                 }
 
                                 // 以 paramId 定位列，最后值覆盖
@@ -154,7 +154,7 @@ namespace Workbench.Utils
                     long lastFid = 0;       // 在相同时间内的最后 frame_id
                                             // 跨页“半行缓存”：如果某个时间的行在页末未写完，续到下一页继续合并
                     long currentTs = -1;
-                    double?[] currentLine = null; // 按 headerNames 长度的数组；每列一个值
+                    string[] currentLine = null; // 按 headerNames 长度的数组；每列一个值
 
                     while (true)
                     {
@@ -175,7 +175,7 @@ namespace Workbench.Utils
                             if (currentTs == -1)
                             {
                                 currentTs = rec.TsUtcMs;
-                                currentLine = new double?[headerNames.Count];
+                                currentLine = new string[headerNames.Count];
                             }
 
                             // 将该记录写入“同名参数的列”（同名出现多次，以最后出现的值覆盖）
@@ -210,7 +210,7 @@ namespace Workbench.Utils
                 }
             }
         }
-        private static void WriteCurrentLine(ISheet sh, ref int rowIdx, long tsUtcMs, double?[] line)
+        private static void WriteCurrentLine(ISheet sh, ref int rowIdx, long tsUtcMs, string[] line)
         {
             var row = sh.CreateRow(rowIdx++);
             row.CreateCell(0).SetCellValue(
@@ -219,8 +219,8 @@ namespace Workbench.Utils
             for (int i = 0; i < line.Length; i++)
             {
                 var c = row.CreateCell(i + 1);
-                if (line[i].HasValue) c.SetCellValue(line[i].Value);
-                else c.SetCellValue("");
+                c.SetCellValue(line[i]);
+                //else c.SetCellValue("");
             }
         }
         private static List<FlatRow> ReadChunkByTime(DbContext db, string sessionId, long lastTs, long lastFid, int take)

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LinqToDB;
+using PPEC.Communication.Common;
 using PPEC.Communication.Model;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,7 @@ namespace Workbench.Db.Service
                         bitField.FormParam.ParamA = rgb.ParamA==null?1:double.Parse(rgb.ParamA);
                         bitField.FormParam.ParamB = rgb.ParamB==null?0:double.Parse(rgb.ParamB);
                         bitField.FormParam.ParamC = rgb.ParamC;
+                        bitField.FormParam.ParamDic =UtilHelper.ParseExcelDataToDictionary(rgb.ParamName);
                         bitField.FormParam.ParamName = rgb.ParamName;
                         bitField.FormParam.UnitName = rgb.UnitName;
                         #endregion

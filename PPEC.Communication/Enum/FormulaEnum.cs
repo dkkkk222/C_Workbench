@@ -13,5 +13,6 @@ namespace PPEC.Communication.Enum
         Mul,//乘
         Exc,//除
         None,//无
+        DicString,//字典
     }
 }

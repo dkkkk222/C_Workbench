@@ -118,14 +118,14 @@ namespace Workbench.Db
                     // —— 关键点：不要用 DBNull.Value，统一转换为 null —— //
                     // 假设 ValueRow.Result / ResultParse 是 double?（可空）。
                     // 如果你是 object 类型，也同样给 null。
-                    double? parsed = ToNullableDouble(kv.Value);
+                    //string parsed = ToNullableDouble(kv.Value);
                     
                     values.Add(new ValueRow
                     {
                         FrameId = fid,
                         ParamId = kv.Key,
-                        ResultParse = parsed,         // null -> DB NULL
-                        Result = parsed,         // 你的需求若不同可改
+                        ResultParse = kv.Value,         // null -> DB NULL
+                        Result = kv.Value,         // 你的需求若不同可改
                         // RawHex    = ... 如需
                     });
                 }

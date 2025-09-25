@@ -11,6 +11,6 @@ namespace PPEC.Communication.Model
         public long FrameId;
         public long TsUtcMs;
         public string ParamId;
-        public double? Val;
+        public string Val;
     }
 }

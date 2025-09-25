@@ -3,6 +3,7 @@ using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using Org.BouncyCastle.Asn1.X509;
 using PPEC.Communication;
+using PPEC.Communication.Common;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using System;
@@ -136,6 +137,7 @@ namespace Workbench.Utils
                 selectBitFields.FormParam.ParamB = formula.b;
                 selectBitFields.FormParam.ParamC = formula.c;
                 selectBitFields.FormParam.UnitName= unit;
+                selectBitFields.FormParam.ParamDic = formula.d;
             }
         }
         private (uint? min, uint? max) GetMinMax(string remark)
@@ -227,10 +229,19 @@ namespace Workbench.Utils
             return cell.StringCellValue;
         }
 
-        private (double a, double b, string c) GetFormulaParam(string FormulaParam)
+        private (double a, double b, string c, Dictionary<string, string> d) GetFormulaParam(string FormulaParam)
         {
             if (string.IsNullOrWhiteSpace(FormulaParam) || !FormulaParam.Contains("y=", StringComparison.OrdinalIgnoreCase))
-                return (1, 0, "0");                         // 默认规则
+            {
+                var returnd= UtilHelper.ParseExcelDataToDictionary(FormulaParam);
+                string returnC = "0";
+                if(returnd!=null)
+                {
+                    returnC = "99";
+                }
+                return (1, 0, returnC, returnd);                         // 默认规则
+            }
+                
 
             // y = 0.0006x - 1.2000   ①系数a   ②运算符op   ③常数b
             const string pattern =
@@ -244,7 +255,7 @@ namespace Workbench.Utils
             string c = m.Groups["op"].Success ? m.Groups["op"].Value[0].ToString() : "0";
             double b = m.Groups["b"].Success ? double.Parse(m.Groups["b"].Value, CultureInfo.InvariantCulture) : 0;
 
-            return (a, b, c);
+            return (a, b, c, null);
         }
     }
 }

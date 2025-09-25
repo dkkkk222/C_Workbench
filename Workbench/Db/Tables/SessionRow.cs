@@ -16,8 +16,8 @@ namespace Workbench.Db.Tables
         public string ParamId { get; set; }
 
         [Column(Name = "resultParse"), Nullable]
-        public double? ResultParse { get; set; }
+        public string ResultParse { get; set; }
         [Column(Name = "result"), Nullable]
-        public double? Result { get; set; }
+        public string Result { get; set; }
     }
 }

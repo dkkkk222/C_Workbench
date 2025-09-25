@@ -372,7 +372,15 @@ namespace PPEC.Communication.Model
         public uint? RangeMax { get; set; }   // 连续范围最大值
 
         public string ExtraNote { get; set; } // “先写后清除”等操作提示
-        public FormulaParam FormParam { get; set; } = new FormulaParam();
+        public FormulaParam formParam = new FormulaParam();
+        public FormulaParam FormParam
+        {
+            get => formParam;
+            set
+            {
+                SetProperty(ref formParam, value);
+            }
+        }
 
         private uint _value;
         public uint Value
@@ -384,6 +392,13 @@ namespace PPEC.Communication.Model
                 {
                     ReadHex = "0x"+value.ToString("X8");
                     Result = UtilHelper.GetValueForFormula(FormParam.ParamSymbol, FormParam.ParamA, FormParam.ParamB, value);
+                    if (FormParam.ParamSymbol== FormulaEnum.DicString)
+                    {
+                        if (UtilHelper.TryGetByDecimalKey(FormParam.ParamDic, value, out string result2))
+                        {
+                            StringResult = result2;
+                        }
+                    }
                 }
             }
         }
@@ -394,6 +409,16 @@ namespace PPEC.Communication.Model
             set
             {
                 SetProperty(ref _result, value);
+            }
+        }
+
+        private string _stringResult = null;
+        public string StringResult
+        {
+            get => _stringResult;
+            set
+            {
+                SetProperty(ref _stringResult, value);
             }
         }
         private string _readHex="0x00000000";
@@ -560,6 +585,9 @@ namespace PPEC.Communication.Model
                     case "/":
                         ParamSymbol = FormulaEnum.Exc;
                         break;
+                    case "99":
+                        ParamSymbol = FormulaEnum.DicString;
+                        break;
                     default:
                         ParamSymbol = FormulaEnum.None;
                         break;
@@ -572,9 +600,12 @@ namespace PPEC.Communication.Model
         /// </summary>
         public FormulaEnum ParamSymbol { get; set; }
         public string UnitName { get; set; }
+
+        public Dictionary<string, string> ParamDic { get; set; }
     }
     public class RegisterMeta : BindableBase
     {
         public RegisterAddrInfo AddrInfo { get; set; }
     }
+    
 }
