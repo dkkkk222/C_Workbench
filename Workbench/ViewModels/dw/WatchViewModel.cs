@@ -856,71 +856,79 @@ namespace Workbench.ViewModels.dw
         });
         public DelegateCommand SettingAllTableCommand => new DelegateCommand(() =>
         {
-            foreach (var reg in CategoryRegisters)
+            try
             {
-                if (reg.TableId == SelectTab.Id)
-                    continue;
-               
-                var tab = WatchGroups.FirstOrDefault(t => t.Id == reg.TableId);
-                //清除原tab中的数据
-                var groups = WatchGroups.Where(t => t.BitFields.Any(t => t.Name == reg.Name));
-               
-                foreach (var group in groups)
+                foreach (var reg in CategoryRegisters)
                 {
-                    if (SelectTab.Id == "placeholder")
-                    {                       
-                        foreach (var bitFidle in group.BitFields)
+                    if (reg.TableId == SelectTab.Id)
+                        continue;
+
+                    var tab = WatchGroups.FirstOrDefault(t => t.Id == reg.TableId);
+                    //清除原tab中的数据
+                    var groups = WatchGroups.Where(t => t.BitFields.Any(t => t.Name == reg.Name));
+
+                    foreach (var group in groups)
+                    {
+                        if (SelectTab.Id == "placeholder")
                         {
-                            var isHave=WatchChartGroups.FirstOrDefault(x => x.Id == bitFidle.TableId);
-                            if(isHave!=null)
+                            foreach (var bitFidle in group.BitFields)
                             {
-                                bitFidle.TableId = null;
-                                bitFidle.SelectedChartValue = null;
-                                ChangeChartVisible(isHave.WpfPlotControl2, false, bitFidle.Desc);
-                                ChangeChartVisible(isHave.WpfPlotControl, false, bitFidle.Desc);
-                            }                            
+                                var isHave = WatchChartGroups.FirstOrDefault(x => x.Id == bitFidle.TableId);
+                                if (isHave != null)
+                                {
+                                    bitFidle.TableId = null;
+                                    bitFidle.SelectedChartValue = null;
+                                    ChangeChartVisible(isHave.WpfPlotControl2, false, bitFidle.Desc);
+                                    ChangeChartVisible(isHave.WpfPlotControl, false, bitFidle.Desc);
+                                }
+                            }
                         }
+
+                        var remain = group.BitFields.Where(t => t.Name != reg.Name).ToList();
+                        group.BitFields.Clear();
+                        group.BitFields.AddRange(remain);
+
+                        var labels = group.WpfPlotControl.Plot.GetPlottables();
+                        var labels2 = group.WpfPlotControl2.Plot.GetPlottables();
+                        foreach (var lengLabel in labels)
+                        {
+                            if (lengLabel is Scatter sc)
+                            {
+                                sc.IsVisible = false;
+                            }
+                        }
+                        foreach (var lengLabel in labels2)
+                        {
+                            if (lengLabel is Scatter sc)
+                            {
+                                sc.IsVisible = false;
+                            }
+                        }
+                        group.WpfPlotControl.Refresh();
+                        group.WpfPlotControl2.Refresh();
                     }
 
-                    var remain = group.BitFields.Where(t => t.Name != reg.Name).ToList();
-                    group.BitFields.Clear();
-                    group.BitFields.AddRange(remain);
-
-                    var labels = group.WpfPlotControl.Plot.GetPlottables();
-                    var labels2 = group.WpfPlotControl2.Plot.GetPlottables();
-                    foreach (var lengLabel in labels)
-                    {
-                        if (lengLabel is Scatter sc)
-                        {
-                            sc.IsVisible = false;
-                        }
-                    }
-                    foreach (var lengLabel in labels2)
-                    {
-                        if (lengLabel is Scatter sc)
-                        {
-                            sc.IsVisible = false;
-                        }
-                    }
-                    group.WpfPlotControl.Refresh();
-                    group.WpfPlotControl2.Refresh();
+                    //ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Desc);
+                    //ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
+                    reg.TableId = SelectTab.Id;
+                    //找到Tab 
+                    if (tab == null)
+                        continue;
+                    //遍历寄存器下的BitField
+                    //foreach (var bf in reg.BitFields)
+                    //{
+                    //    var clone = JsonHelper.DeepClone(bf);
+                    //    clone.AddressHexName = reg.AddressHex;
+                    //    clone.AddressId = reg.Id;
+                    //    SelectTab.BitFields.Add(clone);
+                    //}
                 }
-                
-                //ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Desc);
-                //ChangeChartVisible(selectChart.WpfPlotControl, false, row.Desc);
-                reg.TableId = SelectTab.Id;
-                //找到Tab 
-                if (tab == null)
-                    return;
-                //遍历寄存器下的BitField
-                //foreach (var bf in reg.BitFields)
-                //{
-                //    var clone = JsonHelper.DeepClone(bf);
-                //    clone.AddressHexName = reg.AddressHex;
-                //    clone.AddressId = reg.Id;
-                //    SelectTab.BitFields.Add(clone);
-                //}
             }
+            catch (Exception ex) 
+            {
+            
+            }
+            
         });
         private DelegateCommand _closeCommand;
 
@@ -958,12 +966,62 @@ namespace Workbench.ViewModels.dw
                 // 从 WatchGroups 集合中移除选中的选项卡
                 WatchGroups.Remove(tabToClose);
                 // （可选）如果需要，更新 CurrentTab 指向另一个有效选项卡
-                if (CurrentTab == tabToClose)
+                if (CurrentTab.Id == tabToClose.Id)
                 {
                     CurrentTab = WatchGroups.FirstOrDefault();
                 }
+                RemoveChartWhereClose(tabToClose);
             }
         });
+
+        public void RemoveChartWhereClose(WatchGroup thisGroup)
+        {
+            try
+            {
+                foreach(var field in thisGroup.BitFields)
+                {
+                    var selectChart = WatchChartGroups.FirstOrDefault(x => x.Id == field.TableId);
+                    if(selectChart!=null)
+                    {
+                        ChangeChartVisible(selectChart.WpfPlotControl2, false, field.Desc);
+                        ChangeChartVisible(selectChart.WpfPlotControl, false, field.Desc);
+                    }
+                }               
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+        }
+        public DelegateCommand<object> CloseOthersCommand => new DelegateCommand<object>((e) =>
+        {
+            if (e is WatchGroup tabToClose)
+            {
+                // 从 WatchGroups 集合中移除选中的选项卡
+                foreach(var group in WatchGroups.ToArray())
+                {
+                    if (group.Id == tabToClose.Id|| group.Id== "placeholder")
+                        continue;
+                    RemoveChartWhereClose(group);
+                    WatchGroups.Remove(group);
+                    
+                }                
+            }
+        });
+        public DelegateCommand<object> CloseAllCommand => new DelegateCommand<object>((e) =>
+        {
+          
+                // 从 WatchGroups 集合中移除选中的选项卡
+                foreach (var group in WatchGroups.ToArray())
+                {
+                if (group.Id== "placeholder")
+                        continue;
+                    RemoveChartWhereClose(group);
+                    WatchGroups.Remove(group);
+                }
+        
+        });
+        
         public DelegateCommand StopAllCommand => new DelegateCommand(() =>
         {
             foreach (var param in CategoryRegisters)
@@ -1183,14 +1241,14 @@ namespace Workbench.ViewModels.dw
         private ObservableCollection<TableColumn> InitTableColumns()
         {
             var target = new ObservableCollection<TableColumn>();
-            string[] arr = new string[] { "序号", "名称", "寄存器地址(HEX)","寄存器值(HEX)", "解析内容(bit)", "解析要求", "解析结果", "解析内容(hex)", "解析内容(binery)", "单位", "添加到监测图" };
+            string[] arr = new string[] { "序号", "名称", "寄存器地址(HEX)","寄存器值(HEX)", "解析内容(bit)", "解析要求", "解析结果", "解析内容(HEX)", "解析内容(Binery)", "单位", "添加到监测图" };
             for (int i = 0; i < arr.Length; i++)
             {
                 var tab = new TableColumn()
                 {
                     Name = arr[i],
                 };
-                if (arr[i] == "解析内容(hex)" || arr[i] == "解析内容(binery)")
+                if (arr[i] == "解析内容(HEX)" || arr[i] == "解析内容(Binery)")
                 {
                     tab.IsChecked = false;
                 }
@@ -1333,7 +1391,6 @@ namespace Workbench.ViewModels.dw
                 treeItem.IsCheck = isAllCheck;
             }
         });
-
         #region Method
         /// <summary>
         /// 波形图参数添加

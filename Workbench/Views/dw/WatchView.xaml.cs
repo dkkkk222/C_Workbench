@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Workbench.Models;
 
@@ -104,5 +105,10 @@ namespace Workbench.Views.dw
         }
         #endregion
 
+        private void TabItem_OnRightClickSelect(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TabItem ti)
+                ti.IsSelected = true;
+        }
     }
 }

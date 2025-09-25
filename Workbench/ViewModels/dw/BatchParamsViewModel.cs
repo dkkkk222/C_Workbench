@@ -259,6 +259,15 @@ namespace Workbench.ViewModels.dw
             }
         });
 
+        public bool _batchAllCheck;
+        public bool BatchAllCheck
+        {
+            get=> _batchAllCheck; 
+            set
+            {
+                SetProperty(ref _batchAllCheck, value);
+            }
+        }
         public DelegateCommand<object> SelectAllCommand => new DelegateCommand<object>((e) =>
         {
             SingleParamTrees.SetAllLeavesChecked((bool)e);
@@ -570,6 +579,7 @@ namespace Workbench.ViewModels.dw
                 CurrentSequence.Items.Add(clone);
                 item.IsCheck = false;
             }
+            this.BatchAllCheck = false;
         }));
 
         private DelegateCommand<BitField> _optionChangeCommand;

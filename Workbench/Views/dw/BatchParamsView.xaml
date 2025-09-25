@@ -125,7 +125,7 @@
              IsChecked="{Binding IsOrderByName, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
                         <RadioButton GroupName="OrderBy" Content="按地址"
              IsChecked="{Binding IsOrderByAddress, Mode=TwoWay}" Style="{StaticResource CheckedOnlyColorRadio}" Tag="{DynamicResource BordTitleBackgroundColor}"/>
-                        <CheckBox Content="全选/反选" Command="{Binding SelectAllCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
+                        <CheckBox Content="全选/反选" IsChecked="{Binding BatchAllCheck,Mode=TwoWay}" Command="{Binding SelectAllCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
                             <CheckBox.Style>
                                 <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                                     <Style.Triggers>
@@ -482,7 +482,7 @@ CommandParameter="{Binding}"/>
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <hc:UniformSpacingPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                                        <ProgressBar Style="{StaticResource ProgressBarWarning}" Value="{Binding Progress,Mode=TwoWay}" Width="100"/>
+                                                        <ProgressBar Style="{StaticResource ProgressBarWarning}"  Value="{Binding Progress,Mode=TwoWay}" Width="100"/>
                                                         <Border>
                                                             <TextBlock Text="{Binding Statement}" VerticalAlignment="Center"/>
                                                         </Border>
