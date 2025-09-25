@@ -553,7 +553,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 <ColumnDefinition Width="1.3*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <hc:TabControl Grid.Row="2" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="False" IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}"
-                                   ItemsSource="{Binding WatchGroupsForTab}"   ShowOverflowButton="False" IsScrollable="True"  OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}" Visibility="{Binding HasRealTables, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                   ItemsSource="{Binding WatchGroupsForTab}"   ShowOverflowButton="False" IsScrollable="True" ShowContextMenu="False" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentTab}" Visibility="{Binding HasRealTables, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <!--<hc:TabControl.ItemContainerStyle>
                                     <Style TargetType="TabItem"> 
                                         <EventSetter Event="PreviewMouseRightButtonDown" Handler="TabItem_OnRightClickSelect"/>
