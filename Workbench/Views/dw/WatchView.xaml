@@ -17,7 +17,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>       
-        <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
+        <cvt:RowIndexConverter x:Key="RowIndexConverter"/> 
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="CenterCellStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -298,8 +298,8 @@ Command="{Binding StopAllCommand}"/>
                             <DataGrid    MinWidth="200" Grid.Row="1" ItemsSource="{Binding CategoryRegisters}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                CanUserSortColumns="False" CanUserAddRows="False" Margin="0,0,0,0" MinHeight="200" IsReadOnly="True"   RowHeight="40"
                                          Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2" CanUserResizeColumns="True"    
-               SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                                <DataGrid.ColumnHeaderStyle>
+               SelectedItem="{Binding CurrentRegister}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">                          
+                            <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}"  >
                                         <Setter Property="Padding" Value="10,0,0,0"/>
                                         <Setter Property="Margin" Value="0,0,12,0"/>
@@ -312,8 +312,8 @@ Command="{Binding StopAllCommand}"/>
                                         <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
                                         <Setter Property="BorderThickness" Value="1,0,0,1" />
                                     </Style>
-                                </DataGrid.ColumnHeaderStyle>
-                                <DataGrid.Resources>
+                            </DataGrid.ColumnHeaderStyle> 
+                            <DataGrid.Resources>
                                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
      Color="Transparent"/>
                                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
@@ -403,7 +403,21 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding AddressHex}" Header="寄存器地址(HEX)" Width="*"  MinWidth="90">
+                                <DataGridTemplateColumn  Header="序号" Width="55"  MinWidth="45" >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Text>
+                                                    <MultiBinding Converter="{StaticResource RowIndexConverter}">
+                                                        <Binding />
+                                                        <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Binding="{Binding AddressHex}" Header="寄存器地址(HEX)" Width="*"  MinWidth="90">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="ToolTip" Value="{Binding AddressHex}"/>

@@ -694,6 +694,7 @@ namespace Workbench.ViewModels.dw
             else
             {
                 RemoveRegisterForCheck(e);
+                CollectionViewSource.GetDefaultView(CategoryRegisters).Refresh();
             }
         });
 
@@ -712,6 +713,7 @@ namespace Workbench.ViewModels.dw
                 else
                 {
                     RemoveRegisterForCheck(param);
+                    CollectionViewSource.GetDefaultView(CategoryRegisters).Refresh();
                 }
             }));
 
@@ -1449,6 +1451,11 @@ namespace Workbench.ViewModels.dw
                 }
                 treeItem.IsCheck = isAllCheck;
             }
+            if(!isAllCheck)
+            {
+                CollectionViewSource.GetDefaultView(CategoryRegisters).Refresh();
+            }
+            
         });
         #region Method
         /// <summary>
