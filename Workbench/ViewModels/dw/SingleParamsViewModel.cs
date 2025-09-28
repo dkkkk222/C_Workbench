@@ -585,6 +585,22 @@ namespace Workbench.ViewModels.dw
             }
         }
 
+        public DelegateCommand ClearSettingCommand => new DelegateCommand(async () =>
+        {
+            var result = MessageBox.Show("是否清空所选寄存器配置", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                foreach (var item in WriteCurrentRegister.BitFields)
+                {
+                    item.SelectedValue = "";
+                    item.WriteHex = "";
+
+                    var binValue = Utility.HexToBinaryStringLarge(item.WriteHex, item.Length);
+                    item.WriteBinary = binValue;
+                    UpdateWriteRegister(item.Name, item.EndBit, item.StartBit, binValue);
+                }
+            }
+        });
         public override void LoadData()
         {
             var tree = _projectManager.GetChipCategoryTree();

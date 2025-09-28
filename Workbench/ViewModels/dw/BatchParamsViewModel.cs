@@ -682,6 +682,24 @@ namespace Workbench.ViewModels.dw
             clone.Id = Guid.NewGuid().ToString("N");
             CurrentSequence.Items.Add(clone);
         }));
+        public  DelegateCommand ClearSettingCommand => new DelegateCommand(async () =>
+        {
+            var result = MessageBox.Show("是否清空所选寄存器配置", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                foreach (var item in WriteCurrentRegister.BitFields)
+                {
+                    item.SelectedValue = "";
+                    item.WriteHex = "";
+
+                    var binValue = Utility.HexToBinaryStringLarge(item.WriteHex, item.Length);
+                    item.WriteBinary = binValue;
+                    await UpdateWriteRegister(item.Name, item.EndBit, item.StartBit, binValue);
+                }
+            }
+                
+        });
+
         private void OrderByType(string value, OrderByTypeEnum NameOrAddress)
         {
             var tempList = _projectManager.GetChipCategoryTreeOnlyW().GetMaxDepthLeaves().ToList().OrderBy(x => x.Title);

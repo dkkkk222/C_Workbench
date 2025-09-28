@@ -18,6 +18,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -916,6 +917,19 @@ namespace Workbench.ViewModels.dw
                     //找到Tab 
                     if (tab == null)
                         continue;
+                    if(SelectTab.Id!= "placeholder")
+                    {
+                        //遍历寄存器下的BitField
+                        foreach (var bf in reg.BitFields)
+                        {
+                            var clone = JsonHelper.DeepClone(bf);
+                            clone.AddressHexName = reg.AddressHex;
+                            clone.AddressId = reg.Id;
+                            var isHave=SelectTab.BitFields.Any(x => x.Name == reg.Name && x.AddressId == reg.Id);
+                            if(!isHave)
+                                SelectTab.BitFields.Add(clone);
+                        }
+                    }
                     //遍历寄存器下的BitField
                     //foreach (var bf in reg.BitFields)
                     //{
@@ -1010,7 +1024,7 @@ namespace Workbench.ViewModels.dw
                 // 从 WatchGroups 集合中移除选中的选项卡
                 WatchGroups.Remove(tabToClose);
                 // （可选）如果需要，更新 CurrentTab 指向另一个有效选项卡
-                if (CurrentTab.Id == tabToClose.Id)
+                if (CurrentTab!=null&&CurrentTab.Id == tabToClose.Id)
                 {
                     CurrentTab = WatchGroups.FirstOrDefault();
                 }
@@ -1172,7 +1186,8 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand AddWatchGroupCommand => _addWatchGroupCommand ?? (_addWatchGroupCommand = new DelegateCommand(() =>
         {
             var baseName = $"表{WatchGroups.Where(x=>x.Id!= "placeholder").Count() + 1}";
-            var header = MakeUniqueHeader(baseName);
+            //var header = MakeUniqueHeader(baseName);
+            var header = GetMaxNumForName();
             var maxOrder = WatchGroups.Any() ? WatchGroups.Max(g => g.Order) : 0;
             WatchGroups.Add(new WatchGroup(_dialogService, session_id,_projectManager)
             {
@@ -1195,21 +1210,27 @@ namespace Workbench.ViewModels.dw
             //    CurrentTab = WatchGroups.Last();
             //}
         }));
-        private string MakeUniqueHeader(string baseName)
+        private string GetMaxNumForName()
         {
-            var exists = new HashSet<string>(WatchGroups.Select(x => x.Header));
-            if (!exists.Contains(baseName)) return baseName;
-
-            int i = 1;
-            string candidate;
-            do
+            var tables= new HashSet<string>(WatchGroups.Where(x => x.Id != "placeholder").Select(x => x.Header));
+            string tableName = "";
+            if (tables.Count==0)
             {
-                candidate = $"{baseName}-{i}";
-                i++;
-            } while (exists.Contains(candidate));
-
-            return candidate;
+                var countTable = WatchGroups.Where(x => x.Id != "placeholder").Count() + 1;
+                tableName = $"表{countTable}";
+            }
+            else
+            {
+                // 用正则提取数字部分，然后转成 int
+                int maxNumber = tables
+                    .Select(s => int.Parse(Regex.Match(s, @"\d+").Value))
+                    .Max();
+                tableName = $"表{maxNumber + 1}";
+            }
+                
+            return tableName;
         }
+        
         private string MakeUniqueHeaderChart(string baseName)
         {
             var exists = new HashSet<string>(WatchChartGroups.Select(x => x.Header));
