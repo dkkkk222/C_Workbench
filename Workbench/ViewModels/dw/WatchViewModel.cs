@@ -1230,7 +1230,28 @@ namespace Workbench.ViewModels.dw
                 
             return tableName;
         }
-        
+
+        private string GetMaxNumForNameChart()
+        {
+            var tables = new HashSet<string>(WatchChartGroups.Where(x => x.Id != "placeholder").Select(x => x.Header));
+            string tableName = "";
+            if (tables.Count == 0)
+            {
+                var countTable = WatchChartGroups.Where(x => x.Id != "placeholder").Count() + 1;
+                tableName = $"图{countTable}";
+            }
+            else
+            {
+                // 用正则提取数字部分，然后转成 int
+                int maxNumber = tables
+                    .Select(s => int.Parse(Regex.Match(s, @"\d+").Value))
+                    .Max();
+                tableName = $"图{maxNumber + 1}";
+            }
+
+            return tableName;
+        }
+
         private string MakeUniqueHeaderChart(string baseName)
         {
             var exists = new HashSet<string>(WatchChartGroups.Select(x => x.Header));
@@ -1249,7 +1270,8 @@ namespace Workbench.ViewModels.dw
         public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
         {
             var baseName = $"表{WatchChartGroups.Where(x => x.Id != "placeholder").Count() + 1}";
-            var header = MakeUniqueHeaderChart(baseName);
+            //var header = MakeUniqueHeaderChart(baseName);
+            var header = GetMaxNumForNameChart();
             var maxOrder = WatchChartGroups.Any(c => c.Id != "placeholder")
        ? WatchChartGroups.Where(c => c.Id != "placeholder").Max(c => c.Order)
        : 0;

@@ -923,7 +923,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 </ItemsControl>
                                             </hc:SplitButton.DropDownContent>
                                         </hc:SplitButton>
-                                        <Button Content="清空配置" Style="{StaticResource ButtonPrimary}" Width="110"  Background="{DynamicResource ShowPageButtonBackgroundColor}" BorderBrush="{DynamicResource ShowPageButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                                        <Button Content="清空配置" Style="{StaticResource ButtonPrimary}" Width="110"  Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
 Command="{Binding ClearSettingCommand}"/>
                                     </hc:UniformSpacingPanel>
                                 </Grid>

@@ -529,7 +529,7 @@ Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource
 
                               
                                 <StackPanel HorizontalAlignment="Right"  Grid.Column="1" Orientation="Horizontal" >
-                                    <Button Content="清空配置" Style="{StaticResource ButtonPrimary}"  Width="90"  Background="{DynamicResource ShowPageButtonBackgroundColor}" BorderBrush="{DynamicResource ShowPageButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                                    <Button Content="清空配置" Style="{StaticResource ButtonPrimary}"  Width="90"  Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
 Command="{Binding ClearSettingCommand}"/>
                                     <TextBlock Width="10"></TextBlock>
                                     <Button Content="下 发" Grid.Column="1" Style="{StaticResource ButtonPrimary}"  Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" Width="80" 

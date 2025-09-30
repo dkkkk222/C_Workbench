@@ -51,7 +51,7 @@ namespace Workbench.Models.dw
             set { SetProperty(ref _header, value); }
         }
 
-        private string _tableName = "状态监测表";
+        private string _tableName = "监测表";
         public string TableName
         {
             get { return _tableName; }
