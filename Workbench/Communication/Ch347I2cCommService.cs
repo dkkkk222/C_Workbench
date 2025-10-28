@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Workbench.Models;
+using PPEC.Communication.Model;
 
 namespace Workbench.Communication
 {
@@ -398,6 +399,16 @@ namespace Workbench.Communication
                 throw new ArgumentException("value4 必须是 4 字节");
             uint v = ((uint)value4[0] << 24) | ((uint)value4[1] << 16) | ((uint)value4[2] << 8) | value4[3];
             return WriteRegisterAsync(regAddr, v);
+        }
+
+        public Task<ControlAck> SendRemoteControlAsync(uint cmd, int timeoutMs = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80)
+        {
+            throw new NotImplementedException();
         }
     }
 }

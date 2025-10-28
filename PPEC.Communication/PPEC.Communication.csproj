@@ -236,6 +236,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="LoggingExtensions.cs" />
     <Compile Include="Message\PublicMessageImpl.cs" />
+    <Compile Include="Model\BoundedConcurrentQueue.cs" />
     <Compile Include="Model\ChannelFactory.cs" />
     <Compile Include="Model\ChipInfo.cs" />
     <Compile Include="Model\FlatRow.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Model\Sample.cs" />
     <Compile Include="Model\ShowParams.cs" />
     <Compile Include="Model\SingleThreadInvoker.cs" />
+    <Compile Include="Model\TelemetryBase.cs" />
     <Compile Include="Model\TelemetryMeta.cs" />
     <Compile Include="Model\TopoConfigMeta.cs" />
     <Compile Include="Model\UartProtocolHandler.cs" />

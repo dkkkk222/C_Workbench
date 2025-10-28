@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PPEC.Communication.Model;
 
 namespace Workbench.Communication
 {
@@ -24,5 +25,8 @@ namespace Workbench.Communication
         /// </summary>
         Task<bool> WriteRegisterAsync(ushort regAddr, uint value4);
         void Close();
+
+        Task<ControlAck> SendRemoteControlAsync(uint cmd, int timeoutMs = 50);
+        Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80);
     }
 }

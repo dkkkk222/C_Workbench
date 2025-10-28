@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using log4net;
+using PPEC.Communication.Model;
 using Workbench.ViewModels.dw;
 
 namespace Workbench.Communication
@@ -208,6 +209,16 @@ namespace Workbench.Communication
         public void Dispose()
         {
             Close();
+        }
+
+        public Task<ControlAck> SendRemoteControlAsync(uint cmd, int timeoutMs = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80)
+        {
+            throw new NotImplementedException();
         }
     }
 }

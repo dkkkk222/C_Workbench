@@ -108,15 +108,15 @@ namespace Workbench.Migrations
             .WithColumn("id").AsString().PrimaryKey()
             .WithColumn("chip_id").AsString().NotNullable()
             .WithColumn("name").AsString().Nullable()
-            .WithColumn("byteName").AsString().Nullable()
-            .WithColumn("start_byte").AsString().Nullable()
-            .WithColumn("end_byte").AsString().Nullable()
-            .WithColumn("byte_len").AsString().Nullable()
-            .WithColumn("bitName").AsString().Nullable()
-            .WithColumn("start_bit").AsString().Nullable()
-            .WithColumn("end_bit").AsString().Nullable()
-            .WithColumn("bit_len").AsString().Nullable()
-            .WithColumn("type").AsString().Nullable()
+            .WithColumn("byte_Name").AsString().Nullable()
+            .WithColumn("start_byte").AsInt32().Nullable()
+            .WithColumn("end_byte").AsInt32().Nullable()
+            .WithColumn("byte_len").AsInt32().Nullable()
+            .WithColumn("bit_Name").AsString().Nullable()
+            .WithColumn("start_bit").AsInt32().Nullable()
+            .WithColumn("end_bit").AsInt32().Nullable()
+            .WithColumn("bit_len").AsInt32().Nullable()
+            .WithColumn("type").AsInt32().Nullable()
             .WithColumn("param_a").AsString().Nullable()
             .WithColumn("param_b").AsString().Nullable()
             .WithColumn("param_c").AsString().Nullable()
@@ -166,11 +166,11 @@ namespace Workbench.Migrations
                     id = telemetryId,
                     chip_id = chipId,
                     name = param1.CodeName,
-                    byteName = param1.DateLocation,
+                    byte_Name = param1.DateLocation,
                     start_byte = param1.StartLocaltion,
                     end_byte = param1.EndLocaltion,
                     byte_len = param1.LocaltionLen,
-                    bitName = param1.BitName,
+                    bit_Name = param1.BitName,
                     start_bit = param1.StartBit,
                     end_bit = param1.EndBit,
                     bit_len = param1.BitLength,

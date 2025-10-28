@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Workbench.Models.Consts;
 
 namespace Workbench.Utils
 {
@@ -42,6 +43,8 @@ namespace Workbench.Utils
         public const string Select = "Select";
         //TextBox
         public const string TextBox = "TextBox";
+        //
+        public const string Telemetry = "Telemetry";
 
         public const string ConnectIcon = "\uE67e";
         public const string DisConnectIcon = "\uE64d";

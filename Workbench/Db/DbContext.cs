@@ -26,5 +26,10 @@ namespace Workbench.Db
         public ITable<RegisterBitOption> RegisterBitOptions => this.GetTable<RegisterBitOption>();
         public ITable<FrameRow> Frames => this.GetTable<FrameRow>();
         public ITable<ValueRow> Values => this.GetTable<ValueRow>();
+
+        public ITable<TelemetryCode> TelemetryCodes => this.GetTable<TelemetryCode>();
+
+        public ITable<TelemetryMonit> TelemetryMonits => this.GetTable<TelemetryMonit>();
+
     }
 }

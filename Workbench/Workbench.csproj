@@ -371,6 +371,7 @@
     <Compile Include="Communication\Ch347I2cCommService.cs" />
     <Compile Include="Communication\I2cCommService.cs" />
     <Compile Include="Communication\IBaseCommService.cs" />
+    <Compile Include="Communication\PcmuUartService.cs" />
     <Compile Include="Communication\SerialPortService.cs" />
     <Compile Include="Converters\AddOneConverter.cs" />
     <Compile Include="Converters\BoolToGridLengthConverter.cs" />
@@ -388,6 +389,8 @@
     <Compile Include="Db\Tables\RegisterBit.cs" />
     <Compile Include="Db\Tables\RegisterBitOption.cs" />
     <Compile Include="Db\Tables\SessionRow.cs" />
+    <Compile Include="Db\Tables\TelemetryCode.cs" />
+    <Compile Include="Db\Tables\TelemetryMonit.cs" />
     <Compile Include="Events\AddedProjectEvent.cs" />
     <Compile Include="Events\CloseConnectEvent.cs" />
     <Compile Include="Events\CloseTabEvent.cs" />

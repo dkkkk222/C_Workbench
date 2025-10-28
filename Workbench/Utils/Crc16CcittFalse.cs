@@ -78,7 +78,7 @@ namespace Workbench.Utils
         /// </summary>
         /// <param name="data">要计算的字节数组</param>
         /// <returns>16位的CRC校验码</returns>
-        private static ushort CalculateCrc(byte[] data)
+        public static ushort CalculateCrc(byte[] data)
         {
             ushort crc = InitialValue; // 从初始值开始
 

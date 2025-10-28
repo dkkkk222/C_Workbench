@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PPEC.Communication;
+using PPEC.Communication.Model;
 using static LinqToDB.Common.Configuration;
 
 namespace Workbench.Communication
@@ -222,6 +223,16 @@ namespace Workbench.Communication
         }
 
         public Task WriteRegisterAsync(ushort regAddr, byte[] value4, bool useCanB = false, byte dest = 160, int delayMs = 5)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ControlAck> SendRemoteControlAsync(uint cmd, int timeoutMs = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80)
         {
             throw new NotImplementedException();
         }

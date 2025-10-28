@@ -15,6 +15,7 @@ using Workbench.Models.dw;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Globalization;
+using Org.BouncyCastle.Utilities.Encoders;
 
 namespace Workbench.Utils
 {
@@ -47,6 +48,30 @@ namespace Workbench.Utils
                 // 如果数字完全一样，那么按照原字符串比较
                 return x.CompareTo(y);
             }
+        }
+
+        public static uint GetStrToUint(string hex)
+        {
+            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                hex = hex.Substring(2);
+            uint value = Convert.ToUInt32(hex, 16);
+            return value;
+        }
+
+        public static byte[] HexStringToBytes(string hex)
+        {
+            if (string.IsNullOrWhiteSpace(hex))
+                throw new ArgumentException("输入不能为空。");
+
+            hex = hex.Replace(" ", ""); // 去掉空格
+            if (hex.Length % 2 != 0)
+                throw new ArgumentException("十六进制字符串长度必须为偶数。");
+
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+                bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+
+            return bytes;
         }
 
         public static UInt16 CalculateCRC(byte[] data, UInt16 numberOfBytes, int startByte)

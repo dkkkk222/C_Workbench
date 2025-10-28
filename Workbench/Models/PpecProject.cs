@@ -1,17 +1,21 @@
-﻿using log4net;
-using MathNet.Numerics.LinearAlgebra.Factorization;
+﻿using LinqToDB;
+using log4net;
 using Newtonsoft.Json;
 using PPEC.Communication;
+using PPEC.Communication.Enum;
 using PPEC.Communication.Interface;
 using PPEC.Communication.Model;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Workbench.Communication;
-using Workbench.Events;
+using Workbench.Db;
+using Workbench.Db.Tables;
 using Workbench.Models.dw;
 using Workbench.Utils;
 using Workbench.ViewModels.dw;
@@ -318,7 +322,8 @@ namespace Workbench.Models
                     return await ConnectI2c();
                 case Constants.CAN:
                     return await ConnectCan();
-
+                case Constants.Telemetry:
+                    return await ConnectTelemetry();
                 default:
                     break;
             }
@@ -489,6 +494,117 @@ namespace Workbench.Models
             return true;
         }
 
+        public async Task<bool> ConnectTelemetry()
+        {
+            var service = new PcmuUartService();
+            try
+            {
+                //连接串口
+                service.Connect(PortName, BuandName);
+                List<TelemetryMonit> ltm= new List<TelemetryMonit>();
+                List< TelemetrySliceField > ltsf= new List<TelemetrySliceField >();
+                string firstCode = "";
+
+                using (var db = new DbContext())
+                {
+                    var monitCode=await db.TelemetryMonits.Where(t => t.ChipId == Chip.ChipId).ToListAsync();
+                    ltm.AddRange(monitCode);
+                }
+
+                // 配置位切片解析（示例：请按你的真实遥测表配置）
+                foreach (var monit in ltm)
+                {
+                    TelemetrySliceField tsf = new TelemetrySliceField();
+                    tsf.Name = monit.Name;
+                    tsf.StartByte = monit.StartByte;
+                    tsf.ByteCount = monit.ByteLen;
+                    tsf.BitStart = monit.StartBit;
+                    tsf.BitLength = monit.ByteLen;
+                    tsf.Order = ByteOrder.BE;
+                    switch(monit.ByteLen)
+                    {
+                        case 1:
+                            tsf.As = TargetType.U8;
+                            break;
+                        case 2:
+                            tsf.As = TargetType.U16;
+                            break;
+                        case 4:
+                            tsf.As = TargetType.U32;
+                            break;
+                    }
+                    tsf.Unit = monit.Unit;
+                    tsf.ShowStr = monit.FormulaShow;
+                    tsf.ParamA = monit.ParamA;
+                    tsf.ParamB = monit.ParamB;
+                    tsf.ParamC = monit.ParamC;
+                    tsf.ParamSign = monit.ParamSign;
+
+                    ltsf.Add(tsf);
+                }
+                service.ConfigureTelemetrySlices(ltsf);
+
+
+                // 可选：监听遥测应答（0023）
+                service.TelemetryReceived += (s, e) =>
+                {
+                    // e.Payload 即遥测数据有效载荷
+                    // TODO: 解析你的“遥测数据表”
+                };
+                service.TelemetryParsed += (sender, rec) =>
+                {
+                    // 这里是串口接收线程，不是UI线程
+                    Console.WriteLine($"[{rec.Timestamp:HH:mm:ss.fff}] len={rec.RawPayload.Length}");
+
+                    object v;
+                    if (rec.Values != null && rec.Values.TryGetValue("B0_0_3", out v))
+                        Console.WriteLine($"B0_0_3={v}");
+                };
+
+                // 2) 发送“遥控指令”（000A→000F）
+                uint cmd = 0x01020304; // 举例，按你《遥控指令表》填
+
+                using (var db = new DbContext())
+                {
+                    var monitCode = await db.TelemetryCodes.Where(t => t.ChipId == Chip.ChipId && t.Type== ((int)TelemetryCommandType.IndirectCommand).ToString()).FirstOrDefaultAsync();
+                    firstCode = monitCode.Code;
+                }
+                cmd = UtilsFunc.GetStrToUint(firstCode);
+                var ack1 = await service.SendRemoteControlAsync(cmd, timeoutMs: 50);
+
+                if (!ack1.Success)
+                {
+                    // ack1.RawCode == 0xFFFF 或超时
+                }
+                // 3) 发送“注数”（0014→0019）
+                byte[] injection = new byte[] { /* 按你的遥控指令表定义填充 */ };
+                using (var db = new DbContext())
+                {
+                    var monitCode = await db.TelemetryCodes.Where(t => t.ChipId == Chip.ChipId && t.Type == ((int)TelemetryCommandType.NoteInstruction).ToString()).FirstOrDefaultAsync();
+                    firstCode = monitCode.Code;
+                }
+                injection=UtilsFunc.HexStringToBytes(firstCode);
+
+                var ack2 = await service.SendInjectionAsync(injection, timeoutMs: 80);
+                if (!ack2.Success)
+                {
+                    // ack1.RawCode == 0xFFFF 或超时
+                }
+                // 4) 发送“遥测查询”（001E→0023），返回 payload
+                // 若按文档固定为 00 0A 04 1E，你可以直接调用：
+                var tlm = await service.QueryTelemetryOnceAsync(200);
+
+                var last10 = service.GetLastTelemetry(10);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                IsConnecting = false;
+                service.Close();
+                _log.Error(ex);
+                return false;
+            }
+        }
 
         #region 会话ID
         public RecordingSession ActiveSession { get; private set; }

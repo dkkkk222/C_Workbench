@@ -280,7 +280,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
             }
         }
 
-        private ObservableCollection<string> _communicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN, Constants.I2C };
+        private ObservableCollection<string> _communicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN, Constants.I2C, Constants.Telemetry };
         public ObservableCollection<string> CommunicationTypeList
         {
             get => _communicationTypeList;
@@ -454,6 +454,11 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 {
                     ConnectType = 3; PortTitle = Constants.I2C;
                     ChangeI2C();
+                }
+                if (value == Constants.Telemetry)
+                {
+                    ConnectType = 1; PortTitle = Constants.Telemetry;
+                    ChangeUart();
                 }
                 SetProperty(ref _selectedCommunicationType, value);
             }

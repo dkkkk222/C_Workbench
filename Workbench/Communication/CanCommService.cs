@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using PPEC.Communication;
+using PPEC.Communication.Model;
 using Workbench.Models;
 
 namespace Workbench.Communication
@@ -600,6 +601,16 @@ namespace Workbench.Communication
                 case 7: return "1000000";   // 1M
                 default: return "500000";
             }
+        }
+
+        public Task<ControlAck> SendRemoteControlAsync(uint cmd, int timeoutMs = 50)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80)
+        {
+            throw new NotImplementedException();
         }
 
         // ====== 协议定义，与旧版保持一致 ======
