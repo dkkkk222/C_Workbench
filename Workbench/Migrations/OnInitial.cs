@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using FluentMigrator;
+using NPOI.SS.UserModel;
 using PPEC.Communication.Common;
 using PPEC.Communication.Enum;
+using PPEC.Communication.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +11,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using Workbench.Db.Tables;
 using Workbench.Utils;
 using static ScottPlot.Generate;
@@ -92,9 +95,39 @@ namespace Workbench.Migrations
               .WithColumn("result").AsString().Nullable();
             #endregion
 
+            #region Code
+            Create.Table("t_TelemetryCode")
+              .WithColumn("id").AsString().PrimaryKey()
+              .WithColumn("chip_id").AsString().NotNullable()
+              .WithColumn("name").AsString().Nullable()
+              .WithColumn("code").AsString().Nullable()
+              .WithColumn("type").AsString().Nullable()
+              .WithColumn("length").AsString().Nullable();
+
+            Create.Table("t_TelemetryMonit")
+            .WithColumn("id").AsString().PrimaryKey()
+            .WithColumn("chip_id").AsString().NotNullable()
+            .WithColumn("name").AsString().Nullable()
+            .WithColumn("byteName").AsString().Nullable()
+            .WithColumn("start_byte").AsString().Nullable()
+            .WithColumn("end_byte").AsString().Nullable()
+            .WithColumn("byte_len").AsString().Nullable()
+            .WithColumn("bitName").AsString().Nullable()
+            .WithColumn("start_bit").AsString().Nullable()
+            .WithColumn("end_bit").AsString().Nullable()
+            .WithColumn("bit_len").AsString().Nullable()
+            .WithColumn("type").AsString().Nullable()
+            .WithColumn("param_a").AsString().Nullable()
+            .WithColumn("param_b").AsString().Nullable()
+            .WithColumn("param_c").AsString().Nullable()
+            .WithColumn("param_sign").AsString().Nullable()
+            .WithColumn("formula_show").AsString().Nullable()
+            .WithColumn("unit").AsString().Nullable();
+            #endregion
             string fileName = "B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类.xlsx";
             string SDPCfileName1 = "SDPC_workbench软件数据监控表_zby0715.xlsx";
             string SDPCfileName = "SDPC_B10状态监测配置表_20250923.xlsx";
+            var ListData=TelemetryParse();
 
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
             string SDPCfilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileName);
@@ -112,6 +145,44 @@ namespace Workbench.Migrations
                 datetime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             });
 
+            foreach(var param1 in ListData.Item1)
+            {
+                string telemetryId = Guid.NewGuid().ToString("N");
+                Insert.IntoTable("t_TelemetryCode").Row(new
+                {
+                    id = telemetryId,
+                    chip_id= chipId,
+                    name = param1.CommandName,
+                    code = param1.CommandCode,
+                    type = (int)param1.CommandType,
+                    length = param1.CommandLength
+                });
+            }
+            foreach (var param1 in ListData.Item2)
+            {
+                string telemetryId = Guid.NewGuid().ToString("N");
+                Insert.IntoTable("t_TelemetryMonit").Row(new
+                {
+                    id = telemetryId,
+                    chip_id = chipId,
+                    name = param1.CodeName,
+                    byteName = param1.DateLocation,
+                    start_byte = param1.StartLocaltion,
+                    end_byte = param1.EndLocaltion,
+                    byte_len = param1.LocaltionLen,
+                    bitName = param1.BitName,
+                    start_bit = param1.StartBit,
+                    end_bit = param1.EndBit,
+                    bit_len = param1.BitLength,
+                    type = (int)param1.FormParam.Kind,
+                    param_a = param1.FormParam.A,
+                    param_b = param1.FormParam.B,
+                    param_c = (int)param1.FormParam.Kind,
+                    param_sign = param1.FormParam.Sign,
+                    formula_show = param1.ShowFormParam,
+                    unit= param1.Unit,
+                });
+            }
             foreach (var meta in excelData)
             {
                 string registerId = Guid.NewGuid().ToString("N");
@@ -167,6 +238,20 @@ namespace Workbench.Migrations
                 }
 
             }
+        }
+        /// <summary>
+        /// 遥测
+        /// </summary>
+        public (List<TelemetryMeta>, List<TelemetryMonitAnalysisMeta>) TelemetryParse()
+        {
+            string SDPCfileNameTelemetryData = "SDPC_B10遥测数据表.xlsx";//数据解析
+            string SDPCfileNameCommand = "SDPC_B10遥控指令表.xlsx";//遥测指令
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameCommand);
+            string filePath1 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameTelemetryData);
+            RegisterExcelResolve registerExcelResolve = new RegisterExcelResolve();
+            var telemetryCommand= registerExcelResolve.Telemetry(filePath);
+            var telemetryMonit = registerExcelResolve.TelemetryMonit(filePath1);
+            return (telemetryCommand, telemetryMonit);
         }
 
         public override void Down()

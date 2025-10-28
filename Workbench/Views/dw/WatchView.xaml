@@ -92,9 +92,7 @@
                     <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
                 </Trigger>
             </Style.Triggers>
-        </Style>
-
-        
+        </Style>        
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>

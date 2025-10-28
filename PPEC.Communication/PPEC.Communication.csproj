@@ -211,6 +211,7 @@
     <Compile Include="Enum\PortType.cs" />
     <Compile Include="Enum\RegisterLimit.cs" />
     <Compile Include="Enum\RegisterType.cs" />
+    <Compile Include="Enum\TelemetryCommandType.cs" />
     <Compile Include="Enum\TopologyId.cs" />
     <Compile Include="Enum\UartDataType.cs" />
     <Compile Include="FunctionCodes.cs" />
@@ -240,11 +241,13 @@
     <Compile Include="Model\FlatRow.cs" />
     <Compile Include="Model\InvFrame.cs" />
     <Compile Include="Model\INVProtocolHandler.cs" />
+    <Compile Include="Model\ParseResult.cs" />
     <Compile Include="Model\RegisterAddrInfo.cs" />
     <Compile Include="Model\RegValue.cs" />
     <Compile Include="Model\Sample.cs" />
     <Compile Include="Model\ShowParams.cs" />
     <Compile Include="Model\SingleThreadInvoker.cs" />
+    <Compile Include="Model\TelemetryMeta.cs" />
     <Compile Include="Model\TopoConfigMeta.cs" />
     <Compile Include="Model\UartProtocolHandler.cs" />
     <Compile Include="NullLogger.cs" />

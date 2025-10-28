@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -115,6 +116,77 @@ namespace Workbench.Utils
             return target;
         }
 
+        #region 遥测
+        public List<TelemetryMeta> Telemetry(string filePath)
+        {
+            List<TelemetryMeta> listTM = new List<TelemetryMeta>();
+            IWorkbook workbook;
+            using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(file);
+            }
+            var indirectSheet = workbook.GetSheet("间接指令");
+            var IndirectTelemetry = ParseCellToTelemetry(indirectSheet);
+            var noteInstructionSheet = workbook.GetSheet("注数指令");
+            var NoteInstructionTelemetry = ParseCellToTelemetry2(noteInstructionSheet);
+            listTM.AddRange(IndirectTelemetry);
+            listTM.AddRange(NoteInstructionTelemetry);
+            return listTM;
+        }
+        public List<TelemetryMonitAnalysisMeta> TelemetryMonit(string filePath)
+        {
+            List<TelemetryMonitAnalysisMeta> listTMA = new List<TelemetryMonitAnalysisMeta>();
+            IWorkbook workbook;
+            using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                workbook = new XSSFWorkbook(file);
+            }
+            var indirectSheet = workbook.GetSheet("遥测监控表");
+            for (int i = indirectSheet.FirstRowNum + 1; i <= indirectSheet.LastRowNum; i++)
+            {
+                var row = indirectSheet.GetRow(i);
+                var name = row.GetCell(1).StringCellValue;//代号
+                var code = row.GetCell(2).StringCellValue;//数据位置
+                var bit = row.GetCell(3).StringCellValue;//解析内容(bit)
+                var bitLen = GetCellValue(indirectSheet,i,4); //row.GetCell(4).StringCellValue;//解析内容(bit长度)
+                var showFormula = row.GetCell(5).StringCellValue;//解析要求
+                var unit = row.GetCell(6).StringCellValue;//单位
+                var formula = GetFormulaParam(showFormula);//公式
+         
+                var res = FormulaParser.Parse(showFormula);
+                string aa = res.ToString();
+                TelemetryMonitAnalysisMeta tmam = new TelemetryMonitAnalysisMeta();
+                tmam.ShowFormParam = showFormula;
+                if (formula.c=="99")
+                {
+                    tmam.KeyValuePairs = formula.d;
+                }
+                else
+                {
+                    tmam.FormParam = res;
+                }                    
+
+                tmam.CodeName = name;
+                tmam.DateLocation = code;
+
+                tmam.StartLocaltion = GetByteInfo(code, "byte").startBit;
+                tmam.EndLocaltion = GetByteInfo(code, "byte").endBit;
+                tmam.LocaltionLen = tmam.EndLocaltion - tmam.StartLocaltion+1;
+
+                tmam.BitName = bit;
+                tmam.StartBit = GetBitInfo(bit, "b").startBit;
+                tmam.EndBit = GetBitInfo(bit, "b").endBit;
+
+                tmam.BitLength = int.Parse(bitLen);
+
+                tmam.Unit = unit;
+                listTMA.Add(tmam);
+            }
+
+            return listTMA;
+        }
+        #endregion
+
         private void ParseCellToFormula(ISheet systemPowerSheet,List<RegisterMeta> target)
         {
             for (int i = systemPowerSheet.FirstRowNum + 1; i <= systemPowerSheet.LastRowNum; i++)
@@ -140,6 +212,49 @@ namespace Workbench.Utils
                 selectBitFields.FormParam.ParamDic = formula.d;
             }
         }
+
+        private List<TelemetryMeta> ParseCellToTelemetry(ISheet systemPowerSheet)
+        {
+            List<TelemetryMeta> listTM = new List<TelemetryMeta>();
+            for (int i = systemPowerSheet.FirstRowNum + 1; i <= systemPowerSheet.LastRowNum; i++)
+            {
+                var row = systemPowerSheet.GetRow(i);
+                var name = row.GetCell(1).StringCellValue;//指令名称
+                var code = row.GetCell(2).StringCellValue;//指令码
+                var type = row.GetCell(3).StringCellValue;//指令类型
+                TelemetryMeta tempTM= new TelemetryMeta();
+                tempTM.CommandId = i;
+                tempTM.CommandName=name;
+                tempTM.CommandCode=code;
+                tempTM.CommandType = type == "间接指令" ? TelemetryCommandType.IndirectCommand : TelemetryCommandType.NoteInstruction;
+                tempTM.CommandLength = code.Length;
+                listTM.Add(tempTM);
+            }
+            return listTM;
+        }
+
+        private List<TelemetryMeta> ParseCellToTelemetry2(ISheet systemPowerSheet)
+        {
+            List<TelemetryMeta> listTM = new List<TelemetryMeta>();
+            for (int i = systemPowerSheet.FirstRowNum + 1; i <= systemPowerSheet.LastRowNum; i++)
+            {
+                var row = systemPowerSheet.GetRow(i);
+                if(row.GetCell(1)==null)
+                    continue;
+                var name = row.GetCell(1).StringCellValue;//指令名称
+                var code = row.GetCell(3).StringCellValue;//指令码
+                var type = row.GetCell(4).StringCellValue;//指令类型
+                TelemetryMeta tempTM = new TelemetryMeta();
+                tempTM.CommandId = i;
+                tempTM.CommandName = name;
+                tempTM.CommandCode = code;
+                tempTM.CommandType = type == "间接指令" ? TelemetryCommandType.IndirectCommand : TelemetryCommandType.NoteInstruction;
+                tempTM.CommandLength = code.Length;
+                listTM.Add(tempTM);
+            }
+            return listTM;
+        }
+
         private (uint? min, uint? max) GetMinMax(string remark)
         {
             uint? min = null;
@@ -204,6 +319,44 @@ namespace Workbench.Utils
             return (ebit, sbit);
         }
 
+        private (int endBit, int startBit) GetBitInfo(string str,string replaceStr)
+        {
+            int ebit = 0;
+            int sbit = 0;
+            var r = str.Replace(replaceStr, "");
+            if (r.Contains("-"))
+            {
+                var arr = r.Split('-');
+                ebit = int.Parse(arr[0]);
+                sbit = int.Parse(arr[1]);
+            }
+            else
+            {
+                ebit = sbit = int.Parse(r);
+            }
+
+            return (ebit, sbit);
+        }
+
+        private (int endBit, int startBit) GetByteInfo(string str, string replaceStr)
+        {
+            int ebit = 0;
+            int sbit = 0;
+            var r = str.Replace(replaceStr, "");
+            if (r.Contains("-"))
+            {
+                var arr = r.Split('-');
+                ebit = int.Parse(arr[1]);
+                sbit = int.Parse(arr[0]);
+            }
+            else
+            {
+                ebit = sbit = int.Parse(r);
+            }
+
+            return (ebit, sbit);
+        }
+
         private string GetCellValue(ISheet sheet, int rowIndex, int colIndex)
         {
             // 检查单元格是否在合并区域内
@@ -226,7 +379,33 @@ namespace Workbench.Utils
             if (row == null) return "";
 
             ICell cell = row.GetCell(colIndex);
-            return cell.StringCellValue;
+            return GetCellValueAsString(cell);// cell.StringCellValue;
+        }
+
+        private string GetCellValueAsString(ICell cell)
+        {
+            if (cell == null) return "";
+
+            try
+            {
+                // 使用ToString()方法，NPOI会自动处理各种类型
+                return cell.ToString()?.Trim() ?? "";
+            }
+            catch
+            {
+                // 如果ToString失败，使用备用方法
+                switch (cell.CellType)
+                {
+                    case CellType.Numeric:
+                        return cell.NumericCellValue.ToString();
+                    case CellType.Boolean:
+                        return cell.BooleanCellValue.ToString();
+                    case CellType.String:
+                        return cell.StringCellValue?.Trim() ?? "";
+                    default:
+                        return "";
+                }
+            }
         }
 
         private (double a, double b, string c, Dictionary<string, string> d) GetFormulaParam(string FormulaParam)
@@ -249,7 +428,11 @@ namespace Workbench.Utils
 
             var m = Regex.Match(FormulaParam, pattern, RegexOptions.IgnoreCase);
             if (!m.Success)
-                throw new FormatException($"无法解析：{FormulaParam}");
+            {
+                return (-1, -1, "-1", null);
+                //throw new FormatException($"无法解析：{FormulaParam}");
+            }
+                
 
             double a = double.Parse(m.Groups["a"].Value, CultureInfo.InvariantCulture);
             string c = m.Groups["op"].Success ? m.Groups["op"].Value[0].ToString() : "0";

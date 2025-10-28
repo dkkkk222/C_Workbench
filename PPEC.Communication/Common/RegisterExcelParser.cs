@@ -86,7 +86,7 @@ namespace PPEC.Communication.Common
         private static readonly Regex _regSkipWhole = new Regex(
     @"^\s*(待定|预留)\s*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         /* 解析“b31-b24”+备注 */
-        private static BitField ParseBitField(string bitStr, string desc, string remark)
+        public static BitField ParseBitField(string bitStr, string desc, string remark)
         {
             // ==== 1. 解析位宽 ====
             bitStr = bitStr.Trim().ToLowerInvariant();

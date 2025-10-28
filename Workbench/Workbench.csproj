@@ -444,6 +444,7 @@
     <Compile Include="Utils\Crc16CcittFalse.cs" />
     <Compile Include="Utils\ExporterExcel.cs" />
     <Compile Include="Utils\FileHandler.cs" />
+    <Compile Include="Utils\FormulaParserUtil.cs" />
     <Compile Include="Utils\IgnorePropertyContractResolver.cs" />
     <Compile Include="Utils\JsonHelper.cs" />
     <Compile Include="Utils\MessageManager.cs" />
@@ -742,6 +743,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="SDPC_B10状态监测配置表_20250923-1.xlsx" />
+    <None Include="SDPC_B10遥控指令表.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SDPC_B10遥测数据表.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="SDPC_workbench软件数据监控表_zby0715.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
