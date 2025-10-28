@@ -476,6 +476,8 @@
     <Compile Include="ViewModels\PassWordViewModel.cs" />
     <Compile Include="ViewModels\RecentFileViewModel.cs" />
     <Compile Include="ViewModels\RenameViewModel.cs" />
+    <Compile Include="ViewModels\Telemetry\TelemetryMonitViewModel.cs" />
+    <Compile Include="ViewModels\Telemetry\TelemetryViewModel.cs" />
     <Compile Include="Views\ChipManagerView.xaml.cs">
       <DependentUpon>ChipManagerView.xaml</DependentUpon>
     </Compile>
@@ -530,6 +532,12 @@
     <Compile Include="Views\RenameView.xaml.cs">
       <DependentUpon>RenameView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Telemetry\TelemetryMonitView.xaml.cs">
+      <DependentUpon>TelemetryMonitView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Telemetry\TelemetryView.xaml.cs">
+      <DependentUpon>TelemetryView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Windows\ChipManagerWindow.xaml.cs">
       <DependentUpon>ChipManagerWindow.xaml</DependentUpon>
     </Compile>
@@ -571,6 +579,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RenameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Telemetry\TelemetryMonitView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Telemetry\TelemetryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

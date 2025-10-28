@@ -190,7 +190,40 @@ namespace Workbench.ViewModels
                                 Icon = IconUnicode.Debug,
                                 PPEC_Id = ppecId,
                                 ProjectId = projectId
-                            }
+                            },
+                            new PpecProject()
+                            {
+                                UID = Guid.NewGuid().ToString(),
+                                Name = "遥测管理",
+                                Label = "遥测管理",
+                                Level = ProjectLevel.Project,
+                                Icon = IconUnicode.Develop,
+                                PPEC_Id = ppecId,
+                                ProjectId = projectId,
+                                Children=new ObservableCollection<PpecProject>()
+                                {
+                                    new PpecProject()
+                                    {
+                                        UID = Guid.NewGuid().ToString(),
+                                        Name = "遥测指令管理",
+                                        Label = "遥测指令管理",
+                                        Level = ProjectLevel.Telemetry,
+                                        Icon = IconUnicode.Develop,
+                                        PPEC_Id = ppecId,
+                                        ProjectId = projectId
+                                    },
+                                    new PpecProject()
+                                    {
+                                        UID = Guid.NewGuid().ToString(),
+                                        Name = "遥测数据管理",
+                                        Label = "遥测数据管理",
+                                        Level = ProjectLevel.TelemetryMonit,
+                                        Icon = IconUnicode.Develop,
+                                        PPEC_Id = ppecId,
+                                        ProjectId = projectId
+                                    },
+                                }
+                            },
                     }
                 };
 

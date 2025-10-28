@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Workbench.ViewModels.Content.Tabs;
 using Workbench.ViewModels.dw;
+using Workbench.ViewModels.Telemetry;
 
 namespace Workbench.AvalonDock
 {
@@ -43,7 +44,18 @@ namespace Workbench.AvalonDock
             get;
             set;
         }
-
+        #region 遥测
+        public DataTemplate TelemetryViewTemplate
+        {
+            get;
+            set;
+        }
+        public DataTemplate TelemetryMonitViewTemplate
+        {
+            get;
+            set;
+        }
+        #endregion
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container)
         {
             var itemAsLayoutContent = item as LayoutContent;
@@ -71,7 +83,14 @@ namespace Workbench.AvalonDock
             {
                 return WatchViewTemplate;
             }
-
+            if (item is TelemetryViewModel)
+            {
+                return TelemetryViewTemplate;
+            }
+            if (item is TelemetryMonitViewModel)
+            {
+                return TelemetryMonitViewTemplate;
+            }
             return base.SelectTemplate(item, container);
         }
     }

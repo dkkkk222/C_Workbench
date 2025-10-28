@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using Workbench.ViewModels.Content.Tabs;
 using Workbench.ViewModels.dw;
+using Workbench.ViewModels.Telemetry;
 
 namespace Workbench.AvalonDock
 {
@@ -44,6 +45,16 @@ namespace Workbench.AvalonDock
             set;
         }
 
+        public Style TelemetryStyle
+        {
+            get;
+            set;
+        }
+        public Style TelemetryMonitStyle
+        {
+            get;
+            set;
+        }
         public override System.Windows.Style SelectStyle(object item, System.Windows.DependencyObject container)
         {
             if (item is HomeViewModel)
@@ -63,6 +74,12 @@ namespace Workbench.AvalonDock
 
             if (item is WatchViewModel)
                 return WatchStyle;
+
+            if (item is TelemetryViewModel)
+                return TelemetryStyle;
+
+            if (item is TelemetryMonitViewModel)
+                return TelemetryMonitStyle;
 
             return base.SelectStyle(item, container);
         }

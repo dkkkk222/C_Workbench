@@ -15,5 +15,8 @@ namespace Workbench.Utils.Common
         public const string SingleParams = "SingleParams";
         public const string BatchParams = "BatchParams";
 
+        //遥测
+        public const string Telemetry = "Telemetry";
+        public const string TelemetryMonit = "TelemetryMonit";
     }
 }

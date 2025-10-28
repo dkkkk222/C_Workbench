@@ -10,6 +10,7 @@
              xmlns:pane="clr-namespace:Workbench.AvalonDock"
              xmlns:views="clr-namespace:Workbench.Views.Content.Tabs"
              xmlns:dwViews="clr-namespace:Workbench.Views.dw"
+             xmlns:tViews="clr-namespace:Workbench.Views.Telemetry"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -121,6 +122,16 @@
                                         <dwViews:WatchView/>
                                     </DataTemplate>
                                 </pane:PanesTemplateSelector.WatchViewTemplate>
+                                <pane:PanesTemplateSelector.TelemetryViewTemplate>
+                                    <DataTemplate>
+                                        <tViews:TelemetryView/>
+                                    </DataTemplate>
+                                </pane:PanesTemplateSelector.TelemetryViewTemplate>
+                                <pane:PanesTemplateSelector.TelemetryMonitViewTemplate>
+                                    <DataTemplate>
+                                        <tViews:TelemetryMonitView/>
+                                    </DataTemplate>
+                                </pane:PanesTemplateSelector.TelemetryMonitViewTemplate>
                             </pane:PanesTemplateSelector>
 
                         </avalonDock:DockingManager.LayoutItemTemplateSelector>
@@ -180,6 +191,24 @@
                                         <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}"/>
                                     </Style>
                                 </pane:PanesStyleSelector.WatchStyle>
+                                <pane:PanesStyleSelector.TelemetryStyle>
+                                    <Style TargetType="{x:Type avalonDock:LayoutItem}">
+                                        <Setter Property="Title" Value="{Binding Model.Title}"/>
+                                        <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}"/>
+                                        <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                                        <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
+                                        <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}"/>
+                                    </Style>
+                                </pane:PanesStyleSelector.TelemetryStyle>
+                                <pane:PanesStyleSelector.TelemetryMonitStyle>
+                                    <Style TargetType="{x:Type avalonDock:LayoutItem}">
+                                        <Setter Property="Title" Value="{Binding Model.Title}"/>
+                                        <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}"/>
+                                        <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                                        <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
+                                        <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}"/>
+                                    </Style>
+                                </pane:PanesStyleSelector.TelemetryMonitStyle>
                             </pane:PanesStyleSelector>
                         </avalonDock:DockingManager.LayoutItemContainerStyleSelector>
 

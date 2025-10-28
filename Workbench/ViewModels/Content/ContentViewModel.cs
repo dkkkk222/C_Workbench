@@ -16,6 +16,7 @@ using Workbench.Utils;
 using Workbench.Utils.Common;
 using Workbench.ViewModels.Content.Tabs;
 using Workbench.ViewModels.dw;
+using Workbench.ViewModels.Telemetry;
 using Workbench.Views.Content.Tabs;
 
 namespace Workbench.ViewModels.Content
@@ -72,6 +73,26 @@ namespace Workbench.ViewModels.Content
                 else if (treeNodeProject.Level == ProjectLevel.Debug)
                 {
                     var debugViewModel = _container.Resolve<WatchViewModel>();
+                    debugViewModel.Title = getTabLabel(treeNodeProject);
+                    debugViewModel.IsActive = true;
+                    debugViewModel.ContentId = treeNodeProject.UID;
+                    debugViewModel.Project = treeNodeProject;
+                    Documents.Add(debugViewModel);
+                    debugViewModel.LoadData();
+                }
+                else if (treeNodeProject.Level == ProjectLevel.Telemetry)
+                {
+                    var debugViewModel = _container.Resolve<TelemetryViewModel>();
+                    debugViewModel.Title = getTabLabel(treeNodeProject);
+                    debugViewModel.IsActive = true;
+                    debugViewModel.ContentId = treeNodeProject.UID;
+                    debugViewModel.Project = treeNodeProject;
+                    Documents.Add(debugViewModel);
+                    debugViewModel.LoadData();
+                }
+                else if (treeNodeProject.Level == ProjectLevel.TelemetryMonit)
+                {
+                    var debugViewModel = _container.Resolve<TelemetryMonitViewModel>();
                     debugViewModel.Title = getTabLabel(treeNodeProject);
                     debugViewModel.IsActive = true;
                     debugViewModel.ContentId = treeNodeProject.UID;
