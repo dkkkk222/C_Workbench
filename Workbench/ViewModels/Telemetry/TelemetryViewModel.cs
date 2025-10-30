@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Forms;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
@@ -201,7 +202,7 @@ namespace Workbench.ViewModels.Telemetry
         {
             var currentProject = _projectManager.CurrentProject;
             param.Progress = 0;
-            param.CompletedNum = 0;
+            param.CompletedNumTelemetry = 0;
             Thread.Sleep(1000);
             foreach (var register in param.TelemetryItems)
             {
@@ -216,7 +217,7 @@ namespace Workbench.ViewModels.Telemetry
                     case Constants.Telemetry:
                         if(register.Type == ((int)TelemetryCommandType.IndirectCommand).ToString())
                         {
-                            var cmd = UtilsFunc.GetStrToUint(register.Code);
+                            var cmd = UtilsFunc.HexStringToBytes(register.Code);
                             await currentProject.CommService.SendRemoteControlAsync(cmd,50);
                         }
                         if (register.Type == ((int)TelemetryCommandType.NoteInstruction).ToString())
@@ -228,7 +229,7 @@ namespace Workbench.ViewModels.Telemetry
                         break;
                 }
                 //await currentProject.CommService.SendAsync(calcResult.bytes);
-                param.CompletedNum += 1;
+                param.CompletedNumTelemetry += 1;
                 Thread.Sleep(TimeSpan.FromMilliseconds(2));
             }
         }
@@ -258,6 +259,19 @@ namespace Workbench.ViewModels.Telemetry
             }
             this.BatchAllCheck = false;
         }));
+
+        public DelegateCommand BatchDelRegisterCommand => new DelegateCommand(async () =>
+        {
+            var result = MessageBox.Show("是否批量删除序列详情", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result != DialogResult.Yes)
+                return;
+            var delSeq = CurrentSequence.TelemetryItems.Where(t => t.IsChecked).ToArray();
+            foreach (var item in delSeq)
+            {
+                CurrentSequence.TelemetryItems.Remove(item);
+            }
+            CollectionViewSource.GetDefaultView(CurrentSequence.TelemetryItems).Refresh();
+        });
         #endregion
         public override async void LoadData()
         {

@@ -66,9 +66,9 @@ namespace Workbench.Communication
         /// 发送“遥控指令(000A)”，payload=4字节（BE），等待“遥控应答(000F)”
         /// 返回：AAAA成功 / FFFF失败（其他保留码按RawCode返回）
         /// </summary>
-        public new async Task<ControlAck> SendRemoteControlAsync(uint cmdBE, int timeoutMs = 50)
+        public new async Task<ControlAck> SendRemoteControlAsync(byte[] payload, int timeoutMs = 50)
         {
-            var payload = new byte[] { (byte)(cmdBE >> 24), (byte)(cmdBE >> 16), (byte)(cmdBE >> 8), (byte)cmdBE };
+            //var payload = new byte[] { (byte)(cmdBE >> 24), (byte)(cmdBE >> 16), (byte)(cmdBE >> 8), (byte)cmdBE };
             var resp = await SendAndWaitAsync(TYPE_REMOTE_CTRL, payload, TYPE_REMOTE_CTRL_ACK, timeoutMs).ConfigureAwait(false);
             if (resp == null || resp.Length < 4) return new ControlAck(false, 0, resp ?? Array.Empty<byte>());
             ushort code = ReadU16_BE(resp, 2); // 00 00 AA AA -> 取后两个字节

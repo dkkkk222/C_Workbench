@@ -76,6 +76,17 @@ namespace Workbench.Models.dw
             }
         }
 
+        private int _completedNumTelemetry = 0;
+        public int CompletedNumTelemetry
+        {
+            get => _completedNumTelemetry;
+            set
+            {
+                SetProperty(ref _completedNumTelemetry, value);
+                Progress = (int)((double)_completedNumTelemetry / TelemetryItems.Count * 100);
+            }
+        }
+
         private int _progress = 0;
         public int Progress
         {

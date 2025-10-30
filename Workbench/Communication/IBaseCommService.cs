@@ -26,7 +26,7 @@ namespace Workbench.Communication
         Task<bool> WriteRegisterAsync(ushort regAddr, uint value4);
         void Close();
 
-        Task<ControlAck> SendRemoteControlAsync(uint cmd, int timeoutMs = 50);
+        Task<ControlAck> SendRemoteControlAsync(byte[] payload, int timeoutMs = 50);
         Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80);
     }
 }

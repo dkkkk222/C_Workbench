@@ -570,21 +570,21 @@ namespace Workbench.Models
 
                 // 2) 发送“遥控指令”（000A→000F）
                 uint cmd = 0x01020304; // 举例，按你《遥控指令表》填
-
+                byte[] injection = new byte[] { /* 按你的遥控指令表定义填充 */ };
                 using (var db = new DbContext())
                 {
                     var monitCode = await db.TelemetryCodes.Where(t => t.ChipId == Chip.ChipId && t.Type== ((int)TelemetryCommandType.IndirectCommand).ToString()).FirstOrDefaultAsync();
                     firstCode = monitCode.Code;
                 }
-                cmd = UtilsFunc.GetStrToUint(firstCode);
-                var ack1 = await service.SendRemoteControlAsync(cmd, timeoutMs: 50);
+                injection = UtilsFunc.HexStringToBytes(firstCode);
+                var ack1 = await service.SendRemoteControlAsync(injection, timeoutMs: 50);
 
                 if (!ack1.Success)
                 {
                     // ack1.RawCode == 0xFFFF 或超时
                 }
                 // 3) 发送“注数”（0014→0019）
-                byte[] injection = new byte[] { /* 按你的遥控指令表定义填充 */ };
+                
                 using (var db = new DbContext())
                 {
                     var monitCode = await db.TelemetryCodes.Where(t => t.ChipId == Chip.ChipId && t.Type == ((int)TelemetryCommandType.NoteInstruction).ToString()).FirstOrDefaultAsync();
@@ -601,7 +601,9 @@ namespace Workbench.Models
                 // 若按文档固定为 00 0A 04 1E，你可以直接调用：
                 var tlm = await service.QueryTelemetryOnceAsync(200);
 
-                var last10 = service.GetLastTelemetry(10);
+                //var last10 = service.GetLastTelemetry(10);获取10条数据
+                CommService = service;
+                IsConnecting = true;
                 return true;
             }
             catch(Exception ex)

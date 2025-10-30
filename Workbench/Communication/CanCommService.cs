@@ -603,7 +603,7 @@ namespace Workbench.Communication
             }
         }
 
-        public Task<ControlAck> SendRemoteControlAsync(uint cmd, int timeoutMs = 50)
+        public Task<ControlAck> SendRemoteControlAsync(byte[] payload, int timeoutMs = 50)
         {
             throw new NotImplementedException();
         }

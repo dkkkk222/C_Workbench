@@ -60,6 +60,9 @@ namespace Workbench.Utils
 
         public static byte[] HexStringToBytes(string hex)
         {
+            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                hex = hex.Substring(2);
+
             if (string.IsNullOrWhiteSpace(hex))
                 throw new ArgumentException("输入不能为空。");
 

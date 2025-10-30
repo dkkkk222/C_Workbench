@@ -21,6 +21,7 @@
         <DataTemplate DataType="{x:Type viewModels:TelemetryViewModel}">
             <views:TelemetryView />
         </DataTemplate>
+        <cvt:IntToStatusConverter x:Key="IntToStatusConverter"/>
         <BooleanToVisibilityConverter x:Key="Bool2Vis"/>
         <cvt:BoolToGridLengthStarOrZeroConverter x:Key="BoolToStarOrZero"/>
         <cvt:BoolToGridLengthPixelOrZeroConverter x:Key="BoolTo10pxOrZero" Pixels="10"/>
@@ -730,11 +731,11 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
 
-                                    <DataGridTextColumn Header="指令类型" Binding="{Binding Type}"  Width="*" MinWidth="60" ElementStyle="{StaticResource CenterCellStyle}" Visibility="{Binding 
+                                    <DataGridTextColumn Header="指令类型" Binding="{Binding Type , Converter={StaticResource IntToStatusConverter}}"  Width="Auto" MinWidth="60" ElementStyle="{StaticResource CenterCellStyle}" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[1].IsChecked,
                                                         Converter={StaticResource Boolean2VisibilityConverter}}"/>
-                                   
+                                    
                                     <DataGridTemplateColumn Header="指令码(HEX)" Width="*" MinWidth="110" Visibility="{Binding 
                                                         Source={StaticResource DataContextProxy},
                                                         Path=Data.TableColumns[4].IsChecked,
@@ -759,7 +760,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                    
-                                    <DataGridTemplateColumn Width="*" MinWidth="50">
+                                    <DataGridTemplateColumn Width="Auto" MinWidth="50">
                                         <DataGridTemplateColumn.Header>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                 <TextBlock Text="选择"/>

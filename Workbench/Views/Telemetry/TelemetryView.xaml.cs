@@ -46,18 +46,18 @@ namespace Workbench.Views.Telemetry
                 }
 
                 // DataContext 变化时重新订阅
-                DataContextChanged += (_, __) =>
-                {
-                    var oldVm = vm;
-                    if (oldVm != null)
-                        oldVm.PropertyChanged -= VmOnPropertyChanged;
+                //DataContextChanged += (_, __) =>
+                //{
+                //    var oldVm = vm;
+                //    if (oldVm != null)
+                //        oldVm.PropertyChanged -= VmOnPropertyChanged;
 
-                    vm = DataContext as INotifyPropertyChanged;
-                    if (vm != null)
-                        vm.PropertyChanged += VmOnPropertyChanged;
+                //    vm = DataContext as INotifyPropertyChanged;
+                //    if (vm != null)
+                //        vm.PropertyChanged += VmOnPropertyChanged;
 
-                    ApplyInitialWidth();
-                };
+                //    ApplyInitialWidth();
+                //};
             };
         }
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)

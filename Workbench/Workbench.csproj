@@ -377,6 +377,7 @@
     <Compile Include="Converters\BoolToGridLengthConverter.cs" />
     <Compile Include="Converters\BoolToGridLengthStarOrZeroConverter.cs" />
     <Compile Include="Converters\DataGridRowIndexConverter.cs" />
+    <Compile Include="Converters\IntToStatusConverter.cs" />
     <Compile Include="Converters\IsOddAlternationConverter.cs" />
     <Compile Include="Converters\RowIndexConverter.cs" />
     <Compile Include="Db\DbContext.cs" />

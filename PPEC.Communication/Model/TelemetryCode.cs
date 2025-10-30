@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LinqToDB.Mapping;
+using Prism.Mvvm;
 
 namespace PPEC.Communication.Model
 {
     [Table("t_TelemetryCode")]
-    public class TelemetryCode
+    public class TelemetryCode:BindableBase
     {
         [PrimaryKey]
         [Column("id", CanBeNull = false)]
@@ -29,5 +30,12 @@ namespace PPEC.Communication.Model
 
         [Column("length", Length = 64)]
         public string Length { get; set; }
+
+        private bool _isChecked = false;
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set => SetProperty(ref _isChecked, value);
+        }
     }
 }
