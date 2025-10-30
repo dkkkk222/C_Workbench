@@ -261,6 +261,14 @@ namespace Workbench.Models
             set => SetProperty(ref _readWriteHistory, value);
         }
 
+        private ObservableCollection<SingleParamHistory> _teleMetryReadWriteHistory = new ObservableCollection<SingleParamHistory>();
+        [JsonIgnore]
+        public ObservableCollection<SingleParamHistory> TeleMetryReadWriteHistory
+        {
+            get => _teleMetryReadWriteHistory;
+            set => SetProperty(ref _teleMetryReadWriteHistory, value);
+        }
+        
         private ObservableCollection<Sequence> _sequences = new ObservableCollection<Sequence>();
         public ObservableCollection<Sequence> Sequences
         {

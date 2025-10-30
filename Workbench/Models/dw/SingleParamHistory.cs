@@ -14,6 +14,7 @@ namespace Workbench.Models.dw
         public string Name { get; set; }
         public string State { get; set; }
         public string Datetime { get; set; }
+        public string Type { get; set; }
 
     }
 

@@ -508,7 +508,13 @@ CommandParameter="{Binding}"/>
                 <!--<hc:Divider Grid.Row="1" Margin="0,8"/>-->
                 <Border Grid.Row="2">
                     <Grid>
-
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition  Width="10"/>
+                            <!-- 分隔列 -->
+                            <ColumnDefinition   Width="*"/>
+                            <!-- 右侧详情 -->
+                        </Grid.ColumnDefinitions>
                         <DockPanel LastChildFill="True" MinWidth="560">
 
                             <Border Style="{StaticResource BorderCircular}" DockPanel.Dock="Top"  Margin="5,10,0,5"  BorderBrush="Transparent" Background="Transparent">
@@ -799,7 +805,140 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                        </DockPanel>                       
+                        
+                        </DockPanel>
+                        <GridSplitter x:Name="DetailSplitter" Grid.Column="1" Width="5" Margin="0,0,0,0" 
+                                      Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+
+                        <Border Grid.Column="2" Padding="2,2,0,0">
+                            <DockPanel LastChildFill="True">
+                                <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
+                                    <hc:UniformSpacingPanel Spacing="15"  VerticalAlignment="Center">
+                                        <controls_Title:StandTitle Padding="0,5,0,0" BordMargin="0,0,5,0" StandText="历史数据" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
+                                        <Button Content="下载" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                                                Command="{Binding HistoryDownloadCommand}"/>
+                                        <Button Content="清除历史" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                Command="{Binding CleraHistoryCommand}"/>
+                                    </hc:UniformSpacingPanel>
+                                </Border>
+                                <DataGrid ItemsSource="{Binding ReadWriteHistory}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
+                                  Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"  RowHeight="40" Height="Auto"
+                                              CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
+                                    <DataGrid.ColumnHeaderStyle>
+                                        <Style TargetType="{x:Type DataGridColumnHeader}"  >
+                                            <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
+                                            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="Padding" Value="10,0,0,0"/>
+                                            <Setter Property="Margin" Value="0,0,12,0"/>
+                                            <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
+                                            <Setter Property="BorderThickness" Value="1,0,0,1" />
+                                        </Style>
+                                    </DataGrid.ColumnHeaderStyle>
+                                    <DataGrid.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+     Color="Transparent"/>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+     Color="#3D7EFF"/>
+                                    </DataGrid.Resources>
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell" BasedOn="{x:Null}">
+                                            <Setter Property="Margin" Value="8,0,12,0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                            <!-- 前景色跟随行 -->
+                                            <Setter Property="Foreground"
+Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
+
+                                            <Style.Triggers>
+                                                <!-- 选中 -->
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                                </Trigger>
+
+                                                <!-- 选中 + DataGrid失焦（例如右键弹菜单） -->
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True"/>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=IsKeyboardFocusWithin}" Value="False"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                                </MultiDataTrigger>
+
+                                                <!-- Hover 时也别盖住整行背景 -->
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="Height" Value="40"/>
+                                            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                            <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
+                                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                                            <!-- 新增：默认不加粗 -->
+                                            <Setter Property="FontWeight" Value="Normal"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="AlternationIndex" Value="1">
+                                                    <Setter Property="Background" Value="{StaticResource DataGridRowAltBackgroundColor}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </Trigger>
+                                                <!-- 选中（鼠标不在上面） -->
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="IsSelected" Value="True"/>
+                                                        <Condition Property="IsMouseOver" Value="False"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
+                                                    <!-- 白字 -->
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                    <!-- 去掉分割线 -->
+                                                </MultiTrigger>
+
+                                                <!-- 选中 + 悬停 -->
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="IsSelected" Value="True"/>
+                                                        <Condition Property="IsMouseOver" Value="True"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </MultiTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="读/写" Binding="{Binding ReadWrite}"  Width="70" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                        <DataGridTextColumn Header="名称" Binding="{Binding Name}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                        <DataGridTextColumn Header="指令(HEX)" Binding="{Binding Hex}"  Width="120" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                        <DataGridTextColumn Header="类型" Binding="{Binding Type}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                        <DataGridTextColumn Header="状态" Binding="{Binding State}"  Width="80" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                        <DataGridTextColumn Header="操作时间" Binding="{Binding Datetime}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DockPanel>
+                        </Border>
                     </Grid>
                 </Border>
 

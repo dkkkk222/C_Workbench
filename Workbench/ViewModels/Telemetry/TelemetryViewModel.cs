@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Forms;
+using log4net;
+using NPOI.XSSF.UserModel;
+using Org.BouncyCastle.Utilities.Collections;
+using PPEC.Communication;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using Prism.Commands;
@@ -16,11 +21,14 @@ using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
 using Workbench.Utils;
+using Workbench.ViewModels.dw;
+using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Workbench.ViewModels.Telemetry
 {
     public class TelemetryViewModel : AvaDocument
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(TelemetryViewModel));
         private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
         public TelemetryViewModel(IEventAggregator eventAggregator, ProjectManager projectManager) 
@@ -28,6 +36,7 @@ namespace Workbench.ViewModels.Telemetry
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;
             SequenceList = _projectManager.CurrentProject.TeleMetrySequences;
+            ReadWriteHistory = _projectManager.CurrentProject.TeleMetryReadWriteHistory;
             GetTeleInit();
         }
 
@@ -44,6 +53,14 @@ namespace Workbench.ViewModels.Telemetry
         {
             get => _sequenceList;
             set => SetProperty(ref _sequenceList, value);
+        }
+
+        private ObservableCollection<SingleParamHistory> _readWriteHistory = new ObservableCollection<SingleParamHistory>();
+
+        public ObservableCollection<SingleParamHistory> ReadWriteHistory
+        {
+            get => _readWriteHistory;
+            set => SetProperty(ref _readWriteHistory, value);
         }
 
         private bool _isLeftOpen = true;
@@ -231,6 +248,20 @@ namespace Workbench.ViewModels.Telemetry
                 //await currentProject.CommService.SendAsync(calcResult.bytes);
                 param.CompletedNumTelemetry += 1;
                 Thread.Sleep(TimeSpan.FromMilliseconds(2));
+                var history = new SingleParamHistory
+                {
+                    ReadWrite = "W",
+                    Address = register.Code,
+                    Hex = register.Code,
+                    Name = register.Name,
+                    Type= register.Type=="0"?"间接指令":"注数指令",
+                    State = "正常",
+                    Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                };
+                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    _projectManager.CurrentProject.TeleMetryReadWriteHistory.Add(history);
+                });
             }
         }
 
@@ -272,6 +303,35 @@ namespace Workbench.ViewModels.Telemetry
             }
             CollectionViewSource.GetDefaultView(CurrentSequence.TelemetryItems).Refresh();
         });
+
+        public DelegateCommand CleraHistoryCommand => new DelegateCommand(() =>
+        {
+            var result = System.Windows.Forms.MessageBox.Show("是否清除历史记录!", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                _projectManager.CurrentProject.TeleMetryReadWriteHistory.Clear();
+                ReadWriteHistory.Clear();
+            }
+
+        });
+
+        private DelegateCommand _historyDownloadCommand;
+        public DelegateCommand HistoryDownloadCommand => _historyDownloadCommand ?? (_historyDownloadCommand = new DelegateCommand(() =>
+        {
+            if (!ReadWriteHistory.Any())
+            {
+                MessageBox.Show("无历史数据", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            var fbd = new FolderBrowserDialog();
+            fbd.Description = "请选择保存路径";
+            var result = fbd.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                var path = fbd.SelectedPath;
+                HistoryToExcel(path);
+            }
+        }));
         #endregion
         public override async void LoadData()
         {
@@ -324,6 +384,52 @@ namespace Workbench.ViewModels.Telemetry
 
         private static string GetStringProp(object o, string name)
        => o?.GetType().GetProperty(name)?.GetValue(o)?.ToString();
+
+        private void HistoryToExcel(string path)
+        {
+            try
+            {
+                var workbook = new XSSFWorkbook();
+                var sheet = workbook.CreateSheet("Sheet1");
+                var headerRow = sheet.CreateRow(0);
+                string[] headerColumns = new string[] { "读/写", "名称", "指令(HEX)","类型", "状态", "操作时间" };
+                for (int i = 0; i < headerColumns.Length; i++)
+                {
+                    headerRow.CreateCell(i).SetCellValue(headerColumns[i]);
+                }
+
+                int startRow = 1;
+                foreach (var history in ReadWriteHistory)
+                {
+                    var row = sheet.CreateRow(startRow);
+                    row.CreateCell(0).SetCellValue(history.ReadWrite);
+                    row.CreateCell(1).SetCellValue(history.Name);
+                    row.CreateCell(2).SetCellValue(history.Hex);
+                    row.CreateCell(3).SetCellValue(history.Type);
+                    row.CreateCell(4).SetCellValue(history.State);
+                    row.CreateCell(5).SetCellValue(history.Datetime);
+                    startRow++;
+                }
+
+                for (int i = 0; i < headerColumns.Length; i++)
+                {
+                    sheet.AutoSizeColumn(i);
+                }
+
+                string fileName = "指令操作历史数据.xlsx";
+                string filePath = Path.Combine(path, fileName);
+                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    workbook.Write(fs);
+                }
+                MessageBox.Show("下载成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+                MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         #endregion
 
     }
