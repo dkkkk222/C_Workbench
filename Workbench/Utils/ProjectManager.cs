@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PPEC.Communication;
 using PPEC.Communication.CAN;
+using PPEC.Communication.Common;
 using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using Prism.Events;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Unity;
+using Workbench.Db.IService;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
@@ -30,15 +32,17 @@ namespace Workbench.Utils
         private readonly IUnityContainer _container;
         private readonly IDialogService _dialogService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly ICpService _cpService;
 
         private static readonly ILog _log = LogManager.GetLogger(typeof(ProjectManager));
 
-        public ProjectManager(FileHandler fileHandler, IEventAggregator eventAggregator, IUnityContainer container, IDialogService dialogService)
+        public ProjectManager(FileHandler fileHandler, IEventAggregator eventAggregator, IUnityContainer container, IDialogService dialogService, ICpService cpService)
         {
             _container = container;
             _fileHandler = fileHandler;
             _dialogService = dialogService;
             _eventAggregator = eventAggregator;
+            _cpService = cpService;
         }
 
         #region Property
@@ -410,6 +414,35 @@ namespace Workbench.Utils
         }
         #endregion
 
+        public async Task<List<TelemetryCode>> GetTeleLisst(string chipId)
+        {
+            return await _cpService.GetTeleList(CurrentProject.Chip.ChipId);
+        }
+        public async Task<List<CategoryTree>> GetChipCategoryTreeForTele(string ctg = null, string address = null, bool isOrderByAddress = true)
+        {
+            var list = new List<CategoryTree>();
+            var infos =await GetTeleLisst(CurrentProject.Chip.ChipId);// CurrentProject.Chip.ListTele.ToList();
+            if (!string.IsNullOrEmpty(ctg))
+            {
+                infos = infos.Where(t => t.Name == ctg).ToList();
+            }
+            if (!string.IsNullOrEmpty(address))
+            {
+                infos = infos.Where(t => t.Code == address).ToList();
+            }
+            var categories = infos.Select(t => t.Type).Distinct().ToList();
+            foreach (var category in categories)
+            {
+                list.Add(new CategoryTree()
+                {
+                    Title = category=="0"?"间接指令":"注数指令",
+                    Type = CategoryTreeType.Category,
+                    Children = GetTelemetry(category, infos, isOrderByAddress)
+                });
+            }
+            return list;
+        }
+
         public List<CategoryTree> GetChipCategoryTreeOnlyW(string ctg = null, string address = null, bool isOrderByAddress = true)
         {
             var list = new List<CategoryTree>();
@@ -480,6 +513,8 @@ namespace Workbench.Utils
             foreach (var child in node.Children)
                 AttachParentRecursive(child, node);
         }
+       
+
         private List<CategoryTree> GetSubCategory(string category, List<RegisterAddrInfo> infos, bool isOrderByAddress)
         {
             var list = new List<CategoryTree>();
@@ -492,6 +527,31 @@ namespace Workbench.Utils
                     Title = subCategory,
                     Type = CategoryTreeType.SubCategory,
                     Children = GetRegister(category, subCategory, infos, isOrderByAddress)
+                });
+            }
+
+            return list;
+        }
+
+        private List<CategoryTree> GetTelemetry(string category, List<TelemetryCode> infos, bool isOrderByAddress)
+        {
+            var list = new List<CategoryTree>();
+
+            var registers = infos.Where(t => t.Type == category).ToList();
+            if (isOrderByAddress)
+            {
+                //registers = registers.OrderBy(t => t.Name).ToList();
+                registers=registers.OrderByNatural(x => x.Name).ToList();
+            }
+
+            foreach (var register in registers)
+            {
+                list.Add(new CategoryTree()
+                {
+                    Title = register.Name,
+                    Type = CategoryTreeType.Register,
+                    AddressDec = register.Code,
+                    AddressHex = register.Code
                 });
             }
 

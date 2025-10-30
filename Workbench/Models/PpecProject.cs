@@ -268,6 +268,13 @@ namespace Workbench.Models
             set => SetProperty(ref _sequences, value);
         }
 
+        private ObservableCollection<Sequence> _teleMetrySequences = new ObservableCollection<Sequence>();
+        public ObservableCollection<Sequence> TeleMetrySequences
+        {
+            get => _teleMetrySequences;
+            set => SetProperty(ref _teleMetrySequences, value);
+        }
+
         private ObservableCollection<WatchGroup> _watchGroups = new ObservableCollection<WatchGroup>();
         public ObservableCollection<WatchGroup> WatchGroups
         {
@@ -585,7 +592,7 @@ namespace Workbench.Models
                 }
                 injection=UtilsFunc.HexStringToBytes(firstCode);
 
-                var ack2 = await service.SendInjectionAsync(injection, timeoutMs: 80);
+                var ack2 = await service.SendInjectionAsync(injection, timeoutMs: 50);
                 if (!ack2.Success)
                 {
                     // ack1.RawCode == 0xFFFF 或超时

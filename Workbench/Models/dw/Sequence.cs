@@ -55,6 +55,16 @@ namespace Workbench.Models.dw
             set => SetProperty(ref _items, value);
         }
 
+        private ObservableCollection<TelemetryCode> _telemetryItems = new ObservableCollection<TelemetryCode>();
+        /// <summary>
+        /// 详情
+        /// </summary>
+        public ObservableCollection<TelemetryCode> TelemetryItems
+        {
+            get => _telemetryItems;
+            set => SetProperty(ref _telemetryItems, value);
+        }
+
         private int _completedNum = 0;
         public int CompletedNum
         {

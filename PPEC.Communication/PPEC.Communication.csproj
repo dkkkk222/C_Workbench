@@ -183,6 +183,7 @@
     <Compile Include="CommonParametersName.cs" />
     <Compile Include="CommonUtil.cs" />
     <Compile Include="Common\ConnectConfig.cs" />
+    <Compile Include="Common\NaturalSortComparer.cs" />
     <Compile Include="Common\RegisterCodec.cs" />
     <Compile Include="Common\RegisterExcelParser.cs" />
     <Compile Include="Common\UtilHelper.cs" />
@@ -249,6 +250,7 @@
     <Compile Include="Model\ShowParams.cs" />
     <Compile Include="Model\SingleThreadInvoker.cs" />
     <Compile Include="Model\TelemetryBase.cs" />
+    <Compile Include="Model\TelemetryCode.cs" />
     <Compile Include="Model\TelemetryMeta.cs" />
     <Compile Include="Model\TopoConfigMeta.cs" />
     <Compile Include="Model\UartProtocolHandler.cs" />

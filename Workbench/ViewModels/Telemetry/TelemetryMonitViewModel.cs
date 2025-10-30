@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Prism.Commands;
 using Prism.Events;
+using Workbench.Events;
 using Workbench.Models;
 using Workbench.Utils;
 
@@ -18,13 +19,14 @@ namespace Workbench.ViewModels.Telemetry
         {
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;
+
         }
 
         private DelegateCommand _closeCommand;
         public override DelegateCommand CloseCommand =>
             _closeCommand ?? (_closeCommand = new DelegateCommand(() =>
             {
-
+                _eventAggregator.GetEvent<CloseTabEvent>().Publish(this.ContentId);
             }));
 
         public override void LoadData()

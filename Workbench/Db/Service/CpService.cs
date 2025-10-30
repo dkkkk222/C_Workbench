@@ -71,5 +71,13 @@ namespace Workbench.Db.Service
 
             return target;
         }
+
+        public async Task<List<TelemetryCode>> GetTeleList(string chipId)
+        {
+            using (var db = new DbContext())
+            {
+                return await db.TelemetryCodes.Where(t => t.ChipId == chipId).ToListAsync();
+            }
+        }
     }
 }

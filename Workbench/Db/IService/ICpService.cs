@@ -13,5 +13,7 @@ namespace Workbench.Db.IService
         Task<Chip> GetChipById(string id);
 
         Task<List<RegisterMeta>> GetChipRegisters(string chipId);
+
+        Task<List<TelemetryCode>> GetTeleList(string chipId);
     }
 }

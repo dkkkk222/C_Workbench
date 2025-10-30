@@ -1,5 +1,6 @@
 ﻿using LinqToDB;
 using LinqToDB.Data;
+using PPEC.Communication.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

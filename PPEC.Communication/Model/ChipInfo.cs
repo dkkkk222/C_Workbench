@@ -13,4 +13,5 @@ namespace PPEC.Communication.Model
         public string ChipPath { get; set; }
         public List<RegisterMeta> ChipRegisterInfo { get; set; }
     }
+
 }

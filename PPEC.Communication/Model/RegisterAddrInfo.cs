@@ -603,6 +603,7 @@ namespace PPEC.Communication.Model
 
         public Dictionary<string, string> ParamDic { get; set; }
     }
+
     public class RegisterMeta : BindableBase
     {
         public RegisterAddrInfo AddrInfo { get; set; }
