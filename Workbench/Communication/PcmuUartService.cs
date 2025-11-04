@@ -95,7 +95,10 @@ namespace Workbench.Communication
         /// 发送“遥测查询(001E)”并等待“遥测应答(0023)”，返回有效数据域payload
         /// </summary>
         public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 0xFF)
-            => SendAndWaitAsync(TYPE_TLM_QUERY, new byte[] { projectTag, 0x0A, 0x04, 0x1E }, TYPE_TLM_RESPONSE, timeoutMs);
+        {
+            SelectCount++;
+            return SendAndWaitAsync(TYPE_TLM_QUERY, new byte[] { projectTag, 0x0A, 0x04, 0x1E }, TYPE_TLM_RESPONSE, timeoutMs);
+        } 
 
         #endregion
 
@@ -257,11 +260,20 @@ namespace Workbench.Communication
             // 我们不把数据写进父类 ReceiveCache（避免污染），故返回空键
             return ("", null);
         }
-
+        public int SelectCount = 0;
+        public int ReceiveCountSuc = 0;
+        public int ReceiveCountFault = 0;
         private void DispatchFrame(ushort typeBe, byte[] payload)
         {
             try
             {
+                ushort code = ReadU16_BE(payload, 2); // 00 00 AA AA -> 取后两个字节
+                bool ok = code == 0xFFFF;//失败
+                if(ok)
+                {
+                    ReceiveCountFault++;
+                    return;
+                }
                 switch (typeBe)
                 {
                     case TYPE_REMOTE_CTRL_ACK: // 000F
@@ -279,6 +291,7 @@ namespace Workbench.Communication
                             TelemetryParsed?.Invoke(this, rec);
                             TelemetryReceived?.Invoke(this, new TelemetryEventArgs(payload));
 
+                            ReceiveCountSuc++;
                             if (_waiters.TryRemove(typeBe, out var tcs))
                                 tcs.TrySetResult(payload);
                             break;
@@ -306,10 +319,10 @@ namespace Workbench.Communication
             if (_tlmSlices != null && _tlmSlices.Count > 0)
             {
                 var values = ParseSlices(payload);
-                foreach (var yc in _tlmSlices)
-                {
-                    yc.ShowResult = values[yc.Name].ToString();
-                }
+                //foreach (var yc in _tlmSlices)
+                //{
+                //    yc.ShowResult = values[yc.Name].ToString();
+                //}
                 return new TelemetryRecord
                 {
                     Timestamp = DateTime.UtcNow,

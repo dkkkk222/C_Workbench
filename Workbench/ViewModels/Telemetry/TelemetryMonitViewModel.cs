@@ -49,7 +49,9 @@ namespace Workbench.ViewModels.Telemetry
             _ChartDataTimer.Elapsed += ChartDataTimer_Tick;
             _projectManager.CurrentProject.EnsureSession();
             _historyRecorderL2Db = _projectManager.CurrentProject.HistoryRecorderL2Db;
-            _historyRecorderL2Db.Start();
+            
+            EventListener();
+            SelectedCycle = CycleSource[0];
         }
         private int _busy2;
         private void ChartDataTimer_Tick(object sender, System.Timers.ElapsedEventArgs e)
@@ -92,6 +94,11 @@ namespace Workbench.ViewModels.Telemetry
             {
                 var convertProjectTag = UtilsFunc.HexStringToBytes(ProjectTag);
                 _projectManager.CurrentProject.CommService?.QueryTelemetryOnceAsync(1000, convertProjectTag[0]);
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    SelectCount= (_projectManager.CurrentProject.CommService as PcmuUartService).SelectCount;
+                    ReturnCount = (_projectManager.CurrentProject.CommService as PcmuUartService).ReceiveCountSuc;
+                });
             }
             catch(Exception ex)
             {
@@ -152,6 +159,19 @@ namespace Workbench.ViewModels.Telemetry
             }
         }
         #endregion
+        public int _selectCount;
+        public int SelectCount
+        {
+            get=> _selectCount; 
+            set=>SetProperty(ref _selectCount,value);
+        }
+
+        public int _returnCount;
+        public int ReturnCount
+        {
+            get => _returnCount;
+            set => SetProperty(ref _returnCount, value);
+        }
 
         private bool _IsStart=false;
         public bool IsStart
@@ -194,7 +214,7 @@ namespace Workbench.ViewModels.Telemetry
             set => SetProperty(ref _CycleSource, value);
         }
 
-        public OptionModel _SelectedCycle;
+        private OptionModel _SelectedCycle;
         /// <summary>
         /// 选择的档位
         /// </summary>
@@ -253,13 +273,19 @@ namespace Workbench.ViewModels.Telemetry
             _settingChartLimitCommand ?? (_settingChartLimitCommand = new DelegateCommand<object>(SettingChartLimit));
         public DelegateCommand StartAllCommand => new DelegateCommand(() =>
         {
-            if(string.IsNullOrEmpty(ProjectTag))
+            if (!_projectManager.CurrentProject.IsConnecting)
+            {
+                System.Windows.Forms.MessageBox.Show("当前工程未连接", "提示", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+                return;
+            }
+            if (string.IsNullOrEmpty(ProjectTag))
             {
                 HandyControl.Controls.MessageBox.Show("请输入遥控标识!");
                 return;
             }
             if (!_timer.Enabled)
             {
+                _historyRecorderL2Db.Start();
                 _timer.Start();
                 _ChartDataTimer.Start();
             }
@@ -276,6 +302,7 @@ namespace Workbench.ViewModels.Telemetry
             {
                 _timer.Stop();
                 _ChartDataTimer.Stop();
+                _historyRecorderL2Db.Stop();
             }
                
             Application.Current.Dispatcher.InvokeAsync(() =>
@@ -327,6 +354,30 @@ namespace Workbench.ViewModels.Telemetry
         #endregion
 
         #region Method
+        public void EventListener()
+        {
+            _eventAggregator.GetEvent<CloseConnectEvent>().Subscribe(() =>
+            {
+                _timer.Stop();
+                _ChartDataTimer.Stop();
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    IsStart = false;
+                });
+            });
+            _eventAggregator.GetEvent<OnConnctedEvent>().Subscribe(() =>
+            {
+                if(ShowTelemetryList.Count==0)
+                {
+                    if (_projectManager.CurrentProject.CommService is PcmuUartService puService)
+                    {
+                        ShowTelemetryList.AddRange(puService._tlmSlices);
+                    }
+                }
+                
+            });
+           
+        }
         private void SettingChartLimit(object o)
         {
             WpfPlotControl.SetXYLimit(MaxX: Chart1MaxX, MinX: Chart1MinX, MaxY: Chart1MaxY, MinY: Chart1MinY);

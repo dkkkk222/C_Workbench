@@ -86,14 +86,13 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
+        <Grid.RowDefinitions> 
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="10"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <DockPanel LastChildFill="True" Grid.Column="0" Grid.Row="1">
             <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
@@ -101,24 +100,48 @@
                     <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                         <!--<TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
                         <controls_Title:StandTitle Padding="0,3,0,0" BordMargin="0,0,5,0" StandText="遥测查询" StandFontSize="{DynamicResource SubHeadFontSize}"/>
-
-                        <!--<Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"
-                                                                Margin="5,0,0,0" 
-                                                                Command="{Binding RenameCommand}"
-                                                                CommandParameter="Table"/>-->
+ 
 
                     </StackPanel>
 
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-
-                        <!--<ComboBox ItemsSource="{Binding CycleSource}"
-              DisplayMemberPath="Header"  SelectedValuePath="Id" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
-SelectedValue="{Binding SelectedCycle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-
-                        </ComboBox>-->
+                        <TextBlock VerticalAlignment="Center">遥测查询:</TextBlock>
+                        <TextBox Text="{Binding SelectCount,Mode=TwoWay}"  IsEnabled="False" Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
+                            <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                    <Style.Triggers>
+                                        <!-- 获得焦点时变色 -->
+                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center">遥测回复:</TextBlock>
+                        <TextBox Text="{Binding ReturnCount,Mode=TwoWay}"  IsEnabled="False" Margin="5,0,5,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
+                            <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                    <Style.Triggers>
+                                        <!-- 获得焦点时变色 -->
+                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
                         
+                        <ComboBox ItemsSource="{Binding CycleSource}"
+                        DisplayMemberPath="Label"  Foreground="Black" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
+                        SelectedValue="{Binding SelectedCycle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                        </ComboBox>
+
+                        
+
                         <Button Content="开始查询" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
-HorizontalAlignment="Left" hc:IconElement.Width="14" Margin="10,0,10,0" IsEnabled="{Binding !IsStart,Mode=TwoWay}"
+HorizontalAlignment="Left" hc:IconElement.Width="14" Margin="10,0,0,0" IsEnabled="{c:Binding !IsStart,Mode=TwoWay}"
 Command="{Binding StartAllCommand}"/>
                         
                         <Button Content="停止查询" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"  
@@ -131,7 +154,7 @@ Command="{Binding StopAllCommand}"/>
 
                         </ComboBox>
                         <TextBlock VerticalAlignment="Center">遥控标识:</TextBlock>
-                        <TextBox Text="{Binding ProjectTag,Mode=TwoWay}"   Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="60" >
+                        <TextBox Text="{Binding ProjectTag,Mode=TwoWay}"   Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="50" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
                                     <Style.Triggers>
@@ -148,7 +171,7 @@ Command="{Binding StopAllCommand}"/>
                         <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                                 Command="{Binding DataContext.HistoryDownloadCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                         <TextBlock Width="10"></TextBlock>
-                        <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
+                        <!--<hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
                             <hc:SplitButton.DropDownContent>
                                 <ItemsControl ItemsSource="{Binding TableColumns}">
                                     <ItemsControl.ItemsPanel>
@@ -178,7 +201,7 @@ Command="{Binding StopAllCommand}"/>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </hc:SplitButton.DropDownContent>
-                        </hc:SplitButton>
+                        </hc:SplitButton>-->
 
                     </StackPanel>
                 </DockPanel>
@@ -366,12 +389,12 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             <Setter Property="ToolTip" Value="{Binding ShowResult}"/>
                                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ParamC}" Value="99">
-                                                    <Setter Property="Text" Value="{Binding StringResult}" />
-                                                    <Setter Property="ToolTip" Value="{Binding StringResult}"/>
+                                            <!--<Style.Triggers>
+                                                <DataTrigger Binding="{Binding ParamC}" Value="4">
+                                                    <Setter Property="Text" Value="{Binding ShowResult}" />
+                                                    <Setter Property="ToolTip" Value="{Binding ShowResult}"/>
                                                 </DataTrigger>
-                                            </Style.Triggers>
+                                            </Style.Triggers>-->
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
@@ -434,11 +457,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                                 <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="遥测监控" StandFontSize="{DynamicResource SubHeadFontSize}"/>
 
-                                <!--<Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Margin="5,0,5,0"  Command="{Binding RenameCommand}" CommandParameter="Chart"/>-->
-                                <!--<Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
-Margin="5,0,0,0"  Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>-->
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,0">
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
                                 <TextBox Text="{Binding Chart1MinX}"   hc:InfoElement.Title="X最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" >
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
@@ -460,14 +480,6 @@ Margin="5,0,0,0"  Command="{Binding SettingChartLimitCommand}" CommandParameter=
                                 <Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
            Margin="5,0,0,0"  Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>
                             </StackPanel>
-                            <!--<StackPanel Grid.Row="2"  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0">
-                                                                <TextBlock Width="348"/>
-                                                                <TextBox Text="{Binding ChartXName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X名称："  Margin="0,0,12,0"
-hc:InfoElement.TitlePlacement="Left" Width="100" />
-
-                                                                <TextBox Text="{Binding ChartYName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y名称："  Margin="5,0,5,0"
-hc:InfoElement.TitlePlacement="Left" Width="98" />
-                                                            </StackPanel>-->
                         </Grid>
 
 
