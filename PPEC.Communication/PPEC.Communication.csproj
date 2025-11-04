@@ -243,6 +243,7 @@
     <Compile Include="Model\FlatRow.cs" />
     <Compile Include="Model\InvFrame.cs" />
     <Compile Include="Model\INVProtocolHandler.cs" />
+    <Compile Include="Model\OptionModel.cs" />
     <Compile Include="Model\ParseResult.cs" />
     <Compile Include="Model\RegisterAddrInfo.cs" />
     <Compile Include="Model\RegValue.cs" />

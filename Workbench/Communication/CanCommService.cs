@@ -613,6 +613,11 @@ namespace Workbench.Communication
             throw new NotImplementedException();
         }
 
+        public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 255)
+        {
+            throw new NotImplementedException();
+        }
+
         // ====== 协议定义，与旧版保持一致 ======
         private static class DT
         {

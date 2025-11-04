@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using log4net;
+using PPEC.Communication.Common;
 using PPEC.Communication.Model;
 using Workbench.Utils;
 
@@ -48,7 +51,7 @@ namespace Workbench.Communication
 
         // —— 遥测队列（前端拉取） ——
         private readonly BoundedConcurrentQueue<TelemetryRecord> _tlmQueue = new(capacity: 1000);
-        private List<TelemetrySliceField>? _tlmSlices; // 若配置了，则按位切片解析
+        public ObservableCollection<TelemetrySliceField>? _tlmSlices; // 若配置了，则按位切片解析
 
         // —— 事件 ——
         public event EventHandler<TelemetryEventArgs>? TelemetryReceived; // 原始payload（0023）
@@ -91,8 +94,8 @@ namespace Workbench.Communication
         /// <summary>
         /// 发送“遥测查询(001E)”并等待“遥测应答(0023)”，返回有效数据域payload
         /// </summary>
-        public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200)
-            => SendAndWaitAsync(TYPE_TLM_QUERY, new byte[] { 0x00, 0x0A, 0x04, 0x1E }, TYPE_TLM_RESPONSE, timeoutMs);
+        public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200,byte projectTag=0xFF)
+            => SendAndWaitAsync(TYPE_TLM_QUERY, new byte[] { projectTag, 0x0A, 0x04, 0x1E }, TYPE_TLM_RESPONSE, timeoutMs);
 
         #endregion
 
@@ -100,7 +103,7 @@ namespace Workbench.Communication
 
         /// <summary>配置“按位切片”的遥测解析规则；不配置则仅缓存RawPayload</summary>
         public void ConfigureTelemetrySlices(IEnumerable<TelemetrySliceField> slices)
-            => _tlmSlices = slices?.ToList();
+            => _tlmSlices = new ObservableCollection<TelemetrySliceField>(slices?.ToList());
 
         /// <summary>取一条（先进先出）</summary>
         public TelemetryRecord? TryDequeueTelemetry()
@@ -181,7 +184,7 @@ namespace Workbench.Communication
             w.Write(CHN_FF7);          // +7
             w.Write(U16_BE(typeBe));   // +2
             w.Write(TYPE_RESERVED);    // +1
-            w.Write(U16_LE((ushort)payload.Length)); // +2 (LE)
+            w.Write(U16_BE((ushort)payload.Length)); // +2 (LE)
             if (payload.Length > 0) w.Write(payload);
 
             ushort crc = CRC16_CCITT_FALSE(payload);
@@ -303,6 +306,10 @@ namespace Workbench.Communication
             if (_tlmSlices != null && _tlmSlices.Count > 0)
             {
                 var values = ParseSlices(payload);
+                foreach(var yc in _tlmSlices)
+                {
+                    yc.ShowResult = values[yc.Name].ToString();
+                }
                 return new TelemetryRecord
                 {
                     Timestamp = DateTime.UtcNow,
@@ -322,25 +329,163 @@ namespace Workbench.Communication
 
         private Dictionary<string, object> ParseSlices(byte[] payload)
         {
-            var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            foreach (var f in _tlmSlices!)
-            {
-                // 拼接参与字节 → 抽取位段 → 转目标类型 → 缩放
-                ulong acc = AssembleBytes(payload, f.StartByte, f.ByteCount, f.Order);
-                ulong raw = ExtractBits(acc, f.BitStart, f.BitLength);
-                object v = CastToTarget(raw, f.BitLength, f.As);
+           
+                var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                foreach (var f in _tlmSlices!)
+                {
+                    // 拼接参与字节 → 抽取位段 → 转目标类型 → 缩放
+                    ulong acc = AssembleBytes(payload, f.StartByte, f.ByteCount, f.Order);
+                    ulong raw = ExtractBits(acc, f.BitStart, f.BitLength);
+                    object v = CastToTarget(raw, f.BitLength, f.As);
 
-                // 线性变换（数值型）
-                if (v is sbyte sb) dict[f.Name] = sb * f.Scale + f.Offset;
-                else if (v is byte ub) dict[f.Name] = ub * f.Scale + f.Offset;
-                else if (v is short s16) dict[f.Name] = s16 * f.Scale + f.Offset;
-                else if (v is ushort u16) dict[f.Name] = u16 * f.Scale + f.Offset;
-                else if (v is int s32) dict[f.Name] = s32 * f.Scale + f.Offset;
-                else if (v is uint u32) dict[f.Name] = u32 * f.Scale + f.Offset;
-                else if (v is float f32) dict[f.Name] = f32 * f.Scale + f.Offset;
-                else dict[f.Name] = v; // 其他保持原样
-            }
-            return dict;
+                    var str = UtilsFunc.BitsToHex(raw, f.BitLength);
+                    // 线性变换（数值型）
+
+                    if (v is sbyte sb)
+                    {
+                        var result = sb * f.Scale + f.Offset;
+                        f.ShowResult = result.ToString();
+                        dict[f.Name] = result;
+                    }
+                    else if (v is byte ub)
+                    {
+                        var result = ub * f.Scale + f.Offset;
+                        f.ShowResult = result.ToString();
+                        dict[f.Name] = result;
+                    }
+                    else if (v is short s16)
+                    {
+                        var result = s16 * f.Scale + f.Offset;
+                        f.ShowResult = result.ToString();
+                        dict[f.Name] = result;
+                    }
+                    else if (v is ushort u16)
+                    {
+                        var result = u16 * f.Scale + f.Offset;
+                        f.ShowResult = result.ToString();
+                        dict[f.Name] = result;
+                    }
+                    else if (v is int s32)
+                    {
+                        var result = s32 * f.Scale + f.Offset;
+                        f.ShowResult = result.ToString();
+                        dict[f.Name] = result;
+                    }
+                    else if (v is uint u32)
+                    {
+                        var result = u32 * f.Scale + f.Offset;
+                        f.ShowResult = result.ToString();
+                        dict[f.Name] = result;
+                    }
+                    else if (v is float f32)
+                    {
+                        var result = f32 * f.Scale + f.Offset;
+                        f.ShowResult = result.ToString();
+                        dict[f.Name] = result;
+                    }
+                    else
+                    {
+
+                        f.ShowResult = v.ToString();
+                        dict[f.Name] = v;
+                    }
+                    if (f.ParamC == ((int)FormulaKind.Unknown).ToString())
+                    {
+                        
+                        Application.Current?.Dispatcher.InvokeAsync(() =>
+                        {
+                            var returnd = UtilHelper.ParseExcelDataToDictionary(f.ShowStr);
+                            string ss = "未知";
+                            if (returnd.ContainsKey("0x" + f.ShowResult))
+                            {
+                                ss = returnd["0x" + f.ShowResult];
+                            }
+                            f.ShowResult = ss;
+                            dict[f.Name] = ss;
+                        });
+                    }
+                    
+                    Application.Current?.Dispatcher.InvokeAsync(() =>
+                    {
+                        f.ShowHexStr = str;
+                    });
+
+
+                }
+                return dict;
+           
+            //foreach (var f in _tlmSlices!)
+            //{
+            //    // 拼接参与字节 → 抽取位段 → 转目标类型 → 缩放
+            //    ulong acc = AssembleBytes(payload, f.StartByte, f.ByteCount, f.Order);
+            //    ulong raw = ExtractBits(acc, f.BitStart, f.BitLength);
+            //    object v = CastToTarget(raw, f.BitLength, f.As);
+
+            //    var str=UtilsFunc.BitsToHex(raw, f.BitLength);
+            //    // 线性变换（数值型）
+
+            //    if (v is sbyte sb) 
+            //    {
+            //        var result = sb * f.Scale + f.Offset;
+            //        f.ShowResult= result.ToString();
+            //        dict[f.Name] = result;
+            //    }
+            //    else if (v is byte ub) 
+            //    {
+            //        var result = ub * f.Scale + f.Offset;
+            //        f.ShowResult = result.ToString();
+            //        dict[f.Name] = result;
+            //    }
+            //    else if (v is short s16) 
+            //    {
+            //        var result = s16 * f.Scale + f.Offset;
+            //        f.ShowResult = result.ToString();
+            //        dict[f.Name] = result;
+            //    }
+            //    else if (v is ushort u16) 
+            //    {
+            //        var result = u16 * f.Scale + f.Offset;
+            //        f.ShowResult = result.ToString();
+            //        dict[f.Name] = result;
+            //    }
+            //    else if (v is int s32) 
+            //    {
+            //        var result = s32 * f.Scale + f.Offset;
+            //        f.ShowResult = result.ToString();
+            //        dict[f.Name] = result;
+            //    }
+            //    else if (v is uint u32) 
+            //    {
+            //        var result = u32 * f.Scale + f.Offset;
+            //        f.ShowResult = result.ToString();
+            //        dict[f.Name] = result;
+            //    }
+            //    else if (v is float f32)
+            //    {
+            //        var result = f32 * f.Scale + f.Offset;
+            //        f.ShowResult = result.ToString();
+            //        dict[f.Name] = result;
+            //    }
+            //    else
+            //    {
+                     
+            //        f.ShowResult = v.ToString();
+            //        dict[f.Name] = v;                
+            //    }
+            //    if(f.ParamC== ((int)FormulaKind.Unknown).ToString())
+            //    {
+            //        var returnd = UtilHelper.ParseExcelDataToDictionary(f.ShowStr);
+            //        string ss = "未知";
+            //        if (returnd.ContainsKey("0x" + f.ShowResult))
+            //        {
+            //            ss = returnd["0x" + f.ShowResult];                        
+            //        }
+            //        f.ShowResult = ss;
+            //        dict[f.Name] = ss;
+            //    }
+            //    f.ShowHexStr = str;
+            //}
+            //return dict;
         }
 
         // —— 位切片工具 —— //

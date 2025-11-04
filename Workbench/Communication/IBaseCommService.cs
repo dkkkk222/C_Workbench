@@ -28,5 +28,12 @@ namespace Workbench.Communication
 
         Task<ControlAck> SendRemoteControlAsync(byte[] payload, int timeoutMs = 50);
         Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80);
+        /// <summary>
+        /// 遥测查询
+        /// </summary>
+        /// <param name="timeoutMs"></param>
+        /// <param name="projectTag"></param>
+        /// <returns></returns>
+        Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 0xFF);
     }
 }

@@ -410,6 +410,11 @@ namespace Workbench.Communication
         {
             throw new NotImplementedException();
         }
+
+        public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 255)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

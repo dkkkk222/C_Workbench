@@ -77,6 +77,24 @@ namespace Workbench.Utils
             return bytes;
         }
 
+        public static string BitsToHex(ulong raw, int bitLength)
+        {
+            if (bitLength <= 0) return "";
+
+            // 计算需要的十六进制字符数（每4位一个字符）
+            int hexDigits = (bitLength + 3) / 4;
+
+            // 格式化为十六进制，并根据需要的位数截取
+            string hex = raw.ToString($"X{hexDigits}");
+
+            // 如果结果太长（可能发生在bitLength不是4的倍数时），取最后hexDigits个字符
+            if (hex.Length > hexDigits)
+            {
+                hex = hex.Substring(hex.Length - hexDigits);
+            }
+
+            return hex;
+        }
         public static UInt16 CalculateCRC(byte[] data, UInt16 numberOfBytes, int startByte)
         {
             byte[] auchCRCHi = {

@@ -858,7 +858,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                                    Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <TextBlock  >
+                                                                        <TextBlock>
                                                                             <TextBlock.Style>
                                                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource CenterCellStyle}">
                                                                                     <Setter Property="Text" Value="{Binding Result}" />

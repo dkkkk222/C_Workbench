@@ -213,7 +213,7 @@
                 </Grid.RowDefinitions>
                 <Border>
                     <Grid>
-                        <Border Margin="0,0,0,0" MinHeight="200">
+                        <Border Margin="0,0,0,0" >
                             <DockPanel LastChildFill="True">
                                 <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                                     <DockPanel LastChildFill="True">
@@ -245,11 +245,11 @@ Command="{Binding SettingAllTimeCommand}"/>
                                         <Border>
                                             <hc:UniformSpacingPanel Spacing="10" HorizontalAlignment="Right">
                                                 <Button Content="新增序列" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource AddGeometry}"
-                                                    Command="{Binding AddSequenceCommand}"/>
+                                                        Command="{Binding AddSequenceCommand}"/>                                                
+                                                <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+                                                        Command="{Binding BatchDelCommand}"/>
                                                 <Button Content="批量下发" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}" hc:IconElement.Geometry="{StaticResource AllGeometry}"
                                                         Command="{Binding BatchSendCommand}"/>
-                                                <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
-                                                                Command="{Binding BatchDelCommand}"/>
                                             </hc:UniformSpacingPanel>
                                         </Border>
                                     </DockPanel>
@@ -503,14 +503,14 @@ CommandParameter="{Binding}"/>
                         </Border>
                     </Grid>
                 </Border>
-                <GridSplitter Grid.Row="1" Height="5" Margin="0,5,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource GridSplitterBordColor}" ResizeDirection="Rows"></GridSplitter>
+                <GridSplitter Grid.Row="1" Grid.Column="1" Height="5" Margin="0,5,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource GridSplitterBordColor}" ResizeDirection="Rows"></GridSplitter>
 
                 <!--<hc:Divider Grid.Row="1" Margin="0,8"/>-->
                 <Border Grid.Row="2">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition  Width="10"/>
+                            <ColumnDefinition  Width="Auto"/>
                             <!-- 分隔列 -->
                             <ColumnDefinition   Width="*"/>
                             <!-- 右侧详情 -->

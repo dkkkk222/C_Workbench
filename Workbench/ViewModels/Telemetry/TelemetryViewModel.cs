@@ -223,7 +223,7 @@ namespace Workbench.ViewModels.Telemetry
             Thread.Sleep(1000);
             foreach (var register in param.TelemetryItems)
             {
-                
+                bool isSuc = true;
                 switch (currentProject.CommunicationType)
                 {
                     case Constants.OldSERIAL_PORT:
@@ -235,19 +235,29 @@ namespace Workbench.ViewModels.Telemetry
                         if(register.Type == ((int)TelemetryCommandType.IndirectCommand).ToString())
                         {
                             var cmd = UtilsFunc.HexStringToBytes(register.Code);
-                            await currentProject.CommService.SendRemoteControlAsync(cmd,50);
+                            var ack1 = await currentProject.CommService.SendRemoteControlAsync(cmd,1000);
+                            if (!ack1.Success)
+                            {
+                                isSuc = false;
+                                // ack1.RawCode == 0xFFFF 或超时
+                            }
                         }
                         if (register.Type == ((int)TelemetryCommandType.NoteInstruction).ToString())
                         {
                             var injection = UtilsFunc.HexStringToBytes(register.Code);
-                            await currentProject.CommService.SendInjectionAsync(injection, 50);
+                            var ack1 = await currentProject.CommService.SendInjectionAsync(injection, 1000);
+                            if (!ack1.Success)
+                            {
+                                isSuc = false;
+                                // ack1.RawCode == 0xFFFF 或超时
+                            }
                         }
                         
                         break;
                 }
                 //await currentProject.CommService.SendAsync(calcResult.bytes);
                 param.CompletedNumTelemetry += 1;
-                Thread.Sleep(TimeSpan.FromMilliseconds(2));
+                Thread.Sleep(TimeSpan.FromMilliseconds(10));
                 var history = new SingleParamHistory
                 {
                     ReadWrite = "W",
@@ -255,7 +265,7 @@ namespace Workbench.ViewModels.Telemetry
                     Hex = register.Code,
                     Name = register.Name,
                     Type= register.Type=="0"?"间接指令":"注数指令",
-                    State = "正常",
+                    State = isSuc?"成功":"失败",
                     Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                 };
                 await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
