@@ -571,7 +571,7 @@ namespace Workbench.Models
                     // 这里是串口接收线程，不是UI线程
                     Console.WriteLine($"[{rec.Timestamp:HH:mm:ss.fff}] len={rec.RawPayload.Length}");
 
-                    object v;
+                    double v;
                     if (rec.Values != null && rec.Values.TryGetValue("B0_0_3", out v))
                         Console.WriteLine($"B0_0_3={v}");
                 };
@@ -627,11 +627,15 @@ namespace Workbench.Models
         public RecordingSession ActiveSession { get; private set; }
         public string ActiveSessionId => ActiveSession?.SessionId;
 
+        public HistoryRecorderL2db HistoryRecorderL2Db { get; private set; }
+        public string HistoryRecorderL2DbSessionId => HistoryRecorderL2Db?.SessionId;
         // 确保有一个会话（没有就创建）
         public void EnsureSession()
         {
             if (ActiveSession == null)
                 ActiveSession = new RecordingSession();
+            if (HistoryRecorderL2Db == null)
+                HistoryRecorderL2Db = new  HistoryRecorderL2db();
         }
 
         // 结束当前会话（断开连接或用户手动结束时调用）

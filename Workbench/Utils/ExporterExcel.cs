@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shapes;
 using log4net;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using PPEC.Communication.DB.Provided;
@@ -263,5 +264,184 @@ namespace Workbench.Utils
         => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local)
            .AddMilliseconds(msUtc)
            .ToLocalTime();
+    }
+
+    public static class HistoryExcelExporter_BySeq
+    {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(HistoryExcelExporter_BySeq));
+        public static void ExportSessionToExcel_MergedByTimeAndSeq(
+            string connStr,
+            string sessionId,
+            string xlsxDirectory,
+            int page = 200_000)
+        {
+            // 1) 列头：paramId -> name（仅取本 session 出现过的）
+            var id2name = GetParamNameMapForSession(connStr, sessionId); // Dictionary<int,string>
+
+            //var headerIds = id2name.Keys
+            //    .OrderBy(id => id2name[id] ?? "", StringComparer.Ordinal)
+            //    .ThenBy(id => id)
+            //    .ToList();
+            var headerIds = id2name.Keys
+                .OrderBy(id => GetAlphaPrefix(id2name[id]), StringComparer.OrdinalIgnoreCase)
+                .ThenBy(id => GetTailNumberOrMax(id2name[id]))
+                .ThenBy(id => id) // 兜底
+                .ToList();
+
+            var headerLabels = headerIds
+                .Select(id => string.IsNullOrWhiteSpace(id2name[id]) ? id.ToString() : id2name[id])
+                .ToList();
+
+            var id2col = new Dictionary<int, int>(headerIds.Count);
+            for (int i = 0; i < headerIds.Count; i++) id2col[headerIds[i]] = i + 1; // +1 因为 0 是时间列
+
+            using (var wb = new XSSFWorkbook())
+            {
+                var sh = wb.CreateSheet("Data");
+                int rowIdx = 0;
+
+                // 表头
+                var header = sh.CreateRow(rowIdx++);
+                header.CreateCell(0).SetCellValue("时间");
+                for (int i = 0; i < headerLabels.Count; i++)
+                    header.CreateCell(i + 1).SetCellValue(headerLabels[i]);
+
+                // 时间样式
+                var tsStyle = wb.CreateCellStyle();
+                var fmt = wb.CreateDataFormat();
+                tsStyle.DataFormat = fmt.GetFormat("yyyy-mm-dd hh:mm:ss.000");
+
+                // 2) 分页读取 + 按“时间合并行”
+                long lastTs = -1;
+                int lastSeq = -1;
+
+                long currentTs = -1;
+                double?[] currentLine = null;
+
+                while (true)
+                {
+                    var chunk = ReadChunkByTime_Seq(connStr, sessionId, lastTs, lastSeq, page);
+                    if (chunk.Count == 0) break;
+
+                    foreach (var rec in chunk)
+                    {
+                        // 新时间戳 -> 先写上一时间行
+                        if (currentTs != -1 && rec.TsTicks != currentTs)
+                        {
+                            WriteCurrentLine(sh, ref rowIdx, currentTs, currentLine, tsStyle);
+                            currentTs = -1;
+                            currentLine = null;
+                        }
+
+                        // 初始化当前时间缓冲
+                        if (currentTs == -1)
+                        {
+                            currentTs = rec.TsTicks;
+                            currentLine = new double?[headerIds.Count];
+                        }
+
+                        if (id2col.TryGetValue(rec.ParamId, out int col))
+                            currentLine[col - 1] = rec.NumValue;
+                    }
+
+                    var last = chunk[chunk.Count - 1];
+                    lastTs = last.TsTicks;
+                    lastSeq = last.Seq;
+                }
+
+                if (currentTs != -1 && currentLine != null)
+                    WriteCurrentLine(sh, ref rowIdx, currentTs, currentLine, tsStyle);
+
+                // 3) 保存（关键：确保目录 + FileStream）
+                Directory.CreateDirectory(xlsxDirectory);
+                var timeName = DateTime.Now.ToString("yyyyMMddHHmmss.fff", CultureInfo.InvariantCulture);
+                var fileName = $"遥测数据监测表-历史-{timeName}.xlsx";
+                var filePath = System.IO.Path.Combine(xlsxDirectory, fileName);
+                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    wb.Write(fs);
+                _log.Info("下载完成");
+                MessageBox.Show("历史数据下载完成!");
+            }
+        }
+
+        private static readonly System.Text.RegularExpressions.Regex sPrefix =
+    new System.Text.RegularExpressions.Regex(@"^\s*([A-Za-z]+)", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+        private static readonly System.Text.RegularExpressions.Regex sNumber =
+            new System.Text.RegularExpressions.Regex(@"(\d+)\s*$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+        private static string GetAlphaPrefix(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return string.Empty;
+            var m = sPrefix.Match(name);
+            return m.Success ? m.Groups[1].Value : name;
+        }
+
+        private static int GetTailNumberOrMax(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return int.MaxValue;
+            var m = sNumber.Match(name);
+            int n;
+            return (m.Success && int.TryParse(m.Groups[1].Value, out n)) ? n : int.MaxValue;
+        }
+
+        private static List<FlatRowSeq> ReadChunkByTime_Seq(
+            string connStr, string sessionId, long lastTs, int lastSeq, int page)
+        {
+            using (var db = new DbContext())
+            {
+                var q =
+                    from f in db.HistoryFrames
+                    where f.SessionId == sessionId
+                    join v in db.HistoryValues
+                        on new { f.SessionId, f.TsTicks, f.Seq }
+                        equals new { v.SessionId, v.TsTicks, v.Seq }
+                    where (f.TsTicks > lastTs) || (f.TsTicks == lastTs && f.Seq > lastSeq)
+                    orderby f.TsTicks, f.Seq, v.ParamId
+                    select new FlatRowSeq
+                    {
+                        TsTicks = f.TsTicks,
+                        Seq = f.Seq,
+                        ParamId = v.ParamId,
+                        NumValue = v.NumValue
+                    };
+
+                return q.Take(page).ToList();
+            }
+        }
+
+        private static Dictionary<int, string> GetParamNameMapForSession(string connStr, string sessionId)
+        {
+            using (var db = new DbContext())
+            {
+                var q =
+                    (from v in db.HistoryValues
+                     join p in db.ParamDicts on v.ParamId equals p.ParamId
+                     join f in db.HistoryFrames on new { v.SessionId, v.TsTicks, v.Seq }
+                                               equals new { f.SessionId, f.TsTicks, f.Seq }
+                     where f.SessionId == sessionId
+                     select new { p.ParamId, p.Name })
+                    .Distinct();
+
+                return q.ToDictionary(x => x.ParamId, x => x.Name);
+            }
+        }
+
+        private static void WriteCurrentLine(ISheet sh, ref int rowIdx, long tsTicks, double?[] line, ICellStyle tsStyle)
+        {
+            var row = sh.CreateRow(rowIdx++);
+            var dt = new DateTime(tsTicks); // 若存的是 UTC ticks 则改为 new DateTime(tsTicks, DateTimeKind.Utc).ToLocalTime()
+            var c0 = row.CreateCell(0);
+            c0.SetCellValue(dt);
+            c0.CellStyle = tsStyle;
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                var c = row.CreateCell(i + 1);
+                var val = line[i];
+                if (val.HasValue) c.SetCellValue(val.Value);
+                else c.SetCellValue(string.Empty);
+            }
+        }
     }
 }

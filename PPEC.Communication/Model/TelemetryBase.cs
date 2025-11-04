@@ -64,6 +64,12 @@ namespace PPEC.Communication.Model
             set => SetProperty(ref _ShowResult, value);
         }
 
+        public double _SourceData;
+        public double SourceData
+        {
+            get => _SourceData;
+            set => SetProperty(ref _SourceData, value);
+        }
         public string StringResult { get; set; }
 
         private bool _IsChecked=false;
@@ -79,7 +85,7 @@ namespace PPEC.Communication.Model
         /// <summary>原始有效数据域</summary>
         public byte[] RawPayload { get; set; } = Array.Empty<byte>();
         /// <summary>解析后的键值（位切片或顺序解析）</summary>
-        public Dictionary<string, object> Values { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, double> Values { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     }
     public readonly struct ControlAck
     {

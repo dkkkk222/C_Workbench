@@ -3,26 +3,41 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using HarfBuzzSharp;
+using log4net;
 using Newtonsoft.Json;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
+using ScottPlot.Plottables;
 using Workbench.Communication;
 using Workbench.Controls.Controls.Scottplot;
+using Workbench.Db;
 using Workbench.Db.Tables;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Utils;
+using Workbench.ViewModels.dw;
 
 namespace Workbench.ViewModels.Telemetry
 {
     public class TelemetryMonitViewModel : AvaDocument
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(TelemetryMonitViewModel));
+        /// <summary>
+        /// 发送遥控查询指令
+        /// </summary>
         public System.Timers.Timer _timer = new System.Timers.Timer();
+        /// <summary>
+        /// 更新Chart
+        /// </summary>
+        public System.Timers.Timer _ChartDataTimer = new System.Timers.Timer();
         private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
+        private HistoryRecorderL2db _historyRecorderL2Db { get; set; }
         public TelemetryMonitViewModel(IEventAggregator eventAggregator, ProjectManager projectManager)
         {
             _projectManager = projectManager;
@@ -30,10 +45,49 @@ namespace Workbench.ViewModels.Telemetry
             _timer.Interval = 1000; // 设置触发间隔
             _timer.Elapsed += _timer_Elapsed; ; // 设置触发事件
 
+            _ChartDataTimer.Interval = 1000;
+            _ChartDataTimer.Elapsed += ChartDataTimer_Tick;
+            _projectManager.CurrentProject.EnsureSession();
+            _historyRecorderL2Db = _projectManager.CurrentProject.HistoryRecorderL2Db;
+            _historyRecorderL2Db.Start();
         }
-
+        private int _busy2;
+        private void ChartDataTimer_Tick(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (Interlocked.Exchange(ref _busy2, 1) == 1) return;
+            try
+            {
+                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => {
+                    var listLable=WpfPlotControl.Plot.GetPlottables().OfType<Scatter>().ToList();
+                    foreach(var lab in listLable)
+                    {
+                        var showLine=ShowTelemetryList.Where(x => x.Name == lab.LegendText).FirstOrDefault();
+                        if(showLine!=null)
+                        {
+                            //chart.WpfPlotControl2.UpdateData(field.Desc, field.Result);
+                            WpfPlotControl.UpdateData(lab.LegendText, showLine.SourceData);
+                        }
+                    }
+                    WpfPlotControl.RefreshData(false);
+                });
+                var Record=(_projectManager.CurrentProject.CommService as PcmuUartService).GetLastTelemetry(1).FirstOrDefault();
+               
+                if (Record!=null)
+                    _historyRecorderL2Db.EnqueueFrame(DateTime.Now, Record.Values);
+            }
+            catch(Exception ex)
+            {
+                _log.Error(ex);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _busy2, 0);
+            }
+        }
+        private int _busy1;
         private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            if (Interlocked.Exchange(ref _busy1, 1) == 1) return;
             try
             {
                 var convertProjectTag = UtilsFunc.HexStringToBytes(ProjectTag);
@@ -41,12 +95,64 @@ namespace Workbench.ViewModels.Telemetry
             }
             catch(Exception ex)
             {
-
+                _log.Error(ex);
             }
-
+            finally
+            {
+                Interlocked.Exchange(ref _busy1, 0);
+            }
         }
 
         #region property
+        #region ChartPropety
+        public int chart1MaxX = 5000;
+        public int Chart1MaxX
+        {
+            get => chart1MaxX;
+            set => SetProperty(ref chart1MaxX, value);
+        }
+        public int chart1MinX = 0;
+        public int Chart1MinX
+        {
+            get => chart1MinX;
+            set => SetProperty(ref chart1MinX, value);
+        }
+
+        public int chart1MaxY = 300;
+        public int Chart1MaxY
+        {
+            get => chart1MaxY;
+            set => SetProperty(ref chart1MaxY, value);
+        }
+        public int chart1MinY = -300;
+        public int Chart1MinY
+        {
+            get => chart1MinY;
+            set => SetProperty(ref chart1MinY, value);
+        }
+
+        private string _ChartXName = "间距";   // 初始高
+        public string ChartXName
+        {
+            get => _ChartXName;
+            set
+            {
+                SetProperty(ref _ChartXName, value);
+                WpfPlotControl.Plot.XLabel(value, 22);
+            }
+        }
+        private string _ChartYName = "幅值";   // 初始宽
+        public string ChartYName
+        {
+            get => _ChartYName;
+            set
+            {
+                SetProperty(ref _ChartYName, value);
+                WpfPlotControl.Plot.YLabel(value, 22);
+            }
+        }
+        #endregion
+
         private bool _IsStart=false;
         public bool IsStart
         {
@@ -60,7 +166,7 @@ namespace Workbench.ViewModels.Telemetry
             set => SetProperty(ref _ProjectList, value);
         }
 
-        private string _ProjectTag;
+        private string _ProjectTag="FF";
         public string ProjectTag
         {
             get => _ProjectTag;
@@ -141,6 +247,10 @@ namespace Workbench.ViewModels.Telemetry
         #endregion
 
         #region Command
+        private DelegateCommand<object> _settingChartLimitCommand;
+        [JsonIgnore]
+        public DelegateCommand<object> SettingChartLimitCommand =>
+            _settingChartLimitCommand ?? (_settingChartLimitCommand = new DelegateCommand<object>(SettingChartLimit));
         public DelegateCommand StartAllCommand => new DelegateCommand(() =>
         {
             if(string.IsNullOrEmpty(ProjectTag))
@@ -149,7 +259,11 @@ namespace Workbench.ViewModels.Telemetry
                 return;
             }
             if (!_timer.Enabled)
+            {
                 _timer.Start();
+                _ChartDataTimer.Start();
+            }
+               
             Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 IsStart = true;
@@ -159,7 +273,11 @@ namespace Workbench.ViewModels.Telemetry
         public DelegateCommand StopAllCommand => new DelegateCommand(() =>
         {
             if (_timer.Enabled)
+            {
                 _timer.Stop();
+                _ChartDataTimer.Stop();
+            }
+               
             Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 IsStart = false;
@@ -175,13 +293,58 @@ namespace Workbench.ViewModels.Telemetry
 
         public DelegateCommand<object> CheckedCommand => new DelegateCommand<object>((e) =>
         {
-
+            ChangeChartVisible(WpfPlotControl,true,(e as TelemetrySliceField).Name);
         });
         public DelegateCommand<object> UnCheckedCommand => new DelegateCommand<object>((e) =>
         {
+            ChangeChartVisible(WpfPlotControl, false, (e as TelemetrySliceField).Name);
+        });
 
+        public DelegateCommand HistoryDownloadCommand => new DelegateCommand(() =>
+        {
+            try
+            {
+                var fbd = new System.Windows.Forms.FolderBrowserDialog();
+                fbd.Description = "请选择保存路径";
+                var result = fbd.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    var path = fbd.SelectedPath;
+                    string currentSessionID = null;
+                    if (_projectManager != null)
+                    {
+                        currentSessionID = _projectManager.CurrentProject.HistoryRecorderL2DbSessionId;
+                    }
+
+                    HistoryExcelExporter_BySeq.ExportSessionToExcel_MergedByTimeAndSeq(null,currentSessionID, path);
+                    //HistoryToExcel(path);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
         });
         #endregion
+
+        #region Method
+        private void SettingChartLimit(object o)
+        {
+            WpfPlotControl.SetXYLimit(MaxX: Chart1MaxX, MinX: Chart1MinX, MaxY: Chart1MaxY, MinY: Chart1MinY);
+        }
+        public void ChangeChartVisible(WpfPlotSteamBase chart, bool isShow, string paramName)
+        {
+            var legLabel = chart.Plot.GetPlottables().OfType<Scatter>().FirstOrDefault(s => s.LegendText == paramName);
+            if (legLabel != null)
+            {
+                legLabel.IsVisible = isShow;
+            }
+            else
+            {
+                chart.AddSignalData(paramName);
+            }
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(() => chart.RefreshData());
+            //chart.RefreshData();
+        }
 
         public override void LoadData()
         {
@@ -190,7 +353,9 @@ namespace Workbench.ViewModels.Telemetry
             {
                 ShowTelemetryList.AddRange(puService._tlmSlices);
             }
-            
+
         }
+        #endregion
+
     }
 }

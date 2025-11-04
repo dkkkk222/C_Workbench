@@ -32,5 +32,9 @@ namespace Workbench.Db
 
         public ITable<TelemetryMonit> TelemetryMonits => this.GetTable<TelemetryMonit>();
 
+        public ITable<HistorySession> HistorySessions => this.GetTable<HistorySession>();
+        public ITable<HistoryFrame> HistoryFrames => this.GetTable<HistoryFrame>();
+        public ITable<ParamDict> ParamDicts => this.GetTable<ParamDict>();
+        public ITable<HistoryValue> HistoryValues => this.GetTable<HistoryValue>();
     }
 }

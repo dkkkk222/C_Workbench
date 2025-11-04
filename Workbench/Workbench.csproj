@@ -381,11 +381,13 @@
     <Compile Include="Converters\IsOddAlternationConverter.cs" />
     <Compile Include="Converters\RowIndexConverter.cs" />
     <Compile Include="Db\DbContext.cs" />
+    <Compile Include="Db\HistoryRecorder.cs" />
     <Compile Include="Db\IService\ICpService.cs" />
     <Compile Include="Db\Service\CpService.cs" />
     <Compile Include="Db\SqliteHelper.cs" />
     <Compile Include="Db\Tables\Chip.cs" />
     <Compile Include="Db\Tables\FrameRow.cs" />
+    <Compile Include="Db\Tables\HistorySession.cs" />
     <Compile Include="Db\Tables\Register.cs" />
     <Compile Include="Db\Tables\RegisterBit.cs" />
     <Compile Include="Db\Tables\RegisterBitOption.cs" />

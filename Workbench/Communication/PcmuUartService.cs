@@ -94,7 +94,7 @@ namespace Workbench.Communication
         /// <summary>
         /// 发送“遥测查询(001E)”并等待“遥测应答(0023)”，返回有效数据域payload
         /// </summary>
-        public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200,byte projectTag=0xFF)
+        public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 0xFF)
             => SendAndWaitAsync(TYPE_TLM_QUERY, new byte[] { projectTag, 0x0A, 0x04, 0x1E }, TYPE_TLM_RESPONSE, timeoutMs);
 
         #endregion
@@ -306,7 +306,7 @@ namespace Workbench.Communication
             if (_tlmSlices != null && _tlmSlices.Count > 0)
             {
                 var values = ParseSlices(payload);
-                foreach(var yc in _tlmSlices)
+                foreach (var yc in _tlmSlices)
                 {
                     yc.ShowResult = values[yc.Name].ToString();
                 }
@@ -323,97 +323,158 @@ namespace Workbench.Communication
             {
                 Timestamp = DateTime.UtcNow,
                 RawPayload = payload,
-                Values = new Dictionary<string, object> { { "len", payload.Length } }
+                Values = new Dictionary<string, double> { { "len", payload.Length } }
             };
         }
 
-        private Dictionary<string, object> ParseSlices(byte[] payload)
+        private Dictionary<string, double> ParseSlices(byte[] payload)
         {
-           
-                var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-                foreach (var f in _tlmSlices!)
+
+            var dict = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+            foreach (var f in _tlmSlices!)
+            {
+                // 拼接参与字节 → 抽取位段 → 转目标类型 → 缩放
+                ulong acc = AssembleBytes(payload, f.StartByte, f.ByteCount, f.Order);
+                ulong raw = ExtractBits(acc, f.BitStart, f.BitLength);
+                object v = CastToTarget(raw, f.BitLength, f.As);
+
+                var str = UtilsFunc.BitsToHex(raw, f.BitLength);
+                // 线性变换（数值型）
+                double tempParamA = 1;
+                if (double.TryParse(f.ParamA, out tempParamA))
                 {
-                    // 拼接参与字节 → 抽取位段 → 转目标类型 → 缩放
-                    ulong acc = AssembleBytes(payload, f.StartByte, f.ByteCount, f.Order);
-                    ulong raw = ExtractBits(acc, f.BitStart, f.BitLength);
-                    object v = CastToTarget(raw, f.BitLength, f.As);
-
-                    var str = UtilsFunc.BitsToHex(raw, f.BitLength);
-                    // 线性变换（数值型）
-
-                    if (v is sbyte sb)
-                    {
-                        var result = sb * f.Scale + f.Offset;
-                        f.ShowResult = result.ToString();
-                        dict[f.Name] = result;
-                    }
-                    else if (v is byte ub)
-                    {
-                        var result = ub * f.Scale + f.Offset;
-                        f.ShowResult = result.ToString();
-                        dict[f.Name] = result;
-                    }
-                    else if (v is short s16)
-                    {
-                        var result = s16 * f.Scale + f.Offset;
-                        f.ShowResult = result.ToString();
-                        dict[f.Name] = result;
-                    }
-                    else if (v is ushort u16)
-                    {
-                        var result = u16 * f.Scale + f.Offset;
-                        f.ShowResult = result.ToString();
-                        dict[f.Name] = result;
-                    }
-                    else if (v is int s32)
-                    {
-                        var result = s32 * f.Scale + f.Offset;
-                        f.ShowResult = result.ToString();
-                        dict[f.Name] = result;
-                    }
-                    else if (v is uint u32)
-                    {
-                        var result = u32 * f.Scale + f.Offset;
-                        f.ShowResult = result.ToString();
-                        dict[f.Name] = result;
-                    }
-                    else if (v is float f32)
-                    {
-                        var result = f32 * f.Scale + f.Offset;
-                        f.ShowResult = result.ToString();
-                        dict[f.Name] = result;
-                    }
-                    else
-                    {
-
-                        f.ShowResult = v.ToString();
-                        dict[f.Name] = v;
-                    }
-                    if (f.ParamC == ((int)FormulaKind.Unknown).ToString())
-                    {
-                        
-                        Application.Current?.Dispatcher.InvokeAsync(() =>
-                        {
-                            var returnd = UtilHelper.ParseExcelDataToDictionary(f.ShowStr);
-                            string ss = "未知";
-                            if (returnd.ContainsKey("0x" + f.ShowResult))
-                            {
-                                ss = returnd["0x" + f.ShowResult];
-                            }
-                            f.ShowResult = ss;
-                            dict[f.Name] = ss;
-                        });
-                    }
-                    
-                    Application.Current?.Dispatcher.InvokeAsync(() =>
-                    {
-                        f.ShowHexStr = str;
-                    });
-
 
                 }
-                return dict;
-           
+                double tempParamB = 1;
+                if (double.TryParse(f.ParamB, out tempParamB))
+                {
+
+                }
+                double result = 0;
+                if (v is sbyte sb)
+                {
+                    result = sb * f.Scale;
+                    //f.ShowResult = result.ToString();
+                    //dict[f.Name] = result;
+                }
+                else if (v is byte ub)
+                {
+                    result = ub *f.Scale;
+                    //f.ShowResult = result.ToString();
+                    //dict[f.Name] = result;
+                }
+                else if (v is short s16)
+                {
+                    result = s16 * f.Scale;
+                    //f.ShowResult = result.ToString();
+                    //dict[f.Name] = result;
+                }
+                else if (v is ushort u16)
+                {
+                    result = u16 * f.Scale;
+                    //f.ShowResult = result.ToString();
+                    //dict[f.Name] = result;
+                }
+                else if (v is int s32)
+                {
+                    result = s32 * f.Scale;
+                    //f.ShowResult = result.ToString();
+                    //dict[f.Name] = result;
+                }
+                else if (v is uint u32)
+                {
+                    result = u32 * f.Scale;
+                    //f.ShowResult = result.ToString();
+                    //dict[f.Name] = result;
+                }
+                else if (v is float f32)
+                {
+                    result = f32 * f.Scale;
+                    //f.ShowResult = result.ToString();
+                    //dict[f.Name] = result;
+                }
+                else
+                {
+                    f.ShowResult = v.ToString();
+                }
+
+                switch (f.ParamC)
+                {
+                    case "0":// "YEqX":
+                        f.ShowResult = result.ToString();
+                        dict[f.Name] = result;
+                        f.SourceData = result;
+                        break;
+                    case "1": //"YEqAX":
+                        f.ShowResult =(result* double.Parse(f.ParamA)).ToString();
+                        dict[f.Name] = (result * double.Parse(f.ParamA));
+
+                        f.SourceData = result * double.Parse(f.ParamA);
+                        break;
+                    case "2":// "YEqABminusAX":
+                        if (f.ParamSign == "-")
+                        {
+                            f.ShowResult = (Math.Round(double.Parse(f.ParamB) * double.Parse(f.ParamA) - result * double.Parse(f.ParamA), 3)).ToString();
+                            f.SourceData = (Math.Round(double.Parse(f.ParamB) * double.Parse(f.ParamA) - result * double.Parse(f.ParamA), 3));
+                        }
+
+                        if (f.ParamSign == "+")
+                        {
+                            f.ShowResult = (Math.Round(double.Parse(f.ParamB) * double.Parse(f.ParamA) + result * double.Parse(f.ParamA), 3)).ToString();
+                            f.SourceData = (Math.Round(double.Parse(f.ParamB) * double.Parse(f.ParamA) + result * double.Parse(f.ParamA), 3));
+                        }                            
+                        dict[f.Name] = f.SourceData;                        
+                        break;
+                    case "3":// "YEqAXpmB":
+                        if (f.ParamSign == "-")
+                        {
+                            f.ShowResult = (Math.Round(result * double.Parse(f.ParamA) - double.Parse(f.ParamA), 3)).ToString();
+                            f.SourceData = (Math.Round(result * double.Parse(f.ParamA) - double.Parse(f.ParamA), 3));
+                        }
+                        if (f.ParamSign == "+")
+                        {
+                            f.ShowResult = (Math.Round(result * double.Parse(f.ParamA) + double.Parse(f.ParamA), 3)).ToString();
+                            f.SourceData = (Math.Round(result * double.Parse(f.ParamA) + double.Parse(f.ParamA), 3));
+                        }                            
+                        dict[f.Name] = f.SourceData;
+                        break;
+                    case "4":// "Unknown":
+                        var returnd = UtilHelper.ParseExcelDataToDictionary(f.ShowStr);
+                        string ss = "未知";
+                        if (returnd.ContainsKey("0x" + result.ToString()))
+                        {
+                            ss = returnd["0x" + result.ToString()];
+                        }
+                        f.SourceData = result;
+                        f.ShowResult = ss;
+                        dict[f.Name] = result;
+                        break;
+                }
+                //if (f.ParamC == ((int)FormulaKind.Unknown).ToString())
+                //{
+
+                //    Application.Current?.Dispatcher.InvokeAsync(() =>
+                //    {
+                //        var returnd = UtilHelper.ParseExcelDataToDictionary(f.ShowStr);
+                //        string ss = "未知";
+                //        if (returnd.ContainsKey("0x" + f.ShowResult))
+                //        {
+                //            ss = returnd["0x" + f.ShowResult];
+                //        }
+                //        f.ShowResult = ss;
+                //        dict[f.Name] = ss;
+                //    });
+                //}
+
+                Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    f.ShowHexStr = str;
+                });
+
+
+            }
+            return dict;
+
             //foreach (var f in _tlmSlices!)
             //{
             //    // 拼接参与字节 → 抽取位段 → 转目标类型 → 缩放
@@ -468,7 +529,7 @@ namespace Workbench.Communication
             //    }
             //    else
             //    {
-                     
+
             //        f.ShowResult = v.ToString();
             //        dict[f.Name] = v;                
             //    }

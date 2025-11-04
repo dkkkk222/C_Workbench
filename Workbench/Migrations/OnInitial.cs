@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
+using System.Xml.Linq;
 using Workbench.Db.Tables;
 using Workbench.Utils;
 using static ScottPlot.Generate;
@@ -123,6 +124,32 @@ namespace Workbench.Migrations
             .WithColumn("param_sign").AsString().Nullable()
             .WithColumn("formula_show").AsString().Nullable()
             .WithColumn("unit").AsString().Nullable();
+            
+            //下面是历史记录相关表
+            Create.Table("param_dict")
+              .WithColumn("param_id").AsInt32().PrimaryKey().Identity()
+              .WithColumn("name").AsString().Nullable()
+              .WithColumn("type_code").AsInt32().Nullable();
+
+            Create.Table("history_session")
+              .WithColumn("session_id").AsString().PrimaryKey()
+              .WithColumn("started_at").AsString().Nullable()
+              .WithColumn("ended_at").AsString().Nullable();
+
+            Create.Table("history_frame")
+              .WithColumn("session_id").AsString().Nullable()
+              .WithColumn("ts_ticks").AsInt64().Nullable()
+              .WithColumn("seq").AsInt32().Nullable();
+
+            Create.Table("history_value")
+              .WithColumn("session_id").AsString().Nullable()
+              .WithColumn("ts_ticks").AsInt64().Nullable()
+               .WithColumn("seq").AsInt32().Nullable()
+              .WithColumn("param_id").AsInt32().Nullable()
+              .WithColumn("num_value").AsDouble().Nullable()
+               .WithColumn("text_value").AsString().Nullable();
+
+
             #endregion
             string fileName = "B1.0版本RTL接口及寄存器描述_V1.9_20250421_增加分类.xlsx";
             string SDPCfileName1 = "SDPC_workbench软件数据监控表_zby0715.xlsx";
@@ -160,6 +187,10 @@ namespace Workbench.Migrations
             }
             foreach (var param1 in ListData.Item2)
             {
+                Insert.IntoTable("param_dict").Row(new
+                {
+                    name= param1.CodeName
+                }); 
                 string telemetryId = Guid.NewGuid().ToString("N");
                 Insert.IntoTable("t_TelemetryMonit").Row(new
                 {
