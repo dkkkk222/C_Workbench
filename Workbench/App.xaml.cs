@@ -30,6 +30,8 @@ using Workbench.ViewModels.dw;
 using Workbench.Views.dw;
 using Workbench.ViewModels.Content;
 using Workbench.ViewModels.Content.Tabs;
+using Workbench.Views.Telemetry;
+using Workbench.ViewModels.Telemetry;
 
 namespace Workbench
 {
@@ -183,11 +185,18 @@ namespace Workbench
             containerRegistry.RegisterDialog<WatchChartListView, WatchChartListViewModel>();
             containerRegistry.RegisterDialog<WatchTableListView, WatchTableListViewModel>();
             containerRegistry.RegisterDialogWindow<ChipManagerWindow>(nameof(ChipManagerWindow));
+            containerRegistry.RegisterDialogWindow<TeleManagerWindow>(nameof(TeleManagerWindow));
+            containerRegistry.RegisterDialogWindow<TeleCodeManagerWindow>(nameof(TeleCodeManagerWindow)); 
+            containerRegistry.RegisterDialogWindow<ShowAddWindow>(nameof(ShowAddWindow)); 
             containerRegistry.RegisterDialogWindow<ShowChartListWindows>(nameof(ShowChartListWindows));
             containerRegistry.RegisterDialogWindow<ShowTableListWindows>(nameof(ShowTableListWindows)); 
             containerRegistry.RegisterDialog<CreateProjectView, CreateProjectViewModel>();
             containerRegistry.RegisterSingleton<ChipManagerViewModel>();
             containerRegistry.RegisterDialog<ChipManagerView, ChipManagerViewModel>();
+            containerRegistry.RegisterDialog<TelemetryManagerView, TelemetryManagerViewModel>();
+            containerRegistry.RegisterDialog<TelemetryMonitManagerView, TelemetryMonitManagerViewModel>();
+            
+            containerRegistry.RegisterDialog<TelemetryAddView, TelemetryAddViewModel>(); 
             containerRegistry.RegisterDialogWindow<RecentFileWindow>(nameof(RecentFileWindow));
             containerRegistry.RegisterDialog<RecentFileView, RecentFileViewModel>();
             containerRegistry.RegisterDialogWindow<RenameWindow>(nameof(RenameWindow));

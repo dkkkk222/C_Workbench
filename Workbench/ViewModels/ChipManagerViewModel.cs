@@ -24,7 +24,7 @@ namespace Workbench.ViewModels
 {
     public class ChipManagerViewModel : BindableBase, IDialogAware
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof(App));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(ChipManagerViewModel));
         private ProjectManager _projectManager;
         public MainServices mainService { get; set; }
 
@@ -290,6 +290,7 @@ namespace Workbench.ViewModels
             if (!string.IsNullOrEmpty(path))
                 ParseFilePath = path;
         });
+
         public string ChooseDirectory()
         {
             var path = string.Empty;

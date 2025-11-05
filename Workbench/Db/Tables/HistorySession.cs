@@ -26,6 +26,8 @@ namespace Workbench.Db.Tables
     public class ParamDict
     {
         [PrimaryKey, Identity, Column("param_id")] public int ParamId { get; set; }
+        [Column("chip_id")]
+        public string ChipId { get; set; }
         [Column("name")] public string Name { get; set; }
         [Column("type_code")] public int TypeCode { get; set; } // 0:double
     }

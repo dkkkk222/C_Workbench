@@ -1,0 +1,171 @@
+﻿<UserControl x:Class="Workbench.Views.Telemetry.TelemetryAddView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Workbench.Views.Telemetry"
+             mc:Ignorable="d" 
+             xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
+             xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             UseLayoutRounding="True"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="FilePathCellStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <!-- 超出部分显示 “...” -->
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <!-- 悬停显示完整 -->
+            <Setter Property="ToolTip" Value="{Binding FilePath}"/>
+        </Style>
+        <Style x:Key="MenuItemIcon" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style x:Key="FormBorderStyle" TargetType="{x:Type Border}">
+            <Setter Property="Padding" Value="0,10"/>
+        </Style>
+        <Style x:Key="CenterCellStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="CustomComboBoxItemStyle" TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItem.Small}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" 
+CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- 选中项鼠标悬停时的背景色 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="False"/>
+                        <Condition Property="UIElement.IsMouseOver" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Value="{DynamicResource SecondaryRegionBrush}" Property="Background"/>
+                </MultiTrigger>
+                <!-- 选中项的背景颜色 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ListBoxItem.IsSelected" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Value="{DynamicResource PrimaryBrush}" Property="Background"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </MultiTrigger>
+                <!-- 设置选中项的背景颜色 -->
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryBackgroundColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CustomComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend}">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource CustomComboBoxItemStyle}" />
+            <Style.Triggers>
+                <!-- 获得焦点时变色 -->
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!--<Style x:Key="CustomComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource ComboBoxExtend.Small}">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource CustomComboBoxItemStyle}" />
+            <Style.Triggers>
+                --><!-- 获得焦点时变色 --><!--
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>-->
+    </UserControl.Resources>
+    <Grid>
+        <Border Grid.Column="1" Background="{StaticResource HomeBackgroundColor}" Margin="4,0,0,0" CornerRadius="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackPanel Margin="10">
+                    <Border Style="{StaticResource FormBorderStyle}" Margin="0,0,35,0" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox Text="{Binding Name,Mode=TwoWay}"   Width="350" 
+                             hc:InfoElement.Placeholder="请输入指令名称" hc:InfoElement.Title="指令名称:" hc:InfoElement.Necessary="True"
+                             hc:InfoElement.TitlePlacement="Left">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
+                                        <Style.Triggers>
+                                            <!-- 获得焦点时变色 -->
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,27,0">
+                            <TextBox Text="{Binding CodeName,Mode=TwoWay}" Width="340" 
+                             hc:InfoElement.Placeholder="请输入指令码" hc:InfoElement.Title="指令码 :" hc:InfoElement.Necessary="True"
+                             hc:InfoElement.TitlePlacement="Left">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
+                                        <Style.Triggers>
+                                            <!-- 获得焦点时变色 -->
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox> 
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource FormBorderStyle}" HorizontalAlignment="Center" Margin="0,0,230,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0"> 
+                            <TextBlock Text="指令类型 : " FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Center" Style="{DynamicResource CreateWindowStyle}"/>
+                            <TextBlock Width="15"></TextBlock>
+                            <!--<ComboBox ItemsSource="{Binding CodeTypeSource}" SelectedItem="{Binding CodeType}" DisplayMemberPath="Label"
+         Width="350" Style="{StaticResource CustomComboBoxStyle}">
+
+                            </ComboBox>-->
+                            <ComboBox ItemsSource="{Binding CodeTypeSource}"
+DisplayMemberPath="Label"  Foreground="Black" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
+SelectedValue="{Binding CodeType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <Border Grid.Row="1">
+                    <StackPanel Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+                        <!-- 使用样式 -->
+                        <Button Width="80" Height="30" Content="取消" Foreground="{StaticResource ButtonBarIconColor}" Background="{StaticResource GenCancelButtonBackgroundColor}" Command="{Binding CloseCommand}" hc:IconElement.Geometry="{StaticResource CloseGeometry}"/>
+                        <!--<TextBlock Width="10"></TextBlock>
+                <Button Style="{StaticResource ButtonPrimary}" Width="80" Height="30" Content="新增" Command="{Binding AddCommand}" 
+                        hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:IconElement.Width="13"/>-->
+                        <TextBlock Width="10"></TextBlock>
+                        <Button Style="{StaticResource ButtonPrimary}"  Background="{StaticResource ShowPageButtonBackgroundColor}" Width="80" Height="30" Content="确认" Command="{Binding ComfirmCommand}" 
+                        hc:IconElement.Geometry="{StaticResource SaveGeometry}" hc:IconElement.Width="13"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

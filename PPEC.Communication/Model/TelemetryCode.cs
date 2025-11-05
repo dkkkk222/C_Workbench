@@ -31,7 +31,9 @@ namespace PPEC.Communication.Model
         [Column("length", Length = 64)]
         public string Length { get; set; }
 
+        [NotColumn]
         private bool _isChecked = false;
+        [NotColumn]
         public bool IsChecked
         {
             get => _isChecked;

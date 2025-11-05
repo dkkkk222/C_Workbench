@@ -128,6 +128,7 @@ namespace Workbench.Migrations
             //下面是历史记录相关表
             Create.Table("param_dict")
               .WithColumn("param_id").AsInt32().PrimaryKey().Identity()
+              .WithColumn("chip_id").AsString().NotNullable()
               .WithColumn("name").AsString().Nullable()
               .WithColumn("type_code").AsInt32().Nullable();
 
@@ -189,6 +190,7 @@ namespace Workbench.Migrations
             {
                 Insert.IntoTable("param_dict").Row(new
                 {
+                    chip_id = chipId,
                     name= param1.CodeName
                 }); 
                 string telemetryId = Guid.NewGuid().ToString("N");

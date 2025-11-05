@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Workbench.Events;
 using Workbench.Utils;
 using Workbench.ViewModels;
+using Workbench.Views.Telemetry;
 using Workbench.Views.Windows;
 
 namespace Workbench.Views
@@ -183,6 +184,35 @@ namespace Workbench.Views
             
         }
 
+        private void ShowTeleCommand_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            _dialogService.Show(nameof(PassWordView), new DialogParameters(), result =>
+            {
+                if (result.Result == ButtonResult.OK)
+                {
+                    _dialogService.Show(nameof(TelemetryManagerView), new DialogParameters(), result =>
+                    {
+
+                    }, nameof(TeleManagerWindow));
+                }
+            }, nameof(PassWordWindow));
+        }
+        private void ShowTeleCodeCommand_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            _dialogService.Show(nameof(PassWordView), new DialogParameters(), result =>
+            {
+                if (result.Result == ButtonResult.OK)
+                {
+                    _dialogService.Show(nameof(TelemetryMonitManagerView), new DialogParameters(), result =>
+                    {
+
+                    }, nameof(TeleCodeManagerWindow));
+                }
+            }, nameof(PassWordWindow));
+        }
+        
         private void NoTitleBarWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
            

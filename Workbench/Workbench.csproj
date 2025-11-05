@@ -482,6 +482,9 @@
     <Compile Include="ViewModels\PassWordViewModel.cs" />
     <Compile Include="ViewModels\RecentFileViewModel.cs" />
     <Compile Include="ViewModels\RenameViewModel.cs" />
+    <Compile Include="ViewModels\Telemetry\TelemetryAddViewModel.cs" />
+    <Compile Include="ViewModels\Telemetry\TelemetryManagerViewModel.cs" />
+    <Compile Include="ViewModels\Telemetry\TelemetryMonitManagerViewModel.cs" />
     <Compile Include="ViewModels\Telemetry\TelemetryMonitViewModel.cs" />
     <Compile Include="ViewModels\Telemetry\TelemetryViewModel.cs" />
     <Compile Include="Views\ChipManagerView.xaml.cs">
@@ -538,6 +541,15 @@
     <Compile Include="Views\RenameView.xaml.cs">
       <DependentUpon>RenameView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Telemetry\TelemetryAddView.xaml.cs">
+      <DependentUpon>TelemetryAddView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Telemetry\TelemetryManagerView.xaml.cs">
+      <DependentUpon>TelemetryManagerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Telemetry\TelemetryMonitManagerView.xaml.cs">
+      <DependentUpon>TelemetryMonitManagerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Telemetry\TelemetryMonitView.xaml.cs">
       <DependentUpon>TelemetryMonitView.xaml</DependentUpon>
     </Compile>
@@ -563,11 +575,20 @@
     <Compile Include="Views\Windows\RenameWindow.xaml.cs">
       <DependentUpon>RenameWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Windows\ShowAddWindow.xaml.cs">
+      <DependentUpon>ShowAddWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Windows\ShowChartListWindows.xaml.cs">
       <DependentUpon>ShowChartListWindows.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Windows\ShowTableListWindows.xaml.cs">
       <DependentUpon>ShowTableListWindows.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\TeleCodeManagerWindow.xaml.cs">
+      <DependentUpon>TeleCodeManagerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\TeleManagerWindow.xaml.cs">
+      <DependentUpon>TeleManagerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Windows\UserManualWindow.xaml.cs">
       <DependentUpon>UserManualWindow.xaml</DependentUpon>
@@ -588,6 +609,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Telemetry\TelemetryAddView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Telemetry\TelemetryManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Telemetry\TelemetryMonitManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Telemetry\TelemetryMonitView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -604,11 +637,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Windows\ShowAddWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Windows\ShowChartListWindows.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Windows\ShowTableListWindows.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\TeleCodeManagerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\TeleManagerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

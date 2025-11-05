@@ -113,6 +113,16 @@ HorizontalAlignment="Center" MouseLeftButtonDown="SvgViewbox_MouseLeftButtonDown
                                     <TextBlock Text="&#xe625;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
+                            <MenuItem Header="遥控指令管理"  Click="ShowTeleCommand_Click"  Style="{DynamicResource MenuItemStyle}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xe617;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="遥控数据管理"  Click="ShowTeleCodeCommand_Click"  Style="{DynamicResource MenuItemStyle}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xe617;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <!--<MenuItem Header="调试" IsEnabled="{Binding IsConnected}" Style="{DynamicResource MenuItemStyle}">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xe61b;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>
