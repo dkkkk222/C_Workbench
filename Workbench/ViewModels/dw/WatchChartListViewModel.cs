@@ -60,6 +60,82 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref gridColumns, value);
         }
 
+        #region 行列布局
+        // —— 单元格尺寸与间距（用于“等距排列”）
+        private double _gridCellWidth = 420;
+        public double GridCellWidth
+        {
+            get => _gridCellWidth;
+            set => SetProperty(ref _gridCellWidth, Math.Max(50, value));
+        }
+
+        private double _gridCellHeight = 320;
+        public double GridCellHeight
+        {
+            get => _gridCellHeight;
+            set => SetProperty(ref _gridCellHeight, Math.Max(50, value));
+        }
+
+        private double _gridGapX = 16;
+        public double GridGapX
+        {
+            get => _gridGapX;
+            set => SetProperty(ref _gridGapX, Math.Max(0, value));
+        }
+
+        private double _gridGapY = 16;
+        public double GridGapY
+        {
+            get => _gridGapY;
+            set => SetProperty(ref _gridGapY, Math.Max(0, value));
+        }
+
+        // 起始坐标（左上角偏移）
+        private double _gridStartLeft = 8;
+        public double GridStartLeft
+        {
+            get => _gridStartLeft;
+            set => SetProperty(ref _gridStartLeft, value);
+        }
+
+        private double _gridStartTop = 8;
+        public double GridStartTop
+        {
+            get => _gridStartTop;
+            set => SetProperty(ref _gridStartTop, value);
+        }
+
+        // 画布尺寸（你已有）
+        private double _canvasWidth = 5000;
+        public double CanvasWidth
+        {
+            get => _canvasWidth;
+            set => SetProperty(ref _canvasWidth, value);
+        }
+
+        private double _canvasHeight = 3000;
+        public double CanvasHeight
+        {
+            get => _canvasHeight;
+            set => SetProperty(ref _canvasHeight, value);
+        }
+
+        // 是否在修改行列时自动应用布局
+        private bool _autoApplyLayout = true;
+        public bool AutoApplyLayout
+        {
+            get => _autoApplyLayout;
+            set => SetProperty(ref _autoApplyLayout, value);
+        }
+
+        // （可选）是否把控件大小统一为单元格大小
+        private bool _normalizeSizeOnLayout = false;
+        public bool NormalizeSizeOnLayout
+        {
+            get => _normalizeSizeOnLayout;
+            set => SetProperty(ref _normalizeSizeOnLayout, value);
+        }
+        #endregion
         private bool useWrapLayout = false; // false=UniformGrid, true=WrapPanel
         public bool UseWrapLayout
         {
@@ -158,6 +234,52 @@ namespace Workbench.ViewModels.dw
         }
         private void OnChartsChanged(object sender, NotifyCollectionChangedEventArgs e)
         => WatchGroupsView?.Refresh();
+        #endregion
+
+        #region Command
+        public void ApplyGridLayout()
+        {
+            var items = WatchGroups?.ToList();
+            if (items == null || items.Count == 0) return;
+
+            int rows = Math.Max(1, GridRows);
+            int colsMin = Math.Max(1, GridColumns);
+
+            int total = items.Count;
+            // 以行数固定为基准，计算需要的列数
+            int neededCols = (int)Math.Ceiling(total / (double)rows);
+            int cols = Math.Max(colsMin, neededCols);
+
+            double cellW = Math.Max(50, GridCellWidth);
+            double cellH = Math.Max(50, GridCellHeight);
+            double hgap = Math.Max(0, GridGapX);
+            double vgap = Math.Max(0, GridGapY);
+
+            // 可选：统一尺寸
+            if (NormalizeSizeOnLayout)
+            {
+                foreach (var it in items)
+                {
+                    it.ChartWidth = cellW;
+                    it.ChartHeight = cellH;
+                }
+            }
+
+            // 行优先：第 i 个元素 → (row = i % rows, col = i / rows)
+            for (int i = 0; i < total; i++)
+            {
+                int r = i % rows;
+                int c = i / rows;
+
+                var it = items[i];
+                it.Left = GridStartLeft + c * (cellW + hgap);
+                it.Top = GridStartTop + r * (cellH + vgap);
+            }
+
+            // 扩展画布，避免被裁剪
+            CanvasWidth = GridStartLeft + cols * (cellW + hgap) + 200;
+            CanvasHeight = GridStartTop + rows * (cellH + vgap) + 200;
+        }
         #endregion
     }
 }

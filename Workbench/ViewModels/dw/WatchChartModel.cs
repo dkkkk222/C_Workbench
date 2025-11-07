@@ -23,6 +23,24 @@ namespace Workbench.ViewModels.dw
             _dialogService = dialogService;
             ChartName = chartName;
         }
+
+        #region 位置
+        private double _left;      // Canvas.Left
+        private double _top;       // Canvas.Top
+
+        public double Left
+        {
+            get { return _left; }
+            set { SetProperty(ref _left, value); }
+        }
+
+        public double Top
+        {
+            get { return _top; }
+            set { SetProperty(ref _top, value); }
+        }
+
+        #endregion
         private string _id;
         public string Id
         {
