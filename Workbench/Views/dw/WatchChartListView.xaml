@@ -81,6 +81,13 @@
                 <ComboBoxItem Content="下" Tag="{x:Static VerticalAlignment.Bottom}"/>
                 <ComboBoxItem Content="拉伸" Tag="{x:Static VerticalAlignment.Stretch}"/>
             </ComboBox>
+            <Button Style="{StaticResource ButtonPrimary.Small}" Content="应用布局"
+ Background="{DynamicResource GenButtonBackgroundColor}"
+ BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+ hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+ Margin="5,0,0,0"
+ Command="{Binding ApplyLayoutCommand}" />
+            
         </StackPanel>
 
         <!-- 主体列表 -->

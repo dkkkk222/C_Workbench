@@ -4,11 +4,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Workbench.Models.dw;
@@ -62,20 +64,19 @@ namespace Workbench.ViewModels.dw
 
         #region 行列布局
         // —— 单元格尺寸与间距（用于“等距排列”）
-        private double _gridCellWidth = 420;
+        private double _gridCellWidth = 540;
         public double GridCellWidth
         {
             get => _gridCellWidth;
             set => SetProperty(ref _gridCellWidth, Math.Max(50, value));
         }
 
-        private double _gridCellHeight = 320;
+        private double _gridCellHeight = 360;
         public double GridCellHeight
         {
             get => _gridCellHeight;
             set => SetProperty(ref _gridCellHeight, Math.Max(50, value));
         }
-
         private double _gridGapX = 16;
         public double GridGapX
         {
@@ -237,48 +238,143 @@ namespace Workbench.ViewModels.dw
         #endregion
 
         #region Command
+
+        public DelegateCommand ApplyLayoutCommand => new DelegateCommand(() =>
+        {
+            ApplyGridLayout();
+        });
+
+
+        private static bool ShouldLayoutItem(object item)
+        {
+            if (item == null) return false;
+            var t = item.GetType();
+
+            // 1) 明确按你的描述：Header == "未选中" 则跳过
+            var pHeader = t.GetProperty("Header", BindingFlags.Instance | BindingFlags.Public);
+            if (pHeader != null)
+            {
+                var header = pHeader.GetValue(item) as string;
+                if (!string.IsNullOrWhiteSpace(header) && header.Trim() == "未选中")
+                    return false;
+            }
+
+            // 2) 可选：如果你的 ViewModel 还有“是否参与布局”的标记，就顺带支持一下
+            //    （没有的话这段不会生效，不影响）
+            string[] flags = { "IsVisibleForLayout", "IsShown", "IsDisplay", "ShouldLayout", "IsVisible" };
+            foreach (var name in flags)
+            {
+                var p = t.GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
+                if (p != null && p.PropertyType == typeof(bool))
+                {
+                    bool b = (bool)p.GetValue(item);
+                    if (!b) return false;
+                }
+            }
+
+            return true;
+        }
+
         public void ApplyGridLayout()
         {
-            var items = WatchGroups?.ToList();
-            if (items == null || items.Count == 0) return;
+            var all = WatchGroups == null ? null : WatchGroups.ToList();
+            if (all == null || all.Count == 0) return;
+
+            // —— 只拿需要布局的项（过滤掉 Header="未选中" 的那一条）
+            var items = all.Where(ShouldLayoutItem).ToList();
+
+            // 没有要布局的就收个尾
+            if (items.Count == 0)
+            {
+                CanvasWidth = GridStartLeft + 400;
+                CanvasHeight = GridStartTop + 300;
+                return;
+            }
 
             int rows = Math.Max(1, GridRows);
-            int colsMin = Math.Max(1, GridColumns);
-
+            int minCol = Math.Max(1, GridColumns);
             int total = items.Count;
-            // 以行数固定为基准，计算需要的列数
-            int neededCols = (int)Math.Ceiling(total / (double)rows);
-            int cols = Math.Max(colsMin, neededCols);
 
-            double cellW = Math.Max(50, GridCellWidth);
-            double cellH = Math.Max(50, GridCellHeight);
+            // 以“行数”为基准，列数按需扩展（满足你的规则：超出就“往后排”）
+            int cols = Math.Max(minCol, (int)Math.Ceiling(total / (double)rows));
+
+            // 基础参数
+            double cellW = Math.Max(50, GridCellWidth);   // 建议默认 540
+            double cellH = Math.Max(50, GridCellHeight);  // 建议默认 360
             double hgap = Math.Max(0, GridGapX);
             double vgap = Math.Max(0, GridGapY);
+            double startX = GridStartLeft;
+            double startY = GridStartTop;
 
-            // 可选：统一尺寸
+            // —— 计算每列宽/每行高（统一尺寸 or 自适应）
+            var colWidths = new double[cols];
+            var rowHeights = new double[rows];
+
             if (NormalizeSizeOnLayout)
             {
+                for (int c = 0; c < cols; c++) colWidths[c] = cellW;
+                for (int r = 0; r < rows; r++) rowHeights[r] = cellH;
+
                 foreach (var it in items)
                 {
                     it.ChartWidth = cellW;
                     it.ChartHeight = cellH;
                 }
             }
-
-            // 行优先：第 i 个元素 → (row = i % rows, col = i / rows)
-            for (int i = 0; i < total; i++)
+            else
             {
-                int r = i % rows;
-                int c = i / rows;
+                // 给个默认步长，避免 0 参与前缀和
+                for (int c = 0; c < cols; c++) colWidths[c] = cellW;
+                for (int r = 0; r < rows; r++) rowHeights[r] = cellH;
 
-                var it = items[i];
-                it.Left = GridStartLeft + c * (cellW + hgap);
-                it.Top = GridStartTop + r * (cellH + vgap);
+                // 按“列优先”索引统计：每列最大宽、每行最大高（不会互相压叠）
+                for (int i = 0; i < total; i++)
+                {
+                    int c = i / rows; // 列优先：先竖着排满 rows，再到下一列
+                    int r = i % rows;
+
+                    double w = Math.Max(50, items[i].ChartWidth);
+                    double h = Math.Max(50, items[i].ChartHeight);
+                    if (w > colWidths[c]) colWidths[c] = w;
+                    if (h > rowHeights[r]) rowHeights[r] = h;
+                }
             }
 
-            // 扩展画布，避免被裁剪
-            CanvasWidth = GridStartLeft + cols * (cellW + hgap) + 200;
-            CanvasHeight = GridStartTop + rows * (cellH + vgap) + 200;
+            // —— 前缀和：每列的 X 起点、每行的 Y 起点
+            var colX = new double[cols];
+            var rowY = new double[rows];
+            colX[0] = startX;
+            for (int c = 1; c < cols; c++)
+                colX[c] = colX[c - 1] + colWidths[c - 1] + hgap;
+
+            rowY[0] = startY;
+            for (int r = 1; r < rows; r++)
+                rowY[r] = rowY[r - 1] + rowHeights[r - 1] + vgap;
+
+            // —— 放置（列优先，保证左上角先占用；且只放“需要布局”的 items）
+            for (int i = 0; i < total; i++)
+            {
+                int c = i / rows;
+                int r = i % rows;
+                items[i].Left = colX[c];
+                items[i].Top = rowY[r];
+            }
+
+            // —— 防空首格（仅检查“参与布局”的 items）
+            if (cols >= 2)
+            {
+                bool firstColOccupied = items.Any(it => Math.Abs(it.Left - colX[0]) <= 0.5);
+                if (!firstColOccupied)
+                {
+                    double shift = (colX[1] - colX[0]); // 第一列步长 = colWidths[0] + hgap
+                    foreach (var it in items) it.Left -= shift;
+                    for (int c = 0; c < cols; c++) colX[c] -= shift;
+                }
+            }
+
+            // —— 扩展画布（以“参与布局”的末列/末行为准），避免裁剪
+            CanvasWidth = colX[cols - 1] + colWidths[cols - 1] + 200;
+            CanvasHeight = rowY[rows - 1] + rowHeights[rows - 1] + 200;
         }
         #endregion
     }
