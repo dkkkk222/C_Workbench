@@ -756,6 +756,9 @@
     </Resource>
     <Resource Include="Resource\jlism-fmgaz-001.ico" />
     <Resource Include="processor_103541.ico" />
+    <Content Include="dwlog.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resource\Images\SVG\SDPC_LOGO.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
