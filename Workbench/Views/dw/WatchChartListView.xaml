@@ -63,7 +63,7 @@
             </ComboBox>-->
 
             <!-- 卡片在单元格内水平/垂直对齐 -->
-            <TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
+            <!--<TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
             <ComboBox Width="110" Margin="16,0,0,0" Height="30"
           SelectedValue="{Binding ItemHorizontalAlignment, Mode=TwoWay}"
           SelectedValuePath="Tag">
@@ -80,7 +80,7 @@
                 <ComboBoxItem Content="居中" Tag="{x:Static VerticalAlignment.Center}"/>
                 <ComboBoxItem Content="下" Tag="{x:Static VerticalAlignment.Bottom}"/>
                 <ComboBoxItem Content="拉伸" Tag="{x:Static VerticalAlignment.Stretch}"/>
-            </ComboBox>
+            </ComboBox>-->
             <Button Style="{StaticResource ButtonPrimary.Small}" Content="应用布局"
  Background="{DynamicResource GenButtonBackgroundColor}"
  BorderBrush="{DynamicResource GenButtonBackgroundColor}"

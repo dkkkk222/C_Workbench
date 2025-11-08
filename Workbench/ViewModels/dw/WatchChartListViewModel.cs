@@ -55,7 +55,7 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref gridRows, value);
         }
 
-        private int gridColumns = 0; // 0 自动
+        private int gridColumns = 2; // 0 自动
         public int GridColumns
         {
             get => gridColumns;
@@ -231,7 +231,7 @@ namespace Workbench.ViewModels.dw
 
             // 监听集合变化，自动刷新过滤
             WatchViewModel.WatchChartGroups.CollectionChanged += OnChartsChanged;
-           
+            ApplyGridLayout();
         }
         private void OnChartsChanged(object sender, NotifyCollectionChangedEventArgs e)
         => WatchGroupsView?.Refresh();

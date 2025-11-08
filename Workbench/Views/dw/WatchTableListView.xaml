@@ -10,7 +10,8 @@
              xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
              xmlns:cvt="clr-namespace:Workbench.Converters"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:localBehaviors="clr-namespace:Workbench.Models.MoveThumb"
              xmlns:utils="clr-namespace:Workbench.Utils"
              xmlns:controls="clr-namespace:Workbench.Controls;assembly=Workbench.Controls"
              xmlns:controls_Title="clr-namespace:Workbench.Controls.Controls.Title;assembly=Workbench.Controls"
@@ -46,7 +47,7 @@
                      Text="{Binding GridColumns, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" /> 
 
             <!-- 卡片在单元格内水平/垂直对齐 -->
-            <TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
+            <!--<TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
             <ComboBox Width="110" Margin="16,0,0,0" Height="30"
                       SelectedValue="{Binding ItemHorizontalAlignment, Mode=TwoWay}"
                       SelectedValuePath="Tag">
@@ -63,7 +64,13 @@
                 <ComboBoxItem Content="居中" Tag="{x:Static VerticalAlignment.Center}"/>
                 <ComboBoxItem Content="下" Tag="{x:Static VerticalAlignment.Bottom}"/>
                 <ComboBoxItem Content="拉伸" Tag="{x:Static VerticalAlignment.Stretch}"/>
-            </ComboBox>
+            </ComboBox>-->
+            <Button Style="{StaticResource ButtonPrimary.Small}" Content="应用布局"
+Background="{DynamicResource GenButtonBackgroundColor}"
+BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+Margin="5,0,0,0"
+Command="{Binding ApplyLayoutCommand}" />
         </StackPanel>
 
         <!-- 主体列表 -->
@@ -72,131 +79,114 @@
                       VerticalScrollBarVisibility="Auto"
                       CanContentScroll="False">
 
-            <ItemsControl ItemsSource="{Binding WatchGroups, Mode=TwoWay}">
-                <i:Interaction.Behaviors>
-                    <local_Model:DragDropReorderBehavior/>
-                </i:Interaction.Behaviors>
-                <!-- 使用 Style 切换 ItemsPanel（Uniform / Wrap），并显式绑定到 ItemsControl.DataContext -->
-                <ItemsControl.Style>
-                    <Style TargetType="ItemsControl">
-                        <!-- 默认 UniformGrid：行/列可动态绑定 -->
-                        <Setter Property="ItemsPanel">
-                            <Setter.Value>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid
-                                        Rows="{Binding DataContext.GridRows, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        Columns="{Binding DataContext.GridColumns, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
-                                </ItemsPanelTemplate>
-                            </Setter.Value>
-                        </Setter>
+            <ItemsControl ItemsSource="{Binding WatchGroupsView}">
+                <!-- 改为 Canvas 布局，自由定位 -->
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Width="{Binding CanvasWidth, FallbackValue=5000}"
+                    Height="{Binding CanvasHeight, FallbackValue=3000}"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                        <Style.Triggers>
-                            <!-- UseWrapLayout=true 时切换为 WrapPanel -->
-                            <DataTrigger Binding="{Binding DataContext.UseWrapLayout, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
-                                <Setter Property="ItemsPanel">
-                                    <Setter.Value>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel
-                                                Orientation="{Binding DataContext.ItemOrientation, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                ItemWidth="{Binding DataContext.CellWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                ItemHeight="{Binding DataContext.CellHeight, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
-                                        </ItemsPanelTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ItemsControl.Style>
-
-                <!-- 每个 Item 容器的对齐（可选，增强边界情况） -->
+                <!-- 位置尺寸绑定到项 VM -->
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="ContentPresenter">
-                        <Setter Property="HorizontalAlignment"
-                                Value="{Binding DataContext.ItemContainerHorizontalAlignment, ElementName=Root}"/>
-                        <Setter Property="VerticalAlignment"
-                                Value="{Binding DataContext.ItemContainerVerticalAlignment, ElementName=Root}"/>
-                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Canvas.Left" Value="{Binding Left, Mode=TwoWay}"/>
+                        <Setter Property="Canvas.Top"  Value="{Binding Top,  Mode=TwoWay}"/>
+                        <Setter Property="Width"       Value="{Binding TableWidth,  Mode=TwoWay}"/>
+                        <Setter Property="Height"      Value="{Binding TableHeight, Mode=TwoWay}"/>
+                        <Setter Property="SnapsToDevicePixels" Value="True"/>
                     </Style>
                 </ItemsControl.ItemContainerStyle>
 
-                <!-- ★不要再写固定的 ItemsPanelTemplate（否则会覆盖上面的 Style 切换） -->
-
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border x:Name="RootCard"
-                                HorizontalAlignment="{Binding DataContext.ItemHorizontalAlignment, ElementName=Root}"
-                                VerticalAlignment="{Binding DataContext.ItemVerticalAlignment, ElementName=Root}"
-                                Width="{Binding TableWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                MinWidth="540" MinHeight="200"
-                                Height="{Binding TableHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Background="White"
-                                BorderBrush="#DDD" BorderThickness="1" CornerRadius="6"
-                                Padding="8" Margin="8">
+                        <Grid>
+                            <!-- 卡片主体 -->
+                            <Border x:Name="RootCard"
+                        Width="{Binding TableWidth,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Height="{Binding TableHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        MinWidth="540" MinHeight="200"
+                        Background="White"
+                        BorderBrush="#DDD" BorderThickness="1" CornerRadius="6"
+                        Padding="8" Margin="0">
+                                <DockPanel LastChildFill="True">
+                                    <!-- 顶部标题/工具条：在这层叠一个透明Thumb做“拖拽把手” -->
+                                    <Border DockPanel.Dock="Top" Padding="2" Background="Transparent">
+                                        <Grid>
+                                            <!-- 你的原有标题与按钮 -->
+                                            <DockPanel>
+                                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                                    <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0"
+                                                                   StandText="{Binding TableName}"
+                                                                   StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                </StackPanel>
 
-                            <Grid>
-                                <DockPanel LastChildFill="True" Grid.Column="0">
-                                    <Border Style="{StaticResource BorderClip}" Padding="2" Margin="0,0,0,0" DockPanel.Dock="Top" BorderBrush="Transparent" Background="Transparent">
-                                        <DockPanel>
-                                            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0"
-                                                                           StandText="{Binding TableName}"
-                                                                           StandFontSize="{DynamicResource SubHeadFontSize}"/>
-                                            </StackPanel>
-
-                                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
-                                                <TextBox Text="{Binding TableWidth}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽：" Margin="5,0,0,0"
+                                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
+                                                    <TextBox Text="{Binding TableWidth}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽：" Margin="5,0,0,0"
                                                          hc:InfoElement.TitlePlacement="Left" Width="70" />
-                                                <TextBlock Width="10"/>
-                                                <TextBox Text="{Binding TableHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高：" Margin="5,0,0,0"
+                                                    <TextBlock Width="10"/>
+                                                    <TextBox Text="{Binding TableHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高：" Margin="5,0,0,0"
                                                          hc:InfoElement.TitlePlacement="Left" Width="70" />
-                                                <TextBlock Width="10"/>
-                                                <Button Content="设置" Style="{StaticResource ButtonPrimary.Small}"
+                                                    <TextBlock Width="10"/>
+                                                    <Button Content="设置" Style="{StaticResource ButtonPrimary.Small}"
                                                         Background="{DynamicResource GenButtonBackgroundColor}"
                                                         BorderBrush="{DynamicResource GenButtonBackgroundColor}"
                                                         hc:IconElement.Geometry="{StaticResource PenGeometry}"
                                                         Command="{Binding SettingDefaultWHCommand2}"/>
-                                                <TextBlock Width="10"/>
-                                                <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}"
+                                                    <TextBlock Width="10"/>
+                                                    <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}"
                                                         Background="{DynamicResource GenButtonBackgroundColor}"
                                                         BorderBrush="{DynamicResource GenButtonBackgroundColor}"
                                                         hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                         Command="{Binding HistoryDownloadCommand}"/>
-                                                <TextBlock Width="10"/>
-                                                <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
-                                                    <hc:SplitButton.DropDownContent>
-                                                        <ItemsControl ItemsSource="{Binding TableColumns}">
-                                                            <ItemsControl.ItemsPanel>
-                                                                <ItemsPanelTemplate>
-                                                                    <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5"/>
-                                                                </ItemsPanelTemplate>
-                                                            </ItemsControl.ItemsPanel>
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <Border Padding="8,0">
-                                                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                                                            <CheckBox.Style>
-                                                                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                                                                    <Style.Triggers>
-                                                                                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
-                                                                                            <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
-                                                                                        </DataTrigger>
-                                                                                        <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="false">
-                                                                                            <Setter Property="Background" Value="Transparent"/>
-                                                                                        </DataTrigger>
-                                                                                    </Style.Triggers>
-                                                                                </Style>
-                                                                            </CheckBox.Style>
-                                                                        </CheckBox>
-                                                                    </Border>
-                                                                </DataTemplate>
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-                                                    </hc:SplitButton.DropDownContent>
-                                                </hc:SplitButton>
-                                            </StackPanel>
-                                        </DockPanel>
+                                                    <TextBlock Width="10"/>
+                                                    <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault.Small}" HorizontalAlignment="Right">
+                                                        <hc:SplitButton.DropDownContent>
+                                                            <ItemsControl ItemsSource="{Binding TableColumns}">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5"/>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Border Padding="8,0">
+                                                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                                                <CheckBox.Style>
+                                                                                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
+                                                                                                <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                                                            </DataTrigger>
+                                                                                            <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="false">
+                                                                                                <Setter Property="Background" Value="Transparent"/>
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </CheckBox.Style>
+                                                                            </CheckBox>
+                                                                        </Border>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </hc:SplitButton.DropDownContent>
+                                                    </hc:SplitButton>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <!-- 透明移动把手（避免与 DataGrid 的交互冲突） -->
+                                            <Thumb Cursor="SizeAll" Background="Transparent" Margin="0,-10,0,0" BorderThickness="11"
+                                             HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderBrush="Transparent" 
+                                             Panel.ZIndex="10"   Height="20">
+                                                <i:Interaction.Behaviors>
+                                                    <localBehaviors:MoveThumbBehavior LeftPropertyName="Left" TopPropertyName="Top"/>
+                                                </i:Interaction.Behaviors>
+                                            </Thumb>
+                                        </Grid>
                                     </Border>
 
+                                    <!-- 中间 DataGrid：保持你原来的列定义与样式 -->
                                     <DataGrid ItemsSource="{Binding BitFields}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                               CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" RowHeight="40"
                                               Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
@@ -363,8 +353,23 @@
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </DockPanel>
-                            </Grid>
-                        </Border>
+                            </Border>
+
+                            <!-- 右下角改大小把手 -->
+                            <Thumb Width="14" Height="14"
+                       HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                       Margin="0" Cursor="SizeNWSE"
+                       Background="Transparent" BorderBrush="Transparent" BorderThickness="7"
+                       ToolTip="拖拽调整大小" Panel.ZIndex="20">
+                                <i:Interaction.Behaviors>
+                                    <localBehaviors:ResizeThumbBehavior
+                            WidthPropertyName="TableWidth"
+                            HeightPropertyName="TableHeight"
+                            MinWidth="540"
+                            MinHeight="200"/>
+                                </i:Interaction.Behaviors>
+                            </Thumb>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
