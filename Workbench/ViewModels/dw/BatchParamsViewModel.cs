@@ -34,6 +34,39 @@ namespace Workbench.ViewModels.dw
             SequenceList = _projectManager.CurrentProject.Sequences;
             TableColumns = InitTableColumns();
             TableColumnsR = InitTableColumnsR();
+            InitData();
+            InitListen();
+        }
+        public void InitData()
+        {
+            try
+            {
+                SplitterPositionOne = _projectManager.CurrentProject.BathParamGrid.UpGridWidth;
+                SplitterPositionTwo = _projectManager.CurrentProject.BathParamGrid.DownGridWidth;
+                AllTime = _projectManager.CurrentProject.BathParamGrid.AllTime;
+                if (_projectManager.CurrentProject.BathParamGrid.CurrentSequence != null)
+                    CurrentSequence = _projectManager.CurrentProject.BathParamGrid.CurrentSequence;
+                IsConfigPaneOpen = _projectManager.CurrentProject.BathParamGrid.IsConfigPaneOpen;
+                SplitterPositionRight = _projectManager.CurrentProject.BathParamGrid.SplitterPositionRight;
+                SplitterPositionLeft = _projectManager.CurrentProject.BathParamGrid.SplitterPositionLeft;
+            }
+            catch(Exception ex)
+            {
+
+            }
+            
+        }
+        public void InitListen()
+        {
+            _eventAggregator.GetEvent<SaveProjectEvent>().Subscribe(e => {
+                e.BathParamGrid.upGridWidth= SplitterPositionOne;
+                e.BathParamGrid.DownGridWidth = SplitterPositionTwo;
+                e.BathParamGrid.AllTime= AllTime;
+                e.BathParamGrid.CurrentSequence = CurrentSequence;
+                e.BathParamGrid.IsConfigPaneOpen = IsConfigPaneOpen;
+                e.BathParamGrid.SplitterPositionRight = SplitterPositionRight;
+                e.BathParamGrid.SplitterPositionLeft = SplitterPositionLeft;
+            });
         }
         private bool _isLeftOpen=true;
         public bool IsLeftOpen
@@ -56,6 +89,48 @@ namespace Workbench.ViewModels.dw
                 SetProperty(ref _isConfigPaneOpen, value);
             }
         }
+
+        #region 
+        public System.Windows.GridLength splitterPositionOne = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionOne
+        {
+            get => splitterPositionOne;
+            set
+            {
+                SetProperty(ref splitterPositionOne, value);
+            }
+        }
+
+        public System.Windows.GridLength splitterPositionTwo =new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionTwo
+        {
+            get => splitterPositionTwo;
+            set
+            {
+                SetProperty(ref splitterPositionTwo, value);
+            }
+        }
+
+        public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionLeft
+        {
+            get => splitterPositionLeft;
+            set
+            {
+                SetProperty(ref splitterPositionLeft, value);
+            }
+        }
+
+        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionRight
+        {
+            get => splitterPositionRight;
+            set
+            {
+                SetProperty(ref splitterPositionRight, value);
+            }
+        }
+        #endregion
 
         private ObservableCollection<TableColumn> _tableColumns = new ObservableCollection<TableColumn>();
         public ObservableCollection<TableColumn> TableColumns

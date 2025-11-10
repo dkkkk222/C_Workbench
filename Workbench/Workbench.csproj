@@ -405,6 +405,7 @@
     <Compile Include="Events\RefreshRecentFileEvent.cs" />
     <Compile Include="Events\RemovePpecEvent.cs" />
     <Compile Include="Events\RemoveProjectFromSiderEvent.cs" />
+    <Compile Include="Events\SaveProjectEvent.cs" />
     <Compile Include="Events\SerialPortAddRemoveEvent.cs" />
     <Compile Include="Events\ShowHomePageEvent.cs" />
     <Compile Include="Events\TabChangeEvent.cs" />
@@ -431,6 +432,9 @@
     <Compile Include="Models\InitDataStaticService.cs" />
     <Compile Include="Models\MoveThumb\MoveThumbBehavior.cs" />
     <Compile Include="Models\MoveThumb\ResizeThumbBehavior.cs" />
+    <Compile Include="Models\PageModel\BathParamGrid.cs" />
+    <Compile Include="Models\PageModel\SingleParamGridWidthModel.cs" />
+    <Compile Include="Models\PageModel\WatchViewGridWidthModel.cs" />
     <Compile Include="Models\Pages\TreeVeiwModel.cs" />
     <Compile Include="Models\ParameterMonitorService.cs" />
     <Compile Include="Models\PpecProject.cs" />

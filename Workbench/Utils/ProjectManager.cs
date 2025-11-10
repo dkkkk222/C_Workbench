@@ -171,6 +171,7 @@ namespace Workbench.Utils
                 MessageBox.Show("请选择待保存项目", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
+            _eventAggregator.GetEvent<SaveProjectEvent>().Publish(project);
             project.WatchChartGroups = new ObservableCollection<WatchChartModel>(project.WatchChartGroups.Where(m => m.Id!= "placeholder" && m.Header!="未选中"));
             var dirPath = project.Path;
             var fileName = project.Name;

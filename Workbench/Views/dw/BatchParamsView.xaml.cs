@@ -31,11 +31,17 @@ namespace Workbench.Views.dw
     {
         private GridLength _lastRightWidth = new GridLength(1.1, GridUnitType.Star);
         private const double PaneWidth = 324.0;
+
+        public BatchParamsViewModel bpVM;
         public BatchParamsView()
         {
             InitializeComponent();
             Loaded += (s, e) =>
             {
+                if (this.DataContext is BatchParamsViewModel bpm)
+                {
+                    bpVM = bpm;
+                }
                 var vm = DataContext as INotifyPropertyChanged;
                 ApplyInitialWidth();
 
@@ -153,7 +159,7 @@ namespace Workbench.Views.dw
                 {
                     _lastRightWidth = new GridLength(1.1, GridUnitType.Star);
                 }
-                RightCol.Width = _lastRightWidth;
+                RightCol.Width = bpVM.SplitterPositionRight;
                 SepCol.Width = new GridLength(10); // 分隔列
             }
             else
@@ -173,6 +179,7 @@ namespace Workbench.Views.dw
             if (RightCol != null && RightCol.Width.Value > 0)
             {
                 _lastRightWidth = RightCol.Width; // 很可能是像素宽度
+                bpVM.SplitterPositionRight = _lastRightWidth;
             }
         }
         #endregion

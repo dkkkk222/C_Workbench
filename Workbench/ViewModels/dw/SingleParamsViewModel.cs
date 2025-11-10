@@ -38,8 +38,55 @@ namespace Workbench.ViewModels.dw
             _projectManager = projectManager;
             _eventAggregator = eventAggregator;
             ReadWriteHistory = _projectManager.CurrentProject.ReadWriteHistory;
+            InitData();
+            InitListen();
+        }
+        public void InitData()
+        {
+            try
+            {
+                SplitterPositionOne = _projectManager.CurrentProject.SingleParamGrid.SplitterPositionOne;
+                SplitterPositionTwo = _projectManager.CurrentProject.SingleParamGrid.SplitterPositionTwo;
+                SplitterPositionThree = _projectManager.CurrentProject.SingleParamGrid.SplitterPositionThree;
+                 
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+        public void InitListen()
+        {
+            _eventAggregator.GetEvent<SaveProjectEvent>().Subscribe(e => {
+                e.SingleParamGrid.SplitterPositionOne = SplitterPositionOne;
+                e.SingleParamGrid.SplitterPositionTwo = SplitterPositionTwo;
+                e.SingleParamGrid.SplitterPositionThree = SplitterPositionThree; 
+            });
         }
 
+        #region SpliteGridWidth
+        public System.Windows.GridLength splitterPositionOne = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionOne
+        {
+            get => splitterPositionOne;
+            set => SetProperty(ref splitterPositionOne, value);
+        }
+
+        public System.Windows.GridLength splitterPositionTwo = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionTwo
+        {
+            get => splitterPositionTwo;
+            set => SetProperty(ref splitterPositionTwo, value);
+        }
+
+        public System.Windows.GridLength splitterPositionThree = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionThree
+        {
+            get => splitterPositionThree;
+            set => SetProperty(ref splitterPositionThree, value);
+        }
+        #endregion
         private bool _isLeftOpen= true;
         public bool IsLeftOpen
         {

@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Prism.Mvvm;
+using Workbench.Models.dw;
+
+namespace Workbench.Models.PageModel
+{
+    public class BathParamGridWidthModel:BindableBase
+    {
+        private string _AllTime = "50";
+        public string AllTime
+        {
+            get => _AllTime;
+            set => SetProperty(ref _AllTime, value);
+        }
+
+        private Sequence _currentSequence;
+        public Sequence CurrentSequence
+        {
+            get => _currentSequence;
+            set => SetProperty(ref _currentSequence, value);
+        }
+
+        private bool _isConfigPaneOpen = false;               // 默认展开
+        public bool IsConfigPaneOpen
+        {
+            get => _isConfigPaneOpen;
+            set
+            {
+                SetProperty(ref _isConfigPaneOpen, value);
+            }
+        }
+
+        public System.Windows.GridLength upGridWidth = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength UpGridWidth 
+        {
+            get=> upGridWidth;
+            set=>SetProperty(ref upGridWidth,value);
+        }
+
+        public System.Windows.GridLength downGridWidth = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength DownGridWidth
+        {
+            get => downGridWidth;
+            set => SetProperty(ref downGridWidth, value);
+        }
+
+        public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionLeft
+        {
+            get => splitterPositionLeft;
+            set => SetProperty(ref splitterPositionLeft, value);
+        }
+
+        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionRight
+        {
+            get => splitterPositionRight;
+            set => SetProperty(ref splitterPositionRight, value);
+        }
+    }
+}

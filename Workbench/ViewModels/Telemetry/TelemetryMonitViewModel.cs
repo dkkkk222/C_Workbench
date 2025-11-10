@@ -197,15 +197,22 @@ namespace Workbench.ViewModels.Telemetry
         {
             new OptionModel()
         {
-            Label = "1000ms", Value = 0
+            Label = "100ms", Value = 0
         },
             new OptionModel()
         {
-            Label = "1500ms", Value = 1
+            Label = "500ms", Value = 1
         },
             new OptionModel()
         {
-            Label = "2000ms", Value = 2
+            Label = "1000ms", Value = 2
+        }, new OptionModel()
+        {
+            Label = "1500ms", Value = 3
+        },
+            new OptionModel()
+        {
+            Label = "2000ms", Value = 4
         },
         };
         public ObservableCollection<OptionModel> CycleSource
@@ -229,12 +236,18 @@ namespace Workbench.ViewModels.Telemetry
                     switch(value.Value)
                     {
                         case 0:
-                            ms = 1000;
+                            ms = 100;
                             break;
                         case 1:
-                            ms = 1500;
+                            ms = 500;
                             break;
                         case 2:
+                            ms = 1000;
+                            break;
+                        case 3:
+                            ms = 1500;
+                            break;
+                        case 4:
                             ms = 2000;
                             break;
                     }

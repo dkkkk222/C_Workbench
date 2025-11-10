@@ -153,7 +153,7 @@ Command="{Binding StopAllCommand}"/>
            SelectedValue="{Binding DataContext.SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource AncestorType=UserControl}}">
 
                         </ComboBox>
-                        <TextBlock VerticalAlignment="Center">遥控标识:</TextBlock>
+                        <TextBlock VerticalAlignment="Center">遥控查询标识:</TextBlock>
                         <TextBox Text="{Binding ProjectTag,Mode=TwoWay}"   Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="50" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">

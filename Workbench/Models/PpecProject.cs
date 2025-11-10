@@ -17,6 +17,7 @@ using Workbench.Communication;
 using Workbench.Db;
 using Workbench.Db.Tables;
 using Workbench.Models.dw;
+using Workbench.Models.PageModel;
 using Workbench.Utils;
 using Workbench.ViewModels.dw;
 
@@ -643,6 +644,22 @@ namespace Workbench.Models
         {
             ActiveSession?.Dispose();
             ActiveSession = null;
+        }
+        #endregion
+
+        #region 界面UI保存
+        public BathParamGridWidthModel bathParamGrid = new BathParamGridWidthModel();
+        public BathParamGridWidthModel BathParamGrid
+        {
+            get => bathParamGrid;
+            set => SetProperty(ref bathParamGrid, value);
+        }
+
+        public SingleParamGridWidthModel singleParamGrid = new SingleParamGridWidthModel();
+        public SingleParamGridWidthModel SingleParamGrid
+        {
+            get => singleParamGrid;
+            set => SetProperty(ref singleParamGrid, value);
         }
         #endregion
     }

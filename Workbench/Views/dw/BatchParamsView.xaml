@@ -238,9 +238,9 @@
         <Border Grid.Column="1" Padding="2,8,28,8">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/> 
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="{Binding SplitterPositionOne,Mode=TwoWay}"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="{Binding SplitterPositionTwo, Mode=TwoWay}"/>
                 </Grid.RowDefinitions>
                 <Border>
                     <Grid>
@@ -540,7 +540,7 @@ CommandParameter="{Binding}"/>
                 <Border Grid.Row="2">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="{Binding SplitterPositionLeft,Mode=TwoWay}"></ColumnDefinition>
                             <ColumnDefinition x:Name="SepCol" Width="0"/>
                             <!-- 分隔列 -->
                             <ColumnDefinition x:Name="RightCol" Width="0"/>
