@@ -301,7 +301,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTemplateColumn Header="管理" Width="320" >
+                            <DataGridTemplateColumn Header="管理" Width="400" >
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
@@ -316,6 +316,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                 <!--<Button Content="修改" Style="{StaticResource ButtonInfo.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}"/>-->
                                                 <Button Content="删除" Style="{StaticResource ButtonDanger.Small}" hc:IconElement.Geometry="{StaticResource TrashGeometry}" Click="Delete_Click"/>
                                                 <Button Content="关联参数" Style="{StaticResource ButtonDanger.Small}" Background="{DynamicResource ShowPageButtonBackgroundColor}" BorderBrush="{DynamicResource ShowPageButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource ReadGeometry}" Click="Rebuild_Click"/>
+                                                <Button Content="关联遥测" Style="{StaticResource ButtonDanger.Small}" Background="LightSkyBlue" BorderBrush="LightSkyBlue" hc:IconElement.Geometry="{StaticResource ReadGeometry}" Click="RebuildTele_Click"/>
+
                                             </hc:UniformSpacingPanel>
                                             
                                         </StackPanel>

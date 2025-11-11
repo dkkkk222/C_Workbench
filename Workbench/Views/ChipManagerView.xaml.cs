@@ -271,8 +271,20 @@ namespace Workbench.Views
             {
                 await vm.RebuildChipMetadataAsync(chip.Id);
                 MessageBox.Show("关联参数完成!");
+            }              
+        }
+        private async void RebuildTele_Click(object sender, RoutedEventArgs e)
+        {
+            var tb = sender as FrameworkElement;
+            var chip = tb?.DataContext as Chip;
+            if (chip == null) return;
+            var result = MessageBox.Show($"确定要为芯片{chip.Name}添加遥测参数吗？该操作会重新创建遥测基础数据，请慎重操作！", "确认关联",
+                               MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                await vm.ConnectTeleChip(chip.Id);
+                MessageBox.Show("关联遥测参数完成!");
             }
-              
         }
     }
 }

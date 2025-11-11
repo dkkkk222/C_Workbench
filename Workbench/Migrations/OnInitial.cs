@@ -294,7 +294,7 @@ namespace Workbench.Migrations
         /// <summary>
         /// 遥测
         /// </summary>
-        public (List<TelemetryMeta>, (List<TelemetryMonitAnalysisMeta>, List<PPEC.Communication.Model.TelemetryTag>)) TelemetryParse()
+        public (List<TelemetryMeta>, (List<TelemetryMonitAnalysisMeta>, List<TelemetryTag>)) TelemetryParse()
         {
             string SDPCfileNameTelemetryData = "SDPC_B10遥测数据表.xlsx";//数据解析
             string SDPCfileNameCommand = "SDPC_B10遥控指令表.xlsx";//遥测指令

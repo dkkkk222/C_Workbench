@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,8 +18,10 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using SixLabors.ImageSharp.ColorSpaces;
 using Workbench.Db;
+using Workbench.Db.IService;
 using Workbench.Db.Tables;
 using Workbench.Utils;
+using static LinqToDB.Reflection.Methods.LinqToDB;
 
 namespace Workbench.ViewModels
 {
@@ -27,12 +30,13 @@ namespace Workbench.ViewModels
         private static readonly ILog _log = LogManager.GetLogger(typeof(ChipManagerViewModel));
         private ProjectManager _projectManager;
         public MainServices mainService { get; set; }
-
+        private ICpService _cpService;
         private readonly IMapper _mapper;
-        public ChipManagerViewModel(FileHandler fileHandler, IContainerProvider containerProvider, IMapper mapper,ProjectManager projectManager)
+        public ChipManagerViewModel(FileHandler fileHandler, IContainerProvider containerProvider, IMapper mapper, ProjectManager projectManager, ICpService cpService)
         {
             _projectManager = projectManager;
             _mapper = mapper;
+            _cpService = cpService;
         }
         public ObservableCollection<Chip> _chips = new ObservableCollection<Chip>();
         public ObservableCollection<Chip> Chips
@@ -119,7 +123,7 @@ namespace Workbench.ViewModels
                 ClearForm();
                 await InitChips();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("新建类型异常，详情请查看日志", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _log.Error(ex);
@@ -128,7 +132,7 @@ namespace Workbench.ViewModels
             {
                 Loading = false;
             }
-            
+
         });
 
         private async Task HandleChipAsync()
@@ -144,7 +148,7 @@ namespace Workbench.ViewModels
                     Name = ChipName,
                     IsDeleted = "A",
                     FileName = FilePath,
-                    SDPCfileName= ParseFilePath,
+                    SDPCfileName = ParseFilePath,
                     Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                 };
                 using (var db = new DbContext())
@@ -160,10 +164,6 @@ namespace Workbench.ViewModels
                         register.ChipId = chipId;
                         registers.Add(register);
 
-                        if(register.AddressDec==108)
-                        {
-                            string a = "";
-                        }
                         var registerBits = new List<RegisterBit>();
                         //bit field
                         foreach (var bf in meta.AddrInfo.BitFields)
@@ -194,6 +194,77 @@ namespace Workbench.ViewModels
 
                     await db.BulkCopyAsync(registers);
                 }
+                var ListTeleData = TelemetryParse();
+                using (var db = new DbContext())
+                {
+                    List<TelemetryCode> listCode = new List<TelemetryCode>();
+                    foreach (var param1 in ListTeleData.Item1)
+                    {
+                        string telemetryId = Guid.NewGuid().ToString("N");
+                        var inTelCode = new TelemetryCode()
+                        {
+                            Id = telemetryId,
+                            ChipId = chipId,
+                            Name = param1.CommandName,
+                            Code = param1.CommandCode,
+                            Type = ((int)param1.CommandType).ToString(),
+                            Length = param1.CommandLength.ToString()
+                        };
+                        listCode.Add(inTelCode);
+                    }
+                    await db.BulkCopyAsync(listCode);
+
+                    List<ParamDict> listParams = new List<ParamDict>();
+                    List<TelemetryMonit> lisstTeleMon = new List<TelemetryMonit>();
+                    foreach (var param1 in ListTeleData.Item2.Item1)
+                    {
+                        var inTelParam = new ParamDict()
+                        {
+                            ChipId = chipId,
+                            Name = param1.CodeName,
+                            TypeCode = 0
+                        };
+                        listParams.Add(inTelParam);
+                        string telemetryId = Guid.NewGuid().ToString("N");
+                        var inTeleMon = new TelemetryMonit()
+                        {
+                            Id = telemetryId,
+                            ChipId = chipId,
+                            Name = param1.CodeName,
+                            ByteName = param1.DateLocation,
+                            StartByte = param1.StartLocaltion,
+                            EndByte = param1.EndLocaltion,
+                            ByteLen = param1.LocaltionLen,
+                            BitName = param1.BitName,
+                            StartBit = param1.StartBit,
+                            EndBit = param1.EndBit,
+                            BitLen = param1.BitLength,
+                            Type = (int)param1.FormParam.Kind,
+                            ParamA = param1.FormParam.A.ToString(),
+                            ParamB = param1.FormParam.B.ToString(),
+                            ParamC = ((int)param1.FormParam.Kind).ToString(),
+                            ParamSign = param1.FormParam.Sign.ToString(),
+                            FormulaShow = param1.ShowFormParam,
+                            Unit = param1.Unit
+                        };
+                        lisstTeleMon.Add(inTeleMon);
+                    }
+                    await db.BulkCopyAsync(listParams);
+                    await db.BulkCopyAsync(lisstTeleMon);
+                    List<TelemetryTagTable> ListTelemTag = new List<TelemetryTagTable>();
+                    foreach (var param1 in ListTeleData.Item2.Item2)
+                    {
+                        string tagId = Guid.NewGuid().ToString("N");
+                        ListTelemTag.Add(new TelemetryTagTable()
+                        {
+                            Id = tagId,
+                            ChipId = chipId,
+                            Name = param1.Name
+                        });
+                    }
+                    await db.BulkCopyAsync(ListTelemTag);
+                }
+
 
                 MessageBox.Show("添加芯片成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -204,7 +275,17 @@ namespace Workbench.ViewModels
                 Loading = false;
             }
         }
-
+        public (List<TelemetryMeta>, (List<TelemetryMonitAnalysisMeta>, List<TelemetryTag>)) TelemetryParse()
+        {
+            string SDPCfileNameTelemetryData = "SDPC_B10遥测数据表.xlsx";//数据解析
+            string SDPCfileNameCommand = "SDPC_B10遥控指令表.xlsx";//遥测指令
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameCommand);
+            string filePath1 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameTelemetryData);
+            RegisterExcelResolve registerExcelResolve = new RegisterExcelResolve();
+            var telemetryCommand = registerExcelResolve.Telemetry(filePath);
+            var telemetryMonit = registerExcelResolve.TelemetryMonit(filePath1);
+            return (telemetryCommand, telemetryMonit);
+        }
         public async Task RebuildChipMetadataAsync(string chipId)
         {
             List<RegisterMeta> excelData = _projectManager.CurrentProject.Chip.ChipRegisterInfo;
@@ -266,6 +347,86 @@ namespace Workbench.ViewModels
             await db.BulkCopyAsync(registerBitOptions);
 
             tr.Commit();
+        }
+
+        public async Task ConnectTeleChip(string chipId)
+        {
+            try
+            {
+                var ListTeleData = TelemetryParse();
+
+                List<TelemetryCode> listCode = new List<TelemetryCode>();
+                foreach (var param1 in ListTeleData.Item1)
+                {
+                    string telemetryId = Guid.NewGuid().ToString("N");
+                    var inTelCode = new TelemetryCode()
+                    {
+                        Id = telemetryId,
+                        ChipId = chipId,
+                        Name = param1.CommandName,
+                        Code = param1.CommandCode,
+                        Type = ((int)param1.CommandType).ToString(),
+                        Length = param1.CommandLength.ToString()
+                    };
+                    listCode.Add(inTelCode);
+                }
+                await _cpService.SaveTeleListAsync(chipId, listCode);
+                List<ParamDict> listParams = new List<ParamDict>();
+                List<TelemetryMonit> lisstTeleMon = new List<TelemetryMonit>();
+                foreach (var param1 in ListTeleData.Item2.Item1)
+                {
+                    var inTelParam = new ParamDict()
+                    {
+                        ChipId = chipId,
+                        Name = param1.CodeName,
+                        TypeCode = 0
+                    };
+                    listParams.Add(inTelParam);
+                    string telemetryId = Guid.NewGuid().ToString("N");
+                    var inTeleMon = new TelemetryMonit()
+                    {
+                        Id = telemetryId,
+                        ChipId = chipId,
+                        Name = param1.CodeName,
+                        ByteName = param1.DateLocation,
+                        StartByte = param1.StartLocaltion,
+                        EndByte = param1.EndLocaltion,
+                        ByteLen = param1.LocaltionLen,
+                        BitName = param1.BitName,
+                        StartBit = param1.StartBit,
+                        EndBit = param1.EndBit,
+                        BitLen = param1.BitLength,
+                        Type = (int)param1.FormParam.Kind,
+                        ParamA = param1.FormParam.A.ToString(),
+                        ParamB = param1.FormParam.B.ToString(),
+                        ParamC = ((int)param1.FormParam.Kind).ToString(),
+                        ParamSign = param1.FormParam.Sign.ToString(),
+                        FormulaShow = param1.ShowFormParam,
+                        Unit = param1.Unit
+                    };
+                    lisstTeleMon.Add(inTeleMon);
+                }
+                List<TelemetryTagTable> ListTelemTag = new List<TelemetryTagTable>();
+                foreach (var param1 in ListTeleData.Item2.Item2)
+                {
+                    string tagId = Guid.NewGuid().ToString("N");
+                    ListTelemTag.Add(new TelemetryTagTable()
+                    {
+                        Id = tagId,
+                        ChipId = chipId,
+                        Name = param1.Name
+                    });
+                }
+
+                await _cpService.SaveParamsListAsync(chipId, listParams);
+                await _cpService.SaveTeleMonListAsync(chipId, lisstTeleMon);
+                await _cpService.SaveTeleTagListAsync(chipId, ListTelemTag);
+
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
         public async Task UpdateChipDoc(Chip e)
         {
