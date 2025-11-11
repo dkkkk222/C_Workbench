@@ -90,9 +90,9 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding SplitterPositionLeft,Mode=TwoWay}"></ColumnDefinition>
             <ColumnDefinition Width="10"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding SplitterPositionRight,Mode=TwoWay}"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <DockPanel LastChildFill="True" Grid.Column="0" Grid.Row="1">
             <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">

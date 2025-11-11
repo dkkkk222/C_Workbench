@@ -38,9 +38,79 @@ namespace Workbench.ViewModels.Telemetry
             SequenceList = _projectManager.CurrentProject.TeleMetrySequences;
             ReadWriteHistory = _projectManager.CurrentProject.TeleMetryReadWriteHistory;
             GetTeleInit();
+            InitData();
+            InitListen();
+        }
+
+        public void InitData()
+        {
+            try
+            {
+                UpGridWidth = _projectManager.CurrentProject.TelemetryViewGrid.UpGridWidth;
+                DownGridWidth = _projectManager.CurrentProject.TelemetryViewGrid.DownGridWidth;
+                SplitterPositionLeft = _projectManager.CurrentProject.TelemetryViewGrid.SplitterPositionLeft;
+                SplitterPositionRight = _projectManager.CurrentProject.TelemetryViewGrid.SplitterPositionRight;
+
+                AllTime = _projectManager.CurrentProject.TelemetryViewGrid.AllTime;
+                if (_projectManager.CurrentProject.TelemetryViewGrid.CurrentSequence != null)
+                    CurrentSequence = _projectManager.CurrentProject.TelemetryViewGrid.CurrentSequence;
+              
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+        public void InitListen()
+        {
+            _eventAggregator.GetEvent<SaveProjectEvent>().Subscribe(e => {
+                e.TelemetryViewGrid.upGridWidth = upGridWidth;
+                e.TelemetryViewGrid.DownGridWidth = DownGridWidth;
+                e.TelemetryViewGrid.AllTime = AllTime;
+                e.TelemetryViewGrid.CurrentSequence = CurrentSequence;
+                e.TelemetryViewGrid.SplitterPositionLeft = SplitterPositionLeft;
+                e.TelemetryViewGrid.SplitterPositionRight = SplitterPositionRight;
+            });
         }
 
         #region Property
+        private string _AllTime = "50";
+        public string AllTime
+        {
+            get => _AllTime;
+            set => SetProperty(ref _AllTime, value);
+        }
+
+        public System.Windows.GridLength upGridWidth = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength UpGridWidth
+        {
+            get => upGridWidth;
+            set => SetProperty(ref upGridWidth, value);
+        }
+
+        public System.Windows.GridLength downGridWidth = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength DownGridWidth
+        {
+            get => downGridWidth;
+            set => SetProperty(ref downGridWidth, value);
+        }
+
+        public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionLeft
+        {
+            get => splitterPositionLeft;
+            set => SetProperty(ref splitterPositionLeft, value);
+        }
+
+        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionRight
+        {
+            get => splitterPositionRight;
+            set => SetProperty(ref splitterPositionRight, value);
+        }
+
         private ObservableCollection<CategoryTree> _singleParamTrees = new ObservableCollection<CategoryTree>();
         public ObservableCollection<CategoryTree> SingleParamTrees
         {

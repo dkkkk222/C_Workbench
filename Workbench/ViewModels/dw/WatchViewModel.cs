@@ -154,7 +154,70 @@ namespace Workbench.ViewModels.dw
             ReLoadChartTable();
             InitOrderAndSort();
             SelectTab = WatchGroups[0];
+            InitProjectData();
+            InitListen();
         }
+
+        public void InitProjectData()
+        {
+            try
+            {
+                SplitterPositionUp = _projectManager.CurrentProject.WatchViewGrid.SplitterPositionUp;
+                SplitterPositionDown = _projectManager.CurrentProject.WatchViewGrid.SplitterPositionDown;
+                SplitterPositionLeft = _projectManager.CurrentProject.WatchViewGrid.SplitterPositionLeft;
+                SplitterPositionRight = _projectManager.CurrentProject.WatchViewGrid.SplitterPositionRight;
+
+                AllTime = _projectManager.CurrentProject.WatchViewGrid.AllTime;
+                SelectRecordTimeType = _projectManager.CurrentProject.WatchViewGrid.SelectRecordTimeType;
+                SelectTab = _projectManager.CurrentProject.WatchViewGrid.SelectTab;
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        public void InitListen()
+        {
+            _eventAggregator.GetEvent<SaveProjectEvent>().Subscribe(e => {
+                e.WatchViewGrid.SplitterPositionUp = SplitterPositionUp;
+                e.WatchViewGrid.SplitterPositionDown = SplitterPositionDown;
+                e.WatchViewGrid.SplitterPositionLeft = SplitterPositionLeft;
+                e.WatchViewGrid.SplitterPositionRight = SplitterPositionRight;
+
+                e.WatchViewGrid.AllTime = AllTime;
+                e.WatchViewGrid.SelectRecordTimeType = SelectRecordTimeType;
+                e.WatchViewGrid.SelectTab = SelectTab;
+            });
+        }
+
+        public System.Windows.GridLength splitterPositionUp = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionUp
+        {
+            get => splitterPositionUp;
+            set => SetProperty(ref splitterPositionUp, value);
+        }
+
+        public System.Windows.GridLength splitterPositionDown = new System.Windows.GridLength(2, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionDown
+        {
+            get => splitterPositionDown;
+            set => SetProperty(ref splitterPositionDown, value);
+        }
+
+        public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionLeft
+        {
+            get => splitterPositionLeft;
+            set => SetProperty(ref splitterPositionLeft, value);
+        }
+
+        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.3, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionRight
+        {
+            get => splitterPositionRight;
+            set => SetProperty(ref splitterPositionRight, value);
+        }
+
         private static WatchChartModel CreatePlaceholder() => new WatchChartModel("监测图")
         {
             Id = "placeholder",
@@ -277,7 +340,7 @@ namespace Workbench.ViewModels.dw
             get => _RecordTimeSource;
             set => SetProperty(ref _RecordTimeSource, value);
         }
-        private string _SelectRecordTimeType;
+        private string _SelectRecordTimeType="0";
         public string SelectRecordTimeType
         {
             get => _SelectRecordTimeType;

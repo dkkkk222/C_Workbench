@@ -434,6 +434,8 @@
     <Compile Include="Models\MoveThumb\ResizeThumbBehavior.cs" />
     <Compile Include="Models\PageModel\BathParamGrid.cs" />
     <Compile Include="Models\PageModel\SingleParamGridWidthModel.cs" />
+    <Compile Include="Models\PageModel\TelemetryGridWidthModel.cs" />
+    <Compile Include="Models\PageModel\TelemetryMonitGridWidthModel.cs" />
     <Compile Include="Models\PageModel\WatchViewGridWidthModel.cs" />
     <Compile Include="Models\Pages\TreeVeiwModel.cs" />
     <Compile Include="Models\ParameterMonitorService.cs" />

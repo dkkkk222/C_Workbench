@@ -52,7 +52,55 @@ namespace Workbench.ViewModels.Telemetry
             
             EventListener();
             SelectedCycle = CycleSource[0];
+            InitData();
+            InitListen();
         }
+
+        public void InitData()
+        {
+            try
+            {
+                if(_projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle!=null)
+                {
+                    CycleSource.Where(x => x.Label == _projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle.Label).FirstOrDefault();
+                }
+                ProjectTag = _projectManager.CurrentProject.TelemetryMonitViewGrid.ProjectTag;
+                SplitterPositionLeft = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionLeft;
+                SplitterPositionRight = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionRight;
+
+              
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+        public void InitListen()
+        {
+            _eventAggregator.GetEvent<SaveProjectEvent>().Subscribe(e => {
+
+                e.TelemetryMonitViewGrid.ProjectTag = ProjectTag;
+                e.TelemetryMonitViewGrid.SelectedCycle = SelectedCycle;
+                e.TelemetryMonitViewGrid.SplitterPositionLeft = SplitterPositionLeft;
+                e.TelemetryMonitViewGrid.SplitterPositionRight = SplitterPositionRight;
+            });
+        }
+        public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionLeft
+        {
+            get => splitterPositionLeft;
+            set => SetProperty(ref splitterPositionLeft, value);
+        }
+
+        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionRight
+        {
+            get => splitterPositionRight;
+            set => SetProperty(ref splitterPositionRight, value);
+        }
+
         private int _busy2;
         private void ChartDataTimer_Tick(object sender, System.Timers.ElapsedEventArgs e)
         {

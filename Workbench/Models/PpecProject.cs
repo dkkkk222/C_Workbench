@@ -661,6 +661,27 @@ namespace Workbench.Models
             get => singleParamGrid;
             set => SetProperty(ref singleParamGrid, value);
         }
+
+        public WatchViewGridWidthModel watchViewGrid = new WatchViewGridWidthModel();
+        public WatchViewGridWidthModel WatchViewGrid
+        {
+            get => watchViewGrid;
+            set => SetProperty(ref watchViewGrid, value);
+        }
+
+        public TelemetryGridWidthModel telemetryViewGrid = new TelemetryGridWidthModel();
+        public TelemetryGridWidthModel TelemetryViewGrid
+        {
+            get => telemetryViewGrid;
+            set => SetProperty(ref telemetryViewGrid, value);
+        }
+
+        public TelemetryMonitGridWidthModel telemetryMonitViewGrid = new TelemetryMonitGridWidthModel();
+        public TelemetryMonitGridWidthModel TelemetryMonitViewGrid
+        {
+            get => telemetryMonitViewGrid;
+            set => SetProperty(ref telemetryMonitViewGrid, value);
+        }
         #endregion
     }
 }
