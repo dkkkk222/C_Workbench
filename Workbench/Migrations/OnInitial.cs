@@ -225,16 +225,16 @@ namespace Workbench.Migrations
                     unit= param1.Unit,
                 });
             }
-            foreach (var param1 in ListData.Item2.Item2)
-            {
-                string tagId = Guid.NewGuid().ToString("N");
-                Insert.IntoTable("t_TelemetryTag").Row(new
-                {
-                    id = tagId,
-                    chip_id = chipId,
-                    name = param1.Name
-                });
-            }
+            //foreach (var param1 in ListData.Item2.Item2)
+            //{
+            //    string tagId = Guid.NewGuid().ToString("N");
+            //    Insert.IntoTable("t_TelemetryTag").Row(new
+            //    {
+            //        id = tagId,
+            //        chip_id = chipId,
+            //        name = param1.Name
+            //    });
+            //}
             foreach (var meta in excelData)
             {
                 string registerId = Guid.NewGuid().ToString("N");

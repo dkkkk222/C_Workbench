@@ -132,19 +132,19 @@ namespace Workbench.ViewModels.Telemetry
                         Unit = param1.Unit,
                     });
                 }
-                foreach (var param1 in telemetryMonit.Item2)
-                {
-                    string tagId = Guid.NewGuid().ToString("N");
-                    ListTelemTag.Add(new TelemetryTagTable()
-                    {
-                        Id= tagId,
-                        ChipId= _projectManager.CurrentProject.Chip.ChipId,
-                        Name=param1.Name
-                    });
-                }
+                //foreach (var param1 in telemetryMonit.Item2)
+                //{
+                //    string tagId = Guid.NewGuid().ToString("N");
+                //    ListTelemTag.Add(new TelemetryTagTable()
+                //    {
+                //        Id= tagId,
+                //        ChipId= _projectManager.CurrentProject.Chip.ChipId,
+                //        Name=param1.Name
+                //    });
+                //}
                 await _cpService.SaveParamsListAsync(_projectManager.CurrentProject.Chip.ChipId, ListParmDic);
                 await _cpService.SaveTeleMonListAsync(_projectManager.CurrentProject.Chip.ChipId, ListTelemMon);
-                await _cpService.SaveTeleTagListAsync(_projectManager.CurrentProject.Chip.ChipId, ListTelemTag);
+                //await _cpService.SaveTeleTagListAsync(_projectManager.CurrentProject.Chip.ChipId, ListTelemTag);
                 _eventAggregator.GetEvent<TelemetryImportEvent>().Publish(_projectManager.CurrentProject);
                 MessageBox.Show("遥控指令导入完成!");
             }

@@ -444,6 +444,19 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
 
+                                        <DataGridTemplateColumn Header="下发" Width="Auto" MinWidth="90">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Style="{StaticResource ButtonInfo.Small}" VerticalAlignment="Center"
+                              Content="下发"
+                              Command="{Binding DataContext.SendSignCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                              CommandParameter="{Binding}"
+                              HorizontalAlignment="Left" Background="{DynamicResource GenButtonBackgroundColor}"
+                              BorderBrush="{DynamicResource GenButtonBackgroundColor}"
+                              hc:IconElement.Geometry="{StaticResource PushGeometry}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
                                         <DataGridTemplateColumn Width="Auto" MinWidth="50">
                                             <DataGridTemplateColumn.Header>
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">

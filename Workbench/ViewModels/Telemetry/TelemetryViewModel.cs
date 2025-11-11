@@ -245,6 +245,20 @@ namespace Workbench.ViewModels.Telemetry
             });
         }));
 
+        public DelegateCommand<TelemetryCode> SendSignCommand => new DelegateCommand<TelemetryCode>(async(e) =>
+        {
+            if (!_projectManager.CurrentProject.IsConnecting)
+            {
+                MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            await Task.Run(async () =>
+            {
+                var tempSequence=new Sequence();
+                tempSequence.TelemetryItems.Add(e);
+                await SendSequence(tempSequence);
+            });
+        });
         private DelegateCommand _batchSendCommand;
         public DelegateCommand BatchSendCommand => _batchSendCommand ?? (_batchSendCommand = new DelegateCommand(async () =>
         {

@@ -62,14 +62,14 @@ namespace Workbench.ViewModels.Telemetry
         {
             try
             {
-                TagSource.Clear();
-                using (var db = new DbContext())
-                {
-                    var monitCode = await db.TelemetryTagTs.Where(t => t.ChipId == _projectManager.CurrentProject.Chip.ChipId).ToListAsync();
-                    TagSource.AddRange(monitCode);
-                }
-                if(TagSource!=null&& TagSource.Count>0)
-                    SelectTag = TagSource[0];
+                //TagSource.Clear();
+                //using (var db = new DbContext())
+                //{
+                //    var monitCode = await db.TelemetryTagTs.Where(t => t.ChipId == _projectManager.CurrentProject.Chip.ChipId).ToListAsync();
+                //    TagSource.AddRange(monitCode);
+                //}
+                //if(TagSource!=null&& TagSource.Count>0)
+                //    SelectTag = TagSource[0];
                 if (_projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle!=null)
                 {
                     CycleSource.Where(x => x.Label == _projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle.Label).FirstOrDefault();
@@ -312,26 +312,26 @@ namespace Workbench.ViewModels.Telemetry
             }
         }
 
-        public ObservableCollection<TelemetryTagTable> tagSource=new ObservableCollection<TelemetryTagTable>();
-        public ObservableCollection<TelemetryTagTable> TagSource
-        {
-            get => tagSource;
-            set => SetProperty(ref tagSource, value);
-        }
+        //public ObservableCollection<TelemetryTagTable> tagSource=new ObservableCollection<TelemetryTagTable>();
+        //public ObservableCollection<TelemetryTagTable> TagSource
+        //{
+        //    get => tagSource;
+        //    set => SetProperty(ref tagSource, value);
+        //}
 
-        public TelemetryTagTable selectTag;
-        public TelemetryTagTable SelectTag
-        {
-            get => selectTag;
-            set
-            {
-                if(SetProperty(ref selectTag, value))
-                {
+        //public TelemetryTagTable selectTag;
+        //public TelemetryTagTable SelectTag
+        //{
+        //    get => selectTag;
+        //    set
+        //    {
+        //        if(SetProperty(ref selectTag, value))
+        //        {
 
-                }
-                ProjectTag = value.Name;
-            }
-        }
+        //        }
+        //        ProjectTag = value.Name;
+        //    }
+        //}
 
         private ObservableCollection<TelemetrySliceField> showTelemetryList = new ObservableCollection<TelemetrySliceField>();
         public ObservableCollection<TelemetrySliceField> ShowTelemetryList

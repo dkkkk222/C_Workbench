@@ -183,19 +183,19 @@ namespace Workbench.Utils
                 tmam.Unit = unit;
                 listTMA.Add(tmam);
             }
-            var teleTagSheet = workbook.GetSheet("遥测查询标识");
-            if(teleTagSheet!=null)
-            {
-                for (int i = teleTagSheet.FirstRowNum + 1; i <= teleTagSheet.LastRowNum; i++)
-                {
-                    var row = teleTagSheet.GetRow(i);
-                    var name = row.GetCell(0).StringCellValue;//标识
-                    TelemetryTag tag= new TelemetryTag();
-                    tag.Name = name;
+            //var teleTagSheet = workbook.GetSheet("遥测查询标识");
+            //if(teleTagSheet!=null)
+            //{
+            //    for (int i = teleTagSheet.FirstRowNum + 1; i <= teleTagSheet.LastRowNum; i++)
+            //    {
+            //        var row = teleTagSheet.GetRow(i);
+            //        var name = row.GetCell(0).StringCellValue;//标识
+            //        TelemetryTag tag= new TelemetryTag();
+            //        tag.Name = name;
 
-                    listTag.Add(tag);
-                }
-            }
+            //        listTag.Add(tag);
+            //    }
+            //}
             
                 return (listTMA, listTag);
         }

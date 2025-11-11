@@ -154,11 +154,11 @@ Command="{Binding StopAllCommand}"/>
 
                         </ComboBox>
                         <TextBlock VerticalAlignment="Center">遥控查询标识:</TextBlock>
-                        <ComboBox ItemsSource="{Binding TagSource}"
+                        <!--<ComboBox ItemsSource="{Binding TagSource}"
  DisplayMemberPath="Name"  Foreground="Black" MinWidth="50" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
  SelectedValue="{Binding SelectTag, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
-                        </ComboBox>
+                        </ComboBox>-->
 
                         <TextBox Text="{Binding ProjectTag,Mode=TwoWay}"   Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="50" >
                             <TextBox.Style>

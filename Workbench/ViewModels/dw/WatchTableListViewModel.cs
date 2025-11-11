@@ -45,7 +45,7 @@ namespace Workbench.ViewModels.dw
             set => SetProperty(ref gridRows, value);
         }
 
-        private int gridColumns = 2; // 0 表示自动
+        private int gridColumns = 3; // 0 表示自动
         public int GridColumns
         {
             get => gridColumns;

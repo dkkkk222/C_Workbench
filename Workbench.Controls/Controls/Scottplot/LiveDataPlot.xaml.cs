@@ -37,5 +37,14 @@ namespace Workbench.Controls.Controls.Scottplot
         {
             var listCharts = e.NewValue as WpfPlotSteamBase;
         }
+
+        private void PlotView_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // 处理 ScottPlot 的缩放逻辑
+            // 这里应该包含你原有的缩放代码
+
+            // 标记事件为已处理，阻止冒泡
+            e.Handled = true;
+        }
     }
 }
