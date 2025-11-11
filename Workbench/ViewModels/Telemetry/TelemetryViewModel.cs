@@ -420,6 +420,126 @@ namespace Workbench.ViewModels.Telemetry
         }
 
         public List<TelemetryCode> ListTele { get; set; }
+
+        private string _treeKeyword;
+        public string TreeKeyword
+        {
+            get => _treeKeyword;
+            set
+            {
+                SetProperty(ref _treeKeyword, value);
+                //OrderByType(value);
+                if (IsOrderByCategory)
+                {
+                    SearchCategoryTree(value, IsOrderByAddress);
+                }
+                else if (IsOrderByName)
+                {
+                    OrderByType(value, OrderByTypeEnum.Name);
+                }
+                else if (IsOrderByAddress)
+                {
+                    OrderByType(value, OrderByTypeEnum.Address);
+                }
+            }
+        }
+
+        private bool _isOrderByCategory = true;
+        public bool IsOrderByCategory
+        {
+            get => _isOrderByCategory;
+            set
+            {
+                if (value)
+                {
+                    SearchCategoryTree(TreeKeyword, IsOrderByAddress);
+                }
+                SetProperty(ref _isOrderByCategory, value);
+            }
+        }
+
+        private bool _isOrderByName = false;
+        public bool IsOrderByName
+        {
+            get => _isOrderByName;
+            set
+            {
+                if (value)
+                {
+                    //return SerialPort.GetPortNames().OrderBy(t => t, new NaturalStringComparer()).ToList();
+                    var tempList = SingleParamTrees.GetMaxDepthLeaves().ToList().OrderBy(x => x.Title,new SerialAsistant.Utils.ChineseNaturalSortComparerWithRegex()).ToList();
+                    SingleParamTrees.Clear();
+                    SingleParamTrees.AddRange(tempList);
+                }
+                SetProperty(ref _isOrderByName, value);
+            }
+        }
+
+        private bool _isOrderByAddress = false;
+        public bool IsOrderByAddress
+        {
+            get => _isOrderByAddress;
+            set
+            {
+                if (value)
+                {
+                    var tempList = SingleParamTrees.GetMaxDepthLeaves()
+    .OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
+    .ToList();
+                    SingleParamTrees.Clear();
+                    SingleParamTrees.AddRange(tempList);
+                }
+                SetProperty(ref _isOrderByAddress, value);
+            }
+        }
+
+        private async void SearchCategoryTree(string keyword, bool isOrderByAddress = true)
+        {
+            SingleParamTrees.Clear();
+            var source =await _projectManager.GetChipCategoryTreeForTele(isOrderByAddress: isOrderByAddress);
+            if (string.IsNullOrEmpty(keyword))
+            {
+                SingleParamTrees.AddRange(source);
+            }
+            else
+            {
+                var searcher = new TreeSearcher();
+                var filteredResult = searcher.SearchInForest(source, keyword);
+                SingleParamTrees.AddRange(filteredResult);
+            }
+        }
+
+        private async void SearchCodeTree(string keyword, bool isOrderByAddress = true)
+        {
+            SingleParamTrees.Clear();
+            var source = await _projectManager.GetChipCategoryTreeForTele(); 
+            if (string.IsNullOrEmpty(keyword))
+            {
+                SingleParamTrees.AddRange(source);
+            }
+            else
+            {
+                var searcher = new TreeSearcher();
+                var filteredResult = searcher.SearchInForest(source, keyword);
+                SingleParamTrees.AddRange(filteredResult);
+            }
+        }
+        private async Task OrderByType(string value, OrderByTypeEnum NameOrAddress=OrderByTypeEnum.Name)
+        {
+            var source = await _projectManager.GetChipCategoryTreeForTele();
+            var tempList = source.GetMaxDepthLeaves().ToList().OrderBy(x => x.Title, new SerialAsistant.Utils.ChineseNaturalSortComparerWithRegex());
+            if (NameOrAddress == OrderByTypeEnum.Address)
+            {
+                tempList = SingleParamTrees.GetMaxDepthLeaves().ToList().OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue);
+
+            }
+            if (!string.IsNullOrEmpty(value))
+            {
+                tempList = tempList.Where(x => x.AddressHex.Contains(value) || x.Title.Contains(value)).OrderBy(x => x.Title, new SerialAsistant.Utils.ChineseNaturalSortComparerWithRegex());
+            }
+            SingleParamTrees.Clear();
+            SingleParamTrees.AddRange(tempList);
+        }
         #region Method
         public async void GetTeleInit()
         {

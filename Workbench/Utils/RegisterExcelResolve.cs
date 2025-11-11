@@ -133,9 +133,10 @@ namespace Workbench.Utils
             listTM.AddRange(NoteInstructionTelemetry);
             return listTM;
         }
-        public List<TelemetryMonitAnalysisMeta> TelemetryMonit(string filePath)
+        public (List<TelemetryMonitAnalysisMeta>, List<TelemetryTag>) TelemetryMonit(string filePath)
         {
             List<TelemetryMonitAnalysisMeta> listTMA = new List<TelemetryMonitAnalysisMeta>();
+            List<TelemetryTag> listTag = new List<TelemetryTag>();
             IWorkbook workbook;
             using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
@@ -182,8 +183,21 @@ namespace Workbench.Utils
                 tmam.Unit = unit;
                 listTMA.Add(tmam);
             }
+            var teleTagSheet = workbook.GetSheet("遥测查询标识");
+            if(teleTagSheet!=null)
+            {
+                for (int i = teleTagSheet.FirstRowNum + 1; i <= teleTagSheet.LastRowNum; i++)
+                {
+                    var row = teleTagSheet.GetRow(i);
+                    var name = row.GetCell(0).StringCellValue;//标识
+                    TelemetryTag tag= new TelemetryTag();
+                    tag.Name = name;
 
-            return listTMA;
+                    listTag.Add(tag);
+                }
+            }
+            
+                return (listTMA, listTag);
         }
         #endregion
 

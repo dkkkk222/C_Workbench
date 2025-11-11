@@ -394,6 +394,7 @@
     <Compile Include="Db\Tables\SessionRow.cs" />
     <Compile Include="Db\Tables\TelemetryCode.cs" />
     <Compile Include="Db\Tables\TelemetryMonit.cs" />
+    <Compile Include="Db\Tables\TelemetryTag.cs" />
     <Compile Include="Events\AddedProjectEvent.cs" />
     <Compile Include="Events\CloseConnectEvent.cs" />
     <Compile Include="Events\CloseTabEvent.cs" />
@@ -409,6 +410,7 @@
     <Compile Include="Events\SerialPortAddRemoveEvent.cs" />
     <Compile Include="Events\ShowHomePageEvent.cs" />
     <Compile Include="Events\TabChangeEvent.cs" />
+    <Compile Include="Events\TelemetryImportEvent.cs" />
     <Compile Include="Events\TreeViewSelectedEvent.cs" />
     <Compile Include="Migrations\OnInitial.cs" />
     <Compile Include="Models\AppConfig.cs" />
@@ -428,6 +430,7 @@
     <Compile Include="Models\dw\CategoryTree.cs" />
     <Compile Include="Models\dw\TableColumn.cs" />
     <Compile Include="Models\dw\WatchGroup.cs" />
+    <Compile Include="Models\ExcelExportService.cs" />
     <Compile Include="Models\GridLengthAnimation.cs" />
     <Compile Include="Models\InitDataStaticService.cs" />
     <Compile Include="Models\MoveThumb\MoveThumbBehavior.cs" />

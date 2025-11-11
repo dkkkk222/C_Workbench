@@ -570,7 +570,7 @@ namespace Workbench.Models
                 service.TelemetryParsed += (sender, rec) =>
                 {
                     // 这里是串口接收线程，不是UI线程
-                    Console.WriteLine($"[{rec.Timestamp:HH:mm:ss.fff}] len={rec.RawPayload.Length}");
+                    //Console.WriteLine($"[{rec.Timestamp:HH:mm:ss.fff}] len={rec.RawPayload.Length}");
 
                     //double v;
                     //if (rec.Values != null && rec.Values.TryGetValue("B0_0_3", out v))

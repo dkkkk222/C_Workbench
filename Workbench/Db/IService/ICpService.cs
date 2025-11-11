@@ -22,6 +22,7 @@ namespace Workbench.Db.IService
         Task SaveTeleListAsync(string chipId, IEnumerable<TelemetryCode> items);
         Task SaveParamsListAsync(string chipId, IEnumerable<ParamDict> items);
         Task SaveTeleMonListAsync(string chipId, IEnumerable<TelemetryMonit> items);
+        Task SaveTeleTagListAsync(string chipId, IEnumerable<TelemetryTagTable> items);
         Task ExportTelemetryExcelAsync(string chipId, string xlsxPath);
     }
 }

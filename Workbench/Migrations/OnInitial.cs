@@ -97,13 +97,15 @@ namespace Workbench.Migrations
             #endregion
 
             #region Code
+
+            #region 遥测遥控
             Create.Table("t_TelemetryCode")
-              .WithColumn("id").AsString().PrimaryKey()
-              .WithColumn("chip_id").AsString().NotNullable()
-              .WithColumn("name").AsString().Nullable()
-              .WithColumn("code").AsString().Nullable()
-              .WithColumn("type").AsString().Nullable()
-              .WithColumn("length").AsString().Nullable();
+             .WithColumn("id").AsString().PrimaryKey()
+             .WithColumn("chip_id").AsString().NotNullable()
+             .WithColumn("name").AsString().Nullable()
+             .WithColumn("code").AsString().Nullable()
+             .WithColumn("type").AsString().Nullable()
+             .WithColumn("length").AsString().Nullable();
 
             Create.Table("t_TelemetryMonit")
             .WithColumn("id").AsString().PrimaryKey()
@@ -124,7 +126,14 @@ namespace Workbench.Migrations
             .WithColumn("param_sign").AsString().Nullable()
             .WithColumn("formula_show").AsString().Nullable()
             .WithColumn("unit").AsString().Nullable();
-            
+
+            Create.Table("t_TelemetryTag")
+             .WithColumn("id").AsString().PrimaryKey()
+             .WithColumn("chip_id").AsString().NotNullable()
+             .WithColumn("name").AsString().Nullable();
+            #endregion
+
+
             //下面是历史记录相关表
             Create.Table("param_dict")
               .WithColumn("param_id").AsInt32().PrimaryKey().Identity()
@@ -186,7 +195,7 @@ namespace Workbench.Migrations
                     length = param1.CommandLength
                 });
             }
-            foreach (var param1 in ListData.Item2)
+            foreach (var param1 in ListData.Item2.Item1)
             {
                 Insert.IntoTable("param_dict").Row(new
                 {
@@ -214,6 +223,16 @@ namespace Workbench.Migrations
                     param_sign = param1.FormParam.Sign,
                     formula_show = param1.ShowFormParam,
                     unit= param1.Unit,
+                });
+            }
+            foreach (var param1 in ListData.Item2.Item2)
+            {
+                string tagId = Guid.NewGuid().ToString("N");
+                Insert.IntoTable("t_TelemetryTag").Row(new
+                {
+                    id = tagId,
+                    chip_id = chipId,
+                    name = param1.Name
                 });
             }
             foreach (var meta in excelData)
@@ -275,7 +294,7 @@ namespace Workbench.Migrations
         /// <summary>
         /// 遥测
         /// </summary>
-        public (List<TelemetryMeta>, List<TelemetryMonitAnalysisMeta>) TelemetryParse()
+        public (List<TelemetryMeta>, (List<TelemetryMonitAnalysisMeta>, List<PPEC.Communication.Model.TelemetryTag>)) TelemetryParse()
         {
             string SDPCfileNameTelemetryData = "SDPC_B10遥测数据表.xlsx";//数据解析
             string SDPCfileNameCommand = "SDPC_B10遥控指令表.xlsx";//遥测指令

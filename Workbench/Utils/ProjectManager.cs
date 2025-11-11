@@ -506,6 +506,7 @@ namespace Workbench.Utils
                 AttachParentRecursive(root, null);
             return list;
         }
+
         private void AttachParentRecursive(CategoryTree node, CategoryTree parent)
         {
             node.Parent = parent;

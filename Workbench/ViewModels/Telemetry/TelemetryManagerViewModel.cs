@@ -20,6 +20,7 @@ using Workbench.Views.Telemetry;
 using Workbench.Views.Windows;
 using Workbench.Views;
 using static LinqToDB.Reflection.Methods.LinqToDB;
+using System.IO;
 
 namespace Workbench.ViewModels.Telemetry
 {
@@ -85,20 +86,33 @@ namespace Workbench.ViewModels.Telemetry
         {
             try
             {
-                var fbd = new System.Windows.Forms.FolderBrowserDialog();
-                fbd.Description = "请选择保存路径";
-                var result = fbd.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
-                    var path = fbd.SelectedPath;
-                    await _cpService.ExportTelemetryExcelAsync(_projectManager.CurrentProject.Chip.ChipId, path);
-                    MessageBox.Show("遥控指令导出完成!");
-                }
+            
+                var ListTele = await _projectManager.GetTeleLisst(_projectManager.CurrentProject.Chip.ChipId);
+
+                var exportService = new ExcelExportService();
+                byte[] excelData = exportService.ExportTelemetryCodes(ListTele);
+                ShowSaveFileDialog(excelData);
+                MessageBox.Show("遥控指令导出完成!");
+              
             }
             catch (Exception ex)
             {
             }
         });
+        private void ShowSaveFileDialog(byte[] excelData)
+        {
+            var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "Excel文件 (*.xls)|*.xls",
+                FileName = "遥控指令导出.xls"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                File.WriteAllBytes(saveFileDialog.FileName, excelData);
+                MessageBox.Show("导出成功！");
+            }
+        }
         public DelegateCommand ImportCommand => new DelegateCommand(async () =>
         { 
             try

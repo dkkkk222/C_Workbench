@@ -253,6 +253,7 @@
     <Compile Include="Model\TelemetryBase.cs" />
     <Compile Include="Model\TelemetryCode.cs" />
     <Compile Include="Model\TelemetryMeta.cs" />
+    <Compile Include="Model\TelemetryTag.cs" />
     <Compile Include="Model\TopoConfigMeta.cs" />
     <Compile Include="Model\UartProtocolHandler.cs" />
     <Compile Include="NullLogger.cs" />

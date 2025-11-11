@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using HarfBuzzSharp;
+using LinqToDB;
 using log4net;
 using Newtonsoft.Json;
 using PPEC.Communication.Model;
@@ -21,6 +22,7 @@ using Workbench.Events;
 using Workbench.Models;
 using Workbench.Utils;
 using Workbench.ViewModels.dw;
+using LinqToDB.Async;
 
 namespace Workbench.ViewModels.Telemetry
 {
@@ -56,19 +58,24 @@ namespace Workbench.ViewModels.Telemetry
             InitListen();
         }
 
-        public void InitData()
+        public async void InitData()
         {
             try
             {
-                if(_projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle!=null)
+                TagSource.Clear();
+                using (var db = new DbContext())
+                {
+                    var monitCode = await db.TelemetryTagTs.Where(t => t.ChipId == _projectManager.CurrentProject.Chip.ChipId).ToListAsync();
+                    TagSource.AddRange(monitCode);
+                }
+                SelectTag = TagSource[0];
+                if (_projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle!=null)
                 {
                     CycleSource.Where(x => x.Label == _projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle.Label).FirstOrDefault();
                 }
                 ProjectTag = _projectManager.CurrentProject.TelemetryMonitViewGrid.ProjectTag;
                 SplitterPositionLeft = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionLeft;
-                SplitterPositionRight = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionRight;
-
-              
+                SplitterPositionRight = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionRight;             
 
             }
             catch (Exception ex)
@@ -304,6 +311,27 @@ namespace Workbench.ViewModels.Telemetry
             }
         }
 
+        public ObservableCollection<TelemetryTagTable> tagSource=new ObservableCollection<TelemetryTagTable>();
+        public ObservableCollection<TelemetryTagTable> TagSource
+        {
+            get => tagSource;
+            set => SetProperty(ref tagSource, value);
+        }
+
+        public TelemetryTagTable selectTag;
+        public TelemetryTagTable SelectTag
+        {
+            get => selectTag;
+            set
+            {
+                if(SetProperty(ref selectTag, value))
+                {
+
+                }
+                ProjectTag = value.Name;
+            }
+        }
+
         private ObservableCollection<TelemetrySliceField> showTelemetryList = new ObservableCollection<TelemetrySliceField>();
         public ObservableCollection<TelemetrySliceField> ShowTelemetryList
         {
@@ -428,14 +456,12 @@ namespace Workbench.ViewModels.Telemetry
             });
             _eventAggregator.GetEvent<OnConnctedEvent>().Subscribe(() =>
             {
-                if(ShowTelemetryList.Count==0)
+                ShowTelemetryList.Clear();
+                if (_projectManager.CurrentProject.CommService is PcmuUartService puService)
                 {
-                    if (_projectManager.CurrentProject.CommService is PcmuUartService puService)
-                    {
-                        ShowTelemetryList.AddRange(puService._tlmSlices);
-                    }
+                    ShowTelemetryList.AddRange(puService._tlmSlices);
                 }
-                
+
             });
            
         }
@@ -458,12 +484,58 @@ namespace Workbench.ViewModels.Telemetry
             //chart.RefreshData();
         }
 
-        public override void LoadData()
+        public override async void LoadData()
         {
             ShowTelemetryList.Clear();
             if (_projectManager.CurrentProject.CommService is PcmuUartService puService)
             {
                 ShowTelemetryList.AddRange(puService._tlmSlices);
+            }
+            else
+            {
+                List<TelemetryMonit> ltm = new List<TelemetryMonit>();
+                List<TelemetrySliceField> ltsf = new List<TelemetrySliceField>();
+                string firstCode = "";
+
+                using (var db = new DbContext())
+                {
+                    var monitCode =await db.TelemetryMonits.Where(t => t.ChipId == _projectManager.CurrentProject.Chip.ChipId).ToListAsync();
+                    ltm.AddRange(monitCode);
+                }
+
+                // 配置位切片解析（示例：请按你的真实遥测表配置）
+                foreach (var monit in ltm)
+                {
+                    TelemetrySliceField tsf = new TelemetrySliceField();
+                    tsf.Name = monit.Name;
+                    tsf.StartByte = monit.StartByte;
+                    tsf.ByteCount = monit.ByteLen;
+                    tsf.BitStart = monit.StartBit;
+                    tsf.BitLength = monit.BitLen;
+                    tsf.Order = ByteOrder.BE;
+                    switch (monit.ByteLen)
+                    {
+                        case 1:
+                            tsf.As = TargetType.U8;
+                            break;
+                        case 2:
+                            tsf.As = TargetType.U16;
+                            break;
+                        case 4:
+                            tsf.As = TargetType.U32;
+                            break;
+                    }
+                    tsf.Unit = monit.Unit;
+                    tsf.ShowStr = monit.FormulaShow;
+                    tsf.ParamA = monit.ParamA;
+                    tsf.ParamB = monit.ParamB;
+                    tsf.ParamC = monit.ParamC;
+                    tsf.ParamSign = monit.ParamSign;
+
+                    ltsf.Add(tsf);
+                }
+
+                ShowTelemetryList.AddRange(ltsf);
             }
 
         }

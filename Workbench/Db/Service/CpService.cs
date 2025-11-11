@@ -134,6 +134,35 @@ namespace Workbench.Db.Service
             await tx.CommitAsync();
         }
 
+        public async Task SaveTeleTagListAsync(string chipId, IEnumerable<TelemetryTagTable> items)
+        {
+            try
+            {
+                using var db = new DbContext();
+                using var tx = await db.BeginTransactionAsync();
+
+                // 1) 删除该 ChipId 旧数据
+                await db.TelemetryTagTs.Where(t => t.ChipId == chipId).DeleteAsync();
+
+                // 2) 准备新数据
+                var list = items.Select(x =>
+                {
+                    if (string.IsNullOrWhiteSpace(x.Id))
+                        x.Id = Guid.NewGuid().ToString("N");
+                    x.ChipId = chipId;
+                    return x;
+                }).ToList();
+
+                // 3) 批量写入
+                await db.BulkCopyAsync(new BulkCopyOptions { MaxBatchSize = 1000 }, list);
+
+                await tx.CommitAsync();
+            }
+            catch(Exception ex)
+            {
+
+            }
+        }
         /// <summary>
         /// 保存：按 ChipId 先删后插（事务）。
         /// </summary>

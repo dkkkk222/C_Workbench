@@ -31,7 +31,7 @@ namespace Workbench.Db
         public ITable<TelemetryCode> TelemetryCodes => this.GetTable<TelemetryCode>();
 
         public ITable<TelemetryMonit> TelemetryMonits => this.GetTable<TelemetryMonit>();
-
+        public ITable<TelemetryTagTable> TelemetryTagTs => this.GetTable<TelemetryTagTable>(); 
         public ITable<HistorySession> HistorySessions => this.GetTable<HistorySession>();
         public ITable<HistoryFrame> HistoryFrames => this.GetTable<HistoryFrame>();
         public ITable<ParamDict> ParamDicts => this.GetTable<ParamDict>();
