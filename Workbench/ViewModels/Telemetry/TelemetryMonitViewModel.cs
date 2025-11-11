@@ -68,7 +68,8 @@ namespace Workbench.ViewModels.Telemetry
                     var monitCode = await db.TelemetryTagTs.Where(t => t.ChipId == _projectManager.CurrentProject.Chip.ChipId).ToListAsync();
                     TagSource.AddRange(monitCode);
                 }
-                SelectTag = TagSource[0];
+                if(TagSource!=null&& TagSource.Count>0)
+                    SelectTag = TagSource[0];
                 if (_projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle!=null)
                 {
                     CycleSource.Where(x => x.Label == _projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle.Label).FirstOrDefault();
