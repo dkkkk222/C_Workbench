@@ -27,6 +27,17 @@ namespace PPEC.Communication.Model
 
         [Column("type", Length = 64)]
         public string Type { get; set; }
+        /// <summary>
+        /// 分类
+        /// </summary>
+        [Column("category")]
+        public string Category { get; set; }
+
+        /// <summary>
+        /// 子分类
+        /// </summary>
+        [Column("sub_category")]
+        public string SubCategory { get; set; }
 
         [Column("length", Length = 64)]
         public string Length { get; set; }
@@ -38,6 +49,14 @@ namespace PPEC.Communication.Model
         {
             get => _isChecked;
             set => SetProperty(ref _isChecked, value);
+        }
+        [NotColumn]
+        private string _sendState = "";
+        [NotColumn]
+        public string SendState
+        {
+            get => _sendState;
+            set => SetProperty(ref _sendState, value);
         }
     }
 }

@@ -9,8 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Forms;
+using System.Xml;
 using log4net;
 using NPOI.XSSF.UserModel;
+using Org.BouncyCastle.Ocsp;
 using Org.BouncyCastle.Utilities.Collections;
 using PPEC.Communication;
 using PPEC.Communication.Enum;
@@ -49,6 +51,7 @@ namespace Workbench.ViewModels.Telemetry
             {
                 UpGridWidth = _projectManager.CurrentProject.TelemetryViewGrid.UpGridWidth;
                 DownGridWidth = _projectManager.CurrentProject.TelemetryViewGrid.DownGridWidth;
+                ThreeGridWidth = _projectManager.CurrentProject.TelemetryViewGrid.ThreeGridWidth;
                 SplitterPositionLeft = _projectManager.CurrentProject.TelemetryViewGrid.SplitterPositionLeft;
                 SplitterPositionRight = _projectManager.CurrentProject.TelemetryViewGrid.SplitterPositionRight;
 
@@ -69,6 +72,7 @@ namespace Workbench.ViewModels.Telemetry
             _eventAggregator.GetEvent<SaveProjectEvent>().Subscribe(e => {
                 e.TelemetryViewGrid.upGridWidth = upGridWidth;
                 e.TelemetryViewGrid.DownGridWidth = DownGridWidth;
+                e.TelemetryViewGrid.ThreeGridWidth = ThreeGridWidth;
                 e.TelemetryViewGrid.AllTime = AllTime;
                 e.TelemetryViewGrid.CurrentSequence = CurrentSequence;
                 e.TelemetryViewGrid.SplitterPositionLeft = SplitterPositionLeft;
@@ -96,6 +100,13 @@ namespace Workbench.ViewModels.Telemetry
         {
             get => downGridWidth;
             set => SetProperty(ref downGridWidth, value);
+        }
+
+        public System.Windows.GridLength threeGridWidth = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength ThreeGridWidth
+        {
+            get => threeGridWidth;
+            set => SetProperty(ref threeGridWidth, value);
         }
 
         public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
@@ -258,6 +269,7 @@ namespace Workbench.ViewModels.Telemetry
                 MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            e.SendState = Constants.Waite;
             await Task.Run(async () =>
             {
                 var tempSequence=new Sequence();
@@ -277,6 +289,7 @@ namespace Workbench.ViewModels.Telemetry
             {
                 await Task.Run(async () =>
                 {
+                    await Task.Delay(seq.ParamPushInterval);
                     await SendSequence(seq);
                 });
             }
@@ -338,8 +351,13 @@ namespace Workbench.ViewModels.Telemetry
                                     var ack1 = await currentProject.CommService.SendRemoteControlAsync(cmd, 1000);
                                     if (!ack1.Success)
                                     {
+                                        register.SendState = Constants.Lose;
                                         isSuc = false;
                                         // ack1.RawCode == 0xFFFF 或超时
+                                    }
+                                    else
+                                    {
+                                        register.SendState = Constants.Suc;
                                     }
                                 }
                                 if (register.Type == ((int)TelemetryCommandType.NoteInstruction).ToString())
@@ -348,7 +366,12 @@ namespace Workbench.ViewModels.Telemetry
                                     var ack1 = await currentProject.CommService.SendInjectionAsync(injection, 1000);
                                     if (!ack1.Success)
                                     {
+                                        register.SendState = Constants.Lose;
                                         isSuc = false;
+                                    }
+                                    else
+                                    {
+                                        register.SendState = Constants.Suc;
                                     }
                                 }
                                 break;

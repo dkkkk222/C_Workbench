@@ -415,6 +415,7 @@ namespace Workbench.Utils
         }
         #endregion
 
+        #region 遥测处理
         public async Task<List<TelemetryCode>> GetTeleLisst(string chipId)
         {
             return await _cpService.GetTeleList(CurrentProject.Chip.ChipId);
@@ -422,7 +423,7 @@ namespace Workbench.Utils
         public async Task<List<CategoryTree>> GetChipCategoryTreeForTele(string ctg = null, string address = null, bool isOrderByAddress = true)
         {
             var list = new List<CategoryTree>();
-            var infos =await GetTeleLisst(CurrentProject.Chip.ChipId);// CurrentProject.Chip.ListTele.ToList();
+            var infos = await GetTeleLisst(CurrentProject.Chip.ChipId);// CurrentProject.Chip.ListTele.ToList();
             if (!string.IsNullOrEmpty(ctg))
             {
                 infos = infos.Where(t => t.Name == ctg).ToList();
@@ -431,18 +432,81 @@ namespace Workbench.Utils
             {
                 infos = infos.Where(t => t.Code == address).ToList();
             }
-            var categories = infos.Select(t => t.Type).Distinct().ToList();
-            foreach (var category in categories)
+            var types = infos.Select(t => t.Type).Distinct().ToList();
+
+            foreach (var type in types)
             {
                 list.Add(new CategoryTree()
                 {
-                    Title = category=="0"?"间接指令":"注数指令",
-                    Type = CategoryTreeType.Category,
-                    Children = GetTelemetry(category, infos, isOrderByAddress)
+                    Title = type == "0" ? "间接指令" : "注数指令",
+                    Type = CategoryTreeType.Type,
+                    Children = GetTelemetryCategory(type, infos, isOrderByAddress)
                 });
             }
             return list;
         }
+
+        private List<CategoryTree> GetTelemetryCategory(string type, List<TelemetryCode> infos, bool isOrderByAddress)
+        {
+            var list = new List<CategoryTree>();
+
+            var categories = infos.Where(x=>x.Type== type).Select(t => t.Category).Distinct().ToList();
+            foreach (var Category in categories)
+            {
+                list.Add(new CategoryTree()
+                {
+                    Title = Category,
+                    Type = CategoryTreeType.Category,
+                    Children = GetTelemetrySubCategory(type, Category, infos, isOrderByAddress)
+                });
+            }
+            return list;
+        }
+
+        private List<CategoryTree> GetTelemetrySubCategory(string type, string category, List<TelemetryCode> infos, bool isOrderByAddress)
+        {
+            var list = new List<CategoryTree>();
+
+            var SubCategory = infos.Where(t => t.Type == type && t.Category== category).Select(t => t.SubCategory).Distinct().ToList();
+            foreach (var subCategory in SubCategory)
+            {
+                list.Add(new CategoryTree()
+                {
+                    Title = subCategory,
+                    Type = CategoryTreeType.SubCategory,
+                    Children = GetTelemetry(type, category, subCategory, infos, isOrderByAddress)
+                });
+            }
+
+            return list;
+        }
+
+        private List<CategoryTree> GetTelemetry(string type,string category,string subCategory, List<TelemetryCode> infos, bool isOrderByAddress)
+        {
+            var list = new List<CategoryTree>();
+
+            var registers = infos.Where(t => t.Type == type && t.Category==category && t.SubCategory==subCategory).ToList();
+            if (isOrderByAddress)
+            {
+                registers = registers.OrderByNatural(x => x.Name).ToList();
+            }
+
+            foreach (var register in registers)
+            {
+                list.Add(new CategoryTree()
+                {
+                    Title = register.Name,
+                    Type = CategoryTreeType.Register,
+                    AddressDec = register.Code,
+                    AddressHex = register.Code
+                });
+            }
+
+            return list;
+        }
+
+        #endregion
+
 
         public List<CategoryTree> GetChipCategoryTreeOnlyW(string ctg = null, string address = null, bool isOrderByAddress = true)
         {
@@ -529,31 +593,6 @@ namespace Workbench.Utils
                     Title = subCategory,
                     Type = CategoryTreeType.SubCategory,
                     Children = GetRegister(category, subCategory, infos, isOrderByAddress)
-                });
-            }
-
-            return list;
-        }
-
-        private List<CategoryTree> GetTelemetry(string category, List<TelemetryCode> infos, bool isOrderByAddress)
-        {
-            var list = new List<CategoryTree>();
-
-            var registers = infos.Where(t => t.Type == category).ToList();
-            if (isOrderByAddress)
-            {
-                //registers = registers.OrderBy(t => t.Name).ToList();
-                registers=registers.OrderByNatural(x => x.Name).ToList();
-            }
-
-            foreach (var register in registers)
-            {
-                list.Add(new CategoryTree()
-                {
-                    Title = register.Name,
-                    Type = CategoryTreeType.Register,
-                    AddressDec = register.Code,
-                    AddressHex = register.Code
                 });
             }
 

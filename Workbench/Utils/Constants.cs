@@ -53,5 +53,9 @@ namespace Workbench.Utils
         public const string DisConnectIcon = "\uE64d";
         public const string ConnectStr = "连接";
         public const string DisConnectStr = "断开";
+
+        public const string Suc = "成功";
+        public const string Lose = "失败";
+        public const string Waite = "下发中";
     }
 }

@@ -47,6 +47,7 @@ namespace Workbench.Models.dw
 
     public class CategoryTreeType
     {
+        public const string Type = "Type";
         public const string Category = "Category";
         public const string SubCategory = "SubCategory";
         public const string Register = "Register";

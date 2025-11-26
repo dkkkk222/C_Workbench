@@ -38,6 +38,13 @@ namespace Workbench.Models.PageModel
             set => SetProperty(ref downGridWidth, value);
         }
 
+        public System.Windows.GridLength threeGridWidth = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength ThreeGridWidth
+        {
+            get => threeGridWidth;
+            set => SetProperty(ref threeGridWidth, value);
+        }
+
         public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionLeft
         {

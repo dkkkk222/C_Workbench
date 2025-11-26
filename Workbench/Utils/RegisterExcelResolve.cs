@@ -147,11 +147,12 @@ namespace Workbench.Utils
             {
                 var row = indirectSheet.GetRow(i);
                 var name = row.GetCell(1).StringCellValue;//代号
-                var code = row.GetCell(2).StringCellValue;//数据位置
-                var bit = row.GetCell(3).StringCellValue;//解析内容(bit)
-                var bitLen = GetCellValue(indirectSheet,i,4); //row.GetCell(4).StringCellValue;//解析内容(bit长度)
-                var showFormula = row.GetCell(5).StringCellValue;//解析要求
-                var unit = row.GetCell(6).StringCellValue;//单位
+                var category = row.GetCell(2).StringCellValue;//分类
+                var code = row.GetCell(3).StringCellValue;//数据位置
+                var bit = row.GetCell(4).StringCellValue;//解析内容(bit)
+                var bitLen = GetCellValue(indirectSheet,i,5); //row.GetCell(4).StringCellValue;//解析内容(bit长度)
+                var showFormula = row.GetCell(6).StringCellValue;//解析要求
+                var unit = row.GetCell(7).StringCellValue;//单位
                 var formula = GetFormulaParam(showFormula);//公式
          
                 var res = FormulaParser.Parse(showFormula);
@@ -169,6 +170,7 @@ namespace Workbench.Utils
 
                 tmam.CodeName = name;
                 tmam.DateLocation = code;
+                tmam.Category = category;
 
                 tmam.StartLocaltion = GetByteInfo(code, "byte").startBit;
                 tmam.EndLocaltion = GetByteInfo(code, "byte").endBit;
@@ -235,9 +237,15 @@ namespace Workbench.Utils
                 var row = systemPowerSheet.GetRow(i);
                 var name = row.GetCell(1).StringCellValue;//指令名称
                 var code = row.GetCell(2).StringCellValue;//指令码
-                var type = row.GetCell(3).StringCellValue;//指令类型
+
+                var category = row.GetCell(3).StringCellValue;//指令分类
+                var subCategory = row.GetCell(4).StringCellValue;//指令子分类
+
+                var type = row.GetCell(5).StringCellValue;//指令类型
                 TelemetryMeta tempTM= new TelemetryMeta();
                 tempTM.CommandId = i;
+                tempTM.Category = category;
+                tempTM.SubCategory = subCategory;
                 tempTM.CommandName=name;
                 tempTM.CommandCode=code;
                 tempTM.CommandType = type == "间接指令" ? TelemetryCommandType.IndirectCommand : TelemetryCommandType.NoteInstruction;
@@ -256,11 +264,15 @@ namespace Workbench.Utils
                 if(row.GetCell(1)==null)
                     continue;
                 var name = row.GetCell(1).StringCellValue;//指令名称
-                var code = row.GetCell(3).StringCellValue;//指令码
-                var type = row.GetCell(4).StringCellValue;//指令类型
+                var category = row.GetCell(2).StringCellValue;//指令名称
+                var subCategory = row.GetCell(3).StringCellValue;//指令名称
+                var code = row.GetCell(5).StringCellValue;//指令码
+                var type = row.GetCell(6).StringCellValue;//指令类型
                 TelemetryMeta tempTM = new TelemetryMeta();
                 tempTM.CommandId = i;
                 tempTM.CommandName = name;
+                tempTM.Category = category;
+                tempTM.SubCategory = subCategory;
                 tempTM.CommandCode = code;
                 tempTM.CommandType = type == "间接指令" ? TelemetryCommandType.IndirectCommand : TelemetryCommandType.NoteInstruction;
                 tempTM.CommandLength = code.Length;

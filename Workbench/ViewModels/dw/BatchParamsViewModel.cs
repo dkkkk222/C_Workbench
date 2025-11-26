@@ -616,7 +616,7 @@ namespace Workbench.ViewModels.dw
                 }
                 //await currentProject.CommService.SendAsync(calcResult.bytes);
                 param.CompletedNum += 1;
-                Thread.Sleep(TimeSpan.FromMilliseconds(2));
+                Thread.Sleep(TimeSpan.FromMilliseconds(param.ParamPushInterval));
             }
         }
 

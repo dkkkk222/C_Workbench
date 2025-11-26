@@ -105,12 +105,15 @@ namespace Workbench.Migrations
              .WithColumn("name").AsString().Nullable()
              .WithColumn("code").AsString().Nullable()
              .WithColumn("type").AsString().Nullable()
+             .WithColumn("category").AsString().Nullable()
+             .WithColumn("sub_category").AsString().Nullable()
              .WithColumn("length").AsString().Nullable();
 
             Create.Table("t_TelemetryMonit")
             .WithColumn("id").AsString().PrimaryKey()
             .WithColumn("chip_id").AsString().NotNullable()
             .WithColumn("name").AsString().Nullable()
+            .WithColumn("category").AsString().Nullable()
             .WithColumn("byte_Name").AsString().Nullable()
             .WithColumn("start_byte").AsInt32().Nullable()
             .WithColumn("end_byte").AsInt32().Nullable()
@@ -190,6 +193,8 @@ namespace Workbench.Migrations
                     id = telemetryId,
                     chip_id= chipId,
                     name = param1.CommandName,
+                    category=param1.Category,
+                    sub_category = param1.SubCategory,
                     code = param1.CommandCode,
                     type = (int)param1.CommandType,
                     length = param1.CommandLength
@@ -208,6 +213,7 @@ namespace Workbench.Migrations
                     id = telemetryId,
                     chip_id = chipId,
                     name = param1.CodeName,
+                    category = param1.Category,
                     byte_Name = param1.DateLocation,
                     start_byte = param1.StartLocaltion,
                     end_byte = param1.EndLocaltion,
@@ -224,17 +230,7 @@ namespace Workbench.Migrations
                     formula_show = param1.ShowFormParam,
                     unit= param1.Unit,
                 });
-            }
-            //foreach (var param1 in ListData.Item2.Item2)
-            //{
-            //    string tagId = Guid.NewGuid().ToString("N");
-            //    Insert.IntoTable("t_TelemetryTag").Row(new
-            //    {
-            //        id = tagId,
-            //        chip_id = chipId,
-            //        name = param1.Name
-            //    });
-            //}
+            } 
             foreach (var meta in excelData)
             {
                 string registerId = Guid.NewGuid().ToString("N");
@@ -296,13 +292,16 @@ namespace Workbench.Migrations
         /// </summary>
         public (List<TelemetryMeta>, (List<TelemetryMonitAnalysisMeta>, List<TelemetryTag>)) TelemetryParse()
         {
-            string SDPCfileNameTelemetryData = "SDPC_B10遥测数据表.xlsx";//数据解析
-            string SDPCfileNameCommand = "SDPC_B10遥控指令表.xlsx";//遥测指令
+            //string SDPCfileNameTelemetryData = "SDPC_B10遥测数据表.xlsx";//数据解析
+            //string SDPCfileNameCommand = "SDPC_B10遥控指令表.xlsx";//遥测指令
+            string SDPCfileNameCommand = "电源控制管理单元遥控指令表.xlsx";
+            string SDPCfileNameTelemetryData = "电源控制管理单元遥测数据表.xlsx";
+
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameCommand);
-            string filePath1 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameTelemetryData);
+            string filePathCommand = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameTelemetryData);
             RegisterExcelResolve registerExcelResolve = new RegisterExcelResolve();
             var telemetryCommand= registerExcelResolve.Telemetry(filePath);
-            var telemetryMonit = registerExcelResolve.TelemetryMonit(filePath1);
+            var telemetryMonit = registerExcelResolve.TelemetryMonit(filePathCommand);
             return (telemetryCommand, telemetryMonit);
         }
 

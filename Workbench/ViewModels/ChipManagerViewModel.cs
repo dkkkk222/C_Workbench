@@ -277,8 +277,11 @@ namespace Workbench.ViewModels
         }
         public (List<TelemetryMeta>, (List<TelemetryMonitAnalysisMeta>, List<TelemetryTag>)) TelemetryParse()
         {
-            string SDPCfileNameTelemetryData = "SDPC_B10遥测数据表.xlsx";//数据解析
-            string SDPCfileNameCommand = "SDPC_B10遥控指令表.xlsx";//遥测指令
+            //string SDPCfileNameTelemetryData = "SDPC_B10遥测数据表.xlsx";//数据解析
+            //string SDPCfileNameCommand = "SDPC_B10遥控指令表.xlsx";//遥测指令
+            string SDPCfileNameCommand = "电源控制管理单元遥控指令表.xlsx";
+            string SDPCfileNameTelemetryData = "电源控制管理单元遥测数据表.xlsx";
+
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameCommand);
             string filePath1 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SDPCfileNameTelemetryData);
             RegisterExcelResolve registerExcelResolve = new RegisterExcelResolve();

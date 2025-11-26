@@ -14,6 +14,11 @@ namespace Workbench.Db.Tables
 
         [Column("name")]
         public string Name { get; set; }
+        /// <summary>
+        /// 分类
+        /// </summary>
+        [Column("category")]
+        public string Category { get; set; }
 
         [Column("byte_Name")]
         public string ByteName { get; set; }

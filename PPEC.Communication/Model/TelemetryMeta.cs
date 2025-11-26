@@ -15,7 +15,8 @@ namespace PPEC.Communication.Model
         public string CommandName { get; set; }
 
         public string CommandCode { get; set; }
-
+        public string Category { get; set; }    // 主分类
+        public string SubCategory { get; set; } // 子分类
         public TelemetryCommandType CommandType { get; set; }
 
         public int CommandLength { get; set; }
@@ -23,7 +24,9 @@ namespace PPEC.Communication.Model
     public class TelemetryMonitAnalysisMeta : BindableBase
     {
         public int Id { get;set; }
-        public string CodeName { get; set; }    
+        public string CodeName { get; set; }
+        public string Category { get; set; }    // 主分类
+        public string SubCategory { get; set; } // 子分类
         public string DateLocation { get; set; }
         public int StartLocaltion { get; set; }
         public int EndLocaltion { get; set; }
