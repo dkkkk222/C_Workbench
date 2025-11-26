@@ -54,12 +54,7 @@ namespace Workbench.ViewModels.Telemetry
                 ThreeGridWidth = _projectManager.CurrentProject.TelemetryViewGrid.ThreeGridWidth;
                 SplitterPositionLeft = _projectManager.CurrentProject.TelemetryViewGrid.SplitterPositionLeft;
                 SplitterPositionRight = _projectManager.CurrentProject.TelemetryViewGrid.SplitterPositionRight;
-
                 AllTime = _projectManager.CurrentProject.TelemetryViewGrid.AllTime;
-                if (_projectManager.CurrentProject.TelemetryViewGrid.CurrentSequence != null)
-                    CurrentSequence = _projectManager.CurrentProject.TelemetryViewGrid.CurrentSequence;
-              
-
             }
             catch (Exception ex)
             {
@@ -74,7 +69,6 @@ namespace Workbench.ViewModels.Telemetry
                 e.TelemetryViewGrid.DownGridWidth = DownGridWidth;
                 e.TelemetryViewGrid.ThreeGridWidth = ThreeGridWidth;
                 e.TelemetryViewGrid.AllTime = AllTime;
-                e.TelemetryViewGrid.CurrentSequence = CurrentSequence;
                 e.TelemetryViewGrid.SplitterPositionLeft = SplitterPositionLeft;
                 e.TelemetryViewGrid.SplitterPositionRight = SplitterPositionRight;
             });
@@ -176,6 +170,19 @@ namespace Workbench.ViewModels.Telemetry
             {
                 SetProperty(ref _checkAll, value);
                 foreach (var item in SequenceList)
+                {
+                    item.IsChecked = value;
+                }
+            }
+        }
+        private bool _checkAllResister = false;
+        public bool CheckAllResister
+        {
+            get => _checkAllResister;
+            set
+            {
+                SetProperty(ref _checkAllResister, value);
+                foreach (var item in CurrentSequence.TelemetryItems)
                 {
                     item.IsChecked = value;
                 }

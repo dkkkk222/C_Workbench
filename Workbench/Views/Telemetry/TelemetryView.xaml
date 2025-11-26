@@ -726,11 +726,37 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                                          Source={StaticResource DataContextProxy},
                                                          Path=Data.TableColumns[1].IsChecked,
                                                          Converter={StaticResource Boolean2VisibilityConverter}}"/>
-                                        <DataGridTextColumn Header="下发状态" Binding="{Binding SendState }"  Width="Auto" MinWidth="60" ElementStyle="{StaticResource CenterCellStyle}" Visibility="{Binding 
+                                        <!--<DataGridTextColumn Header="下发状态" Binding="{Binding SendState }"  Width="Auto" MinWidth="60" ElementStyle="{StaticResource CenterCellStyle}" Visibility="{Binding 
                                                                      Source={StaticResource DataContextProxy},
                                                                      Path=Data.TableColumns[1].IsChecked,
-                                                                     Converter={StaticResource Boolean2VisibilityConverter}}"/>
-                                        <DataGridTemplateColumn Header="下发" Width="Auto" MinWidth="90">
+                                                                     Converter={StaticResource Boolean2VisibilityConverter}}"/>-->
+                                        <DataGridTemplateColumn Header="下发状态" Width="Auto" MinWidth="90">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Image Width="16" Height="16">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image"> 
+
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding SendState}" Value="成功">
+                                                                        <Setter Property="Source" Value="/suc.ico"/>
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding SendState}" Value="失败">
+                                                                        <Setter Property="Source" Value="/lose.ico"/>
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding SendState}" Value="下发中">
+                                                                        <Setter Property="Source" Value="/load.ico"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="下发" Width="Auto" MinWidth="90">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Button Style="{StaticResource ButtonInfo.Small}" VerticalAlignment="Center"

@@ -17,13 +17,6 @@ namespace Workbench.Models.PageModel
             set => SetProperty(ref _AllTime, value);
         }
 
-        private Sequence _currentSequence;
-        public Sequence CurrentSequence
-        {
-            get => _currentSequence;
-            set => SetProperty(ref _currentSequence, value);
-        }
-
         public System.Windows.GridLength upGridWidth = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength UpGridWidth
         {

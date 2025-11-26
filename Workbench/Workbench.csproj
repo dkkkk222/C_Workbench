@@ -759,6 +759,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="suc.ico" />
     <None Include="电源控制管理单元遥控指令表.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -776,6 +777,8 @@
     <Content Include="dwlog.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="load.ico" />
+    <Resource Include="lose.ico" />
     <Content Include="Resource\Images\SVG\SDPC_LOGO.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
