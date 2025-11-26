@@ -9,6 +9,9 @@ namespace Workbench.Utils
 {
     public class Constants
     {
+        public const string PIN_CONNECT = "芯片连接";
+        public const string SYS_CONNECT = "系统连接";
+
         public const string OldSERIAL_PORT = "串口";
         //串口
         public const string SERIAL_PORT = "UART";

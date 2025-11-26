@@ -171,7 +171,9 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                 {
+                    SelectedConnectType = string.IsNullOrEmpty(ppec.ConnectType) ? Constants.PIN_CONNECT : ppec.ConnectType;
                     SelectedCommunicationType = string.IsNullOrEmpty(ppec.CommunicationType) ? Constants.SERIAL_PORT : ppec.CommunicationType;
+                   
                     if (ppec.CommunicationType == Constants.SERIAL_PORT || ppec.CommunicationType == Constants.OldSERIAL_PORT)
                     {
                         if (!string.IsNullOrEmpty(ppec.PortName))
@@ -280,7 +282,37 @@ namespace Workbench.ViewModels.Content.ButtonBar
             }
         }
 
-        private ObservableCollection<string> _communicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN, Constants.I2C, Constants.Telemetry };
+        private ObservableCollection<string> _connectTypeList = new ObservableCollection<string> { Constants.PIN_CONNECT, Constants.SYS_CONNECT};
+        public ObservableCollection<string> ConnectTypeList
+        {
+            get => _connectTypeList;
+            set => SetProperty(ref _connectTypeList, value);
+        }
+
+        private string _selectedConnectType = Constants.PIN_CONNECT;
+        public string SelectedConnectType
+        {
+            get => _selectedConnectType;
+            set
+            {  
+                if (value == Constants.PIN_CONNECT)
+                {
+                    CommunicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN, Constants.I2C};                    
+                }
+                if (value == Constants.SYS_CONNECT)
+                {
+                    CommunicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT };//, Constants.CAN
+                }
+                SelectedCommunicationType = CommunicationTypeList[0];
+                var ppec = _projectManager.GetCachePPEC();
+                if (ppec != null)
+                    ppec.ConnectType = value;
+                SetProperty(ref _selectedConnectType, value);
+            }
+        }
+
+
+        private ObservableCollection<string> _communicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN, Constants.I2C };//, Constants.Telemetry
         public ObservableCollection<string> CommunicationTypeList
         {
             get => _communicationTypeList;
@@ -439,27 +471,40 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 var ppec = _projectManager.GetCachePPEC();
                 if (ppec != null)
                     ppec.CommunicationType = value;
-                if (value == Constants.SERIAL_PORT || value == Constants.OldSERIAL_PORT)
+                if(SelectedConnectType == Constants.PIN_CONNECT)
                 {
-                    ConnectType = 1;
-                    PortTitle = Constants.SERIAL_PORT;
-                    ChangeUart();
+                    if (value == Constants.SERIAL_PORT || value == Constants.OldSERIAL_PORT)
+                    {
+                        ConnectType = 1;
+                        PortTitle = Constants.SERIAL_PORT;
+                        ChangeUart();
+                    }
+                    if (value == Constants.CAN)
+                    {
+                        ConnectType = 2; PortTitle = Constants.CAN_PORT;
+                        ChangeCan();
+                    }
                 }
-                if (value == Constants.CAN)
+                else if (SelectedConnectType == Constants.SYS_CONNECT)
                 {
-                    ConnectType = 2; PortTitle = Constants.CAN_PORT;
-                    ChangeCan();
+                    if (value == Constants.SERIAL_PORT || value == Constants.OldSERIAL_PORT)
+                    {
+                        ConnectType = 1;
+                        PortTitle = Constants.SERIAL_PORT;
+                        ChangeUart();
+                    }
                 }
+               
                 if (value == Constants.I2C)
                 {
                     ConnectType = 3; PortTitle = Constants.I2C;
                     ChangeI2C();
                 }
-                if (value == Constants.Telemetry)
-                {
-                    ConnectType = 1; PortTitle = Constants.Telemetry;
-                    ChangeUart();
-                }
+                //if (value == Constants.Telemetry)
+                //{
+                //    ConnectType = 1; PortTitle = Constants.Telemetry;
+                //    ChangeUart();
+                //}
                 SetProperty(ref _selectedCommunicationType, value);
             }
         }

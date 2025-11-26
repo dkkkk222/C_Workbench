@@ -100,6 +100,16 @@
                     <!-- 通讯方式 -->
                     <Border Margin="8,0,0,0">
                         <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="连接类型：" Style="{DynamicResource ButtonBarTitleStyle}"/>
+                            <ComboBox Width="100" ItemsSource="{Binding ConnectTypeList}" Style="{StaticResource CustomComboBoxStyle}"
+                    SelectedItem="{Binding SelectedConnectType}"
+                    IsEnabled="{calc:Binding !IsConnected}"
+                    Height="22"/>
+                        </StackPanel>
+                    </Border>
+                    <!-- 通讯方式 -->
+                    <Border Margin="8,0,0,0">
+                        <StackPanel Orientation="Horizontal">
                             <TextBlock Text="通讯方式：" Style="{DynamicResource ButtonBarTitleStyle}"/>
                             <ComboBox Width="100" ItemsSource="{Binding CommunicationTypeList}" Style="{StaticResource CustomComboBoxStyle}"
                                       SelectedItem="{Binding SelectedCommunicationType}"

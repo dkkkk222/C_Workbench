@@ -88,6 +88,23 @@ namespace Workbench.Models
             set => SetProperty(ref _isConnecting, value);
         }
 
+        private string _connectType = Constants.PIN_CONNECT;
+
+        /// <summary>
+        /// 连接类型
+        /// </summary>
+        public string ConnectType
+        {
+            get { return _connectType; }
+            set
+            {
+                if (SetProperty(ref _connectType, value))
+                {
+
+                }
+            }
+        }
+
         private string _communicationType = Constants.SERIAL_PORT;
 
         /// <summary>
@@ -329,20 +346,49 @@ namespace Workbench.Models
 
         internal async Task<bool> ConnectAsync()
         {
-            switch (CommunicationType)
+            switch(ConnectType)
             {
-                case Constants.OldSERIAL_PORT:
-                case Constants.SERIAL_PORT:
-                    return await ConnectSerialPort();
-                case Constants.I2C:
-                    return await ConnectI2c();
-                case Constants.CAN:
-                    return await ConnectCan();
-                case Constants.Telemetry:
-                    return await ConnectTelemetry();
-                default:
+                case Constants.PIN_CONNECT:
+                    switch (CommunicationType)
+                    {
+                        case Constants.OldSERIAL_PORT:
+                        case Constants.SERIAL_PORT:
+                            return await ConnectSerialPort();
+                        case Constants.I2C:
+                            return await ConnectI2c();
+                        case Constants.CAN:
+                            return await ConnectCan();
+                        case Constants.Telemetry:
+                            return await ConnectTelemetry();
+                        default:
+                            break;
+                    }
+                    break;
+                case Constants.SYS_CONNECT:
+                    switch (CommunicationType)
+                    {
+                        case Constants.OldSERIAL_PORT:
+                        case Constants.SERIAL_PORT:
+                            return await ConnectTelemetry();
+                        default:
+                            return await ConnectTelemetry();
+                    }
                     break;
             }
+            //switch (CommunicationType)
+            //{
+            //    case Constants.OldSERIAL_PORT:
+            //    case Constants.SERIAL_PORT:
+            //        return await ConnectSerialPort();
+            //    case Constants.I2C:
+            //        return await ConnectI2c();
+            //    case Constants.CAN:
+            //        return await ConnectCan();
+            //    case Constants.Telemetry:
+            //        return await ConnectTelemetry();
+            //    default:
+            //        break;
+            //}
             return true;
         }
 

@@ -107,7 +107,7 @@ HorizontalAlignment="Center" MouseLeftButtonDown="SvgViewbox_MouseLeftButtonDown
                                 </MenuItem.Icon>
                             </MenuItem>-->
                         </MenuItem>
-                        <MenuItem Header="工程(_P)" Style="{DynamicResource MenuItemStyle}">
+                        <MenuItem Header="系统(_P)" Style="{DynamicResource MenuItemStyle}">
                             <!--<MenuItem Header="{Binding ConnectName}" Command="{Binding ConnectCommand}" IsEnabled="{Binding HasPpec}" Style="{DynamicResource MenuItemStyle}">
                                 <MenuItem.Icon>
                                     <TextBlock Text="&#xe625;" FontFamily="{StaticResource Iconfont}" Style="{StaticResource MenuItemIcon}"/>

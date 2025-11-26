@@ -17,6 +17,7 @@ using PPEC.Communication.Enum;
 using PPEC.Communication.Model;
 using Prism.Commands;
 using Prism.Events;
+using Workbench.Communication;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
@@ -247,6 +248,11 @@ namespace Workbench.ViewModels.Telemetry
 
         public DelegateCommand<TelemetryCode> SendSignCommand => new DelegateCommand<TelemetryCode>(async(e) =>
         {
+            if (!(_projectManager.CurrentProject.CommService is PcmuUartService))
+            {
+                HandyControl.Controls.MessageBox.Show("系统连接才能使用遥控下发，请重试!");
+                return;
+            }
             if (!_projectManager.CurrentProject.IsConnecting)
             {
                 MessageBox.Show("当前工程未连接", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -308,37 +314,79 @@ namespace Workbench.ViewModels.Telemetry
             foreach (var register in param.TelemetryItems)
             {
                 bool isSuc = true;
-                switch (currentProject.CommunicationType)
+                switch(currentProject.ConnectType)
                 {
-                    case Constants.OldSERIAL_PORT:
-                    case Constants.Modbus: 
-                    case Constants.I2C:
-                    case Constants.CAN:                         
+                    case Constants.PIN_CONNECT:
+                        switch (currentProject.CommunicationType)
+                        {
+                            case Constants.OldSERIAL_PORT:
+                            case Constants.Modbus:
+                            case Constants.I2C:
+                            case Constants.CAN:
+                                break;
+                        }
                         break;
-                    case Constants.Telemetry:
-                        if(register.Type == ((int)TelemetryCommandType.IndirectCommand).ToString())
+                    case Constants.SYS_CONNECT:
+                        switch (currentProject.CommunicationType)
                         {
-                            var cmd = UtilsFunc.HexStringToBytes(register.Code);
-                            var ack1 = await currentProject.CommService.SendRemoteControlAsync(cmd,1000);
-                            if (!ack1.Success)
-                            {
-                                isSuc = false;
-                                // ack1.RawCode == 0xFFFF 或超时
-                            }
+                            case Constants.SERIAL_PORT:
+                            case Constants.OldSERIAL_PORT:
+                            case Constants.Telemetry:
+                                if (register.Type == ((int)TelemetryCommandType.IndirectCommand).ToString())
+                                {
+                                    var cmd = UtilsFunc.HexStringToBytes(register.Code);
+                                    var ack1 = await currentProject.CommService.SendRemoteControlAsync(cmd, 1000);
+                                    if (!ack1.Success)
+                                    {
+                                        isSuc = false;
+                                        // ack1.RawCode == 0xFFFF 或超时
+                                    }
+                                }
+                                if (register.Type == ((int)TelemetryCommandType.NoteInstruction).ToString())
+                                {
+                                    var injection = UtilsFunc.HexStringToBytes(register.Code);
+                                    var ack1 = await currentProject.CommService.SendInjectionAsync(injection, 1000);
+                                    if (!ack1.Success)
+                                    {
+                                        isSuc = false;
+                                    }
+                                }
+                                break;
+                            case Constants.CAN:
+                                break;
                         }
-                        if (register.Type == ((int)TelemetryCommandType.NoteInstruction).ToString())
-                        {
-                            var injection = UtilsFunc.HexStringToBytes(register.Code);
-                            var ack1 = await currentProject.CommService.SendInjectionAsync(injection, 1000);
-                            if (!ack1.Success)
-                            {
-                                isSuc = false;
-                                // ack1.RawCode == 0xFFFF 或超时
-                            }
-                        }
-                        
                         break;
                 }
+                //switch (currentProject.CommunicationType)
+                //{
+                //    case Constants.OldSERIAL_PORT:
+                //    case Constants.Modbus: 
+                //    case Constants.I2C:
+                //    case Constants.CAN:                         
+                //        break;
+                //    case Constants.Telemetry:
+                //        if(register.Type == ((int)TelemetryCommandType.IndirectCommand).ToString())
+                //        {
+                //            var cmd = UtilsFunc.HexStringToBytes(register.Code);
+                //            var ack1 = await currentProject.CommService.SendRemoteControlAsync(cmd,1000);
+                //            if (!ack1.Success)
+                //            {
+                //                isSuc = false;
+                //                // ack1.RawCode == 0xFFFF 或超时
+                //            }
+                //        }
+                //        if (register.Type == ((int)TelemetryCommandType.NoteInstruction).ToString())
+                //        {
+                //            var injection = UtilsFunc.HexStringToBytes(register.Code);
+                //            var ack1 = await currentProject.CommService.SendInjectionAsync(injection, 1000);
+                //            if (!ack1.Success)
+                //            {
+                //                isSuc = false;
+                //            }
+                //        }
+                        
+                //        break;
+                //}
                 //await currentProject.CommService.SendAsync(calcResult.bytes);
                 param.CompletedNumTelemetry += 1;
                 Thread.Sleep(TimeSpan.FromMilliseconds(10));

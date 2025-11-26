@@ -363,6 +363,11 @@ namespace Workbench.ViewModels.Telemetry
             _settingChartLimitCommand ?? (_settingChartLimitCommand = new DelegateCommand<object>(SettingChartLimit));
         public DelegateCommand StartAllCommand => new DelegateCommand(() =>
         {
+            if (!(_projectManager.CurrentProject.CommService is PcmuUartService))
+            {
+                HandyControl.Controls.MessageBox.Show("系统连接才能使用遥控监控，请重试!");
+                return;
+            }
             if (!_projectManager.CurrentProject.IsConnecting)
             {
                 System.Windows.Forms.MessageBox.Show("当前工程未连接", "提示", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
@@ -373,6 +378,7 @@ namespace Workbench.ViewModels.Telemetry
                 HandyControl.Controls.MessageBox.Show("请输入遥控标识!");
                 return;
             }
+            
             if (!_timer.Enabled)
             {
                 _historyRecorderL2Db.Start();
