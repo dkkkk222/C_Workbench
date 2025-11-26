@@ -105,7 +105,7 @@
                     </StackPanel>
 
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock VerticalAlignment="Center">遥测查询:</TextBlock>
+                        <TextBlock VerticalAlignment="Center">遥测查询次数:</TextBlock>
                         <TextBox Text="{Binding SelectCount,Mode=TwoWay}"  IsEnabled="False" Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
@@ -118,7 +118,7 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
-                        <TextBlock VerticalAlignment="Center">遥测回复:</TextBlock>
+                        <TextBlock VerticalAlignment="Center">遥测回复次数:</TextBlock>
                         <TextBox Text="{Binding ReturnCount,Mode=TwoWay}"  IsEnabled="False" Margin="5,0,5,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
@@ -153,7 +153,7 @@ Command="{Binding StopAllCommand}"/>
            SelectedValue="{Binding DataContext.SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource AncestorType=UserControl}}">
 
                         </ComboBox>
-                        <TextBlock VerticalAlignment="Center">遥控查询标识:</TextBlock>
+                        <TextBlock VerticalAlignment="Center">遥测查询标识:</TextBlock>
                         <!--<ComboBox ItemsSource="{Binding TagSource}"
  DisplayMemberPath="Name"  Foreground="Black" MinWidth="50" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
  SelectedValue="{Binding SelectTag, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">

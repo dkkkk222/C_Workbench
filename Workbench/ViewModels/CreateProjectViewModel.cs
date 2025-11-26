@@ -148,8 +148,19 @@ namespace Workbench.ViewModels
                     Chip = CreateChipInfo,
                     Children = new ObservableCollection<PpecProject>()
                     {
-                            new PpecProject()
+                        new PpecProject()
+                        {
+                            UID = Guid.NewGuid().ToString(),
+                            Name = "芯片",
+                            Label = "芯片",
+                            Level = ProjectLevel.Project,
+                            Icon = IconUnicode.Develop,
+                            PPEC_Id = ppecId,
+                            ProjectId = projectId,
+                            Children=new ObservableCollection<PpecProject>()
                             {
+                                new PpecProject()
+                                {
                                 UID = Guid.NewGuid().ToString(),
                                 Name = "参数配置",
                                 Label = "参数配置",
@@ -191,40 +202,41 @@ namespace Workbench.ViewModels
                                 PPEC_Id = ppecId,
                                 ProjectId = projectId
                             },
-
-                            new PpecProject()
+                            }
+                        },
+                        new PpecProject()
+                        {
+                            UID = Guid.NewGuid().ToString(),
+                            Name = "系统",
+                            Label = "系统",
+                            Level = ProjectLevel.Project,
+                            Icon = IconUnicode.Develop,
+                            PPEC_Id = ppecId,
+                            ProjectId = projectId,
+                            Children=new ObservableCollection<PpecProject>()
                             {
-                                UID = Guid.NewGuid().ToString(),
-                                Name = "系统",
-                                Label = "系统",
-                                Level = ProjectLevel.Project,
-                                Icon = IconUnicode.Develop,
-                                PPEC_Id = ppecId,
-                                ProjectId = projectId,
-                                Children=new ObservableCollection<PpecProject>()
+                                new PpecProject()
                                 {
-                                    new PpecProject()
-                                    {
-                                        UID = Guid.NewGuid().ToString(),
-                                        Name = "遥测指令管理",
-                                        Label = "遥测指令管理",
-                                        Level = ProjectLevel.Telemetry,
-                                        Icon = IconUnicode.Develop,
-                                        PPEC_Id = ppecId,
-                                        ProjectId = projectId
-                                    },
-                                    new PpecProject()
-                                    {
-                                        UID = Guid.NewGuid().ToString(),
-                                        Name = "遥测数据管理",
-                                        Label = "遥测数据管理",
-                                        Level = ProjectLevel.TelemetryMonit,
-                                        Icon = IconUnicode.Develop,
-                                        PPEC_Id = ppecId,
-                                        ProjectId = projectId
-                                    },
-                                }
-                            },
+                                    UID = Guid.NewGuid().ToString(),
+                                    Name = "遥测指令管理",
+                                    Label = "遥测指令管理",
+                                    Level = ProjectLevel.Telemetry,
+                                    Icon = IconUnicode.Develop,
+                                    PPEC_Id = ppecId,
+                                    ProjectId = projectId
+                                },
+                                new PpecProject()
+                                {
+                                    UID = Guid.NewGuid().ToString(),
+                                    Name = "遥测数据管理",
+                                    Label = "遥测数据管理",
+                                    Level = ProjectLevel.TelemetryMonit,
+                                    Icon = IconUnicode.Develop,
+                                    PPEC_Id = ppecId,
+                                    ProjectId = projectId
+                                },
+                            }
+                        },
                     }
                 };
 
