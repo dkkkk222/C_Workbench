@@ -218,8 +218,8 @@ namespace Workbench.ViewModels
                                 new PpecProject()
                                 {
                                     UID = Guid.NewGuid().ToString(),
-                                    Name = "遥测指令管理",
-                                    Label = "遥测指令管理",
+                                    Name = "遥控指令管理",
+                                    Label = "遥控指令管理",
                                     Level = ProjectLevel.Telemetry,
                                     Icon = IconUnicode.Develop,
                                     PPEC_Id = ppecId,

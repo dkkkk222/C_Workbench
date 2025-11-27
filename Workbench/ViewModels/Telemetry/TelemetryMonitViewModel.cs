@@ -57,6 +57,8 @@ namespace Workbench.ViewModels.Telemetry
             SelectedCycle = CycleSource[0];
             InitData();
             InitListen();
+            TableColumns = InitTableColumns();
+
         }
 
         public async void InitData()
@@ -96,6 +98,14 @@ namespace Workbench.ViewModels.Telemetry
                 e.TelemetryMonitViewGrid.SplitterPositionRight = SplitterPositionRight;
             });
         }
+
+        private ObservableCollection<TableColumn> _tableColumns = new ObservableCollection<TableColumn>();
+        public ObservableCollection<TableColumn> TableColumns
+        {
+            get { return _tableColumns; }
+            set { SetProperty(ref _tableColumns, value); }
+        }
+
         private ObservableCollection<CategoryTree> _singleParamTrees = new ObservableCollection<CategoryTree>();
         public ObservableCollection<CategoryTree> SingleParamTrees
         {
@@ -512,6 +522,24 @@ namespace Workbench.ViewModels.Telemetry
         #endregion
 
         #region Method
+        private ObservableCollection<TableColumn> InitTableColumns()
+        {
+            var target = new ObservableCollection<TableColumn>();
+            string[] arr = new string[] { "序号", "名称", "数据位置(bytes)", "解析内容(bit)", "解析要求", "解析结果", "解析内容(HEX)","单位","添加到监测图" };
+            for (int i = 0; i < arr.Length; i++)
+            {
+                var tab = new TableColumn()
+                {
+                    Name = arr[i],
+                };
+                //if (arr[i] == "原始值(Dec)" || arr[i] == "原始值(Bit)")
+                //{
+                //    tab.IsChecked = false;
+                //}
+                target.Add(tab);
+            }
+            return target;
+        }
         public async void ChangeList()
         {
             List<string> isOldCheck = new List<string>();

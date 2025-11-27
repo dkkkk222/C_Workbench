@@ -177,7 +177,7 @@ Command="{Binding StopAllCommand}"/>
                         <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                                 Command="{Binding DataContext.HistoryDownloadCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                         <TextBlock Width="10"></TextBlock>
-                        <!--<hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
+                        <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
                             <hc:SplitButton.DropDownContent>
                                 <ItemsControl ItemsSource="{Binding TableColumns}">
                                     <ItemsControl.ItemsPanel>
@@ -207,7 +207,7 @@ Command="{Binding StopAllCommand}"/>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </hc:SplitButton.DropDownContent>
-                        </hc:SplitButton>-->
+                        </hc:SplitButton>
 
                     </StackPanel>
                 </DockPanel>
@@ -417,7 +417,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="解析内容(bit)" Width="Auto" MinWidth="120"
-                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -432,7 +432,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="解析要求" Width="Auto"  MinWidth="70"  Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
+                        <DataGridTemplateColumn Header="解析要求" Width="Auto"  MinWidth="70"  Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" HorizontalAlignment="Center" Margin="0,0,0,0">
@@ -447,7 +447,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                             IsReadOnly="True" 
                                             MinWidth="30"  
                                             Width="80"
-                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock  >
@@ -469,10 +469,10 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="解析内容(HEX)" Binding="{Binding ShowHexStr}" IsReadOnly="True" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
+                        <DataGridTextColumn Header="解析内容(HEX)" Binding="{Binding ShowHexStr}" IsReadOnly="True" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
 
-                        <DataGridTextColumn Header="单位"  Binding="{Binding Unit}"  IsReadOnly="True" MinWidth="50" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[9].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
-                        <DataGridTemplateColumn Header="添加到监测图" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[10].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                        <DataGridTextColumn Header="单位"  Binding="{Binding Unit}"  IsReadOnly="True" MinWidth="50" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
+                        <DataGridTemplateColumn Header="添加到监测图" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
