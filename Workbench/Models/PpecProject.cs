@@ -601,7 +601,7 @@ namespace Workbench.Models
                     tsf.ParamB = monit.ParamB;
                     tsf.ParamC = monit.ParamC;
                     tsf.ParamSign = monit.ParamSign;
-
+                    tsf.Category = monit.Category;
                     ltsf.Add(tsf);
                 }
                 service.ConfigureTelemetrySlices(ltsf);

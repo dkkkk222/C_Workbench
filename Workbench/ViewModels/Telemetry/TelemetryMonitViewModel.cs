@@ -23,6 +23,7 @@ using Workbench.Models;
 using Workbench.Utils;
 using Workbench.ViewModels.dw;
 using LinqToDB.Async;
+using Workbench.Models.dw;
 
 namespace Workbench.ViewModels.Telemetry
 {
@@ -95,6 +96,13 @@ namespace Workbench.ViewModels.Telemetry
                 e.TelemetryMonitViewGrid.SplitterPositionRight = SplitterPositionRight;
             });
         }
+        private ObservableCollection<CategoryTree> _singleParamTrees = new ObservableCollection<CategoryTree>();
+        public ObservableCollection<CategoryTree> SingleParamTrees
+        {
+            get => _singleParamTrees;
+            set => SetProperty(ref _singleParamTrees, value);
+        }
+
         public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionLeft
         {
@@ -108,6 +116,21 @@ namespace Workbench.ViewModels.Telemetry
             get => splitterPositionRight;
             set => SetProperty(ref splitterPositionRight, value);
         }
+
+        public System.Windows.GridLength splitterPositionLeft1 = new System.Windows.GridLength(0.5, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionLeft1
+        {
+            get => splitterPositionLeft1;
+            set => SetProperty(ref splitterPositionLeft1, value);
+        }
+
+        public System.Windows.GridLength splitterPositionLeft2 = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionLeft2
+        {
+            get => splitterPositionLeft2;
+            set => SetProperty(ref splitterPositionLeft2, value);
+        }
+
 
         private int _busy2;
         private void ChartDataTimer_Tick(object sender, System.Timers.ElapsedEventArgs e)
@@ -447,9 +470,144 @@ namespace Workbench.ViewModels.Telemetry
             {
             }
         });
+
+        private DelegateCommand<CategoryTree> _selectedItemChangedCommand;
+        public DelegateCommand<CategoryTree> SelectedItemChangedCommand => _selectedItemChangedCommand ??
+            (_selectedItemChangedCommand = new DelegateCommand<CategoryTree>((param) =>
+            {
+                if (param == null || param.Type != CategoryTreeType.Register) return;
+
+                //param.IsCheck = !param.IsCheck;
+                if(param.Title== Constants.AllCheck)
+                { 
+                    if(param.IsCheck)
+                    {
+                        foreach(var treeItem in SingleParamTrees)
+                        {
+                            treeItem.IsCheck = true;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var treeItem in SingleParamTrees)
+                        {
+                            treeItem.IsCheck = false;
+                        }
+                    }
+                }
+                else
+                {
+                    if(!param.IsCheck)
+                    {
+                        var allCheckItem = SingleParamTrees.Where(x => x.Title == Constants.AllCheck).FirstOrDefault();
+                        if (allCheckItem.IsCheck)
+                        {
+                            allCheckItem.IsCheck = false;
+                        }
+                    }
+                }
+                ChangeList();
+            }));
+
         #endregion
 
         #region Method
+        public async void ChangeList()
+        {
+            List<string> isOldCheck = new List<string>();
+            foreach(var selectItem in ShowTelemetryList)
+            {
+                if(selectItem.IsChecked)
+                {
+                    isOldCheck.Add(selectItem.Name);
+                    ChangeChartVisible(WpfPlotControl, false, selectItem.Name);
+                }
+            }
+            ShowTelemetryList.Clear();
+
+           
+            if (_projectManager.CurrentProject.CommService is PcmuUartService puService)
+            {
+                if(SingleParamTrees.Where(x=>x.Title== Constants.AllCheck).FirstOrDefault().IsCheck)
+                {
+                    ShowTelemetryList.AddRange(puService._tlmSlices);
+                }
+                else
+                {
+                    foreach (var selectCag in SingleParamTrees)
+                    {
+                        if(selectCag.IsCheck)
+                            ShowTelemetryList.AddRange(puService._tlmSlices.Where(x => x.Category == selectCag.Title));
+                    }
+                }                    
+            }
+            else
+            {
+                List<TelemetryMonit> ltm = new List<TelemetryMonit>();
+                List<TelemetrySliceField> ltsf = new List<TelemetrySliceField>();
+
+                using (var db = new DbContext())
+                {
+                    var monitCode = await db.TelemetryMonits.Where(t => t.ChipId == _projectManager.CurrentProject.Chip.ChipId).ToListAsync();
+                    ltm.AddRange(monitCode);
+                }
+
+                // 配置位切片解析（示例：请按你的真实遥测表配置）
+                foreach (var monit in ltm)
+                {
+                    TelemetrySliceField tsf = new TelemetrySliceField();
+                    tsf.Name = monit.Name;
+                    tsf.StartByte = monit.StartByte;
+                    tsf.ByteCount = monit.ByteLen;
+                    tsf.BitStart = monit.StartBit;
+                    tsf.BitLength = monit.BitLen;
+                    tsf.Category = monit.Category;
+                    tsf.Order = ByteOrder.BE;
+                    switch (monit.ByteLen)
+                    {
+                        case 1:
+                            tsf.As = TargetType.U8;
+                            break;
+                        case 2:
+                            tsf.As = TargetType.U16;
+                            break;
+                        case 4:
+                            tsf.As = TargetType.U32;
+                            break;
+                    }
+                    tsf.Unit = monit.Unit;
+                    tsf.ShowStr = monit.FormulaShow;
+                    tsf.ParamA = monit.ParamA;
+                    tsf.ParamB = monit.ParamB;
+                    tsf.ParamC = monit.ParamC;
+                    tsf.ParamSign = monit.ParamSign;
+
+                    ltsf.Add(tsf);
+                }
+
+                if (SingleParamTrees.Where(x => x.Title == Constants.AllCheck).FirstOrDefault().IsCheck)
+                {
+                    ShowTelemetryList.AddRange(ltsf);
+                }
+                else
+                {
+                    foreach (var selectCag in SingleParamTrees)
+                    {
+                        if (selectCag.IsCheck)
+                            ShowTelemetryList.AddRange(ltsf.Where(x => x.Category == selectCag.Title));
+                    }
+                }
+            }
+            foreach (var selectItem in ShowTelemetryList)
+            {
+                var isHave=isOldCheck.Where(x => x == selectItem.Name).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(isHave))
+                {
+                    ChangeChartVisible(WpfPlotControl, true, selectItem.Name);
+                }
+            }
+        }
         public void EventListener()
         {
             _eventAggregator.GetEvent<CloseConnectEvent>().Subscribe(() =>
@@ -490,7 +648,7 @@ namespace Workbench.ViewModels.Telemetry
             System.Windows.Application.Current.Dispatcher.InvokeAsync(() => chart.RefreshData());
             //chart.RefreshData();
         }
-
+        
         public override async void LoadData()
         {
             ShowTelemetryList.Clear();
@@ -544,7 +702,12 @@ namespace Workbench.ViewModels.Telemetry
 
                 ShowTelemetryList.AddRange(ltsf);
             }
-
+            var tree = await _projectManager.GetChipCategoryTreeForTeleMonite();
+            SingleParamTrees.AddRange(tree);
+            foreach(var checkItem in SingleParamTrees)
+            {
+                checkItem.IsCheck = true;
+            }
         }
         #endregion
 

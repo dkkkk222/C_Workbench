@@ -52,6 +52,7 @@ namespace PPEC.Communication.Model
             get=> _ShowHexStr;
             set=>SetProperty(ref _ShowHexStr,value); 
         }
+        public string Category { get; set; }
         public string ParamA { get; set; }
         public string ParamB { get; set; }
         public string ParamC { get; set; }

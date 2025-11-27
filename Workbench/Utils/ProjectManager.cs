@@ -18,6 +18,7 @@ using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Unity;
 using Workbench.Db.IService;
+using Workbench.Db.Tables;
 using Workbench.Events;
 using Workbench.Models;
 using Workbench.Models.dw;
@@ -419,6 +420,34 @@ namespace Workbench.Utils
         public async Task<List<TelemetryCode>> GetTeleLisst(string chipId)
         {
             return await _cpService.GetTeleList(CurrentProject.Chip.ChipId);
+        }
+        public async Task<List<TelemetryMonit>> GetTeleMoniteList(string chipId)
+        {
+            return await _cpService.GetTeleMoniteList(CurrentProject.Chip.ChipId);
+        }
+        public async Task<List<CategoryTree>> GetChipCategoryTreeForTeleMonite(string ctg = null, string address = null, bool isOrderByAddress = true)
+        {
+            var list = new List<CategoryTree>();
+            var infos = await GetTeleMoniteList(CurrentProject.Chip.ChipId);
+            var types = infos.Select(t => t.Category).Distinct().ToList();
+            list.Add(new CategoryTree()
+            {
+                Title = "全选",
+                Type = CategoryTreeType.Register,
+                AddressDec = "全选",
+                AddressHex = "全选"
+            });
+            foreach (var type in types)
+            {
+                list.Add(new CategoryTree()
+                {
+                    Title = type,
+                    Type = CategoryTreeType.Register,
+                    AddressDec = type,
+                    AddressHex = type
+                });
+            }
+            return list;
         }
         public async Task<List<CategoryTree>> GetChipCategoryTreeForTele(string ctg = null, string address = null, bool isOrderByAddress = true)
         {

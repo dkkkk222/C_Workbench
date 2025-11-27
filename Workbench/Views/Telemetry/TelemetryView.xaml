@@ -223,14 +223,7 @@
                                     <hc:UniformSpacingPanel  DockPanel.Dock="Left" Spacing="5">
                                         <controls_Title:StandTitle  Padding="0,0,0,0"  BordMargin="0,0,5,0" StandText="序列指令管理列表 :" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                         <TextBlock Padding="0,0,0,0"  Text="{Binding CurrentSequence.Name}" ToolTip="{Binding CurrentSequence.Name}"  TextTrimming="CharacterEllipsis"  MaxWidth="100"  FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
-                                    </hc:UniformSpacingPanel>
-                                    
-                                    <!--<Button Style="{StaticResource ButtonDefault.Small}" Margin="10,0,0,6" Width="126" VerticalAlignment="Center"
-        ToolTip="展开/收起指令目录" Content="展开指令目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"
-        Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource  AlignLeftGeometry}"/>
-                                    <Button Style="{StaticResource ButtonDefault.Small}" Margin="10,0,0,6" Width="126" VerticalAlignment="Center"
-ToolTip="展开/收起指令目录" Content="收起指令目录" Visibility="{c:Binding IsLeftOpen,FalseToVisibility=Collapsed}"
-Command="{Binding ToggleDrawerCommand}" hc:IconElement.Geometry="{StaticResource AlignRightGeometry}" />-->
+                                    </hc:UniformSpacingPanel>                                    
                                     
                                     <Border Margin="0,0,10,0">
 

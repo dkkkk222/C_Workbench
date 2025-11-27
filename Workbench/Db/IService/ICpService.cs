@@ -15,7 +15,7 @@ namespace Workbench.Db.IService
         Task<List<RegisterMeta>> GetChipRegisters(string chipId);
 
         Task<List<TelemetryCode>> GetTeleList(string chipId);
-
+        Task<List<TelemetryMonit>> GetTeleMoniteList(string chipId);
         Task<int> UpdateTelemetryAsync(TelemetryCode item);
         Task<string> AddTelemetryAsync(string chipId, TelemetryCode item);
         Task<int> DeleteTeleByChipAsync(string codeId);

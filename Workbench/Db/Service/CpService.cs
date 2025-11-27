@@ -88,6 +88,14 @@ namespace Workbench.Db.Service
             }
         }
 
+        public async Task<List<TelemetryMonit>> GetTeleMoniteList(string chipId)
+        {
+            using (var db = new DbContext())
+            {
+                return await db.TelemetryMonits.Where(t => t.ChipId == chipId).ToListAsync();
+            }
+        }
+
         // ======================= 新增的三个数据库操作 =======================
 
         public async Task SaveParamsListAsync(string chipId, IEnumerable<ParamDict> items)
