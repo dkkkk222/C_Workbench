@@ -72,6 +72,12 @@ namespace Workbench.ViewModels.Telemetry
                 e.TelemetryViewGrid.SplitterPositionLeft = SplitterPositionLeft;
                 e.TelemetryViewGrid.SplitterPositionRight = SplitterPositionRight;
             });
+
+            _eventAggregator.GetEvent<UpdateTelemetryCodeEvent>().Subscribe(async () =>
+            {
+                SingleParamTrees.Clear();
+                LoadData();
+            });
         }
 
         #region Property

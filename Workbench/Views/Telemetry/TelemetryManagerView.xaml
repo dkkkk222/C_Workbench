@@ -269,6 +269,43 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="100">
+                                <DataGridTemplateColumn.Header>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                        <TextBlock Text="选择"/>
+                                        <CheckBox IsChecked="{Binding Path=DataContext.CheckAll,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Margin="5,0,0,0">
+                                            <CheckBox.Style>
+                                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                                                            <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </CheckBox.Style>
+                                        </CheckBox>
+                                    </StackPanel>
+                                </DataGridTemplateColumn.Header>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <TextBlock Text="选择" Visibility="Hidden"/>
+                                            <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0">
+                                                <CheckBox.Style>
+                                                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                                                                <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </CheckBox.Style>
+                                            </CheckBox>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -276,6 +313,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                 <Border Grid.Row="0">
                     <StackPanel Orientation="Horizontal" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+Command="{Binding BatchDelCommand}"/>
+                        
                         <Button Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{StaticResource ShowPageButtonBackgroundColor}" BorderBrush="{StaticResource ShowPageButtonBackgroundColor}" Content="新增" Width="80" Height="30" Command="{Binding AddCommand}"
          hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:IconElement.Width="13"/>
                         

@@ -253,7 +253,8 @@ namespace Workbench.Views.Telemetry
             var tb = sender as FrameworkElement;
             var chip = tb?.DataContext as TelemetryCode;
             if (chip == null) return;
-            await vm.UpdateCode(chip);
+            await vm.UpdateCode(chip); 
+            MessageBox.Show("指令修改成功", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         private async void Add_Click(object sender, RoutedEventArgs e)
         {

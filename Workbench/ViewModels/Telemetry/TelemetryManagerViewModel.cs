@@ -21,6 +21,7 @@ using Workbench.Views.Windows;
 using Workbench.Views;
 using static LinqToDB.Reflection.Methods.LinqToDB;
 using System.IO;
+using NPOI.SS.Formula.Functions;
 
 namespace Workbench.ViewModels.Telemetry
 {
@@ -48,6 +49,20 @@ namespace Workbench.ViewModels.Telemetry
         {
             get => _telemetryItems;
             set => SetProperty(ref _telemetryItems, value);
+        }
+
+        private bool _checkAll = false;
+        public bool CheckAll
+        {
+            get => _checkAll;
+            set
+            {
+                SetProperty(ref _checkAll, value);
+                foreach (var item in TelemetryItems)
+                {
+                    item.IsChecked = value;
+                }
+            }
         }
 
         #region Method
@@ -78,6 +93,29 @@ namespace Workbench.ViewModels.Telemetry
                 }
                 
             }, nameof(ShowAddWindow));
+        });
+        public DelegateCommand BatchDelCommand => new DelegateCommand(async () =>
+        {
+            var result = MessageBox.Show("是否批量删除指令", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                
+                    try
+                    {
+                        var tempRemove = TelemetryItems.Where(t => t.IsChecked).ToArray();
+                        foreach (var seq in tempRemove)
+                        {
+                            await _cpService.DeleteTeleByChipAsync(seq.Id);                            
+                             
+                        }
+                        await GetTeleLisst();
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                
+            }
         });
         #endregion
 

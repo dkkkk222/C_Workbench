@@ -193,6 +193,8 @@ namespace Workbench.Views
                 {
                     _dialogService.Show(nameof(TelemetryManagerView), new DialogParameters(), result =>
                     {
+                        //需要更新编码表
+                        _eventAggregator.GetEvent<UpdateTelemetryCodeEvent>().Publish();
 
                     }, nameof(TeleManagerWindow));
                 }
@@ -207,7 +209,7 @@ namespace Workbench.Views
                 {
                     _dialogService.Show(nameof(TelemetryMonitManagerView), new DialogParameters(), result =>
                     {
-
+                        _eventAggregator.GetEvent<UpdateTelemetryMonitCodeEvent>().Publish();
                     }, nameof(TeleCodeManagerWindow));
                 }
             }, nameof(PassWordWindow));

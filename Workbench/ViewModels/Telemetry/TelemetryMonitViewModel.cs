@@ -97,6 +97,10 @@ namespace Workbench.ViewModels.Telemetry
                 e.TelemetryMonitViewGrid.SplitterPositionLeft = SplitterPositionLeft;
                 e.TelemetryMonitViewGrid.SplitterPositionRight = SplitterPositionRight;
             });
+            _eventAggregator.GetEvent<UpdateTelemetryMonitCodeEvent>().Subscribe(async () =>
+            {
+                LoadData();
+            });
         }
 
         private ObservableCollection<TableColumn> _tableColumns = new ObservableCollection<TableColumn>();
