@@ -127,7 +127,7 @@ namespace Workbench.ViewModels.Telemetry
             set => SetProperty(ref splitterPositionRight, value);
         }
 
-        public System.Windows.GridLength splitterPositionLeft1 = new System.Windows.GridLength(0.5, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength splitterPositionLeft1 = new System.Windows.GridLength(0.3, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionLeft1
         {
             get => splitterPositionLeft1;
@@ -551,12 +551,17 @@ namespace Workbench.ViewModels.Telemetry
                     ChangeChartVisible(WpfPlotControl, false, selectItem.Name);
                 }
             }
+            
             ShowTelemetryList.Clear();
 
            
             if (_projectManager.CurrentProject.CommService is PcmuUartService puService)
             {
-                if(SingleParamTrees.Where(x=>x.Title== Constants.AllCheck).FirstOrDefault().IsCheck)
+                foreach (var item in puService._tlmSlices)
+                {
+                    item.IsChecked = false;
+                }
+                if (SingleParamTrees.Where(x=>x.Title== Constants.AllCheck).FirstOrDefault().IsCheck)
                 {
                     ShowTelemetryList.AddRange(puService._tlmSlices);
                 }
@@ -632,6 +637,7 @@ namespace Workbench.ViewModels.Telemetry
 
                 if (!string.IsNullOrEmpty(isHave))
                 {
+                    selectItem.IsChecked = true;
                     ChangeChartVisible(WpfPlotControl, true, selectItem.Name);
                 }
             }

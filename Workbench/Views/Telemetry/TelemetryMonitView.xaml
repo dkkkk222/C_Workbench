@@ -90,11 +90,69 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{Binding SplitterPositionLeft,Mode=TwoWay}"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding SplitterPositionLeft1,Mode=TwoWay}"></ColumnDefinition>
             <ColumnDefinition Width="10"></ColumnDefinition>
             <ColumnDefinition Width="{Binding SplitterPositionRight,Mode=TwoWay}"></ColumnDefinition>
+            <ColumnDefinition Width="10"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding SplitterPositionRight2,Mode=TwoWay}"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <DockPanel LastChildFill="True" Grid.Column="0" Grid.Row="1">
+        <Border Margin="0,5,0,0" Grid.Column="0">
+            <TreeView ItemsSource="{Binding SingleParamTrees}" Background="{DynamicResource InLeftTreeViewBackGround}">
+                <TreeView.Resources>
+                    <!-- ★ 继承原样式，只追加两个 Setter -->
+                    <Style x:Key="BindableTreeViewItemStyle"
+      TargetType="TreeViewItem"
+      BasedOn="{StaticResource TreeViewItemStyle}">
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                    </Style>
+                </TreeView.Resources>
+
+                <!-- 只影响当前这棵 TreeView -->
+                <TreeView.ItemContainerStyle>
+                    <StaticResource ResourceKey="BindableTreeViewItemStyle"/>
+                </TreeView.ItemContainerStyle>
+                <!--<i:Interaction.Triggers>
+                  <i:EventTrigger EventName="SelectedItemChanged">
+                      <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 
+       CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=TreeView}}" />
+                  </i:EventTrigger>
+              </i:Interaction.Triggers>-->
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <StackPanel>
+                            <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
+                                <CheckBox IsChecked="{Binding IsCheck}" Command="{Binding DataContext.SelectedItemChangedCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
+CommandParameter="{Binding}">
+                                    <CheckBox.Style>
+                                        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsCheck}" Value="True">
+                                                    <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsCheck}" Value="false">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </CheckBox.Style>
+                                </CheckBox>
+                                <TextBlock Width="5"></TextBlock>
+                                <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
+
+
+
+
+                            </StackPanel>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </Border>
+        <GridSplitter Grid.Column="1" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
+
+        <DockPanel LastChildFill="True" Grid.Column="2" Grid.Row="1">
             <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
@@ -213,15 +271,15 @@ Command="{Binding StopAllCommand}"/>
                 </DockPanel>
             </Border>
             <Grid>
-                <Grid.ColumnDefinitions>
+                <!--<Grid.ColumnDefinitions>
                     <ColumnDefinition  Width="{Binding SplitterPositionLeft1,Mode=TwoWay}"></ColumnDefinition>
                     <ColumnDefinition Width="10"></ColumnDefinition>
                     <ColumnDefinition Width="{Binding SplitterPositionLeft2,Mode=TwoWay}"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Border Margin="0,5,0,0" Grid.Column="0">
+                </Grid.ColumnDefinitions>-->
+                <!--<Border Margin="0,5,0,0" Grid.Column="0">
                     <TreeView ItemsSource="{Binding SingleParamTrees}" Background="{DynamicResource InLeftTreeViewBackGround}">
                         <TreeView.Resources>
-                            <!-- ★ 继承原样式，只追加两个 Setter -->
+                            --><!-- ★ 继承原样式，只追加两个 Setter --><!--
                             <Style x:Key="BindableTreeViewItemStyle"
                 TargetType="TreeViewItem"
                 BasedOn="{StaticResource TreeViewItemStyle}">
@@ -230,16 +288,16 @@ Command="{Binding StopAllCommand}"/>
                             </Style>
                         </TreeView.Resources>
 
-                        <!-- 只影响当前这棵 TreeView -->
+                        --><!-- 只影响当前这棵 TreeView --><!--
                         <TreeView.ItemContainerStyle>
                             <StaticResource ResourceKey="BindableTreeViewItemStyle"/>
                         </TreeView.ItemContainerStyle>
-                        <!--<i:Interaction.Triggers>
+                        --><!--<i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">
                                 <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 
                  CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=TreeView}}" />
                             </i:EventTrigger>
-                        </i:Interaction.Triggers>-->
+                        </i:Interaction.Triggers>--><!--
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <StackPanel>
@@ -271,8 +329,8 @@ Command="{Binding StopAllCommand}"/>
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
-                </Border>
-                <GridSplitter Grid.Column="1" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
+                </Border>-->
+                <!--<GridSplitter Grid.Column="1" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>-->
 
                 <DataGrid ItemsSource="{Binding ShowTelemetryList}" Grid.Column="2" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                                       CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" RowHeight="40"
@@ -507,8 +565,8 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
             </Grid>
             
         </DockPanel>
-        <GridSplitter Grid.Column="1" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
-        <DockPanel LastChildFill="True" Grid.Column="2" Margin="0,0,0,0"  Grid.Row="1">
+        <GridSplitter Grid.Column="3" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
+        <DockPanel LastChildFill="True" Grid.Column="4" Margin="0,0,0,0"  Grid.Row="1">
             <!--BorderTipPrimary-->
             <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0"  CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
                 <Grid>
