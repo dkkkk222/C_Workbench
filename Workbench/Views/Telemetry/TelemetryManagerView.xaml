@@ -49,7 +49,7 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <Border Grid.Row="1" Padding="0,0,0,0">
-                    <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding TelemetryItems}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
+                    <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding TelemetryItemsView}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
                                   AlternationCount="2"   Background="{DynamicResource DataGridBackgroundColor}"  ColumnHeaderHeight="20"
                                       RowHeaderWidth="40" LoadingRow="SequenceGrid_LoadingRow" Sorting="SequenceGrid_Sorting" RowHeight="40"
                                       Loaded="SequenceGrid_OnLoaded" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -313,6 +313,22 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                 <Border Grid.Row="0">
                     <StackPanel Orientation="Horizontal" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <hc:SearchBar Grid.Row="3" Margin="0,0,250,0" Width="150" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+                            <hc:SearchBar.Style>
+                                <Style TargetType="hc:SearchBar" BasedOn="{StaticResource SearchBarPlus}">
+                                    <Style.Triggers>
+                                        <!-- 获得焦点时变色 -->
+                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </hc:SearchBar.Style>
+                            <hc:SearchBar.Text>
+                                <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
+                            </hc:SearchBar.Text>
+                        </hc:SearchBar>
+                        
                         <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
 Command="{Binding BatchDelCommand}"/>
                         

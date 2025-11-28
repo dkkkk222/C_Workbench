@@ -22,6 +22,8 @@ using Workbench.Views;
 using static LinqToDB.Reflection.Methods.LinqToDB;
 using System.IO;
 using NPOI.SS.Formula.Functions;
+using System.Windows.Data;
+using System.ComponentModel;
 
 namespace Workbench.ViewModels.Telemetry
 {
@@ -39,6 +41,8 @@ namespace Workbench.ViewModels.Telemetry
             _projectManager = projectManager;
             _mapper = mapper;
             _cpService = cpService;
+            TelemetryItemsView = CollectionViewSource.GetDefaultView(TelemetryItems);
+            TelemetryItemsView.Filter = TelemetryFilter;
         }
 
         private ObservableCollection<TelemetryCode> _telemetryItems = new ObservableCollection<TelemetryCode>();
@@ -48,7 +52,22 @@ namespace Workbench.ViewModels.Telemetry
         public ObservableCollection<TelemetryCode> TelemetryItems
         {
             get => _telemetryItems;
-            set => SetProperty(ref _telemetryItems, value);
+            set 
+            {
+                if (SetProperty(ref _telemetryItems, value))
+                {
+                    // 换了整个集合时，重新获取视图
+                    TelemetryItemsView = CollectionViewSource.GetDefaultView(_telemetryItems);
+                    TelemetryItemsView.Filter = TelemetryFilter;
+                }
+            }
+        }
+
+        private ICollectionView _telemetryItemsView;
+        public ICollectionView TelemetryItemsView
+        {
+            get => _telemetryItemsView;
+            private set => SetProperty(ref _telemetryItemsView, value);
         }
 
         private bool _checkAll = false;
@@ -57,15 +76,51 @@ namespace Workbench.ViewModels.Telemetry
             get => _checkAll;
             set
             {
-                SetProperty(ref _checkAll, value);
-                foreach (var item in TelemetryItems)
+                SetProperty(ref _checkAll, value);               
+                // 只对当前视图（已筛选后的数据）做全选/全不选
+                if (TelemetryItemsView == null)
+                    return;
+
+                foreach (var obj in TelemetryItemsView)
                 {
-                    item.IsChecked = value;
+                    if (obj is TelemetryCode item)
+                    {
+                        item.IsChecked = value;
+                    }
+                }
+            }
+        }
+
+        private string _treeKeyword;
+        public string TreeKeyword
+        {
+            get => _treeKeyword;
+            set
+            {
+                if (SetProperty(ref _treeKeyword, value))
+                {
+                    // 文本变化就刷新过滤
+                    TelemetryItemsView?.Refresh();
                 }
             }
         }
 
         #region Method
+        private bool TelemetryFilter(object obj)
+        {
+            if (obj is not TelemetryCode item)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(TreeKeyword))
+                return true; // 没填搜索条件时，全部显示
+
+            var keyword = TreeKeyword.Trim();
+
+            // 下面示例：按编号、名称、指令码等模糊匹配
+            return (item.Code != null && item.Code.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                || (item.Name != null && item.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                || (item.Type != null && item.Type.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+        }
         public async Task GetTeleLisst()
         {
             TelemetryItems.Clear();
