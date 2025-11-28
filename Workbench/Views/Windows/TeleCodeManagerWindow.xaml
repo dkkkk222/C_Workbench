@@ -13,7 +13,7 @@
     <comCtrl:NoTitleBarWindow.TitleBarContent>
         <comCtrl:TitleBar Background="{DynamicResource TitleBarBordBackgroundColor}">
             <comCtrl:TitleBar.Title>
-                <TextBlock Text="遥控数据管理"  Foreground="{DynamicResource TreeViewTitleBackgroundColor}"  Style="{DynamicResource TitleBarStyle}"/>
+                <TextBlock Text="遥测数据管理"  Foreground="{DynamicResource TreeViewTitleBackgroundColor}"  Style="{DynamicResource TitleBarStyle}"/>
             </comCtrl:TitleBar.Title>
         </comCtrl:TitleBar>
     </comCtrl:NoTitleBarWindow.TitleBarContent>

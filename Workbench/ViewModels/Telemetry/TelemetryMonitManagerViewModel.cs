@@ -115,6 +115,7 @@ namespace Workbench.ViewModels.Telemetry
                         Id = telemetryId,
                         ChipId = _projectManager.CurrentProject.Chip.ChipId,
                         Name = param1.CodeName,
+                        Category=param1.Category,
                         ByteName = param1.DateLocation,
                         StartByte = param1.StartLocaltion,
                         EndByte = param1.EndLocaltion,

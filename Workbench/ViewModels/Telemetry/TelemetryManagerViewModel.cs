@@ -223,6 +223,8 @@ namespace Workbench.ViewModels.Telemetry
                         ChipId = _projectManager.CurrentProject.Chip.ChipId,
                         Name = param1.CommandName,
                         Code = param1.CommandCode,
+                        Category=param1.Category,
+                        SubCategory=param1.SubCategory,
                         Type = ((int)param1.CommandType).ToString(),
                         Length = param1.CommandLength.ToString()
                     });

@@ -448,7 +448,7 @@ namespace Workbench.ViewModels.Telemetry
         {
             if (CurrentRegister == null)
             {
-                MessageBox.Show("请选择寄存器", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("所选遥控指令为空，请尝试重新打开页面或者重启软件", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (CurrentSequence == null)

@@ -205,56 +205,63 @@ namespace Workbench.Communication
         {
             if (chunk == null || chunk.Length == 0) return ("", null);
 
-            lock (_rxLock)
+            try
             {
-                _rxBuffer.AddRange(chunk);
-
-                while (true)
+                lock (_rxLock)
                 {
-                    // 找帧头
-                    int idx = -1;
-                    for (int i = 0; i <= _rxBuffer.Count - 2; i++)
+                    _rxBuffer.AddRange(chunk);
+
+                    while (true)
                     {
-                        if (_rxBuffer[i] == 0xD2 && _rxBuffer[i + 1] == 0x8C) { idx = i; break; }
-                    }
-                    if (idx < 0)
-                    {
-                        if (_rxBuffer.Count > 8192) _rxBuffer.Clear();
+                        // 找帧头
+                        int idx = -1;
+                        for (int i = 0; i <= _rxBuffer.Count - 2; i++)
+                        {
+                            if (_rxBuffer[i] == 0xD2 && _rxBuffer[i + 1] == 0x8C) { idx = i; break; }
+                        }
+                        if (idx < 0)
+                        {
+                            if (_rxBuffer.Count > 8192) _rxBuffer.Clear();
+                            break;
+                        }
+                        if (idx > 0) _rxBuffer.RemoveRange(0, idx); // 丢弃噪声
+
+                        // 最小长度：16固定 + CRC2 = 18
+                        if (_rxBuffer.Count < 18) break;
+
+                        ushort typeBe = ReadU16_BE(_rxBuffer.ToArray(), 11);
+                        // 长度：优先LE（示例 04 00），失败再试BE（兼容对端实现差异）
+                        ushort lenLE = (ushort)(_rxBuffer[14] | (_rxBuffer[15] << 8));
+                        ushort lenBE = (ushort)((_rxBuffer[14] << 8) | _rxBuffer[15]);
+
+                        bool TryConsume(ushort len)
+                        {
+                            int need = 18 + len; // 16固定 + N + 2CRC
+                            if (_rxBuffer.Count < need) return false;
+
+                            // payload & CRC
+                            byte[] pl = new byte[len];
+                            if (len > 0) _rxBuffer.CopyTo(16, pl, 0, len);
+                            ushort crcBe = ReadU16_BE(_rxBuffer.ToArray(), 16 + len);
+                            ushort calc = CRC16_CCITT_FALSE(pl);
+                            if (crcBe != calc) return false;
+
+                            // 消费帧
+                            _rxBuffer.RemoveRange(0, need);
+                            DispatchFrame(typeBe, pl);
+                            return true;
+                        }
+
+                        if (TryConsume(lenLE)) continue;
+                        if (TryConsume(lenBE)) continue;
+                        // 数据不够，等待下次
                         break;
                     }
-                    if (idx > 0) _rxBuffer.RemoveRange(0, idx); // 丢弃噪声
-
-                    // 最小长度：16固定 + CRC2 = 18
-                    if (_rxBuffer.Count < 18) break;
-
-                    ushort typeBe = ReadU16_BE(_rxBuffer.ToArray(), 11);
-                    // 长度：优先LE（示例 04 00），失败再试BE（兼容对端实现差异）
-                    ushort lenLE = (ushort)(_rxBuffer[14] | (_rxBuffer[15] << 8));
-                    ushort lenBE = (ushort)((_rxBuffer[14] << 8) | _rxBuffer[15]);
-
-                    bool TryConsume(ushort len)
-                    {
-                        int need = 18 + len; // 16固定 + N + 2CRC
-                        if (_rxBuffer.Count < need) return false;
-
-                        // payload & CRC
-                        byte[] pl = new byte[len];
-                        if (len > 0) _rxBuffer.CopyTo(16, pl, 0, len);
-                        ushort crcBe = ReadU16_BE(_rxBuffer.ToArray(), 16 + len);
-                        ushort calc = CRC16_CCITT_FALSE(pl);
-                        if (crcBe != calc) return false;
-
-                        // 消费帧
-                        _rxBuffer.RemoveRange(0, need);
-                        DispatchFrame(typeBe, pl);
-                        return true;
-                    }
-
-                    if (TryConsume(lenLE)) continue;
-                    if (TryConsume(lenBE)) continue;
-                    // 数据不够，等待下次
-                    break;
                 }
+            }
+            catch(Exception ex)
+            {
+                _log.Warn(ex);
             }
 
             // 我们不把数据写进父类 ReceiveCache（避免污染），故返回空键
@@ -263,7 +270,7 @@ namespace Workbench.Communication
         public int SelectCount = 0;
         public int ReceiveCountSuc = 0;
         public int ReceiveCountFault = 0;
-        private void DispatchFrame(ushort typeBe, byte[] payload)
+        private bool DispatchFrame(ushort typeBe, byte[] payload)
         {
             try
             {
@@ -272,7 +279,7 @@ namespace Workbench.Communication
                 if(ok)
                 {
                     ReceiveCountFault++;
-                    return;
+                    return false;
                 }
                 switch (typeBe)
                 {
@@ -300,10 +307,12 @@ namespace Workbench.Communication
                         _log.Debug($"收到未处理类型 0x{typeBe:X4}, Len={payload?.Length ?? 0}");
                         break;
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 _log.Warn("DispatchFrame 出错", ex);
+                return false;
             }
         }
 

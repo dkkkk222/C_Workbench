@@ -498,7 +498,7 @@ CommandParameter="{Binding}"/>
                             <DockPanel LastChildFill="True">
                                 <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                                     <DockPanel LastChildFill="True">
-                                        <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="序列指令配置列表|单条指令下发列表" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                        <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="序列指令配置列表 | 单条指令下发列表" StandFontSize="{DynamicResource SubHeadFontSize}"/>
                                         <TextBlock Width="10"></TextBlock>
                                         <Button Style="{StaticResource ButtonDefault.Small}" Margin="0,0,0,6" Width="126" VerticalAlignment="Center"
         ToolTip="展开/收起指令目录" Content="展开指令目录" Visibility="{c:Binding !IsLeftOpen,FalseToVisibility=Collapsed}"

@@ -162,7 +162,7 @@ CommandParameter="{Binding}">
 
                     </StackPanel>
 
-                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
                         <TextBlock VerticalAlignment="Center">遥测查询次数:</TextBlock>
                         <TextBox Text="{Binding SelectCount,Mode=TwoWay}"  IsEnabled="False" Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
                             <TextBox.Style>

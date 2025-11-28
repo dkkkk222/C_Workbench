@@ -659,12 +659,7 @@ namespace Workbench.ViewModels.Telemetry
             });
             _eventAggregator.GetEvent<OnConnctedEvent>().Subscribe(() =>
             {
-                ShowTelemetryList.Clear();
-                if (_projectManager.CurrentProject.CommService is PcmuUartService puService)
-                {
-                    ShowTelemetryList.AddRange(puService._tlmSlices);
-                }
-
+                LoadData();
             });
            
         }
@@ -740,6 +735,7 @@ namespace Workbench.ViewModels.Telemetry
 
                 ShowTelemetryList.AddRange(ltsf);
             }
+            SingleParamTrees.Clear();
             var tree = await _projectManager.GetChipCategoryTreeForTeleMonite();
             SingleParamTrees.AddRange(tree);
             foreach(var checkItem in SingleParamTrees)
