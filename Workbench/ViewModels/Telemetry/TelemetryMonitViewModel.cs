@@ -31,6 +31,10 @@ using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using HandyControl.Controls;
+using Workbench.Views.dw;
+using Workbench.Views.Windows;
+using Workbench.Views.Telemetry;
+using NPOI.SS.Formula.Functions;
 
 namespace Workbench.ViewModels.Telemetry
 {
@@ -757,6 +761,18 @@ namespace Workbench.ViewModels.Telemetry
             HasRealCharts = _watchChartGroupsForTab.Count > 0;
         });
 
+        public DelegateCommand ShowChartGroupCommand => new DelegateCommand(() =>
+        {
+            IDialogParameters dialogParameters = new DialogParameters();
+            dialogParameters.Add("viewModel", this);
+            _dialogService.Show(nameof(TelemetryChartListView), dialogParameters, r =>
+            {
+                if (r.Result == ButtonResult.OK)
+                {
+                }
+            }, nameof(ShowChartListWindows));
+        });
+
         #endregion
 
         #region Method
@@ -1009,6 +1025,13 @@ namespace Workbench.ViewModels.Telemetry
                 {
                     haveItem.TableId = item.TableId;
                     haveItem.SelectedChartValue = item.SelectedChartValue;
+
+                    var chart = WatchTelemetryChartGroups.FirstOrDefault(x => x.Id == haveItem.TableId);
+                    if(chart!=null)
+                    {
+                        ChangeChartVisble2(chart.WpfPlotControl2, haveItem.Name);
+                        ChangeChartVisble2(chart.WpfPlotControl, haveItem.Name);
+                    }
                 }
             }
         }

@@ -182,6 +182,7 @@ namespace Workbench
         private void RegisterDialog(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialogWindow<CreateProjectWindow>(nameof(CreateProjectWindow));
+            containerRegistry.RegisterDialog<TelemetryChartListView, TelemetryChartListViewModel>();
             containerRegistry.RegisterDialog<WatchChartListView, WatchChartListViewModel>();
             containerRegistry.RegisterDialog<WatchTableListView, WatchTableListViewModel>();
             containerRegistry.RegisterDialogWindow<ChipManagerWindow>(nameof(ChipManagerWindow));

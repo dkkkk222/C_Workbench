@@ -495,6 +495,7 @@
     <Compile Include="ViewModels\RecentFileViewModel.cs" />
     <Compile Include="ViewModels\RenameViewModel.cs" />
     <Compile Include="ViewModels\Telemetry\TelemetryAddViewModel.cs" />
+    <Compile Include="ViewModels\Telemetry\TelemetryChartListViewModel.cs" />
     <Compile Include="ViewModels\Telemetry\TelemetryManagerViewModel.cs" />
     <Compile Include="ViewModels\Telemetry\TelemetryMonitManagerViewModel.cs" />
     <Compile Include="ViewModels\Telemetry\TelemetryMonitViewModel.cs" />
@@ -555,6 +556,9 @@
     </Compile>
     <Compile Include="Views\Telemetry\TelemetryAddView.xaml.cs">
       <DependentUpon>TelemetryAddView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Telemetry\TelemetryChartListView.xaml.cs">
+      <DependentUpon>TelemetryChartListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Telemetry\TelemetryManagerView.xaml.cs">
       <DependentUpon>TelemetryManagerView.xaml</DependentUpon>
@@ -622,6 +626,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Telemetry\TelemetryAddView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Telemetry\TelemetryChartListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
