@@ -320,6 +320,20 @@ namespace Workbench.Models
             set => SetProperty(ref _watchChartGroups, value);
         }
 
+        private ObservableCollection<WatchChartModel> _watchTelemetryChartGroups = new ObservableCollection<WatchChartModel>();
+        public ObservableCollection<WatchChartModel> WatchTelemetryChartGroups
+        {
+            get => _watchTelemetryChartGroups;
+            set => SetProperty(ref _watchTelemetryChartGroups, value);
+        }
+
+        private ObservableCollection<TelemetrySliceField> _tlmSlices = new ObservableCollection<TelemetrySliceField>();
+        public ObservableCollection<TelemetrySliceField> TlmSlices
+        {
+            get => _tlmSlices;
+            set => SetProperty(ref _tlmSlices, value);
+        }
+
         private ObservableCollection<RegisterAddrInfo> _categoryRegisters = new ObservableCollection<RegisterAddrInfo>();
         public ObservableCollection<RegisterAddrInfo> CategoryRegisters
         {

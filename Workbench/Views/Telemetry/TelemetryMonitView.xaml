@@ -23,6 +23,7 @@
             <views:TelemetryMonitView />
         </DataTemplate>
         <cvt:RowIndexConverter x:Key="RowIndexConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="CenterCellStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -87,6 +88,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions> 
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -96,7 +98,20 @@
             <ColumnDefinition Width="10"></ColumnDefinition>
             <ColumnDefinition Width="{Binding SplitterPositionRight2,Mode=TwoWay}"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Border Margin="0,5,0,0" Grid.Column="0">
+        <Border Grid.Row="0" Padding="0,0,0,0" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal">
+                
+                <Button Content="增加遥测监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}"  BorderBrush="{DynamicResource StopButtonBackground}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
+                 HorizontalAlignment="Left" hc:IconElement.Width="14"
+                 Command="{Binding AddWatchGroupChartCommand}"/>
+                <TextBlock Width="10"></TextBlock>
+                <Button Content="展示遥测监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"   hc:IconElement.Geometry="{StaticResource   HTabGroup}"
+                 HorizontalAlignment="Left" hc:IconElement.Width="14"
+                 Command="{Binding ShowChartGroupCommand}"/>
+            </StackPanel>
+
+        </Border>
+        <Border Margin="0,5,0,0" Grid.Column="0" Grid.Row="1">
             <TreeView ItemsSource="{Binding SingleParamTrees}" Background="{DynamicResource InLeftTreeViewBackGround}">
                 <TreeView.Resources>
                     <!-- ★ 继承原样式，只追加两个 Setter -->
@@ -329,6 +344,7 @@ Command="{Binding StopAllCommand}"/>
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
+                    </TreeView>
                 </Border>-->
                 <!--<GridSplitter Grid.Column="1" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>-->
 
@@ -530,32 +546,25 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                         <DataGridTextColumn Header="解析内容(HEX)" Binding="{Binding ShowHexStr}" IsReadOnly="True" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
 
                         <DataGridTextColumn Header="单位"  Binding="{Binding Unit}"  IsReadOnly="True" MinWidth="50" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
-                        <DataGridTemplateColumn Header="添加到监测图" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
+                        <DataGridTemplateColumn Header="添加添加到监测图" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="Checked">
-                                                    <i:InvokeCommandAction Command="{Binding DataContext.CheckedCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                 CommandParameter="{Binding}" />
-                                                </i:EventTrigger>
-                                                <i:EventTrigger EventName="Unchecked">
-                                                    <i:InvokeCommandAction Command="{Binding DataContext.UnCheckedCommand,RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                 CommandParameter="{Binding}" />
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                            <CheckBox.Style>
-                                                <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsChecked}" Value="True">
-                                                            <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </CheckBox.Style>
-                                        </CheckBox>
-                                    </StackPanel>
+                                   
+                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <ComboBox ItemsSource="{Binding Path=DataContext.WatchTelemetryChartGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                         DisplayMemberPath="Header"  SelectedValuePath="Id" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}"
+                           SelectedValue="{Binding SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding DataContext.ChartTableChangeCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" PassEventArgsToCommand="True"  />
+
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+
+                                                    </ComboBox>
+                                                </StackPanel>
+                                       
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -566,7 +575,47 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
             
         </DockPanel>
         <GridSplitter Grid.Column="3" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
-        <DockPanel LastChildFill="True" Grid.Column="4" Margin="0,0,0,0"  Grid.Row="1">
+
+        <hc:TabControl Grid.Row="1" Grid.Column="4" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="False" 
+                                   IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}" IsScrollable="True" ShowOverflowButton="False"
+ItemsSource="{Binding WatchChartGroupsForTab}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentChartTab}"
+                                   Visibility="{Binding HasRealCharts, Converter={StaticResource BooleanToVisibilityConverter}}"  ShowContextMenu="False">
+            <hc:TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem">
+                    <EventSetter Event="PreviewMouseRightButtonDown" Handler="TabItem_OnRightClickSelect"/>
+                    <Setter Property="Tag"
+            Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="关闭"
+                          Command="{Binding PlacementTarget.Tag.CloseChartCommand,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                          CommandParameter="{Binding}" />
+                                <MenuItem Header="关闭其它"
+                          Command="{Binding PlacementTarget.Tag.CloseOthersChartCommand,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                          CommandParameter="{Binding}" />
+                                <MenuItem Header="关闭所有"
+                          Command="{Binding PlacementTarget.Tag.CloseAllChartCommand,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </hc:TabControl.ItemContainerStyle>
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Width="Auto">
+                        <TextBlock Text="{Binding Header}" FontWeight="Black"/>
+                        <Button   Margin="130,0,0,0" Foreground="Black" Style="{StaticResource ButtonPrimary.Small}" BorderBrush="Transparent" Background="Transparent" hc:IconElement.Geometry="{StaticResource CloseGeometry}" Command="{Binding DataContext.CloseChartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <DockPanel LastChildFill="True"  >
             <!--BorderTipPrimary-->
             <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0"  CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
                 <Grid>
@@ -622,6 +671,9 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                 <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl,Mode=TwoWay}"/>
             </Border>
         </DockPanel>
+                </DataTemplate>
 
+            </TabControl.ContentTemplate>
+        </hc:TabControl>
     </Grid>
 </UserControl>

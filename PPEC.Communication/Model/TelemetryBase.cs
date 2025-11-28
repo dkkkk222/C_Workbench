@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Mozilla;
 using Prism.Mvvm;
 
@@ -24,6 +25,20 @@ namespace PPEC.Communication.Model
     /// </summary>
     public sealed class TelemetrySliceField:BindableBase
     {
+        #region Chart
+        private string _tableId;
+        public string TableId
+        {
+            get => _tableId;
+            set => SetProperty(ref _tableId, value);
+        }
+        private string _selectedChartValue;
+        public string SelectedChartValue
+        {
+            get => _selectedChartValue;
+            set => SetProperty(ref _selectedChartValue, value);
+        }
+        #endregion
         public string Name { get; set; } = "";
         /// <summary>从有效负载payload的第几个字节开始（0-based）</summary>
         public int StartByte { get; set; }

@@ -24,6 +24,13 @@ using Workbench.Utils;
 using Workbench.ViewModels.dw;
 using LinqToDB.Async;
 using Workbench.Models.dw;
+using Prism.Services.Dialogs;
+using System.Windows.Data;
+using System.ComponentModel;
+using System.Collections.Specialized;
+using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using HandyControl.Controls;
 
 namespace Workbench.ViewModels.Telemetry
 {
@@ -38,27 +45,63 @@ namespace Workbench.ViewModels.Telemetry
         /// 更新Chart
         /// </summary>
         public System.Timers.Timer _ChartDataTimer = new System.Timers.Timer();
+        public System.Timers.Timer _refTime = new System.Timers.Timer();
         private readonly ProjectManager _projectManager;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IDialogService _dialogService;
+        private string session_id { get; set; }
         private HistoryRecorderL2db _historyRecorderL2Db { get; set; }
-        public TelemetryMonitViewModel(IEventAggregator eventAggregator, ProjectManager projectManager)
+        public TelemetryMonitViewModel(IEventAggregator eventAggregator, ProjectManager projectManager, IDialogService dialogService)
         {
             _projectManager = projectManager;
+            _dialogService = dialogService;
             _eventAggregator = eventAggregator;
             _timer.Interval = 1000; // 设置触发间隔
             _timer.Elapsed += _timer_Elapsed; ; // 设置触发事件
 
-            _ChartDataTimer.Interval = 1000;
+            _ChartDataTimer.Interval = 200;
             _ChartDataTimer.Elapsed += ChartDataTimer_Tick;
+
+            _refTime.Interval = 500; // 设置触发间隔
+            _refTime.Elapsed += RefTime_Tick; // 设置触发事件
+            session_id = _projectManager.CurrentProject.ActiveSessionId;
+            WatchTelemetryChartGroups = _projectManager.CurrentProject.WatchTelemetryChartGroups;
+            
             _projectManager.CurrentProject.EnsureSession();
             _historyRecorderL2Db = _projectManager.CurrentProject.HistoryRecorderL2Db;
-            
+            NormalizeWatchCharts();
             EventListener();
             SelectedCycle = CycleSource[0];
             InitData();
             InitListen();
             TableColumns = InitTableColumns();
+        
+            foreach (var group in WatchTelemetryChartGroups)
+            {
+                group.Inject(_dialogService);
+            }
 
+            #region Chart处理
+            _watchChartGroupsForTab = new ListCollectionView(WatchTelemetryChartGroups);
+            _watchChartGroupsForTab.Filter = o => o is WatchChartModel m && !IsPlaceholder(m);
+            if (WatchTelemetryChartGroups != null && _chartGroupsChangedHandler != null)
+                WatchTelemetryChartGroups.CollectionChanged -= _chartGroupsChangedHandler;
+            _chartGroupsChangedHandler = (s, e) =>
+            {
+                System.Windows.Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    _watchChartGroupsForTab?.Refresh();
+                    SyncCurrentChartTab();
+                    HasRealCharts = _watchChartGroupsForTab?.Count > 0;
+                });
+            };
+            WatchTelemetryChartGroups.CollectionChanged += _chartGroupsChangedHandler;
+
+            _watchChartGroupsForTab.Refresh();
+            SyncCurrentChartTab();
+            HasRealCharts = _watchChartGroupsForTab.Count > 0;
+            #endregion
+            InitOrderAndSort();
         }
 
         public async void InitData()
@@ -145,25 +188,66 @@ namespace Workbench.ViewModels.Telemetry
             set => SetProperty(ref splitterPositionLeft2, value);
         }
 
+        #region Chart
+        private NotifyCollectionChangedEventHandler _chartGroupsChangedHandler;
+        private static bool IsPlaceholder(WatchChartModel m)
+ => m != null && string.Equals(m.Header, "未选中", StringComparison.Ordinal);
+        // TabControl 专用视图（独立于默认视图，不会影响 ComboBox）
+        private readonly ListCollectionView _watchChartGroupsForTab;
+        public ICollectionView WatchChartGroupsForTab => _watchChartGroupsForTab;
 
+        private ObservableCollection<WatchChartModel> _watchTelemetryChartGroups = new ObservableCollection<WatchChartModel>();
+        /// <summary>
+        /// 数据监测图列表
+        /// </summary>
+        public ObservableCollection<WatchChartModel> WatchTelemetryChartGroups
+        {
+            get => _watchTelemetryChartGroups;
+            set => SetProperty(ref _watchTelemetryChartGroups, value);
+        }
+
+        private WatchChartModel _currentChartTab = null;
+        public WatchChartModel CurrentChartTab
+        {
+            get => _currentChartTab;
+            set => SetProperty(ref _currentChartTab, value);
+        }
+
+        private bool _hasRealCharts;
+        public bool HasRealCharts
+        {
+            get => _hasRealCharts;
+            set => SetProperty(ref _hasRealCharts, value);
+        }
+        #endregion
         private int _busy2;
         private void ChartDataTimer_Tick(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (Interlocked.Exchange(ref _busy2, 1) == 1) return;
             try
             {
+                //System.Windows.Application.Current.Dispatcher.InvokeAsync(() => {
+                //    var listLable=WpfPlotControl.Plot.GetPlottables().OfType<Scatter>().ToList();
+                //    foreach(var lab in listLable)
+                //    {
+                //        var showLine=ShowTelemetryList.Where(x => x.Name == lab.LegendText).FirstOrDefault();
+                //        if(showLine!=null)
+                //        { 
+                //            WpfPlotControl.UpdateData(lab.LegendText, showLine.SourceData);
+                //        }
+                //    }
+                //    WpfPlotControl.RefreshData(false);
+                //});
                 System.Windows.Application.Current.Dispatcher.InvokeAsync(() => {
-                    var listLable=WpfPlotControl.Plot.GetPlottables().OfType<Scatter>().ToList();
-                    foreach(var lab in listLable)
+                    foreach (var dataItem in ShowTelemetryList)
                     {
-                        var showLine=ShowTelemetryList.Where(x => x.Name == lab.LegendText).FirstOrDefault();
-                        if(showLine!=null)
+                        var chart = WatchTelemetryChartGroups.FirstOrDefault(x => x.Id == dataItem.TableId);
+                        if (chart != null)
                         {
-                            //chart.WpfPlotControl2.UpdateData(field.Desc, field.Result);
-                            WpfPlotControl.UpdateData(lab.LegendText, showLine.SourceData);
+                            chart.WpfPlotControl2.UpdateData(dataItem.Name, dataItem.SourceData);
+                            chart.WpfPlotControl.UpdateData(dataItem.Name, dataItem.SourceData);
                         }
                     }
-                    WpfPlotControl.RefreshData(false);
                 });
                 var Record=(_projectManager.CurrentProject.CommService as PcmuUartService).GetLastTelemetry(1).FirstOrDefault();
                
@@ -179,6 +263,33 @@ namespace Workbench.ViewModels.Telemetry
                 Interlocked.Exchange(ref _busy2, 0);
             }
         }
+        private int _busy4;
+        private void RefTime_Tick(object sender, EventArgs e)
+        {
+            if (Interlocked.Exchange(ref _busy4, 1) == 1) return;
+            try
+            {
+                if (System.Windows.Application.Current != null)
+                {
+                    System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        foreach (var chartTab in WatchTelemetryChartGroups.ToArray())
+                        {
+                            chartTab.WpfPlotControl2.RefreshData(false);
+                            chartTab.WpfPlotControl.RefreshData(false);
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            { _log.Error(ex); }
+            finally
+            {
+                Interlocked.Exchange(ref _busy4, 0);
+            }
+
+        }
+
         private int _busy1;
         private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -286,6 +397,16 @@ namespace Workbench.ViewModels.Telemetry
             set=>SetProperty(ref _ProjectTag, value);
         }
 
+        private string _selectedChartValue = null;
+        /// <summary>
+        /// 数据监测图列表
+        /// </summary>
+        public string SelectedChartValue
+        {
+            get => _selectedChartValue;
+            set => SetProperty(ref _selectedChartValue, value);
+        }
+
         public ObservableCollection<OptionModel> _CycleSource = new ObservableCollection<OptionModel>()
         {
             new OptionModel()
@@ -348,27 +469,7 @@ namespace Workbench.ViewModels.Telemetry
                 }
             }
         }
-
-        //public ObservableCollection<TelemetryTagTable> tagSource=new ObservableCollection<TelemetryTagTable>();
-        //public ObservableCollection<TelemetryTagTable> TagSource
-        //{
-        //    get => tagSource;
-        //    set => SetProperty(ref tagSource, value);
-        //}
-
-        //public TelemetryTagTable selectTag;
-        //public TelemetryTagTable SelectTag
-        //{
-        //    get => selectTag;
-        //    set
-        //    {
-        //        if(SetProperty(ref selectTag, value))
-        //        {
-
-        //        }
-        //        ProjectTag = value.Name;
-        //    }
-        //}
+      
 
         private ObservableCollection<TelemetrySliceField> showTelemetryList = new ObservableCollection<TelemetrySliceField>();
         public ObservableCollection<TelemetrySliceField> ShowTelemetryList
@@ -394,6 +495,113 @@ namespace Workbench.ViewModels.Telemetry
         #endregion
 
         #region Command
+        public DelegateCommand<SelectionChangedEventArgs> ChartTableChangeCommand => new DelegateCommand<SelectionChangedEventArgs>((e) =>
+        {
+            try
+            {
+                if (e == null) return;
+
+                var selectedItem = e.AddedItems?.OfType<WatchChartModel>().FirstOrDefault();
+                if (selectedItem == null) return;
+                var cb = e.Source as System.Windows.Controls.ComboBox ?? e.OriginalSource as System.Windows.Controls.ComboBox;
+                if (cb == null) return;
+
+                var row = cb.DataContext as TelemetrySliceField;
+                if (row == null) return;
+
+                var selectChart = WatchTelemetryChartGroups.FirstOrDefault(x => x.Id == row.TableId);
+                var selectTable = WatchTelemetryChartGroups.FirstOrDefault(x => x.Id == selectedItem.Id);
+
+                if (selectedItem.Header == "未选中" && selectedItem.Id != row.TableId)
+                {
+                    if (selectChart != null)
+                    {
+                        ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Name);
+                        ChangeChartVisible(selectChart.WpfPlotControl, false, row.Name);
+                    }
+                    //row.SelectedChartValue = null;
+                    row.TableId = null;
+                    return;
+                }
+
+                if (selectedItem.Id != row.TableId)
+                {
+                    if (selectChart != null)
+                    {
+                        ChangeChartVisible(selectChart.WpfPlotControl2, false, row.Name);
+                        ChangeChartVisible(selectChart.WpfPlotControl, false, row.Name);
+                    }
+                    if (selectTable != null)
+                    {
+                        ChangeChartVisble2(selectTable.WpfPlotControl2, row.Name);
+                        ChangeChartVisble2(selectTable.WpfPlotControl, row.Name);
+                        row.TableId = selectedItem.Id;
+                        // row.SelectedChartValue = selectedItem.Id;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+
+        });
+        public DelegateCommand<object> CloseChartCommand => new DelegateCommand<object>((e) =>
+        {
+            if (e is WatchChartModel chartToClose)
+            {
+                RemoveTabChart(chartToClose);
+                // 从 WatchGroups 集合中移除选中的选项卡
+                WatchTelemetryChartGroups.Remove(chartToClose);
+                // （可选）如果需要，更新 CurrentTab 指向另一个有效选项卡
+                if (CurrentChartTab == chartToClose)
+                {
+                    CurrentChartTab = WatchTelemetryChartGroups.FirstOrDefault();
+                }
+            }
+        });
+        public DelegateCommand<object> CloseOthersChartCommand => new DelegateCommand<object>((e) =>
+        {
+            if (e is WatchChartModel chartToClose)
+            {
+                foreach (var group in WatchTelemetryChartGroups.ToArray())
+                {
+                    if (group.Id == chartToClose.Id || group.Id == "placeholder")
+                        continue;
+                    RemoveTabChart(group);
+                    WatchTelemetryChartGroups.Remove(group);
+                }
+            }
+        });
+        public DelegateCommand<object> CloseAllChartCommand => new DelegateCommand<object>((e) =>
+        {
+            foreach (var group in WatchTelemetryChartGroups.ToArray())
+            {
+                if (group.Id == "placeholder")
+                    continue;
+                RemoveTabChart(group);
+                WatchTelemetryChartGroups.Remove(group);
+            }
+        });
+        public void RemoveChartWhereClose(WatchGroup thisGroup)
+        {
+            try
+            {
+                foreach (var field in thisGroup.BitFields)
+                {
+                    var selectChart = WatchTelemetryChartGroups.FirstOrDefault(x => x.Id == field.TableId);
+                    if (selectChart != null)
+                    {
+                        ChangeChartVisible(selectChart.WpfPlotControl2, false, field.Desc);
+                        ChangeChartVisible(selectChart.WpfPlotControl, false, field.Desc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+        }
         private DelegateCommand<object> _settingChartLimitCommand;
         [JsonIgnore]
         public DelegateCommand<object> SettingChartLimitCommand =>
@@ -421,6 +629,7 @@ namespace Workbench.ViewModels.Telemetry
                 _historyRecorderL2Db.Start();
                 _timer.Start();
                 _ChartDataTimer.Start();
+                _refTime.Start();
             }
                
             Application.Current.Dispatcher.InvokeAsync(() =>
@@ -436,6 +645,7 @@ namespace Workbench.ViewModels.Telemetry
                 _timer.Stop();
                 _ChartDataTimer.Stop();
                 _historyRecorderL2Db.Stop();
+                _refTime.Stop();
             }
                
             Application.Current.Dispatcher.InvokeAsync(() =>
@@ -523,9 +733,116 @@ namespace Workbench.ViewModels.Telemetry
                 ChangeList();
             }));
 
+        public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
+        {
+            var baseName = $"表{WatchTelemetryChartGroups.Where(x => x.Id != "placeholder").Count() + 1}";
+            //var header = MakeUniqueHeaderChart(baseName);
+            var header = GetMaxNumForNameChart();
+            var maxOrder = WatchTelemetryChartGroups.Any(c => c.Id != "placeholder")
+       ? WatchTelemetryChartGroups.Where(c => c.Id != "placeholder").Max(c => c.Order)
+       : 0;
+
+            WatchChartModel wpfPlotControl = new WatchChartModel("监测图", _dialogService, session_id)
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                Header = header,
+                Order = maxOrder + 1,
+            };
+            WatchTelemetryChartGroups.Add(wpfPlotControl);
+            if (CurrentChartTab == null || IsPlaceholder(CurrentChartTab))
+            {
+                CurrentChartTab = wpfPlotControl;
+            }
+            _watchChartGroupsForTab.Refresh();
+            HasRealCharts = _watchChartGroupsForTab.Count > 0;
+        });
+
         #endregion
 
         #region Method
+        public void ChangeChartVisble2(WpfPlotSteamBase chart, string paramName)
+        {
+            var existing = chart.Plot.GetPlottables().OfType<Scatter>().FirstOrDefault(s => s.LegendText == paramName);
+            if (existing != null)
+            {
+                existing.IsVisible = true;
+            }
+            else
+            {
+                chart.AddSignalData(paramName);
+            }
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(() => chart.RefreshData());
+            //chart.RefreshData();
+        }
+        private string GetMaxNumForNameChart()
+        {
+            var tables = new HashSet<string>(WatchTelemetryChartGroups.Where(x => x.Id != "placeholder").Select(x => x.Header));
+            string tableName = "";
+            if (tables.Count == 0)
+            {
+                var countTable = WatchTelemetryChartGroups.Where(x => x.Id != "placeholder").Count() + 1;
+                tableName = $"图{countTable}";
+            }
+            else
+            {
+                // 用正则提取数字部分，然后转成 int
+                int maxNumber = tables
+                    .Select(s => int.Parse(Regex.Match(s, @"\d+").Value))
+                    .Max();
+                tableName = $"图{maxNumber + 1}";
+            }
+
+            return tableName;
+        }
+        public void RemoveTabChart(WatchChartModel thisChartTab)
+        {
+            var chartParams = thisChartTab.WpfPlotControl.Plot.GetPlottables().OfType<Scatter>();
+            var chartParams2 = thisChartTab.WpfPlotControl2.Plot.GetPlottables().OfType<Scatter>();
+            
+                foreach (var field in ShowTelemetryList)
+                {
+                    var isHave = chartParams.Where(x => x.LegendText == field.Name).FirstOrDefault();
+                    var isHave2 = chartParams2.Where(x => x.LegendText == field.Name).FirstOrDefault();
+                    if (isHave != null)
+                    {
+                        field.TableId = null;
+                        field.SelectedChartValue = null;
+                    }
+                }
+           
+        }
+        private static WatchChartModel CreatePlaceholder() => new WatchChartModel("监测图")
+        {
+            Id = "placeholder",
+            Header = "未选中"
+        };
+        private void NormalizeWatchCharts()
+        {
+            if (WatchTelemetryChartGroups == null) return;
+
+            // 移除多余占位
+            var dups = WatchTelemetryChartGroups.Where(IsPlaceholder).Skip(1).ToList();
+            foreach (var d in dups) WatchTelemetryChartGroups.Remove(d);
+
+            // 没有就补一个
+            if (!WatchTelemetryChartGroups.Any(IsPlaceholder))
+                WatchTelemetryChartGroups.Insert(0, CreatePlaceholder());
+        }
+        private void SyncCurrentChartTab()
+        {
+            if (_watchChartGroupsForTab.Count == 0)
+            {
+                if (CurrentChartTab != null) CurrentChartTab = null;
+                return;
+            }
+            // 当前未选/占位/或不在视图中：选第一个真实项
+            if (CurrentChartTab == null
+                || IsPlaceholder(CurrentChartTab)
+                || !_watchChartGroupsForTab.Contains(CurrentChartTab))
+            {
+                CurrentChartTab = (WatchChartModel)_watchChartGroupsForTab.GetItemAt(0);
+            }
+        }
         private ObservableCollection<TableColumn> InitTableColumns()
         {
             var target = new ObservableCollection<TableColumn>();
@@ -535,11 +852,7 @@ namespace Workbench.ViewModels.Telemetry
                 var tab = new TableColumn()
                 {
                     Name = arr[i],
-                };
-                //if (arr[i] == "原始值(Dec)" || arr[i] == "原始值(Bit)")
-                //{
-                //    tab.IsChecked = false;
-                //}
+                }; 
                 target.Add(tab);
             }
             return target;
@@ -652,6 +965,7 @@ namespace Workbench.ViewModels.Telemetry
             {
                 _timer.Stop();
                 _ChartDataTimer.Stop();
+                _refTime.Stop();
                 Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     IsStart = false;
@@ -661,8 +975,12 @@ namespace Workbench.ViewModels.Telemetry
             {
                 LoadData();
             });
-           
-        }
+            _eventAggregator.GetEvent<SaveProjectEvent>().Subscribe(e =>
+            {
+                e.TlmSlices = ShowTelemetryList;
+            });
+
+            }
         private void SettingChartLimit(object o)
         {
             WpfPlotControl.SetXYLimit(MaxX: Chart1MaxX, MinX: Chart1MinX, MaxY: Chart1MaxY, MinY: Chart1MinY);
@@ -681,9 +999,26 @@ namespace Workbench.ViewModels.Telemetry
             System.Windows.Application.Current.Dispatcher.InvokeAsync(() => chart.RefreshData());
             //chart.RefreshData();
         }
-        
+        bool isFirst = true;
+        public void IsFirstLoad()
+        {
+            foreach(var item in _projectManager.CurrentProject.TlmSlices)
+            {
+                var haveItem = ShowTelemetryList.Where(x => x.Name == item.Name).FirstOrDefault();
+                if (haveItem!=null&&item.SelectedChartValue != null)
+                {
+                    haveItem.TableId = item.TableId;
+                    haveItem.SelectedChartValue = item.SelectedChartValue;
+                }
+            }
+        }
         public override async void LoadData()
         {
+            List< TelemetrySliceField > selectItem= new List< TelemetrySliceField >();
+            foreach(var oldItem in ShowTelemetryList.ToArray())
+            {
+                selectItem.Add(oldItem);
+            }
             ShowTelemetryList.Clear();
             if (_projectManager.CurrentProject.CommService is PcmuUartService puService)
             {
@@ -741,6 +1076,50 @@ namespace Workbench.ViewModels.Telemetry
             foreach(var checkItem in SingleParamTrees)
             {
                 checkItem.IsCheck = true;
+            }
+            await Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                foreach (var newItem in ShowTelemetryList)
+                {
+                    var haveItem = selectItem.Where(x => x.Name == newItem.Name).FirstOrDefault();
+                    if (haveItem != null)
+                    {
+                        if (haveItem.TableId != null)
+                        {
+                            newItem.TableId = haveItem.TableId;
+                            newItem.SelectedChartValue = haveItem.SelectedChartValue;
+                        }
+                    }
+                }
+            });
+            if(isFirst)
+            {
+                isFirst = false;
+                IsFirstLoad();
+            }
+        }
+        private void InitOrderAndSort()
+        { 
+
+            // WatchChartGroups
+            if (WatchTelemetryChartGroups != null)
+            {
+                // 占位项（未选中）固定最前
+                foreach (var c in WatchTelemetryChartGroups)
+                    if (c.Id == "placeholder") c.Order = int.MinValue;
+
+                for (int i = 0; i < WatchTelemetryChartGroups.Count; i++)
+                    if (WatchTelemetryChartGroups[i].Order == 0 && WatchTelemetryChartGroups[i].Id != "placeholder")
+                        WatchTelemetryChartGroups[i].Order = i; // 初始化
+
+                // 默认视图排序（ItemsControl 会用到默认视图）
+                var viewCharts = System.Windows.Data.CollectionViewSource.GetDefaultView(WatchTelemetryChartGroups);
+                viewCharts.SortDescriptions.Clear();
+                viewCharts.SortDescriptions.Add(new SortDescription(nameof(WatchChartModel.Order), ListSortDirection.Ascending));
+
+                // 你的 Tab 专用视图也加上排序（原来只有 Filter）
+                _watchChartGroupsForTab.SortDescriptions.Clear();
+                _watchChartGroupsForTab.SortDescriptions.Add(new SortDescription(nameof(WatchChartModel.Order), ListSortDirection.Ascending));
             }
         }
         #endregion

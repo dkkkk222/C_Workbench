@@ -174,6 +174,8 @@ namespace Workbench.Utils
             }
             _eventAggregator.GetEvent<SaveProjectEvent>().Publish(project);
             project.WatchChartGroups = new ObservableCollection<WatchChartModel>(project.WatchChartGroups.Where(m => m.Id!= "placeholder" && m.Header!="未选中"));
+            project.WatchTelemetryChartGroups = new ObservableCollection<WatchChartModel>(project.WatchTelemetryChartGroups.Where(m => m.Id != "placeholder" && m.Header != "未选中"));
+
             var dirPath = project.Path;
             var fileName = project.Name;
             if (!Directory.Exists(dirPath))

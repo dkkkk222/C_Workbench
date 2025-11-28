@@ -24,5 +24,11 @@ namespace Workbench.Views.Telemetry
         {
             InitializeComponent();
         }
+
+        private void TabItem_OnRightClickSelect(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TabItem ti)
+                ti.IsSelected = true;
+        }
     }
 }
