@@ -45,5 +45,12 @@ namespace Workbench.Models.PageModel
             get => splitterPositionRight;
             set => SetProperty(ref splitterPositionRight, value);
         }
+
+        public System.Windows.GridLength splitterPositionRight2 = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionRight2
+        {
+            get => splitterPositionRight2;
+            set => SetProperty(ref splitterPositionRight2, value);
+        }
     }
 }

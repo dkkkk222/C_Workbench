@@ -125,8 +125,9 @@ namespace Workbench.ViewModels.Telemetry
                     CycleSource.Where(x => x.Label == _projectManager.CurrentProject.TelemetryMonitViewGrid.SelectedCycle.Label).FirstOrDefault();
                 }
                 ProjectTag = _projectManager.CurrentProject.TelemetryMonitViewGrid.ProjectTag;
-                SplitterPositionLeft = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionLeft;
+                SplitterPositionLeft1 = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionLeft;
                 SplitterPositionRight = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionRight;             
+                SplitterPositionRight2 = _projectManager.CurrentProject.TelemetryMonitViewGrid.SplitterPositionRight2;             
 
             }
             catch (Exception ex)
@@ -141,8 +142,9 @@ namespace Workbench.ViewModels.Telemetry
 
                 e.TelemetryMonitViewGrid.ProjectTag = ProjectTag;
                 e.TelemetryMonitViewGrid.SelectedCycle = SelectedCycle;
-                e.TelemetryMonitViewGrid.SplitterPositionLeft = SplitterPositionLeft;
+                e.TelemetryMonitViewGrid.SplitterPositionLeft = SplitterPositionLeft1;
                 e.TelemetryMonitViewGrid.SplitterPositionRight = SplitterPositionRight;
+                e.TelemetryMonitViewGrid.SplitterPositionRight2 = SplitterPositionRight2; 
             });
             _eventAggregator.GetEvent<UpdateTelemetryMonitCodeEvent>().Subscribe(async () =>
             {
@@ -163,35 +165,35 @@ namespace Workbench.ViewModels.Telemetry
             get => _singleParamTrees;
             set => SetProperty(ref _singleParamTrees, value);
         }
+         
 
-        public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
-        public System.Windows.GridLength SplitterPositionLeft
-        {
-            get => splitterPositionLeft;
-            set => SetProperty(ref splitterPositionLeft, value);
-        }
-
-        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.3, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionRight
         {
             get => splitterPositionRight;
-            set => SetProperty(ref splitterPositionRight, value);
+            set => SetProperty(ref splitterPositionRight, Normalize(value));
         }
-
+        public System.Windows.GridLength splitterPositionRight2 = new System.Windows.GridLength(0.3, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength SplitterPositionRight2
+        {
+            get => splitterPositionRight2;
+            set => SetProperty(ref splitterPositionRight2, Normalize(value));
+        }
+        
         public System.Windows.GridLength splitterPositionLeft1 = new System.Windows.GridLength(0.3, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionLeft1
         {
             get => splitterPositionLeft1;
-            set => SetProperty(ref splitterPositionLeft1, value);
+            set => SetProperty(ref splitterPositionLeft1, Normalize(value));
         }
 
-        public System.Windows.GridLength splitterPositionLeft2 = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
-        public System.Windows.GridLength SplitterPositionLeft2
+        private static GridLength Normalize(GridLength value)
         {
-            get => splitterPositionLeft2;
-            set => SetProperty(ref splitterPositionLeft2, value);
+            if (value.IsStar) return value;
+            const double min = 1;
+            if (value.Value < min) return new GridLength(min);
+            return value;
         }
-
         #region Chart
         private NotifyCollectionChangedEventHandler _chartGroupsChangedHandler;
         private static bool IsPlaceholder(WatchChartModel m)

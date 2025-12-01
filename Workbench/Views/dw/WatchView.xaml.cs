@@ -5,6 +5,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Workbench.Models;
+using Workbench.ViewModels.dw;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Menu;
 
 namespace Workbench.Views.dw
 {
@@ -27,8 +29,23 @@ namespace Workbench.Views.dw
                 {
                     vm.PropertyChanged -= VmOnPropertyChanged;
                     vm.PropertyChanged += VmOnPropertyChanged;
+                     
                 }
+                if (DataContext is WatchViewModel viewModelOb)
+                {
+                    // 启动时从 VM 恢复
+                    if (viewModelOb.SplitterPositionLeft.Value > 0)
+                        SplitterPositionLeft.Width = viewModelOb.SplitterPositionLeft;
 
+                    if (viewModelOb.SplitterPositionRight.Value > 0)
+                        SplitterPositionRight.Width = viewModelOb.SplitterPositionRight;
+
+                    if (viewModelOb.SplitterPositionUp.Value > 0)
+                        SplitterPositionUp.Height = viewModelOb.SplitterPositionUp;
+
+                    if (viewModelOb.SplitterPositionDown.Value > 0)
+                        SplitterPositionDown.Height = viewModelOb.SplitterPositionDown;
+                }
                 // DataContext 变化时重新订阅
                 DataContextChanged += (_, __) =>
                 {
@@ -109,6 +126,24 @@ namespace Workbench.Views.dw
         {
             if (sender is TabItem ti)
                 ti.IsSelected = true;
+        }
+        private void ColumnSplitter_OnDragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            if (DataContext is WatchViewModel vm)
+            {
+                // 拖动结束后保存
+                vm.SplitterPositionLeft = SplitterPositionLeft.Width;
+                vm.SplitterPositionRight = SplitterPositionRight.Width;
+            }
+        }
+        private void RowSplitter_OnDragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            if (DataContext is WatchViewModel vm)
+            {
+                // 拖动结束后保存
+                vm.SplitterPositionUp = SplitterPositionUp.Height;
+                vm.SplitterPositionDown = SplitterPositionDown.Height;
+            }
         }
     }
 }

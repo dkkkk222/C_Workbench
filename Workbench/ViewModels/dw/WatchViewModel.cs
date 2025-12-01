@@ -194,28 +194,36 @@ namespace Workbench.ViewModels.dw
         public System.Windows.GridLength SplitterPositionUp
         {
             get => splitterPositionUp;
-            set => SetProperty(ref splitterPositionUp, value);
+            set => SetProperty(ref splitterPositionUp, Normalize(value));
         }
 
         public System.Windows.GridLength splitterPositionDown = new System.Windows.GridLength(2, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionDown
         {
             get => splitterPositionDown;
-            set => SetProperty(ref splitterPositionDown, value);
+            set => SetProperty(ref splitterPositionDown, Normalize(value));
         }
 
         public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionLeft
         {
             get => splitterPositionLeft;
-            set => SetProperty(ref splitterPositionLeft, value);
+            set => SetProperty(ref splitterPositionLeft, Normalize(value));
         }
 
         public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.3, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionRight
         {
             get => splitterPositionRight;
-            set => SetProperty(ref splitterPositionRight, value);
+            set => SetProperty(ref splitterPositionRight, Normalize(value));
+        }
+
+        private static System.Windows.GridLength Normalize(System.Windows.GridLength value)
+        {
+            if (value.IsStar) return value;
+            const double min = 1;
+            if (value.Value < min) return new System.Windows.GridLength(min);
+            return value;
         }
 
         private static WatchChartModel CreatePlaceholder() => new WatchChartModel("监测图")
