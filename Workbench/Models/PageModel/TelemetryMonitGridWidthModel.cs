@@ -32,7 +32,7 @@ namespace Workbench.Models.PageModel
             }
         }
 
-        public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength splitterPositionLeft = new System.Windows.GridLength(0.3, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionLeft
         {
             get => splitterPositionLeft;

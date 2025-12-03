@@ -467,12 +467,17 @@ namespace Workbench.Utils
 
             foreach (var type in types)
             {
-                list.Add(new CategoryTree()
+                var node = new CategoryTree()
                 {
                     Title = type == "0" ? "间接指令" : "注数指令",
                     Type = CategoryTreeType.Type,
-                    Children = GetTelemetryCategory(type, infos, isOrderByAddress)
-                });
+                    //Children = new ObservableCollection<CategoryTree>(GetTelemetryCategory(type, infos, isOrderByAddress))
+                };
+                foreach (var child in GetTelemetryCategory(type, infos, isOrderByAddress))
+                {
+                    node.Children.Add(child);  // ✅ 在这里 Add，Parent 会自动赋值
+                }
+                list.Add(node);
             }
             return list;
         }
@@ -484,12 +489,23 @@ namespace Workbench.Utils
             var categories = infos.Where(x=>x.Type== type).Select(t => t.Category).Distinct().ToList();
             foreach (var Category in categories)
             {
-                list.Add(new CategoryTree()
+                var node = new CategoryTree
                 {
                     Title = Category,
-                    Type = CategoryTreeType.Category,
-                    Children = GetTelemetrySubCategory(type, Category, infos, isOrderByAddress)
-                });
+                    Type = CategoryTreeType.Category
+                };
+                foreach (var child in GetTelemetrySubCategory(type, Category, infos, isOrderByAddress))
+                {
+                    node.Children.Add(child);  // ✅
+                }
+
+                list.Add(node);
+                //list.Add(new CategoryTree()
+                //{
+                //    Title = Category,
+                //    Type = CategoryTreeType.Category,
+                //    Children = new ObservableCollection<CategoryTree>(GetTelemetrySubCategory(type, Category, infos, isOrderByAddress))
+                //});
             }
             return list;
         }
@@ -501,12 +517,23 @@ namespace Workbench.Utils
             var SubCategory = infos.Where(t => t.Type == type && t.Category== category).Select(t => t.SubCategory).Distinct().ToList();
             foreach (var subCategory in SubCategory)
             {
-                list.Add(new CategoryTree()
+                var node = new CategoryTree
                 {
                     Title = subCategory,
-                    Type = CategoryTreeType.SubCategory,
-                    Children = GetTelemetry(type, category, subCategory, infos, isOrderByAddress)
-                });
+                    Type = CategoryTreeType.SubCategory
+                };
+                foreach (var child in GetTelemetry(type, category, subCategory, infos, isOrderByAddress))
+                {
+                    node.Children.Add(child);  // ✅
+                }
+
+                list.Add(node);
+                //list.Add(new CategoryTree()
+                //{
+                //    Title = subCategory,
+                //    Type = CategoryTreeType.SubCategory,
+                //    Children = new ObservableCollection<CategoryTree>(GetTelemetry(type, category, subCategory, infos, isOrderByAddress))
+                //});
             }
 
             return list;
@@ -559,7 +586,7 @@ namespace Workbench.Utils
                 {
                     Title = category,
                     Type = CategoryTreeType.Category,
-                    Children = GetSubCategory(category, infos, isOrderByAddress)
+                    Children = new ObservableCollection<CategoryTree>(GetSubCategory(category, infos, isOrderByAddress))
                 });
             }
             // ★ 在这里给每棵根树补父引用
@@ -593,7 +620,7 @@ namespace Workbench.Utils
                 {
                     Title = category,
                     Type = CategoryTreeType.Category,
-                    Children = GetSubCategory(category, infos, isOrderByAddress)
+                    Children = new ObservableCollection<CategoryTree>(GetSubCategory(category, infos, isOrderByAddress))
                 });
             }
             // ★ 在这里给每棵根树补父引用
@@ -623,7 +650,7 @@ namespace Workbench.Utils
                 {
                     Title = subCategory,
                     Type = CategoryTreeType.SubCategory,
-                    Children = GetRegister(category, subCategory, infos, isOrderByAddress)
+                    Children = new ObservableCollection<CategoryTree>(GetRegister(category, subCategory, infos, isOrderByAddress))
                 });
             }
 

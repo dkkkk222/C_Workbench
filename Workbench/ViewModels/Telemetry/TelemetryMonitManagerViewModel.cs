@@ -147,7 +147,15 @@ namespace Workbench.ViewModels.Telemetry
                 await _cpService.SaveTeleMonListAsync(_projectManager.CurrentProject.Chip.ChipId, ListTelemMon);
                 //await _cpService.SaveTeleTagListAsync(_projectManager.CurrentProject.Chip.ChipId, ListTelemTag);
                 _eventAggregator.GetEvent<TelemetryImportEvent>().Publish(_projectManager.CurrentProject);
-                MessageBox.Show("遥控指令导入完成!");
+                if(_projectManager.CurrentProject.IsConnecting)
+                {
+                    MessageBox.Show("遥控指令导入完成,请重新连接已更新!");
+                }
+                else
+                {
+                    MessageBox.Show("遥控指令导入完成!");
+                }
+                
             }
             catch (Exception ex)
             {

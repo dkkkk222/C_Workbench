@@ -235,8 +235,8 @@
                             <Border Style="{StaticResource BorderCircular}" DockPanel.Dock="Top"  Margin="5,10,0,5"  BorderBrush="Transparent" Background="Transparent">
                                 <DockPanel LastChildFill="True">
                                     <hc:UniformSpacingPanel  DockPanel.Dock="Left" Spacing="5">
-                                        <controls_Title:StandTitle  Padding="0,0,0,0"  BordMargin="0,0,5,0" StandText="序列指令管理列表 :" StandFontSize="{DynamicResource SubHeadFontSize}"/>
-                                        <TextBlock Padding="0,0,0,0"  Text="{Binding CurrentSequence.Name}" ToolTip="{Binding CurrentSequence.Name}"  TextTrimming="CharacterEllipsis"  MaxWidth="100"  FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>
+                                        <controls_Title:StandTitle  Padding="0,0,0,0"  BordMargin="0,0,5,0" StandText="序列指令管理列表" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                         
                                     </hc:UniformSpacingPanel>                                    
                                     
                                     <Border Margin="0,0,10,0">
@@ -513,14 +513,10 @@ CommandParameter="{Binding}"/>
                                 <Border Style="{StaticResource BorderCircular}" Margin="5,10,0,5" DockPanel.Dock="Top"  BorderBrush="Transparent" Background="Transparent">
                                     <DockPanel LastChildFill="True">
                                         <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="0,0,5,0" StandText="序列指令配置列表" StandFontSize="{DynamicResource SubHeadFontSize}"/>
-
-                                        <TextBlock Text=":" FontSize="16" FontWeight="Black" Visibility="{c:Binding IsShowName,FalseToVisibility=Collapsed}"></TextBlock>
-                                        <Border BorderThickness="1" BorderBrush="Black" Margin="10,0,10,8" Visibility="{c:Binding IsShowName,FalseToVisibility=Collapsed}">
-
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Padding="0,0,0,0" Text="{Binding CurrentSequence.Name}"   FontSize="16" />
-                                            </StackPanel>
-                                        </Border> 
+ 
+                                        <TextBox Margin="10,0,0,6" Text="{Binding CurrentSequence.Name}" IsReadOnly="True" Style="{StaticResource TextBox.Small}"  FontSize="16" />
+                                   
+                                        
                                         <TextBlock Padding="5,0,0,0" Text="| 单条指令下发列表" FontWeight="Black" FontSize="16" />
                                         <TextBlock Width="10"></TextBlock>
                                         <Button Style="{StaticResource ButtonDefault.Small}" Margin="0,0,0,6" Width="126" VerticalAlignment="Center"
@@ -951,10 +947,11 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 </Style>
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="读/写" Binding="{Binding ReadWrite}"  Width="70" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                <!--<DataGridTextColumn Header="读/写" Binding="{Binding ReadWrite}"  Width="70" ElementStyle="{StaticResource CenterCellStyle}"/>-->
                                 <DataGridTextColumn Header="名称" Binding="{Binding Name}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
                                 <DataGridTextColumn Header="指令(HEX)" Binding="{Binding Hex}"  Width="120" ElementStyle="{StaticResource CenterCellStyle}"/>
-                                <DataGridTextColumn Header="类型" Binding="{Binding Type}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                <DataGridTextColumn Header="指令类型" Binding="{Binding Type}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                <DataGridTextColumn Header="分类" Binding="{Binding Category}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
                                 <DataGridTextColumn Header="状态" Binding="{Binding State}"  Width="80" ElementStyle="{StaticResource CenterCellStyle}"/>
                                 <DataGridTextColumn Header="操作时间" Binding="{Binding Datetime}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
                             </DataGrid.Columns>

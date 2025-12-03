@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,7 +84,7 @@ namespace Workbench.Utils
                     Type = node.Type,
                     AddressDec = node.AddressDec,
                     AddressHex = node.AddressHex,
-                    Children = filteredChildren
+                    Children = new ObservableCollection<CategoryTree>(filteredChildren)
                 };
                 return newNode;
             }

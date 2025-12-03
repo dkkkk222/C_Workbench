@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Xml;
+using Force.DeepCloner;
 using log4net;
 using NPOI.XSSF.UserModel;
 using Org.BouncyCastle.Ocsp;
@@ -77,6 +78,20 @@ namespace Workbench.ViewModels.Telemetry
             {
                 SingleParamTrees.Clear();
                 LoadData();
+                if (IsOrderByCategory)
+                {
+                    SearchCategoryTree("", IsOrderByAddress);
+                }
+                else if (IsOrderByName)
+                {
+                   await OrderByType("", OrderByTypeEnum.Name);
+                }
+                else if (IsOrderByAddress)
+                {
+                    await OrderByType("", OrderByTypeEnum.Address);
+                }
+
+                GetTeleInit();
             });
         }
 
@@ -450,7 +465,8 @@ namespace Workbench.ViewModels.Telemetry
                     Name = register.Name,
                     Type= register.Type=="0"?"间接指令":"注数指令",
                     State = isSuc?"成功":"失败",
-                    Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                    Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Category= register.Category
                 };
                 await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -529,6 +545,62 @@ namespace Workbench.ViewModels.Telemetry
                 HistoryToExcel(path);
             }
         }));
+
+        public DelegateCommand<Sequence> RemoveSequenceListCommand => new DelegateCommand<Sequence>((e) =>
+        {
+            SequenceList.Remove(e);
+        });
+        public DelegateCommand<Sequence> CopySequenceListCommand => new DelegateCommand<Sequence>((e) =>
+        {
+            var clone = JsonHelper.DeepClone(e);
+            clone.Id = Guid.NewGuid().ToString("N");
+            SequenceList.Add(clone);
+        });
+        public DelegateCommand<Sequence> MoveUpSequenceListCommand => new DelegateCommand<Sequence>((e) =>
+        {
+            var index = SequenceList.IndexOf(e);
+            if (index > 0)
+                SequenceList.Move(index, index - 1);
+            CollectionViewSource.GetDefaultView(SequenceList).Refresh();
+        });
+        public DelegateCommand<Sequence> MoveDownSequenceListCommand => new DelegateCommand<Sequence>((e) =>
+        {
+            int idx = SequenceList.IndexOf(e);
+            if (idx < SequenceList.Count - 1)
+                SequenceList.Move(idx, idx + 1);
+            CollectionViewSource.GetDefaultView(SequenceList).Refresh();
+        });
+        private DelegateCommand<TelemetryCode> _removeSequenceItemCommand;
+        public DelegateCommand<TelemetryCode> RemoveSequenceItemCommand => _removeSequenceItemCommand ?? (_removeSequenceItemCommand = new DelegateCommand<TelemetryCode>((param) =>
+        {
+            CurrentSequence.TelemetryItems.Remove(param);
+        }));
+
+        private DelegateCommand<TelemetryCode> _moveUpCommand;
+        public DelegateCommand<TelemetryCode> MoveUpCommand => _moveUpCommand ?? (_moveUpCommand = new DelegateCommand<TelemetryCode>((param) =>
+        {
+            var index = CurrentSequence.TelemetryItems.IndexOf(param);
+            if (index > 0)
+                CurrentSequence.TelemetryItems.Move(index, index - 1);
+            CollectionViewSource.GetDefaultView(CurrentSequence.TelemetryItems).Refresh();
+        }));
+
+        private DelegateCommand<TelemetryCode> _moveDownCommand;
+        public DelegateCommand<TelemetryCode> MoveDownCommand => _moveDownCommand ?? (_moveDownCommand = new DelegateCommand<TelemetryCode>((param) =>
+        {
+            int idx = CurrentSequence.TelemetryItems.IndexOf(param);
+            if (idx < CurrentSequence.TelemetryItems.Count - 1)
+                CurrentSequence.TelemetryItems.Move(idx, idx + 1);
+            CollectionViewSource.GetDefaultView(CurrentSequence.TelemetryItems).Refresh();
+        }));
+
+        private DelegateCommand<TelemetryCode> _copyCommand;
+        public DelegateCommand<TelemetryCode> CopyCommand => _copyCommand ?? (_copyCommand = new DelegateCommand<TelemetryCode>((param) =>
+        {
+            var clone = param.DeepClone();
+            clone.Id = Guid.NewGuid().ToString("N");
+            CurrentSequence.TelemetryItems.Add(clone);
+        }));
         #endregion
         public override async void LoadData()
         {
@@ -556,6 +628,10 @@ namespace Workbench.ViewModels.Telemetry
                 }
                 else if (IsOrderByAddress)
                 {
+    //                var tempList = SingleParamTrees.GetMaxDepthLeaves()
+    //.OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue)
+    //.ToList();
+    
                     OrderByType(value, OrderByTypeEnum.Address);
                 }
             }
@@ -647,7 +723,7 @@ namespace Workbench.ViewModels.Telemetry
             var tempList = source.GetMaxDepthLeaves().ToList().OrderBy(x => x.Title, new SerialAsistant.Utils.ChineseNaturalSortComparerWithRegex());
             if (NameOrAddress == OrderByTypeEnum.Address)
             {
-                tempList = SingleParamTrees.GetMaxDepthLeaves().ToList().OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue);
+                tempList = SingleParamTrees.GetMaxDepthLeaves().ToList().OrderBy(n => ulong.TryParse(n.AddressDec?.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var v) ? v : ulong.MaxValue);
 
             }
             if (!string.IsNullOrEmpty(value))
@@ -709,7 +785,8 @@ namespace Workbench.ViewModels.Telemetry
                 var workbook = new XSSFWorkbook();
                 var sheet = workbook.CreateSheet("Sheet1");
                 var headerRow = sheet.CreateRow(0);
-                string[] headerColumns = new string[] { "读/写", "名称", "指令(HEX)","类型", "状态", "操作时间" };
+                //string[] headerColumns = new string[] { "读/写", "名称", "指令(HEX)","类型", "状态", "操作时间" };
+                string[] headerColumns = new string[] { "名称", "指令(HEX)","指令类型","分类", "状态", "操作时间" };
                 for (int i = 0; i < headerColumns.Length; i++)
                 {
                     headerRow.CreateCell(i).SetCellValue(headerColumns[i]);
@@ -719,10 +796,11 @@ namespace Workbench.ViewModels.Telemetry
                 foreach (var history in ReadWriteHistory)
                 {
                     var row = sheet.CreateRow(startRow);
-                    row.CreateCell(0).SetCellValue(history.ReadWrite);
-                    row.CreateCell(1).SetCellValue(history.Name);
-                    row.CreateCell(2).SetCellValue(history.Hex);
-                    row.CreateCell(3).SetCellValue(history.Type);
+                    //row.CreateCell(0).SetCellValue(history.ReadWrite);
+                    row.CreateCell(0).SetCellValue(history.Name);
+                    row.CreateCell(1).SetCellValue(history.Hex);
+                    row.CreateCell(2).SetCellValue(history.Type);
+                    row.CreateCell(3).SetCellValue(history.Category);
                     row.CreateCell(4).SetCellValue(history.State);
                     row.CreateCell(5).SetCellValue(history.Datetime);
                     startRow++;

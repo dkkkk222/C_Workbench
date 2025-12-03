@@ -167,13 +167,13 @@ namespace Workbench.ViewModels.Telemetry
         }
          
 
-        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.3, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength splitterPositionRight = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionRight
         {
             get => splitterPositionRight;
             set => SetProperty(ref splitterPositionRight, Normalize(value));
         }
-        public System.Windows.GridLength splitterPositionRight2 = new System.Windows.GridLength(0.3, System.Windows.GridUnitType.Star);
+        public System.Windows.GridLength splitterPositionRight2 = new System.Windows.GridLength(1.1, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionRight2
         {
             get => splitterPositionRight2;

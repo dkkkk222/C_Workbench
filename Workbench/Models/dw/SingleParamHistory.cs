@@ -16,6 +16,8 @@ namespace Workbench.Models.dw
         public string Datetime { get; set; }
         public string Type { get; set; }
 
+        public string Category { get; set; }
+
     }
 
     public class SingleParamHistoryState
