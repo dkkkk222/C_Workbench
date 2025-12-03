@@ -103,7 +103,7 @@ namespace PPEC.Communication.Common
                 if (string.IsNullOrEmpty(excelData))
                     return null;
                 // 按换行符分割
-                var lines = excelData.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                var lines = excelData.Split(new[] { '\n', '\r',';' }, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var line in lines)
                 {

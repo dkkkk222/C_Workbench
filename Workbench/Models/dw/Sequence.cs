@@ -19,7 +19,10 @@ namespace Workbench.Models.dw
         public string Name
         {
             get => _name;
-            set => SetProperty(ref _name, value);
+            set
+            {
+                SetProperty(ref _name, value);
+            } 
         }
 
         private int _paramPushInterval = 5;

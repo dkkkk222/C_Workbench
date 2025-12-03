@@ -311,9 +311,16 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                 </Border>
 
-                <Border Grid.Row="0">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <hc:SearchBar Grid.Row="3" Margin="0,0,250,0" Width="150" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
+
+                <Border Grid.Row="0" >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <!-- 左边占满剩余空间 -->
+                            <ColumnDefinition Width="*" />
+                            <!-- 右边根据内容自适应宽度 -->
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <hc:SearchBar Grid.Row="3"  HorizontalAlignment="Left" Margin="0,0,0,0" Height="30" Width="150" hc:InfoElement.Placeholder="请输入搜索关键字" hc:InfoElement.ShowClearButton="True">
                             <hc:SearchBar.Style>
                                 <Style TargetType="hc:SearchBar" BasedOn="{StaticResource SearchBarPlus}">
                                     <Style.Triggers>
@@ -328,20 +335,24 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 <Binding Path="TreeKeyword" UpdateSourceTrigger="PropertyChanged"/>
                             </hc:SearchBar.Text>
                         </hc:SearchBar>
-                        
-                        <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+
+                            <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
 Command="{Binding BatchDelCommand}"/>
-                        
-                        <Button Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{StaticResource ShowPageButtonBackgroundColor}" BorderBrush="{StaticResource ShowPageButtonBackgroundColor}" Content="新增" Width="80" Height="30" Command="{Binding AddCommand}"
+
+                            <Button Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{StaticResource ShowPageButtonBackgroundColor}" BorderBrush="{StaticResource ShowPageButtonBackgroundColor}" Content="新增" Width="80" Height="30" Command="{Binding AddCommand}"
          hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:IconElement.Width="13"/>
-                        
-                        <Button Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{StaticResource StopButtonBackground}" BorderBrush="{StaticResource StopButtonBackground}" Content="导出" Width="80" Height="30" Command="{Binding ExportCommand}"
+
+                            <Button Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{StaticResource StopButtonBackground}" BorderBrush="{StaticResource StopButtonBackground}" Content="导出" Width="80" Height="30" Command="{Binding ExportCommand}"
                                 hc:IconElement.Geometry="{StaticResource PinMaximize}" hc:IconElement.Width="13"/>
-                        
-                        <Button Style="{StaticResource ButtonPrimary}" Background="{StaticResource ShowPageButtonBackgroundColor}" Content="导入" Width="80" Height="30" Command="{Binding ImportCommand}"
+
+                            <Button Style="{StaticResource ButtonPrimary}" Background="{StaticResource ShowPageButtonBackgroundColor}" Content="导入" Width="80" Height="30" Command="{Binding ImportCommand}"
                                 hc:IconElement.Geometry="{StaticResource SaveGeometry}" hc:IconElement.Width="13"/>
 
-                    </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    
                 </Border>
             </Grid>
         </Border>

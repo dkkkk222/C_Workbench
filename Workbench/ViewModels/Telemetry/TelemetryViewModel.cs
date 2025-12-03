@@ -195,11 +195,27 @@ namespace Workbench.ViewModels.Telemetry
             }
         }
 
+        private bool _IsShowName = false;
+        public bool IsShowName
+        {
+            get => _IsShowName;
+            set
+            {
+                SetProperty(ref _IsShowName, value);
+            }
+        }
         private Sequence _currentSequence;
         public Sequence CurrentSequence
         {
             get => _currentSequence;
-            set => SetProperty(ref _currentSequence, value);
+            set
+            {
+                if (value != null)
+                    IsShowName = true;
+                else
+                    IsShowName = false;
+                SetProperty(ref _currentSequence, value);                
+            } 
         }
 
         private TelemetryCode _currentRegister;
