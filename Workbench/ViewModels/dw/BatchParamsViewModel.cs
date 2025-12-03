@@ -644,14 +644,18 @@ namespace Workbench.ViewModels.dw
                 MessageBox.Show("请选择序列", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            
-            var SelectAddress = SingleParamTrees.GetDeepestChecked().ToList();
+            var SelectAddress = SingleParamTrees.GetDeepestCheckedWithCheckedAncestors().ToList();
+            //var SelectAddress = SingleParamTrees.GetDeepestChecked().ToList();
             foreach (var item in SelectAddress)
             {
-                var  register= _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == item.Title);
-                var clone = JsonHelper.DeepClone(register);
-                clone.Id = Guid.NewGuid().ToString("N");
-                CurrentSequence.Items.Add(clone);
+                if (item.AddressHex != null)
+                {
+                    var register = _projectManager.CurrentProject.Chip.ChipRegisterInfo.Select(t => t.AddrInfo).FirstOrDefault(t => t.Name == item.Title);
+                    var clone = JsonHelper.DeepClone(register);
+                    clone.Id = Guid.NewGuid().ToString("N");
+                    CurrentSequence.Items.Add(clone);
+                }
+                
                 item.IsCheck = false;
             }
             this.BatchAllCheck = false;

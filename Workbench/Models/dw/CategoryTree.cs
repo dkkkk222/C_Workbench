@@ -40,7 +40,16 @@ namespace Workbench.Models.dw
             get => _isCheck;
             set
             {
-                SetProperty(ref _isCheck, value);               
+                if(SetProperty(ref _isCheck, value))
+                {
+                    if (Children != null)
+                    {
+                        foreach (var child in Children)
+                        {
+                            child.IsCheck = value;
+                        }
+                    }
+                }
             } 
         }
     }

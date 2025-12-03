@@ -251,7 +251,7 @@ namespace Workbench.ViewModels.Telemetry
                 CurrentRegister = ListTele.FirstOrDefault(t => t.Name == param.Title);
                 param.IsCheck = !param.IsCheck;
 
-            }));
+            })); 
 
         public DelegateCommand<object> SelectAllCommand => new DelegateCommand<object>((e) =>
         {
@@ -472,14 +472,17 @@ namespace Workbench.ViewModels.Telemetry
                 MessageBox.Show("请选择序列", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            var SelectAddress = SingleParamTrees.GetDeepestChecked().ToList();
+            var SelectAddress = SingleParamTrees.GetDeepestCheckedWithCheckedAncestors().ToList();
+            //var SelectAddress = SingleParamTrees.GetDeepestChecked().ToList();
             foreach (var item in SelectAddress)
             {
-                var register = ListTele.FirstOrDefault(t => t.Name == item.Title);
-                var clone = JsonHelper.DeepClone(register);
-                clone.Id = Guid.NewGuid().ToString("N");
-                CurrentSequence.TelemetryItems.Add(clone);
+                if(item.AddressHex!=null)
+                {
+                    var register = ListTele.FirstOrDefault(t => t.Name == item.Title);
+                    var clone = JsonHelper.DeepClone(register);
+                    clone.Id = Guid.NewGuid().ToString("N");
+                    CurrentSequence.TelemetryItems.Add(clone);
+                }               
                 item.IsCheck = false;
             }
             this.BatchAllCheck = false;

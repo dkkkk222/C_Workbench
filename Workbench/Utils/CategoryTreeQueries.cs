@@ -191,5 +191,87 @@ namespace Workbench.Utils
                 if (leaf != null) leaf.IsCheck = isChecked;
             }
         }
+        /* ========== D. 最下级已选节点 + 其所有“已选”的上级节点 ========== */
+
+        /// <summary>
+        /// 整片森林中：获取所有“最下级已选节点”及其所有【IsCheck==true】的祖先节点。
+        /// （未勾选的上级节点不会返回）
+        /// </summary>
+        public static IEnumerable<CategoryTree> GetDeepestCheckedWithCheckedAncestors(this IEnumerable<CategoryTree> roots)
+        {
+            if (roots == null)
+                return Enumerable.Empty<CategoryTree>();
+
+            var result = new HashSet<CategoryTree>();   // 用来去重
+            foreach (var r in roots)
+            {
+                if (r != null)
+                    CollectDeepestCheckedWithCheckedAncestors(r, new List<CategoryTree>(), result);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 单棵树版本
+        /// </summary>
+        public static IEnumerable<CategoryTree> GetDeepestCheckedWithCheckedAncestors(this CategoryTree root)
+        {
+            if (root == null)
+                return Enumerable.Empty<CategoryTree>();
+
+            var result = new HashSet<CategoryTree>();
+            CollectDeepestCheckedWithCheckedAncestors(root, new List<CategoryTree>(), result);
+            return result;
+        }
+
+        /// <summary>
+        /// DFS：收集“最下级已选节点” + 其所有【已勾选】的祖先到 result 中。
+        /// 返回：该子树中是否存在勾选的节点（包括自己和后代）。
+        /// 规则：
+        ///   当前 IsCheck == true 且后代无勾选 => 当前是“最下级已选”；
+        ///   然后沿 path 把 IsCheck==true 的节点加入 result。
+        /// </summary>
+        private static bool CollectDeepestCheckedWithCheckedAncestors(
+            CategoryTree node,
+            List<CategoryTree> path,
+            HashSet<CategoryTree> result)
+        {
+            if (node == null)
+                return false;
+
+            // 进入当前节点：放进路径
+            path.Add(node);
+
+            bool descendantHasChecked = false;
+            var children = node.Children;
+            if (children != null && children.Count > 0)
+            {
+                foreach (var ch in children)
+                {
+                    if (CollectDeepestCheckedWithCheckedAncestors(ch, path, result))
+                        descendantHasChecked = true;
+                }
+            }
+
+            bool thisChecked = node.IsCheck;
+            bool hasCheckedInSubtree = thisChecked || descendantHasChecked;
+
+            // 当前节点是“最下级已选”：自己勾选，且后代里没人勾选
+            if (thisChecked && !descendantHasChecked)
+            {
+                // 沿着整条路径，把【已勾选】的节点加入结果（祖先 + 当前）
+                foreach (var n in path)
+                {
+                    if (n != null && n.IsCheck)   // ⭐ 这里过滤掉没选中的节点
+                        result.Add(n);            // HashSet 去重
+                }
+            }
+
+            // 退出当前节点：从路径中移除
+            path.RemoveAt(path.Count - 1);
+
+            return hasCheckedInSubtree;
+        }
     }
 }
