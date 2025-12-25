@@ -218,6 +218,7 @@
                                             </Style>
                                         </CheckBox.Style>
                                     </CheckBox>
+                                    <TextBlock Width="5"></TextBlock>
                                     <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
                                     <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
                                         <CheckBox IsChecked="{Binding IsCheck}">

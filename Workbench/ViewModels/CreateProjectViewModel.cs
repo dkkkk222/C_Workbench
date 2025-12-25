@@ -165,7 +165,7 @@ namespace Workbench.ViewModels
                                 Name = "参数配置",
                                 Label = "参数配置",
                                 Level = ProjectLevel.Project,
-                                Icon = IconUnicode.Develop,
+                                Icon = IconUnicode.ParamSet,
                                 PPEC_Id = ppecId,
                                 ProjectId = projectId,
                                 Children=new ObservableCollection<PpecProject>()
@@ -176,7 +176,7 @@ namespace Workbench.ViewModels
                                         Name = "单参数",
                                         Label = "单参数",
                                         Level = ProjectLevel.SingleParams,
-                                        Icon = IconUnicode.Develop,
+                                        Icon = IconUnicode.ParamSet1,
                                         PPEC_Id = ppecId,
                                         ProjectId = projectId
                                     },
@@ -186,7 +186,7 @@ namespace Workbench.ViewModels
                                         Name = "批量参数",
                                         Label = "批量参数",
                                         Level = ProjectLevel.BatchParams,
-                                        Icon = IconUnicode.Develop,
+                                        Icon = IconUnicode.ParamSet1,
                                         PPEC_Id = ppecId,
                                         ProjectId = projectId
                                     },
@@ -210,7 +210,7 @@ namespace Workbench.ViewModels
                             Name = "系统",
                             Label = "系统",
                             Level = ProjectLevel.Project,
-                            Icon = IconUnicode.Develop,
+                            Icon = IconUnicode.System,
                             PPEC_Id = ppecId,
                             ProjectId = projectId,
                             Children=new ObservableCollection<PpecProject>()
@@ -221,7 +221,7 @@ namespace Workbench.ViewModels
                                     Name = "遥控指令管理",
                                     Label = "遥控指令管理",
                                     Level = ProjectLevel.Telemetry,
-                                    Icon = IconUnicode.Develop,
+                                    Icon = IconUnicode.Telemetry,
                                     PPEC_Id = ppecId,
                                     ProjectId = projectId
                                 },
@@ -231,7 +231,7 @@ namespace Workbench.ViewModels
                                     Name = "遥测数据管理",
                                     Label = "遥测数据管理",
                                     Level = ProjectLevel.TelemetryMonit,
-                                    Icon = IconUnicode.Develop,
+                                    Icon = IconUnicode.Telemetry,
                                     PPEC_Id = ppecId,
                                     ProjectId = projectId
                                 },

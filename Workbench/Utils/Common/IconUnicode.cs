@@ -27,5 +27,12 @@ namespace Workbench.Utils.Common
         /// 调试
         /// </summary>
         public const string Debug = "&#xef4a;";
+        /// <summary>
+        /// 遥测
+        /// </summary>
+        public const string Telemetry = "&#xe62d;";
+        public const string System = "&#xe611;";
+        public const string ParamSet1 = "&#xe637;";
+        public const string ParamSet = "&#xe607;";
     }
 }
