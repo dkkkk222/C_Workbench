@@ -106,6 +106,10 @@ namespace Workbench.ViewModels.Telemetry
             HasRealCharts = _watchChartGroupsForTab.Count > 0;
             #endregion
             InitOrderAndSort();
+            if(WatchTelemetryChartGroups.Count==1)
+            {
+                AddWhatch();
+            }
         }
 
         public async void InitData()
@@ -741,12 +745,16 @@ namespace Workbench.ViewModels.Telemetry
 
         public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
         {
+            AddWhatch();
+        });
+
+        public void AddWhatch()
+        {
             var baseName = $"表{WatchTelemetryChartGroups.Where(x => x.Id != "placeholder").Count() + 1}";
             //var header = MakeUniqueHeaderChart(baseName);
             var header = GetMaxNumForNameChart();
             var maxOrder = WatchTelemetryChartGroups.Any(c => c.Id != "placeholder")
-       ? WatchTelemetryChartGroups.Where(c => c.Id != "placeholder").Max(c => c.Order)
-       : 0;
+                ? WatchTelemetryChartGroups.Where(c => c.Id != "placeholder").Max(c => c.Order): 0;
 
             WatchChartModel wpfPlotControl = new WatchChartModel("监测图", _dialogService, session_id)
             {
@@ -761,8 +769,7 @@ namespace Workbench.ViewModels.Telemetry
             }
             _watchChartGroupsForTab.Refresh();
             HasRealCharts = _watchChartGroupsForTab.Count > 0;
-        });
-
+        }
         public DelegateCommand ShowChartGroupCommand => new DelegateCommand(() =>
         {
             IDialogParameters dialogParameters = new DialogParameters();

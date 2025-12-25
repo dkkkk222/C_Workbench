@@ -179,9 +179,9 @@ CommandParameter="{Binding}">
 
                     <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
                         <TextBlock VerticalAlignment="Center">遥测查询次数:</TextBlock>
-                        <TextBox Text="{Binding SelectCount,Mode=TwoWay}"  IsEnabled="False" Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
+                        <TextBox Text="{Binding SelectCount,Mode=TwoWay}" TextAlignment="Center" IsEnabled="False" Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
                             <TextBox.Style>
-                                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">                                    
                                     <Style.Triggers>
                                         <!-- 获得焦点时变色 -->
                                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
@@ -192,7 +192,7 @@ CommandParameter="{Binding}">
                             </TextBox.Style>
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">遥测回复次数:</TextBlock>
-                        <TextBox Text="{Binding ReturnCount,Mode=TwoWay}"  IsEnabled="False" Margin="5,0,5,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
+                        <TextBox Text="{Binding ReturnCount,Mode=TwoWay}"  TextAlignment="Center" IsEnabled="False" Margin="5,0,5,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
                                     <Style.Triggers>

@@ -156,6 +156,14 @@ namespace Workbench.ViewModels.dw
             SelectTab = WatchGroups[0];
             InitProjectData();
             InitListen();
+            if(WatchGroups.Count==1)
+            {
+                AddDataWatch();
+            }
+            if(WatchChartGroups.Count==1)
+            {
+                AddWatchChart();
+            }
         }
 
         public void InitProjectData()
@@ -1256,11 +1264,15 @@ namespace Workbench.ViewModels.dw
         private DelegateCommand _addWatchGroupCommand;
         public DelegateCommand AddWatchGroupCommand => _addWatchGroupCommand ?? (_addWatchGroupCommand = new DelegateCommand(() =>
         {
-            var baseName = $"表{WatchGroups.Where(x=>x.Id!= "placeholder").Count() + 1}";
+            AddDataWatch();
+        }));
+        public void AddDataWatch()
+        {
+            var baseName = $"表{WatchGroups.Where(x => x.Id != "placeholder").Count() + 1}";
             //var header = MakeUniqueHeader(baseName);
             var header = GetMaxNumForName();
             var maxOrder = WatchGroups.Any() ? WatchGroups.Max(g => g.Order) : 0;
-            WatchGroups.Add(new WatchGroup(_dialogService, session_id,_projectManager)
+            WatchGroups.Add(new WatchGroup(_dialogService, session_id, _projectManager)
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Header = header,
@@ -1270,17 +1282,8 @@ namespace Workbench.ViewModels.dw
 
             if (CurrentTab == null)
                 CurrentTab = WatchGroups.Last();
-            //WatchGroups.Add(new WatchGroup(_dialogService,session_id)
-            //{
-            //    Id = Guid.NewGuid().ToString("N"),
-            //    Header = $"表{WatchGroups.Count + 1}",
-            //    TableColumns = InitTableColumns()
-            //});
-            //if (CurrentTab == null)
-            //{
-            //    CurrentTab = WatchGroups.Last();
-            //}
-        }));
+        }
+
         private string GetMaxNumForName()
         {
             var tables= new HashSet<string>(WatchGroups.Where(x => x.Id != "placeholder").Select(x => x.Header));
@@ -1340,6 +1343,10 @@ namespace Workbench.ViewModels.dw
         }
         public DelegateCommand AddWatchGroupChartCommand => new DelegateCommand(() =>
         {
+            AddWatchChart();
+        });
+        public void AddWatchChart()
+        {
             var baseName = $"表{WatchChartGroups.Where(x => x.Id != "placeholder").Count() + 1}";
             //var header = MakeUniqueHeaderChart(baseName);
             var header = GetMaxNumForNameChart();
@@ -1360,8 +1367,7 @@ namespace Workbench.ViewModels.dw
             }
             _watchChartGroupsForTab.Refresh();
             HasRealCharts = _watchChartGroupsForTab.Count > 0;
-        });
-
+        }
         public DelegateCommand ShowWatchGroupCommand => new DelegateCommand(() =>
         {
             IDialogParameters dialogParameters = new DialogParameters();

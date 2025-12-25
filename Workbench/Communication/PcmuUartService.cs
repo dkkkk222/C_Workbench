@@ -97,6 +97,10 @@ namespace Workbench.Communication
         public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 0xFF)
         {
             SelectCount++;
+            if(SelectCount>255)
+            {
+                SelectCount = 0;
+            }
             return SendAndWaitAsync(TYPE_TLM_QUERY, new byte[] { projectTag, 0x0A, 0x04, 0x1E }, TYPE_TLM_RESPONSE, timeoutMs);
         } 
 
@@ -299,6 +303,10 @@ namespace Workbench.Communication
                             TelemetryReceived?.Invoke(this, new TelemetryEventArgs(payload));
 
                             ReceiveCountSuc++;
+                            if(ReceiveCountSuc>255)
+                            {
+                                ReceiveCountSuc = 0;
+                            }
                             if (_waiters.TryRemove(typeBe, out var tcs))
                                 tcs.TrySetResult(payload);
                             break;
