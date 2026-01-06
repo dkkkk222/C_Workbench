@@ -202,14 +202,47 @@
                                                 </Style>
                                             </CheckBox.Style>
                                         </CheckBox>
-                                        <TextBlock Width="5"></TextBlock>
-                                        <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
-                                        <TextBlock Text=" : "/>
-                                        <TextBlock Text="{Binding AddressHex}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
-                                        
-                                        
 
+                                        <TextBlock Width="5"/>
 
+                                        <!-- 默认：名称在前 -->
+                                        <StackPanel Orientation="Horizontal">
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <!-- 选中“按编码”时隐藏这套 -->
+                                                        <DataTrigger Binding="{Binding DataContext.IsOrderByAddress, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                                 Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+
+                                            <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                                            <TextBlock Text=" : " Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                                            <TextBlock Text="{Binding AddressHex}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                                        </StackPanel>
+
+                                        <!-- 按编码：编码在前 -->
+                                        <StackPanel Orientation="Horizontal">
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding DataContext.IsOrderByAddress, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                                 Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+
+                                            <TextBlock Text="{Binding AddressHex}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                                            <TextBlock Text=" : " Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                                            <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                                        </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
                             </HierarchicalDataTemplate>
