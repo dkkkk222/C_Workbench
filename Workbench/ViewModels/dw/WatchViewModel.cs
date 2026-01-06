@@ -197,7 +197,17 @@ namespace Workbench.ViewModels.dw
                 e.WatchViewGrid.SelectTab = SelectTab;
             });
         }
-
+        private AlignMode _selectedAlignMode = AlignMode.Center;
+        public AlignMode SelectedAlignMode
+        {
+            get => _selectedAlignMode;
+            set
+            {
+                if (_selectedAlignMode == value) return;
+                _selectedAlignMode = value;
+                RaisePropertyChanged(); // 或 OnPropertyChanged(nameof(SelectedAlignMode));
+            }
+        }
         public System.Windows.GridLength splitterPositionUp = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
         public System.Windows.GridLength SplitterPositionUp
         {

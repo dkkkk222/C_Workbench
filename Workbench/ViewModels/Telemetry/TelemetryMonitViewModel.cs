@@ -156,6 +156,18 @@ namespace Workbench.ViewModels.Telemetry
             });
         }
 
+        private AlignMode _selectedAlignMode = AlignMode.Center;
+        public AlignMode SelectedAlignMode
+        {
+            get => _selectedAlignMode;
+            set
+            {
+                if (_selectedAlignMode == value) return;
+                _selectedAlignMode = value;
+                RaisePropertyChanged(); // 或 OnPropertyChanged(nameof(SelectedAlignMode));
+            }
+        }
+
         private ObservableCollection<TableColumn> _tableColumns = new ObservableCollection<TableColumn>();
         public ObservableCollection<TableColumn> TableColumns
         {

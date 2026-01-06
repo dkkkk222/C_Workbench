@@ -374,6 +374,7 @@
     <Compile Include="Communication\PcmuUartService.cs" />
     <Compile Include="Communication\SerialPortService.cs" />
     <Compile Include="Converters\AddOneConverter.cs" />
+    <Compile Include="Converters\AlignModeToHorizontalAlignmentConverter.cs" />
     <Compile Include="Converters\BoolToGridLengthConverter.cs" />
     <Compile Include="Converters\BoolToGridLengthStarOrZeroConverter.cs" />
     <Compile Include="Converters\DataGridRowIndexConverter.cs" />
@@ -414,6 +415,7 @@
     <Compile Include="Events\TreeViewSelectedEvent.cs" />
     <Compile Include="Events\UpdateTelemetryCodeEvent.cs" />
     <Compile Include="Migrations\OnInitial.cs" />
+    <Compile Include="Models\AlignMode.cs" />
     <Compile Include="Models\AppConfig.cs" />
     <Compile Include="Models\AvaDocument.cs" />
     <Compile Include="Models\BBLLCCANItem.cs" />
