@@ -922,9 +922,9 @@ ItemsSource="{Binding WatchChartGroupsForTab}" OverflowMenuDisplayMemberPath="He
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="遥测监控" StandFontSize="{DynamicResource SubHeadFontSize}"/>
-
-                            </StackPanel>
+                                            <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                            <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Margin="5,0,5,0"  Command="{Binding RenameCommand}" CommandParameter="Chart"/>
+                                        </StackPanel>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
                                 <TextBox Text="{Binding Chart1MinX}"   hc:InfoElement.Title="X最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" >
                                     <TextBox.Style>
