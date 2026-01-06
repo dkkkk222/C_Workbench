@@ -17,6 +17,7 @@ namespace Workbench.Models.dw
         public string Type { get; set; }
 
         public string Category { get; set; }
+        public string SubCategory { get; set; }
 
     }
 

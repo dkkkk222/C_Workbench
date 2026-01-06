@@ -953,6 +953,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                                 <DataGridTextColumn Header="指令(HEX)" Binding="{Binding Hex}"  Width="120" ElementStyle="{StaticResource CenterCellStyle}"/>
                                 <DataGridTextColumn Header="指令类型" Binding="{Binding Type}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
                                 <DataGridTextColumn Header="分类" Binding="{Binding Category}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
+                                <DataGridTextColumn Header="子分类" Binding="{Binding SubCategory}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
                                 <DataGridTextColumn Header="状态" Binding="{Binding State}"  Width="80" ElementStyle="{StaticResource CenterCellStyle}"/>
                                 <DataGridTextColumn Header="操作时间" Binding="{Binding Datetime}"  Width="*" ElementStyle="{StaticResource CenterCellStyle}"/>
                             </DataGrid.Columns>

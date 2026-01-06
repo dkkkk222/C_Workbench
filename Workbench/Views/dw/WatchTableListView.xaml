@@ -39,10 +39,10 @@
         <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
             <!-- 行/列（建议 LostFocus 更新，避免输入中断言失败） -->
 
-            <TextBlock Text="行:" Style="{StaticResource ItemTitle}"/>
+            <TextBlock Text="行:" Style="{StaticResource ItemTitle}" Width="30"/>
             <TextBox Width="60" Margin="8,0" Height="30"
                      Text="{Binding GridRows, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-            <TextBlock Text="列:" Style="{StaticResource ItemTitle}"/>
+            <TextBlock Text="列:" Style="{StaticResource ItemTitle}" Width="30"/>
             <TextBox Width="60" Margin="8,0" Height="30"
                      Text="{Binding GridColumns, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" /> 
 

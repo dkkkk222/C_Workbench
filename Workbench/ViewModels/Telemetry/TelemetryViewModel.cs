@@ -466,7 +466,8 @@ namespace Workbench.ViewModels.Telemetry
                     Type= register.Type=="0"?"间接指令":"注数指令",
                     State = isSuc?"成功":"失败",
                     Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                    Category= register.Category
+                    Category= register.Category,
+                    SubCategory = register.SubCategory
                 };
                 await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -786,7 +787,7 @@ namespace Workbench.ViewModels.Telemetry
                 var sheet = workbook.CreateSheet("Sheet1");
                 var headerRow = sheet.CreateRow(0);
                 //string[] headerColumns = new string[] { "读/写", "名称", "指令(HEX)","类型", "状态", "操作时间" };
-                string[] headerColumns = new string[] { "名称", "指令(HEX)","指令类型","分类", "状态", "操作时间" };
+                string[] headerColumns = new string[] { "名称", "指令(HEX)","指令类型","分类", "子分类", "状态", "操作时间" };
                 for (int i = 0; i < headerColumns.Length; i++)
                 {
                     headerRow.CreateCell(i).SetCellValue(headerColumns[i]);
@@ -801,8 +802,9 @@ namespace Workbench.ViewModels.Telemetry
                     row.CreateCell(1).SetCellValue(history.Hex);
                     row.CreateCell(2).SetCellValue(history.Type);
                     row.CreateCell(3).SetCellValue(history.Category);
-                    row.CreateCell(4).SetCellValue(history.State);
-                    row.CreateCell(5).SetCellValue(history.Datetime);
+                    row.CreateCell(4).SetCellValue(history.SubCategory);
+                    row.CreateCell(5).SetCellValue(history.State);
+                    row.CreateCell(6).SetCellValue(history.Datetime);
                     startRow++;
                 }
 
