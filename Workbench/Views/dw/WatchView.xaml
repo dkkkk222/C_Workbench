@@ -313,7 +313,7 @@ Style="{StaticResource CustomComboBoxStyle}">
           ItemsSource="{Binding CategoryRegisters}"
           AutoGenerateColumns="False"
           Style="{StaticResource DataGrid.Small}"
-          CanUserSortColumns="False"
+          CanUserSortColumns="False"  CanUserReorderColumns="True"
           CanUserAddRows="False"
           Margin="0,0,0,0"
           MinHeight="200"

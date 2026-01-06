@@ -309,7 +309,7 @@ Command="{Binding StopAllCommand}"/>
               AutoGenerateColumns="False"
               Style="{StaticResource DataGrid.Small}"
               CanUserSortColumns="False"
-              CanUserAddRows="False"
+              CanUserAddRows="False"  CanUserReorderColumns="True"
               Margin="0,5,0,0"
               RowHeight="40"
               Background="{DynamicResource DataGridBackgroundColor}"

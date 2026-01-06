@@ -291,6 +291,7 @@
                             <DataGrid ItemsSource="{Binding SequenceList}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
                                       CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0"  RowHeight="40"   Height="Auto"
                                        Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
+                                      CanUserReorderColumns="True"
                                       SelectedItem="{Binding CurrentSequence}">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}"  >
@@ -576,6 +577,7 @@ CommandParameter="{Binding}"/>
                                 </Border>
                                 <DataGrid x:Name="SequenceGrid" ItemsSource="{Binding CurrentSequence.TelemetryItems}" AutoGenerateColumns="False" CanUserResizeColumns="True"                                  
                                   AlternationCount="2"   Background="{DynamicResource DataGridBackgroundColor}"  ColumnHeaderHeight="20"
+                                           CanUserReorderColumns="True"
                                       RowHeaderWidth="40" LoadingRow="SequenceGrid_LoadingRow" Sorting="SequenceGrid_Sorting" RowHeight="40"
                                       Loaded="SequenceGrid_OnLoaded" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0" SelectionChanged="SequenceGrid_SelectionChanged">
@@ -875,7 +877,7 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
                             </hc:UniformSpacingPanel>
                         </Border>
                         <DataGrid ItemsSource="{Binding ReadWriteHistory}" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                  Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"  RowHeight="40" Height="Auto"
+                                  Background="{DynamicResource DataGridBackgroundColor}"  CanUserReorderColumns="True" AlternationCount="2"  RowHeight="40" Height="Auto"
                                               CanUserSortColumns="False" IsReadOnly="True" CanUserAddRows="False" Margin="0,5,0,0">
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="{x:Type DataGridColumnHeader}"  >
