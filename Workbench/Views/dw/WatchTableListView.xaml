@@ -28,6 +28,26 @@
             <Setter Property="Width" Value="80"/>
             <Setter Property="Padding" Value="0,0,8,0"/>
         </Style>
+        <!-- 背景网格（10px） -->
+        <DrawingBrush x:Key="DesignerGridBrush"
+              TileMode="Tile"
+              Viewport="0,0,10,10"
+              ViewportUnits="Absolute"
+              Stretch="None">
+            <DrawingBrush.Drawing>
+                <GeometryDrawing Brush="Transparent">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#22000000" Thickness="1"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <GeometryGroup>
+                            <LineGeometry StartPoint="10,0" EndPoint="10,10"/>
+                            <LineGeometry StartPoint="0,10" EndPoint="10,10"/>
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -46,31 +66,28 @@
             <TextBox Width="60" Margin="8,0" Height="30"
                      Text="{Binding GridColumns, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" /> 
 
-            <!-- 卡片在单元格内水平/垂直对齐 -->
-            <!--<TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
-            <ComboBox Width="110" Margin="16,0,0,0" Height="30"
-                      SelectedValue="{Binding ItemHorizontalAlignment, Mode=TwoWay}"
-                      SelectedValuePath="Tag">
-                <ComboBoxItem Content="左" Tag="{x:Static HorizontalAlignment.Left}"/>
-                <ComboBoxItem Content="居中" Tag="{x:Static HorizontalAlignment.Center}"/>
-                <ComboBoxItem Content="右" Tag="{x:Static HorizontalAlignment.Right}"/>
-                <ComboBoxItem Content="拉伸" Tag="{x:Static HorizontalAlignment.Stretch}"/>
-            </ComboBox>
-            <TextBlock Text="垂直对齐:" Style="{StaticResource ItemTitle}"/>
-            <ComboBox Width="110" Margin="8,0" Height="30"
-                      SelectedValue="{Binding ItemVerticalAlignment, Mode=TwoWay}"
-                      SelectedValuePath="Tag">
-                <ComboBoxItem Content="上" Tag="{x:Static VerticalAlignment.Top}"/>
-                <ComboBoxItem Content="居中" Tag="{x:Static VerticalAlignment.Center}"/>
-                <ComboBoxItem Content="下" Tag="{x:Static VerticalAlignment.Bottom}"/>
-                <ComboBoxItem Content="拉伸" Tag="{x:Static VerticalAlignment.Stretch}"/>
-            </ComboBox>-->
+            
             <Button Style="{StaticResource ButtonPrimary.Small}" Content="应用布局"
 Background="{DynamicResource GenButtonBackgroundColor}"
 BorderBrush="{DynamicResource GenButtonBackgroundColor}"
 hc:IconElement.Geometry="{StaticResource  PenGeometry }"
 Margin="5,0,0,0"
 Command="{Binding ApplyLayoutCommand}" />
+            <Button 
+       Margin="5,0,0,0"  Background="{DynamicResource GenButtonBackgroundColor}"
+BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+       Command="{Binding ToggleGridCommand}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ButtonPrimary.Small}">
+                        <Setter Property="Content" Value="隐藏网格"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsGridVisible}" Value="False">
+                                <Setter Property="Content" Value="显示网格"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
         <!-- 主体列表 -->
@@ -78,13 +95,36 @@ Command="{Binding ApplyLayoutCommand}" />
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto"
                       CanContentScroll="False">
+            <AdornerDecorator>
+                <!-- 画布根容器：网格 + ItemsControl -->
+                <Grid Width="{Binding CanvasWidth, FallbackValue=5000}"
+              Height="{Binding CanvasHeight, FallbackValue=3000}"
+              SnapsToDevicePixels="True"
+              UseLayoutRounding="True"
+              ClipToBounds="True"
+              RenderOptions.EdgeMode="Aliased">
 
-            <ItemsControl ItemsSource="{Binding WatchGroupsView}">
+                    <!-- 背景网格：可显示/隐藏，不影响吸附逻辑 -->
+                    <Rectangle Fill="{StaticResource DesignerGridBrush}"
+                       IsHitTestVisible="False">
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsGridVisible}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+                    <ItemsControl ItemsSource="{Binding WatchGroupsView}">
                 <!-- 改为 Canvas 布局，自由定位 -->
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Width="{Binding CanvasWidth, FallbackValue=5000}"
-                    Height="{Binding CanvasHeight, FallbackValue=3000}"/>
+                    Height="{Binding CanvasHeight, FallbackValue=3000}"  Background="Transparent"
+                                SnapsToDevicePixels="True"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -180,7 +220,13 @@ Command="{Binding ApplyLayoutCommand}" />
                                              HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderBrush="Transparent" 
                                              Panel.ZIndex="10"   Height="20">
                                                 <i:Interaction.Behaviors>
-                                                    <localBehaviors:MoveThumbBehavior LeftPropertyName="Left" TopPropertyName="Top"/>
+                                                    <localBehaviors:MoveThumbBehavior LeftPropertyName="Left" TopPropertyName="Top"
+                                                                                      WidthPropertyName="TableWidth"
+                                                                                      HeightPropertyName="TableHeight"
+                                                                                      GridSize="10"
+                                                                                      SnapThreshold="6"
+                                                                                      SnapToGrid="True"
+                                                                                      SnapToOtherItems="True"/>
                                                 </i:Interaction.Behaviors>
                                             </Thumb>
                                         </Grid>
@@ -373,6 +419,8 @@ Command="{Binding ApplyLayoutCommand}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+                </Grid>
+            </AdornerDecorator>
         </ScrollViewer>
     </Grid>
 </UserControl>

@@ -33,6 +33,27 @@
             <Setter Property="Padding" Value="0,0,8,0"/>
 
         </Style>
+        <!-- 背景网格（10px） -->
+        <DrawingBrush x:Key="DesignerGridBrush"
+                  TileMode="Tile"
+                  Viewport="0,0,10,10"
+                  ViewportUnits="Absolute"
+                  Stretch="None">
+            <DrawingBrush.Drawing>
+                <GeometryDrawing Brush="Transparent">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#22000000" Thickness="1"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <!-- 只画右边和下边，Tile 后就是网格 -->
+                        <GeometryGroup>
+                            <LineGeometry StartPoint="10,0" EndPoint="10,10"/>
+                            <LineGeometry StartPoint="0,10" EndPoint="10,10"/>
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -43,51 +64,36 @@
         <!-- 顶部控制条：行/列、布局方式、方向、对齐 -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,6,0,0">
             <!-- 行/列（LostFocus 更新，避免输入中间报错） --> 
-            <TextBlock Text="行:" Style="{StaticResource ItemTitle}" Width="30"/>
+            <TextBlock Text="行:" Style="{StaticResource ItemTitle}" Width="32"/>
             <TextBox Width="60" Margin="8,0" Height="30"
               Text="{Binding GridRows, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
             <TextBlock Text="列:" Style="{StaticResource ItemTitle}" Width="30"/>
             <TextBox Width="60" Margin="8,0" Height="30"
               Text="{Binding GridColumns, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
             
-            <!-- 布局切换 --><!--
-            <CheckBox Margin="16,0,0,0" Content="流式布局(Wrap)"
-                      IsChecked="{Binding UseWrapLayout, Mode=TwoWay}"/>
-
-            --><!-- WrapPanel 横/竖 --><!--
-            <ComboBox Width="90" Margin="8,0"
-                      SelectedValue="{Binding ItemOrientation, Mode=TwoWay}"
-                      SelectedValuePath="Tag">
-                <ComboBoxItem Content="横向" Tag="{x:Static Orientation.Horizontal}"/>
-                <ComboBoxItem Content="竖向" Tag="{x:Static Orientation.Vertical}"/>
-            </ComboBox>-->
-
-            <!-- 卡片在单元格内水平/垂直对齐 -->
-            <!--<TextBlock Text="水平对齐:" Style="{StaticResource ItemTitle}"/>
-            <ComboBox Width="110" Margin="16,0,0,0" Height="30"
-          SelectedValue="{Binding ItemHorizontalAlignment, Mode=TwoWay}"
-          SelectedValuePath="Tag">
-                <ComboBoxItem Content="左" Tag="{x:Static HorizontalAlignment.Left}"/>
-                <ComboBoxItem Content="居中" Tag="{x:Static HorizontalAlignment.Center}"/>
-                <ComboBoxItem Content="右" Tag="{x:Static HorizontalAlignment.Right}"/>
-                <ComboBoxItem Content="拉伸" Tag="{x:Static HorizontalAlignment.Stretch}"/>
-            </ComboBox>
-            <TextBlock Text="垂直对齐:" Style="{StaticResource ItemTitle}"/>
-            <ComboBox Width="110" Margin="8,0" Height="30"
-          SelectedValue="{Binding ItemVerticalAlignment, Mode=TwoWay}"
-          SelectedValuePath="Tag">
-                <ComboBoxItem Content="上" Tag="{x:Static VerticalAlignment.Top}"/>
-                <ComboBoxItem Content="居中" Tag="{x:Static VerticalAlignment.Center}"/>
-                <ComboBoxItem Content="下" Tag="{x:Static VerticalAlignment.Bottom}"/>
-                <ComboBoxItem Content="拉伸" Tag="{x:Static VerticalAlignment.Stretch}"/>
-            </ComboBox>-->
+           
             <Button Style="{StaticResource ButtonPrimary.Small}" Content="应用布局"
  Background="{DynamicResource GenButtonBackgroundColor}"
  BorderBrush="{DynamicResource GenButtonBackgroundColor}"
  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
  Margin="5,0,0,0"
  Command="{Binding ApplyLayoutCommand}" />
-            
+
+            <Button 
+        Margin="5,0,0,0"  Background="{DynamicResource GenButtonBackgroundColor}"
+ BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+        Command="{Binding ToggleGridCommand}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ButtonPrimary.Small}">
+                        <Setter Property="Content" Value="隐藏网格"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsGridVisible}" Value="False">
+                                <Setter Property="Content" Value="显示网格"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
         <!-- 主体列表 -->
@@ -95,14 +101,36 @@
               HorizontalScrollBarVisibility="Auto"
               VerticalScrollBarVisibility="Auto"
               CanContentScroll="False">
-
-            <ItemsControl ItemsSource="{Binding WatchGroupsView}">
+            <!-- 关键：提供 AdornerLayer，给“对齐线”用 -->
+            <AdornerDecorator>
+                <Grid Width="{Binding CanvasWidth, FallbackValue=5000}"
+              Height="{Binding CanvasHeight, FallbackValue=3000}"
+              SnapsToDevicePixels="True"
+              UseLayoutRounding="True"
+              ClipToBounds="True"
+              RenderOptions.EdgeMode="Aliased">
+                <!-- 背景网格 -->
+                    <Rectangle Fill="{StaticResource DesignerGridBrush}"
+           IsHitTestVisible="False">
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsGridVisible}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+                    <ItemsControl ItemsSource="{Binding WatchGroupsView}">
                 <!-- 用 Canvas 做面板，支持自由定位 -->
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <!-- 画布尺寸可以绑定到 VM 的 CanvasWidth/Height；也可先给个大一点的固定值 -->
                         <Canvas Width="{Binding CanvasWidth, FallbackValue=5000}"
-                        Height="{Binding CanvasHeight, FallbackValue=3000}" />
+                        Height="{Binding CanvasHeight, FallbackValue=3000}" Background="Transparent"
+                                SnapsToDevicePixels="True"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -168,33 +196,23 @@
                                                     Command="{Binding SettingChartLimitCommand}"
                                                     CommandParameter="{Binding}"/>
                                                 </StackPanel>
-
-                                                <!--<StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,0,0">
-                                                    <TextBox Text="{Binding ChartWidth}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽：" hc:InfoElement.TitlePlacement="Left" Width="80"/>
-                                                    <TextBlock Width="35"/>
-                                                    <TextBox Text="{Binding ChartHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高：" hc:InfoElement.TitlePlacement="Left" Width="80"/>
-                                                    <TextBlock Width="80"/>
-                                                    <Button Visibility="Hidden" Content="设置" Style="{StaticResource ButtonPrimary.Small}"
-                                                    Background="{DynamicResource GenButtonBackgroundColor}"
-                                                    BorderBrush="{DynamicResource GenButtonBackgroundColor}"
-                                                    hc:IconElement.Geometry="{StaticResource PenGeometry}"/>
-                                                </StackPanel>-->
-                                                
-                                                <!--<StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,0,0">
-                                                    <TextBox Text="{Binding ChartWidth}"  Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="宽：" hc:InfoElement.TitlePlacement="Left" Width="80"/>
-                                                    <TextBlock Width="30"/>
-                                                    <TextBox Text="{Binding ChartHeight}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="高：" hc:InfoElement.TitlePlacement="Left" Width="80"/>
-                                                </StackPanel>-->
+ 
                                             </Grid>
 
                                             <!-- 透明移动把手：只覆盖头部区域，避免和 Plot 的交互冲突 -->
                                             <Thumb Cursor="SizeAll" Background="Transparent" Margin="0,-10,0,0" BorderThickness="11"
                                            HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderBrush="Transparent" 
                                            Panel.ZIndex="10"   Height="20">
-                                                <i:Interaction.Behaviors>
-                                                    <localBehaviors:MoveThumbBehavior LeftPropertyName="Left" TopPropertyName="Top"/>
-                                                </i:Interaction.Behaviors>
-                                            </Thumb>
+                                                        <i:Interaction.Behaviors>
+                                                            <localBehaviors:MoveThumbBehavior
+                                                                    LeftPropertyName="Left"
+                                                                    TopPropertyName="Top"
+                                                                    GridSize="10"
+                                                                    SnapThreshold="6"
+                                                                    SnapToGrid="True"
+                                                                    SnapToOtherItems="True"/>
+                                                        </i:Interaction.Behaviors>
+                                                    </Thumb>
                                         </Grid>
                                     </Border>
 
@@ -224,6 +242,8 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+                </Grid>
+            </AdornerDecorator>
         </ScrollViewer>
     </Grid>
 </UserControl>

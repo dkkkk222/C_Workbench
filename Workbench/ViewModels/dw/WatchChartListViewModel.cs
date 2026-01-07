@@ -35,6 +35,18 @@ namespace Workbench.ViewModels.dw
                 SetProperty(ref watchViewModel, value);
             }
         }
+        private double _designerGridSize = 10;
+        public double DesignerGridSize
+        {
+            get => _designerGridSize;
+            set => SetProperty(ref _designerGridSize, Math.Max(1, value));
+        }
+        private bool _isGridVisible = true;
+        public bool IsGridVisible
+        {
+            get => _isGridVisible;
+            set => SetProperty(ref _isGridVisible, value);
+        }
 
         // ★ 列表专用的“过滤后视图”，不影响原集合（供 ComboBox 使用）
         private ICollectionView _watchGroupsView;
@@ -238,7 +250,10 @@ namespace Workbench.ViewModels.dw
         #endregion
 
         #region Command
-
+        public DelegateCommand ToggleGridCommand => new DelegateCommand(() =>
+        {
+            IsGridVisible = !IsGridVisible;
+        });
         public DelegateCommand ApplyLayoutCommand => new DelegateCommand(() =>
         {
             ApplyGridLayout();
@@ -276,6 +291,120 @@ namespace Workbench.ViewModels.dw
         }
 
         public void ApplyGridLayout()
+        {
+            var all = WatchGroups == null ? null : WatchGroups.ToList();
+            if (all == null || all.Count == 0) return;
+
+            // —— 只拿需要布局的项（过滤掉 Header="未选中" 的那一条）
+            var items = all.Where(ShouldLayoutItem).ToList();
+
+            if (items.Count == 0)
+            {
+                CanvasWidth = GridStartLeft + 400;
+                CanvasHeight = GridStartTop + 300;
+                return;
+            }
+
+            // ====== 新增：网格吸附工具 ======
+            double grid = Math.Max(1, DesignerGridSize);
+
+            double SnapRound(double v) => Math.Round(v / grid) * grid;              // 位置：四舍五入
+            double SnapUp(double v) => Math.Ceiling(v / grid) * grid;               // 尺寸/间距：向上取整，避免压叠
+
+            // 行列
+            int rows = Math.Max(1, GridRows);
+            int minCol = Math.Max(1, GridColumns);
+            int total = items.Count;
+            int cols = Math.Max(minCol, (int)Math.Ceiling(total / (double)rows));
+
+            // 基础参数（全部网格化）
+            double cellW = SnapUp(Math.Max(50, GridCellWidth));
+            double cellH = SnapUp(Math.Max(50, GridCellHeight));
+            double hgap = SnapUp(Math.Max(0, GridGapX));
+            double vgap = SnapUp(Math.Max(0, GridGapY));
+
+            double startX = SnapRound(GridStartLeft);
+            double startY = SnapRound(GridStartTop);
+
+            // —— 计算每列宽/每行高（用于列/行起点计算）
+            var colWidths = new double[cols];
+            var rowHeights = new double[rows];
+
+            if (NormalizeSizeOnLayout)
+            {
+                for (int c = 0; c < cols; c++) colWidths[c] = cellW;
+                for (int r = 0; r < rows; r++) rowHeights[r] = cellH;
+
+                // 可选：如果你希望布局后尺寸也落到网格上，这里已经是 cellW/cellH（网格化后）
+                foreach (var it in items)
+                {
+                    it.ChartWidth = cellW;
+                    it.ChartHeight = cellH;
+                }
+            }
+            else
+            {
+                for (int c = 0; c < cols; c++) colWidths[c] = cellW;
+                for (int r = 0; r < rows; r++) rowHeights[r] = cellH;
+
+                // 按“列优先”统计：每列最大宽、每行最大高（然后向上吸附到网格，保证下一列/行起点也在网格上）
+                for (int i = 0; i < total; i++)
+                {
+                    int c = i / rows;
+                    int r = i % rows;
+
+                    double w = Math.Max(50, items[i].ChartWidth);
+                    double h = Math.Max(50, items[i].ChartHeight);
+
+                    if (w > colWidths[c]) colWidths[c] = w;
+                    if (h > rowHeights[r]) rowHeights[r] = h;
+                }
+
+                // 关键：列宽/行高向上吸附到网格，确保累加后的 colX/rowY 全部落网格
+                for (int c = 0; c < cols; c++) colWidths[c] = SnapUp(colWidths[c]);
+                for (int r = 0; r < rows; r++) rowHeights[r] = SnapUp(rowHeights[r]);
+            }
+
+            // —— 前缀和：每列的 X 起点、每行的 Y 起点（天然落在网格上）
+            var colX = new double[cols];
+            var rowY = new double[rows];
+
+            colX[0] = startX;
+            for (int c = 1; c < cols; c++)
+                colX[c] = colX[c - 1] + colWidths[c - 1] + hgap;
+
+            rowY[0] = startY;
+            for (int r = 1; r < rows; r++)
+                rowY[r] = rowY[r - 1] + rowHeights[r - 1] + vgap;
+
+            // —— 放置（列优先）
+            for (int i = 0; i < total; i++)
+            {
+                int c = i / rows;
+                int r = i % rows;
+
+                items[i].Left = colX[c];  // 已经是网格对齐
+                items[i].Top = rowY[r];  // 已经是网格对齐
+            }
+
+            // —— 防空首格（保持你原逻辑，shift 也是网格倍数）
+            if (cols >= 2)
+            {
+                bool firstColOccupied = items.Any(it => Math.Abs(it.Left - colX[0]) <= 0.5);
+                if (!firstColOccupied)
+                {
+                    double shift = (colX[1] - colX[0]);
+                    foreach (var it in items) it.Left -= shift;
+                    for (int c = 0; c < cols; c++) colX[c] -= shift;
+                }
+            }
+
+            // —— 扩展画布（也向上吸附网格，看起来更“整齐”）
+            CanvasWidth = SnapUp(colX[cols - 1] + colWidths[cols - 1] + 200);
+            CanvasHeight = SnapUp(rowY[rows - 1] + rowHeights[rows - 1] + 200);
+        }
+
+        public void ApplyGridLayout1()
         {
             var all = WatchGroups == null ? null : WatchGroups.ToList();
             if (all == null || all.Count == 0) return;

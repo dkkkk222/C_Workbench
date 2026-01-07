@@ -33,6 +33,27 @@
             <Setter Property="Padding" Value="0,0,8,0"/>
 
         </Style>
+        <!-- 背景网格（10px） -->
+        <DrawingBrush x:Key="DesignerGridBrush"
+          TileMode="Tile"
+          Viewport="0,0,10,10"
+          ViewportUnits="Absolute"
+          Stretch="None">
+            <DrawingBrush.Drawing>
+                <GeometryDrawing Brush="Transparent">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#22000000" Thickness="1"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <!-- 只画右边和下边，Tile 后就是网格 -->
+                        <GeometryGroup>
+                            <LineGeometry StartPoint="10,0" EndPoint="10,10"/>
+                            <LineGeometry StartPoint="0,10" EndPoint="10,10"/>
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -55,7 +76,21 @@
  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
  Margin="5,0,0,0"
  Command="{Binding ApplyLayoutCommand}" />
-
+            <Button 
+       Margin="5,0,0,0"  Background="{DynamicResource GenButtonBackgroundColor}"
+BorderBrush="{DynamicResource GenButtonBackgroundColor}"  hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+       Command="{Binding ToggleGridCommand}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ButtonPrimary.Small}">
+                        <Setter Property="Content" Value="隐藏网格"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsGridVisible}" Value="False">
+                                <Setter Property="Content" Value="显示网格"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
         <!-- 主体列表 -->
@@ -63,14 +98,37 @@
               HorizontalScrollBarVisibility="Auto"
               VerticalScrollBarVisibility="Auto"
               CanContentScroll="False">
+            <!-- 关键：提供 AdornerLayer，用于对齐线 -->
+            <AdornerDecorator>
+                <Grid Width="{Binding CanvasWidth, FallbackValue=5000}"
+              Height="{Binding CanvasHeight, FallbackValue=3000}"
+              SnapsToDevicePixels="True"
+              UseLayoutRounding="True"
+              ClipToBounds="True"
+              RenderOptions.EdgeMode="Aliased">
 
-            <ItemsControl ItemsSource="{Binding WatchGroupsView}">
+                    <!-- 背景网格：可显示/隐藏，不影响吸附 -->
+                    <Rectangle Fill="{StaticResource DesignerGridBrush}"
+                       IsHitTestVisible="False">
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsGridVisible}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+                    <ItemsControl ItemsSource="{Binding WatchGroupsView}">
                 <!-- 用 Canvas 做面板，支持自由定位 -->
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <!-- 画布尺寸可以绑定到 VM 的 CanvasWidth/Height；也可先给个大一点的固定值 -->
                         <Canvas Width="{Binding CanvasWidth, FallbackValue=5000}"
-                        Height="{Binding CanvasHeight, FallbackValue=3000}" />
+                        Height="{Binding CanvasHeight, FallbackValue=3000}"  Background="Transparent"
+                                SnapsToDevicePixels="True"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -160,7 +218,12 @@
                                            HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderBrush="Transparent" 
                                            Panel.ZIndex="10"   Height="20">
                                                 <i:Interaction.Behaviors>
-                                                    <localBehaviors:MoveThumbBehavior LeftPropertyName="Left" TopPropertyName="Top"/>
+                                                            <localBehaviors:MoveThumbBehavior LeftPropertyName="Left" TopPropertyName="Top" WidthPropertyName="TableWidth"
+                                                                                                HeightPropertyName="TableHeight"
+                                                                                                GridSize="10"
+                                                                                                SnapThreshold="6"
+                                                                                                SnapToGrid="True"
+                                                                                                SnapToOtherItems="True"/>
                                                 </i:Interaction.Behaviors>
                                             </Thumb>
                                         </Grid>
@@ -192,6 +255,8 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+                </Grid>
+            </AdornerDecorator>
         </ScrollViewer>
     </Grid>
 </UserControl>
