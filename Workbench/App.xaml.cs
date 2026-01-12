@@ -111,11 +111,19 @@ namespace Workbench
 
         private static void UpdateDatabase(IServiceProvider serviceProvider)
         {
-            // Instantiate the runner
-            var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+            try
+            {
+                // Instantiate the runner
+                var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
 
-            // Execute the migrations
-            runner.MigrateUp();
+                // Execute the migrations
+                runner.MigrateUp();
+            }
+            catch(Exception ex)
+            {
+
+            }
+            
         }
 
         private static ServiceProvider CreateServices()

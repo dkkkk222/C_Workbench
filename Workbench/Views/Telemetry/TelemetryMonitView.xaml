@@ -91,7 +91,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions> 
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="0"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -101,7 +101,7 @@
             <ColumnDefinition Width="10"></ColumnDefinition>
             <ColumnDefinition Width="{Binding SplitterPositionRight2,Mode=TwoWay}"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Border Grid.Row="0" Padding="0,0,0,0" Margin="10,0,0,0" Grid.ColumnSpan="3">
+        <!--<Border Grid.Row="0" Padding="0,0,0,0" Margin="10,0,0,0" Grid.ColumnSpan="3">
             <StackPanel Orientation="Horizontal">
                 
                 <Button Content="增加遥测监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}"  BorderBrush="{DynamicResource StopButtonBackground}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
@@ -113,194 +113,218 @@
                  Command="{Binding ShowChartGroupCommand}"/>
             </StackPanel>
 
-        </Border>
+        </Border>-->
         <Border Margin="0,5,0,0" Grid.Column="0" Grid.Row="1">
-            <TreeView ItemsSource="{Binding SingleParamTrees}" Background="{DynamicResource InLeftTreeViewBackGround}">
-                <TreeView.Resources>
-                    <!-- ★ 继承原样式，只追加两个 Setter -->
-                    <Style x:Key="BindableTreeViewItemStyle"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <controls_Title:StandTitle Padding="0,3,0,0" BordMargin="0,0,5,0" StandText="遥测分类" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
+
+                </StackPanel>
+                <TreeView Grid.Row="1" ItemsSource="{Binding SingleParamTrees}" Margin="0,3,0,0" Background="{DynamicResource InLeftTreeViewBackGround}">
+                    <TreeView.Resources>
+                        <!-- ★ 继承原样式，只追加两个 Setter -->
+                        <Style x:Key="BindableTreeViewItemStyle"
       TargetType="TreeViewItem"
       BasedOn="{StaticResource TreeViewItemStyle}">
-                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
-                    </Style>
-                </TreeView.Resources>
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                        </Style>
+                    </TreeView.Resources>
 
-                <!-- 只影响当前这棵 TreeView -->
-                <TreeView.ItemContainerStyle>
-                    <StaticResource ResourceKey="BindableTreeViewItemStyle"/>
-                </TreeView.ItemContainerStyle>
-                <!--<i:Interaction.Triggers>
+                    <!-- 只影响当前这棵 TreeView -->
+                    <TreeView.ItemContainerStyle>
+                        <StaticResource ResourceKey="BindableTreeViewItemStyle"/>
+                    </TreeView.ItemContainerStyle>
+                    <!--<i:Interaction.Triggers>
                   <i:EventTrigger EventName="SelectedItemChanged">
                       <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" 
        CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=TreeView}}" />
                   </i:EventTrigger>
               </i:Interaction.Triggers>-->
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                        <StackPanel>
-                            <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
-                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
-                                <CheckBox IsChecked="{Binding IsCheck}" Command="{Binding DataContext.SelectedItemChangedCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                            <StackPanel>
+                                <TextBlock Visibility="{c:Binding 'AddressHex==null',FalseToVisibility=Collapsed}" Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'AddressHex!=null',FalseToVisibility=Collapsed}">
+                                    <CheckBox IsChecked="{Binding IsCheck}" Command="{Binding DataContext.SelectedItemChangedCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
 CommandParameter="{Binding}">
-                                    <CheckBox.Style>
-                                        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsCheck}" Value="True">
-                                                    <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsCheck}" Value="false">
-                                                    <Setter Property="Background" Value="Transparent"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </CheckBox.Style>
-                                </CheckBox>
-                                <TextBlock Width="5"></TextBlock>
-                                <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
+                                        <CheckBox.Style>
+                                            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsCheck}" Value="True">
+                                                        <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsCheck}" Value="false">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </CheckBox.Style>
+                                    </CheckBox>
+                                    <TextBlock Width="5"></TextBlock>
+                                    <TextBlock Text="{Binding Title}" Foreground="{DynamicResource TreeViewNodeBrush}"/>
 
 
 
 
+                                </StackPanel>
                             </StackPanel>
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Grid>
+            
         </Border>
         <GridSplitter Grid.Column="1" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
 
         <DockPanel LastChildFill="True" Grid.Column="2" Grid.Row="1">
             <Border Style="{StaticResource BorderCircular}" Margin="5,5,0,5" DockPanel.Dock="Top"  Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
-                <DockPanel>
-                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                        <!--<TextBlock Text="{Binding TableName}" FontSize="{StaticResource SubHeadFontSize}" VerticalAlignment="Center"/>-->
-                        <controls_Title:StandTitle Padding="0,3,0,0" BordMargin="0,0,5,0" StandText="遥测查询" StandFontSize="{DynamicResource SubHeadFontSize}"/>
- 
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal"> 
+                        <controls_Title:StandTitle Padding="0,3,0,0" BordMargin="0,0,5,0" StandText="遥测监测表" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
 
                     </StackPanel>
+                    <DockPanel Grid.Row="1">
 
-                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
-                        <TextBlock VerticalAlignment="Center">遥测查询次数:</TextBlock>
-                        <TextBox Text="{Binding SelectCount,Mode=TwoWay}" TextAlignment="Center" IsEnabled="False" Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
-                            <TextBox.Style>
-                                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">                                    
-                                    <Style.Triggers>
-                                        <!-- 获得焦点时变色 -->
-                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
-                        <TextBlock VerticalAlignment="Center">遥测回复次数:</TextBlock>
-                        <TextBox Text="{Binding ReturnCount,Mode=TwoWay}"  TextAlignment="Center" IsEnabled="False" Margin="5,0,5,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
-                            <TextBox.Style>
-                                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
-                                    <Style.Triggers>
-                                        <!-- 获得焦点时变色 -->
-                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
-                        
-                        <ComboBox ItemsSource="{Binding CycleSource}"
+                        <!--<StackPanel DockPanel.Dock="Left" Orientation="Horizontal"> 
+                            <controls_Title:StandTitle Padding="0,3,0,0" BordMargin="0,0,5,0" StandText="遥测查询" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
+
+                        </StackPanel>-->
+
+                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left" Margin="9,3,0,0">
+                            <TextBlock VerticalAlignment="Center">遥测查询次数:</TextBlock>
+                            <TextBox Text="{Binding SelectCount,Mode=TwoWay}" TextAlignment="Center" IsEnabled="False" Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                        <Style.Triggers>
+                                            <!-- 获得焦点时变色 -->
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                            <TextBlock VerticalAlignment="Center">遥测回复次数:</TextBlock>
+                            <TextBox Text="{Binding ReturnCount,Mode=TwoWay}"  TextAlignment="Center" IsEnabled="False" Margin="5,0,5,0" hc:InfoElement.TitlePlacement="Left" Width="40" >
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                        <Style.Triggers>
+                                            <!-- 获得焦点时变色 -->
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+
+                            <ComboBox ItemsSource="{Binding CycleSource}"
                         DisplayMemberPath="Label"  Foreground="Black" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
                         SelectedValue="{Binding SelectedCycle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
-                        </ComboBox>
+                            </ComboBox>
 
-                        
 
-                        <Button Content="开始查询" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
+
+                            <Button Content="开始查询" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StartButtonBackground}" BorderBrush="{DynamicResource StartButtonBackground}"   
 HorizontalAlignment="Left" hc:IconElement.Width="14" Margin="10,0,0,0" IsEnabled="{c:Binding !IsStart,Mode=TwoWay}"
 Command="{Binding StartAllCommand}"/>
-                        
-                        <Button Content="停止查询" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"  
+
+                            <Button Content="停止查询" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"  
 HorizontalAlignment="Right" hc:IconElement.Width="14"   Margin="10,0,10,0" IsEnabled="{Binding IsStart,Mode=TwoWay}"
 Command="{Binding StopAllCommand}"/>
-                        
-                        <ComboBox ItemsSource="{Binding Path=DataContext.WatchChartGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
+
+                            <ComboBox ItemsSource="{Binding Path=DataContext.WatchChartGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
                          DisplayMemberPath="Header" Visibility="Collapsed" SelectedValuePath="Id" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
            SelectedValue="{Binding DataContext.SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,RelativeSource={RelativeSource AncestorType=UserControl}}">
 
-                        </ComboBox>
-                        <TextBlock VerticalAlignment="Center">遥测查询标识:</TextBlock>
-                        <!--<ComboBox ItemsSource="{Binding TagSource}"
+                            </ComboBox>
+                            <TextBlock VerticalAlignment="Center">遥测查询标识:</TextBlock>
+                            <!--<ComboBox ItemsSource="{Binding TagSource}"
  DisplayMemberPath="Name"  Foreground="Black" MinWidth="50" Style="{StaticResource CustomComboBoxStyle}" VerticalAlignment="Center"
  SelectedValue="{Binding SelectTag, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                         </ComboBox>-->
 
-                        <TextBox Text="{Binding ProjectTag,Mode=TwoWay}"   Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="50" >
-                            <TextBox.Style>
-                                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
-                                    <Style.Triggers>
-                                        <!-- 获得焦点时变色 -->
-                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                            <TextBox Text="{Binding ProjectTag,Mode=TwoWay}"   Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="50" >
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                        <Style.Triggers>
+                                            <!-- 获得焦点时变色 -->
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
 
-                        <TextBlock Width="10"></TextBlock>
-                        <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
+                            <TextBlock Width="10"></TextBlock>
+                            <Button DockPanel.Dock="Right" Content="下载" Style="{StaticResource ButtonPrimary.Small}" Background="{DynamicResource GenButtonBackgroundColor}" BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource CustomDownload}"
                                                                 Command="{Binding DataContext.HistoryDownloadCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                        <TextBlock Width="10"></TextBlock>
-                        <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
-                            <hc:SplitButton.DropDownContent>
-                                <ItemsControl ItemsSource="{Binding TableColumns}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Padding="8,0">
-                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                                                    <CheckBox.Style>
-                                                        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
-                                                                    <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="false">
-                                                                    <Setter Property="Background" Value="Transparent"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </CheckBox.Style>
-                                                </CheckBox>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </hc:SplitButton.DropDownContent>
-                        </hc:SplitButton>
-                        
-                        <TextBlock Width="10"></TextBlock>
-                        <!-- ① 对齐选择 ComboBox -->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="对齐方式：" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <ComboBox Width="110"
+                            <TextBlock Width="10"></TextBlock>
+                            <hc:SplitButton DockPanel.Dock="Right" Content="显示列：" Style="{StaticResource SplitButtonDefault}" HorizontalAlignment="Right">
+                                <hc:SplitButton.DropDownContent>
+                                    <ItemsControl ItemsSource="{Binding TableColumns}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <hc:UniformSpacingPanel Orientation="Vertical" Spacing="5"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Padding="8,0">
+                                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                                                        <CheckBox.Style>
+                                                            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
+                                                                        <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Value="false">
+                                                                        <Setter Property="Background" Value="Transparent"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </CheckBox.Style>
+                                                    </CheckBox>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </hc:SplitButton.DropDownContent>
+                            </hc:SplitButton>
+
+                            <TextBlock Width="10"></TextBlock>
+                            <!-- ① 对齐选择 ComboBox -->
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="对齐方式：" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <ComboBox Width="110"
                   SelectedValue="{Binding SelectedAlignMode, Mode=TwoWay}"
                   SelectedValuePath="Tag"
                   Style="{StaticResource CustomComboBoxStyle}">
-                                <ComboBoxItem Content="左对齐" Tag="{x:Static local_Model:AlignMode.Left}"/>
-                                <ComboBoxItem Content="居中对齐" Tag="{x:Static local_Model:AlignMode.Center}"/>
-                                <ComboBoxItem Content="右对齐" Tag="{x:Static local_Model:AlignMode.Right}"/>
-                            </ComboBox>
+                                    <ComboBoxItem Content="左对齐" Tag="{x:Static local_Model:AlignMode.Left}"/>
+                                    <ComboBoxItem Content="居中对齐" Tag="{x:Static local_Model:AlignMode.Center}"/>
+                                    <ComboBoxItem Content="右对齐" Tag="{x:Static local_Model:AlignMode.Right}"/>
+                                </ComboBox>
+                            </StackPanel>
+
                         </StackPanel>
-                        
-                    </StackPanel>
-                </DockPanel>
+                    </DockPanel>
+                </Grid>
+                
             </Border>
             <Grid>
                 <DataGrid Grid.Row="1"
@@ -637,333 +661,141 @@ Command="{Binding StopAllCommand}"/>
 
                     </DataGrid.Columns>
                 </DataGrid>
-                <!--<DataGrid ItemsSource="{Binding ShowTelemetryList}" Grid.Column="2" AutoGenerateColumns="False" Style="{StaticResource DataGrid.Small}"
-                                                      CanUserSortColumns="False" CanUserAddRows="False" Margin="0,5,0,0" RowHeight="40"
-                                                     Background="{DynamicResource DataGridBackgroundColor}" AlternationCount="2"
-                                                      SelectedItem="{Binding CurrentSequence}"  ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                                      x:Name="MyDataGrid">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}"  >
-                            <Setter Property="Background" Value="{StaticResource DataGridHeadBackgroundColor}" />
-                            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
-                            <Setter Property="FontWeight" Value="SemiBold" />
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Setter Property="FontSize" Value="13"/>
-                            <Setter Property="Padding" Value="0,0,0,0"/>
-                            <Setter Property="Margin" Value="0,0,0,0"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                            <Setter Property="BorderThickness" Value="1,0,0,1" />
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.Resources>
-                        <utils:BindingProxy x:Key="DataContextProxy" Data="{Binding}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#3D7EFF"/>
-                    </DataGrid.Resources>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell" BasedOn="{x:Null}">
-                            <Setter Property="Margin" Value="8,0,12,0"/>
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="BorderBrush" Value="Transparent"/>
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                            --><!-- 前景色跟随行 --><!--
-                            <Setter Property="Foreground"
-Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
-
-                            <Style.Triggers>
-                                --><!-- 选中 --><!--
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="BorderBrush" Value="Transparent"/>
-                                </Trigger>
-
-                                --><!-- 选中 + DataGrid失焦（例如右键弹菜单） --><!--
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True"/>
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=IsKeyboardFocusWithin}" Value="False"/>
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="BorderBrush" Value="Transparent"/>
-                                </MultiDataTrigger>
-
-                                --><!-- Hover 时也别盖住整行背景 --><!--
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.CellStyle>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Setter Property="Height" Value="40"/>
-                            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
-                            <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundColor}" />
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
-                            <Setter Property="BorderThickness" Value="0,0,0,1" />
-                            <Setter Property="SnapsToDevicePixels" Value="True" />
-                            --><!-- 新增：默认不加粗 --><!--
-                            <Setter Property="FontWeight" Value="Normal"/>
-                            <Style.Triggers>
-                                <Trigger Property="AlternationIndex" Value="1">
-                                    <Setter Property="Background" Value="{StaticResource DataGridRowAltBackgroundColor}"/>
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="{StaticResource RowHoverBrush}"/>
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="FontWeight" Value="Bold"/>
-                                </Trigger>
-                                --><!-- 选中（鼠标不在上面） --><!--
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                        <Condition Property="IsMouseOver" Value="False"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
-                                    <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
-                                    --><!-- 白字 --><!--
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    --><!-- 去掉分割线 --><!--
-                                </MultiTrigger>
-
-                                --><!-- 选中 + 悬停 --><!--
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                        <Condition Property="IsMouseOver" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" Value="{StaticResource LeftTreeViewTitleBackgroundColor}"/>
-                                    <Setter Property="Foreground" Value="{StaticResource TabSelectedFontColor}"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                </MultiTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn  Header="序号" Width="45"  MinWidth="45" Visibility="{Binding 
-                                                        Source={StaticResource DataContextProxy},
-                                                        Path=Data.TableColumns[0].IsChecked,
-                                                        Converter={StaticResource Boolean2VisibilityConverter}}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <TextBlock.Text>
-                                            <MultiBinding Converter="{StaticResource RowIndexConverter}">
-                                                <Binding />
-                                                <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" />
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="名称" Width="Auto" MinWidth="50" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[1].IsChecked,
-                                                                                        Converter={StaticResource Boolean2VisibilityConverter}}">
-
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="数据位置(bytes)" Width="Auto" MinWidth="120"
-                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[2].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding StartByte}" VerticalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="解析内容(bit)" Width="Auto" MinWidth="120"
-                                                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[3].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <TextBlock Text="b"/>
-                                        <TextBlock Text="{Binding EndLength}"/>
-                                        <StackPanel Orientation="Horizontal" Visibility="{c:Binding 'BitLength>1',FalseToVisibility=Collapsed}">
-                                            <TextBlock Text="-"/>
-                                            <TextBlock Text="b"/>
-                                            <TextBlock Text="{Binding BitStart}"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="解析要求" Width="Auto"  MinWidth="70"  Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[4].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" >
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" HorizontalAlignment="Center" Margin="0,0,0,0">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding ShowStr}" TextWrapping="Wrap"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </ScrollViewer>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="解析结果" 
-                                            IsReadOnly="True" 
-                                            MinWidth="30"  
-                                            Width="80"
-                                            Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[5].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock  >
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock" BasedOn="{StaticResource CenterCellStyle}">
-                                                <Setter Property="Text" Value="{Binding ShowResult}" />
-                                                <Setter Property="ToolTip" Value="{Binding ShowResult}"/>
-                                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                                --><!--<Style.Triggers>
-                                                <DataTrigger Binding="{Binding ParamC}" Value="4">
-                                                    <Setter Property="Text" Value="{Binding ShowResult}" />
-                                                    <Setter Property="ToolTip" Value="{Binding ShowResult}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>--><!--
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="解析内容(HEX)" Binding="{Binding ShowHexStr}" IsReadOnly="True" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[6].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"/>
-
-                        <DataGridTextColumn Header="单位"  Binding="{Binding Unit}"  IsReadOnly="True" MinWidth="50" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[7].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}" ElementStyle="{StaticResource CenterCellStyle}"></DataGridTextColumn>
-                        <DataGridTemplateColumn Header="添加添加到监测图" Width="Auto" Visibility="{Binding Source={StaticResource DataContextProxy},Path=Data.TableColumns[8].IsChecked,Converter={StaticResource Boolean2VisibilityConverter}}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                   
-                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                    <ComboBox ItemsSource="{Binding Path=DataContext.WatchTelemetryChartGroups,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                         DisplayMemberPath="Header"  SelectedValuePath="Id" MinWidth="70" Style="{StaticResource CustomComboBoxStyle}"
-                           SelectedValue="{Binding SelectedChartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="SelectionChanged">
-                                                                <i:InvokeCommandAction Command="{Binding DataContext.ChartTableChangeCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" PassEventArgsToCommand="True"  />
-
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
-
-                                                    </ComboBox>
-                                                </StackPanel>
-                                       
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-
-                </DataGrid>-->
+               
             
             </Grid>
             
         </DockPanel>
         <GridSplitter Grid.Column="3" Margin="0,5,0,0" Width="5"  Grid.Row="1" Background="{StaticResource GridSplitterBordColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></GridSplitter>
 
-        <hc:TabControl Grid.Row="1" Grid.Column="4" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="False" 
+        <Grid Grid.Row="1" Grid.Column="4" Margin="0,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition MinWidth="280"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <controls_Title:StandTitle Padding="0,3,0,0" BordMargin="0,0,5,0" StandText="遥测监测图" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+
+
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+
+                    <Button Content="增加遥测监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}"  BorderBrush="{DynamicResource StopButtonBackground}"  hc:IconElement.Geometry="{StaticResource AddGeometry}"
+HorizontalAlignment="Left" hc:IconElement.Width="14"
+Command="{Binding AddWatchGroupChartCommand}"/>
+                    <TextBlock Width="10"></TextBlock>
+                    <Button Content="展示遥测监测图" Style="{StaticResource ButtonPrimary}" Background="{DynamicResource StopButtonBackground}" BorderBrush="{DynamicResource StopButtonBackground}"   hc:IconElement.Geometry="{StaticResource   HTabGroup}"
+HorizontalAlignment="Left" hc:IconElement.Width="14"
+Command="{Binding ShowChartGroupCommand}"/>
+                </StackPanel>
+            </Grid>
+           
+            
+            <hc:TabControl Grid.Row="1" Grid.Column="4" IsAnimationEnabled="True" Margin="0,5,0,0" ShowCloseButton="False" 
                                    IsDraggable="True" Background="{StaticResource AvalonDockAreaBackgroundColor}" IsScrollable="True" ShowOverflowButton="False"
 ItemsSource="{Binding WatchChartGroupsForTab}" OverflowMenuDisplayMemberPath="Header" SelectedItem="{Binding CurrentChartTab}"
                                    Visibility="{Binding HasRealCharts, Converter={StaticResource BooleanToVisibilityConverter}}"  ShowContextMenu="False">
-            <hc:TabControl.ItemContainerStyle>
-                <Style TargetType="TabItem">
-                    <EventSetter Event="PreviewMouseRightButtonDown" Handler="TabItem_OnRightClickSelect"/>
-                    <Setter Property="Tag"
+                <hc:TabControl.ItemContainerStyle>
+                    <Style TargetType="TabItem">
+                        <EventSetter Event="PreviewMouseRightButtonDown" Handler="TabItem_OnRightClickSelect"/>
+                        <Setter Property="Tag"
             Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
 
-                    <Setter Property="ContextMenu">
-                        <Setter.Value>
-                            <ContextMenu>
-                                <MenuItem Header="关闭"
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu>
+                                    <MenuItem Header="关闭"
                           Command="{Binding PlacementTarget.Tag.CloseChartCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                           CommandParameter="{Binding}" />
-                                <MenuItem Header="关闭其它"
+                                    <MenuItem Header="关闭其它"
                           Command="{Binding PlacementTarget.Tag.CloseOthersChartCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                           CommandParameter="{Binding}" />
-                                <MenuItem Header="关闭所有"
+                                    <MenuItem Header="关闭所有"
                           Command="{Binding PlacementTarget.Tag.CloseAllChartCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                            </ContextMenu>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </hc:TabControl.ItemContainerStyle>
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Width="Auto">
-                        <TextBlock Text="{Binding Header}" FontWeight="Black"/>
-                        <Button   Margin="130,0,0,0" Foreground="Black" Style="{StaticResource ButtonPrimary.Small}" BorderBrush="Transparent" Background="Transparent" hc:IconElement.Geometry="{StaticResource CloseGeometry}" Command="{Binding DataContext.CloseChartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <DockPanel LastChildFill="True"  >
-            <!--BorderTipPrimary-->
-            <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0"  CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="4">
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </hc:TabControl.ItemContainerStyle>
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Width="Auto">
+                            <TextBlock Text="{Binding Header}" FontWeight="Black"/>
+                            <Button   Margin="130,0,0,0" Foreground="Black" Style="{StaticResource ButtonPrimary.Small}" BorderBrush="Transparent" Background="Transparent" hc:IconElement.Geometry="{StaticResource CloseGeometry}" Command="{Binding DataContext.CloseChartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <DockPanel LastChildFill="True"  >
+                            <!--BorderTipPrimary-->
+                            <Border Style="{StaticResource BorderClip}" Margin="0,0,0,0"  CornerRadius="0" DockPanel.Dock="Top" VerticalAlignment="Center" Background="{StaticResource TitleBarBackgroundColor}" BorderBrush="Transparent">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="4">
 
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                                            <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
-                                            <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Margin="5,0,5,0"  Command="{Binding RenameCommand}" CommandParameter="Chart"/>
-                                        </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
-                                <TextBox Text="{Binding Chart1MinX}"   hc:InfoElement.Title="X最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" >
-                                    <TextBox.Style>
-                                        <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
-                                            <Style.Triggers>
-                                                <!-- 获得焦点时变色 -->
-                                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBox.Style>
-                                </TextBox>
-                                <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
-                                <TextBox Text="{Binding ChartXName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X名称："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="100" />
-                                <TextBox Text="{Binding ChartYName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y名称："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="98" />
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                                <controls_Title:StandTitle Padding="0,0,0,0" BordMargin="10,0,5,0" Margin="0,0,0,0" TextMargin="0,0,0,0"  StandText="{Binding ChartName}" StandFontSize="{DynamicResource SubHeadFontSize}"/>
+                                                <Button Style="{StaticResource ButtonDefault.Small}" hc:IconElement.Geometry="{StaticResource PenGeometry}" Margin="5,0,5,0"  Command="{Binding RenameCommand}" CommandParameter="Chart"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
+                                                <TextBox Text="{Binding Chart1MinX}"   hc:InfoElement.Title="X最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" >
+                                                    <TextBox.Style>
+                                                        <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend.Small}">
+                                                            <Style.Triggers>
+                                                                <!-- 获得焦点时变色 -->
+                                                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                                    <Setter Property="BorderBrush" Value="{StaticResource BordTitleBackgroundColor}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBox.Style>
+                                                </TextBox>
+                                                <TextBox Text="{Binding Chart1MaxX}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                <TextBox Text="{Binding Chart1MinY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最小值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                <TextBox Text="{Binding Chart1MaxY}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y最大值："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="110" />
+                                                <TextBox Text="{Binding ChartXName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="X名称："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="100" />
+                                                <TextBox Text="{Binding ChartYName,Mode=TwoWay}" Style="{StaticResource TextBoxExtend.Small}" hc:InfoElement.Title="Y名称："  Margin="5,0,0,0" hc:InfoElement.TitlePlacement="Left" Width="98" />
 
-                                <Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
+                                                <Button Style="{StaticResource ButtonPrimary}" Content="设置" Background="{DynamicResource GenButtonBackgroundColor}"  BorderBrush="{DynamicResource GenButtonBackgroundColor}" hc:IconElement.Geometry="{StaticResource  PenGeometry }"
            Margin="5,0,0,0"  Command="{Binding SettingChartLimitCommand}" CommandParameter="{Binding}"/>
-                            </StackPanel>
-                        </Grid>
+                                            </StackPanel>
+                                        </Grid>
 
 
 
-                    </StackPanel>
+                                    </StackPanel>
 
-                </Grid>
+                                </Grid>
 
-            </Border>
-            <Border Margin="0,1,0,0">
-                <!--<ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>-->
-                <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl,Mode=TwoWay}"/>
-            </Border>
-        </DockPanel>
-                </DataTemplate>
+                            </Border>
+                            <Border Margin="0,1,0,0">
+                                <!--<ContentControl Content="{Binding WpfPlotControl,Mode=TwoWay}"/>-->
+                                <controls_Scottplot:LiveDataPlot PlotData="{Binding WpfPlotControl,Mode=TwoWay}"/>
+                            </Border>
+                        </DockPanel>
+                    </DataTemplate>
 
-            </TabControl.ContentTemplate>
-        </hc:TabControl>
+                </TabControl.ContentTemplate>
+            </hc:TabControl>
+        </Grid>
+       
     </Grid>
 </UserControl>
