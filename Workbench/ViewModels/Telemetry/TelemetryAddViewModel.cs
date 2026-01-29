@@ -52,7 +52,7 @@ namespace Workbench.ViewModels.Telemetry
         {
             new OptionModel()
         {
-            Label = "遥控指令", Value = 0
+            Label = "间接指令", Value = 0
         },
             new OptionModel()
         {

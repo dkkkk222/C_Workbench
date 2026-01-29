@@ -149,11 +149,11 @@ namespace Workbench.ViewModels.Telemetry
                 _eventAggregator.GetEvent<TelemetryImportEvent>().Publish(_projectManager.CurrentProject);
                 if(_projectManager.CurrentProject.IsConnecting)
                 {
-                    MessageBox.Show("遥控指令导入完成,请重新连接已更新!");
+                    MessageBox.Show("遥测数据导入完成,请重新连接以更新!");
                 }
                 else
                 {
-                    MessageBox.Show("遥控指令导入完成!");
+                    MessageBox.Show("遥测数据导入完成!");
                 }
                 
             }

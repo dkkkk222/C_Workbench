@@ -561,6 +561,8 @@ namespace Workbench.ViewModels.dw
                         {
                             SequenceList.Remove(seq);
                         }
+                        CheckAll = false;
+                        CheckAllResister = false;
                     }
                     catch (Exception ex)
                     {
@@ -581,6 +583,7 @@ namespace Workbench.ViewModels.dw
                 CurrentSequence.Items.Remove(item);
             }
             CollectionViewSource.GetDefaultView(CurrentSequence.Items).Refresh();
+            CheckAllResister = false;
         });
 
         private async Task SendSequence(Sequence param)

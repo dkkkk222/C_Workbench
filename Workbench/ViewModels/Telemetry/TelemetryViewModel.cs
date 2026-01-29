@@ -305,7 +305,7 @@ namespace Workbench.ViewModels.Telemetry
         {
             if (!(_projectManager.CurrentProject.CommService is PcmuUartService))
             {
-                HandyControl.Controls.MessageBox.Show("系统连接才能使用遥控下发，请重试!");
+                System.Windows.Forms.MessageBox.Show("系统连接才能使用遥控下发，请重试!");
                 return;
             }
             if (!_projectManager.CurrentProject.IsConnecting)
@@ -353,6 +353,8 @@ namespace Workbench.ViewModels.Telemetry
                         {
                             SequenceList.Remove(seq);
                         }
+                        CheckAll = false;
+                        CheckAllResister = false;
                     }
                     catch (Exception ex)
                     {
@@ -367,7 +369,7 @@ namespace Workbench.ViewModels.Telemetry
             var currentProject = _projectManager.CurrentProject;
             param.Progress = 0;
             param.CompletedNumTelemetry = 0;
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
             foreach (var register in param.TelemetryItems)
             {
                 bool isSuc = true;
@@ -392,7 +394,13 @@ namespace Workbench.ViewModels.Telemetry
                                 if (register.Type == ((int)TelemetryCommandType.IndirectCommand).ToString())
                                 {
                                     var cmd = UtilsFunc.HexStringToBytes(register.Code);
-                                    var ack1 = await currentProject.CommService.SendRemoteControlAsync(cmd, 1000);
+                                    int defaultIn = 0;
+                                    
+                                    if(_projectManager.CurrentProject.IsTelemetryReturnCheck)
+                                    {
+                                        defaultIn = 1000;
+                                    }
+                                    var ack1 = await currentProject.CommService.SendRemoteControlAsync(cmd, defaultIn);//1000
                                     if (!ack1.Success)
                                     {
                                         register.SendState = Constants.Lose;
@@ -407,7 +415,13 @@ namespace Workbench.ViewModels.Telemetry
                                 if (register.Type == ((int)TelemetryCommandType.NoteInstruction).ToString())
                                 {
                                     var injection = UtilsFunc.HexStringToBytes(register.Code);
-                                    var ack1 = await currentProject.CommService.SendInjectionAsync(injection, 1000);
+                                    int defaultIn = 0;
+
+                                    if (_projectManager.CurrentProject.IsTelemetryReturnCheck)
+                                    {
+                                        defaultIn = 1000;
+                                    }
+                                    var ack1 = await currentProject.CommService.SendInjectionAsync(injection, defaultIn);
                                     if (!ack1.Success)
                                     {
                                         register.SendState = Constants.Lose;
@@ -516,6 +530,7 @@ namespace Workbench.ViewModels.Telemetry
                 CurrentSequence.TelemetryItems.Remove(item);
             }
             CollectionViewSource.GetDefaultView(CurrentSequence.TelemetryItems).Refresh();
+            CheckAllResister = false;
         });
 
         public DelegateCommand CleraHistoryCommand => new DelegateCommand(() =>

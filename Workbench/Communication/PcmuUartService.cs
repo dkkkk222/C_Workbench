@@ -71,6 +71,12 @@ namespace Workbench.Communication
         /// </summary>
         public new async Task<ControlAck> SendRemoteControlAsync(byte[] payload, int timeoutMs = 50)
         {
+            if (timeoutMs <= 0)
+            {
+                await SendOnlyAsync(TYPE_REMOTE_CTRL, payload).ConfigureAwait(false);
+                // 你想“只要发了就当成功”，这里直接 ok=true
+                return new ControlAck(true, 0xAAAA, Array.Empty<byte>());
+            }
             //var payload = new byte[] { (byte)(cmdBE >> 24), (byte)(cmdBE >> 16), (byte)(cmdBE >> 8), (byte)cmdBE };
             var resp = await SendAndWaitAsync(TYPE_REMOTE_CTRL, payload, TYPE_REMOTE_CTRL_ACK, timeoutMs).ConfigureAwait(false);
             if (resp == null || resp.Length < 4) return new ControlAck(false, 0, resp ?? Array.Empty<byte>());
@@ -79,11 +85,38 @@ namespace Workbench.Communication
             return new ControlAck(ok, code, resp);
         }
 
+        private async Task<bool> SendOnlyAsync(ushort typeCode, byte[] payload)
+        {
+            await _sendGate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                // ≥10ms 节流
+                //await Task.Delay(MinSendIntervalMs).ConfigureAwait(false);
+
+                var frame = BuildFrame(typeCode, payload);
+                bool sent = await base.SendAsync(frame).ConfigureAwait(false);
+                if (!sent)
+                    throw new IOException("串口发送失败");
+
+                return true;
+            }
+            finally
+            {
+                _sw.Restart();
+                _sendGate.Release();
+            }
+        } 
+
         /// <summary>
         /// 发送“注数(0014)”，payload长度N≤256，等待“注数应答(0019)”
         /// </summary>
         public new async Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80)
         {
+            if (timeoutMs <= 0)
+            {
+                await SendOnlyAsync(TYPE_INJECTION, payload).ConfigureAwait(false);
+                return new ControlAck(true, 0xAAAA, Array.Empty<byte>());
+            }
             var resp = await SendAndWaitAsync(TYPE_INJECTION, payload, TYPE_INJECTION_ACK, timeoutMs).ConfigureAwait(false);
             if (resp == null || resp.Length < 4) return new ControlAck(false, 0, resp ?? Array.Empty<byte>());
             ushort code = ReadU16_BE(resp, 2); // 00 00 AA AA -> 取后两个字节

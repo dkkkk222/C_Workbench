@@ -632,7 +632,7 @@ namespace Workbench.ViewModels.Telemetry
         {
             if (!(_projectManager.CurrentProject.CommService is PcmuUartService))
             {
-                HandyControl.Controls.MessageBox.Show("系统连接才能使用遥控监控，请重试!");
+                System.Windows.Forms.MessageBox.Show("系统连接才能使用遥控监控，请重试!");
                 return;
             }
             if (!_projectManager.CurrentProject.IsConnecting)

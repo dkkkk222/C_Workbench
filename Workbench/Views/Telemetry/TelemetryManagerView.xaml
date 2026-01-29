@@ -338,6 +338,20 @@ Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGrid
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center">
 
+                            <CheckBox Content="遥控返回帧" Margin="0,0,10,0" IsChecked="{Binding IsTelemetryReturnCheck,Mode=TwoWay}" Command="{Binding IsTelemetryReturnCommand}" >
+                                <CheckBox.Style>
+                                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsTelemetryReturnCheck, RelativeSource={RelativeSource Self}}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource BordTitleBackgroundColor}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsTelemetryReturnCheck, RelativeSource={RelativeSource Self}}" Value="false">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </CheckBox.Style>
+                            </CheckBox>
                             <Button Content="批量删除" Style="{StaticResource ButtonPrimary}" Margin="0,0,5,0" Background="{DynamicResource DelButtonBackground}" BorderBrush="{DynamicResource DelButtonBackground}" hc:IconElement.Geometry="{StaticResource DeleteFillCircleGeometry}"
 Command="{Binding BatchDelCommand}"/>
 

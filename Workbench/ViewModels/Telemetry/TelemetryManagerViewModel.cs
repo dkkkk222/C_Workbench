@@ -24,6 +24,7 @@ using System.IO;
 using NPOI.SS.Formula.Functions;
 using System.Windows.Data;
 using System.ComponentModel;
+using NPOI.XSSF.Streaming.Values;
 
 namespace Workbench.ViewModels.Telemetry
 {
@@ -43,6 +44,7 @@ namespace Workbench.ViewModels.Telemetry
             _cpService = cpService;
             TelemetryItemsView = CollectionViewSource.GetDefaultView(TelemetryItems);
             TelemetryItemsView.Filter = TelemetryFilter;
+            IsTelemetryReturnCheck = _projectManager.CurrentProject.IsTelemetryReturnCheck;
         }
 
         private ObservableCollection<TelemetryCode> _telemetryItems = new ObservableCollection<TelemetryCode>();
@@ -68,6 +70,21 @@ namespace Workbench.ViewModels.Telemetry
         {
             get => _telemetryItemsView;
             private set => SetProperty(ref _telemetryItemsView, value);
+        }
+
+
+        public bool _isTelemetryReturnCheck;
+        public bool IsTelemetryReturnCheck
+        {
+            get => _isTelemetryReturnCheck;
+            set
+            {
+                if(SetProperty(ref _isTelemetryReturnCheck, value))
+                {
+                    _projectManager.CurrentProject.IsTelemetryReturnCheck = value;
+                }
+
+            }
         }
 
         private bool _checkAll = false;
@@ -164,6 +181,7 @@ namespace Workbench.ViewModels.Telemetry
                              
                         }
                         await GetTeleLisst();
+                    CheckAll = false;
                     }
                     catch (Exception ex)
                     {

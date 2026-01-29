@@ -39,6 +39,16 @@ namespace Workbench.Models
             get { return _chip; }
             set { SetProperty(ref _chip, value); }
         }
+        public bool _isTelemetryReturnCheck;
+        public bool IsTelemetryReturnCheck
+        {
+            get => _isTelemetryReturnCheck;
+            set
+            {
+                SetProperty(ref _isTelemetryReturnCheck, value);
+            }
+        }
+
         public string Path { get; set; }
         public string ProjectMark { get; set; }
         public string Icon { get; set; }

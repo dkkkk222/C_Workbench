@@ -25,7 +25,7 @@ namespace Workbench.Models.dw
             } 
         }
 
-        private int _paramPushInterval = 5;
+        private int _paramPushInterval = 20;
         /// <summary>
         /// 参数下发间隔
         /// </summary>
@@ -34,8 +34,8 @@ namespace Workbench.Models.dw
             get => _paramPushInterval;
             set
             {
-                if (value < 5)
-                    value = 5;
+                if (value < 20)
+                    value = 20;
                 SetProperty(ref _paramPushInterval, value);
             }
         }
