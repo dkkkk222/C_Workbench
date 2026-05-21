@@ -394,6 +394,8 @@ namespace Workbench.Models
                         case Constants.OldSERIAL_PORT:
                         case Constants.SERIAL_PORT:
                             return await ConnectTelemetry();
+                        case Constants.CAN:
+                            return await ConnectCan();
                         default:
                             return await ConnectTelemetry();
                     }

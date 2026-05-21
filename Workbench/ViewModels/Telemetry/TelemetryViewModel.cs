@@ -434,6 +434,7 @@ namespace Workbench.ViewModels.Telemetry
                                 }
                                 break;
                             case Constants.CAN:
+
                                 break;
                         }
                         break;

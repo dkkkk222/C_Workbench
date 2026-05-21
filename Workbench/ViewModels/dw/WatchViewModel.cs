@@ -1908,8 +1908,8 @@ namespace Workbench.ViewModels.dw
         {
             var categoryOptions = _projectManager.GetCategories().Select(t => new ValueLabelOption() { Value = t, Label = t });
             SettingCategoryList.Clear();
-            SettingCategoryList.AddRange(categoryOptions);
-            CurrentSettingCategory = SettingCategoryList.FirstOrDefault();
+            //SettingCategoryList.AddRange(categoryOptions);
+            //CurrentSettingCategory = SettingCategoryList.FirstOrDefault();
 
             //LoadRegisters();
 

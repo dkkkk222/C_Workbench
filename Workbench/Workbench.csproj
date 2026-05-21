@@ -367,6 +367,7 @@
     <Compile Include="AvalonDock\PanesStyleSelector.cs" />
     <Compile Include="AvalonDock\PanesTemplateSelector.cs" />
     <Compile Include="Behaviors\InputMaskBehavior.cs" />
+    <Compile Include="Communication\PcmuCANService.cs" />
     <Compile Include="Communication\CanCommService.cs" />
     <Compile Include="Communication\Ch347I2cCommService.cs" />
     <Compile Include="Communication\I2cCommService.cs" />

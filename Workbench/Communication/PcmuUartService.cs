@@ -613,6 +613,7 @@ namespace Workbench.Communication
         }
 
         // —— 位切片工具 —— //
+
         private static ulong AssembleBytes(byte[] src, int startByte, int byteCount, ByteOrder order)
         {
             if (startByte < 0 || byteCount <= 0 || startByte + byteCount > src.Length)

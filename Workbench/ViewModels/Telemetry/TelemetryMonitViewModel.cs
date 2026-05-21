@@ -902,7 +902,7 @@ namespace Workbench.ViewModels.Telemetry
                 if(selectItem.IsChecked)
                 {
                     isOldCheck.Add(selectItem.Name);
-                    ChangeChartVisible(WpfPlotControl, false, selectItem.Name);
+                    ChangeChartVisible(WpfPlotControl, false, "1");//selectItem.Name);
                 }
             }
             

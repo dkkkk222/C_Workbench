@@ -301,7 +301,7 @@ namespace Workbench.ViewModels.Content.ButtonBar
                 }
                 if (value == Constants.SYS_CONNECT)
                 {
-                    CommunicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT };//, Constants.CAN
+                    CommunicationTypeList = new ObservableCollection<string> { Constants.SERIAL_PORT, Constants.CAN };
                 }
                 SelectedCommunicationType = CommunicationTypeList[0];
                 var ppec = _projectManager.GetCachePPEC();
@@ -492,6 +492,11 @@ namespace Workbench.ViewModels.Content.ButtonBar
                         ConnectType = 1;
                         PortTitle = Constants.SERIAL_PORT;
                         ChangeUart();
+                    }
+                    if (value == Constants.CAN)
+                    {
+                        ConnectType = 2; PortTitle = Constants.CAN_PORT;
+                        ChangeCan();
                     }
                 }
                

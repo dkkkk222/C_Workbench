@@ -551,7 +551,7 @@ namespace Workbench.Communication
             }
         }
 
-        private static void ParseReplyTwoFrames(ZLGCAN.ZCAN_Receive_Data f0, ZLGCAN.ZCAN_Receive_Data f1,
+        public static void ParseReplyTwoFrames(ZLGCAN.ZCAN_Receive_Data f0, ZLGCAN.ZCAN_Receive_Data f1,
             out byte addrHi, out byte addrLo, out byte[] data4, out byte sum)
         {
             if (f0.frame.can_dlc != 8 || f0.frame.data[0] != 0x00) throw new Exception("应答帧1格式错误");
