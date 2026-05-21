@@ -125,6 +125,67 @@ namespace Workbench.Communication
 
         #endregion
 
+        public void Connect_CAN_Telemetry(CanConnectOptions options)
+        {
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (IsConnected) Close();
+
+            _opts = options;
+
+            // 1) 打开设备（dev_index 用 DevId 对应第几个设备）
+            _devHandle = ZLGCAN.ZCAN_OpenDevice(_opts.DevType, _opts.DevId, 0);
+            if (_devHandle == IntPtr.Zero) throw new Exception("ZCAN_OpenDevice 失败");
+
+            // 2) 初始化/打开通道
+            _currentCanId = _opts.CanId;
+            var ch = StartChannel(_currentCanId, _opts.BaudIndex);
+            if (ch == IntPtr.Zero) throw new Exception("ZCAN_InitCAN/ZCAN_StartCAN 失败");
+
+            // 3) 接收循环
+            _cts = new CancellationTokenSource();
+            _rxLoop = Task.Run(() => RxLoopAsync(_cts.Token));
+        }
+
+        public void Connect_CAN_Telemetry(string portName, int baudRate = 0, System.IO.Ports.Parity parity = System.IO.Ports.Parity.None,
+                        int dataBits = 8, System.IO.Ports.StopBits stopBits = System.IO.Ports.StopBits.One)
+        {
+            if (IsConnected) Close();
+            if (string.IsNullOrWhiteSpace(portName) || !portName.StartsWith("CAN", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("请传 CAN 连接串，示例：CAN:21:0:0:1 或 CAN;DevType=21;DevId=0;CanId=0;Baud=1", nameof(portName));
+
+            CanConnectOptions opt;
+            if (portName.Contains(":")) // 旧格式
+            {
+                var parts = portName.Split(':');
+                if (parts.Length != 5) throw new ArgumentException("格式应为 CAN:<DevType>:<DevId>:<CanId>:<BaudIndex>");
+                opt = new CanConnectOptions
+                {
+                    DevType = uint.Parse(parts[1], CultureInfo.InvariantCulture),
+                    DevId = uint.Parse(parts[2], CultureInfo.InvariantCulture),
+                    CanId = uint.Parse(parts[3], CultureInfo.InvariantCulture),
+                    BaudIndex = int.Parse(parts[4], CultureInfo.InvariantCulture)
+                };
+            }
+            else // kv 格式
+            {
+                // CAN;DevType=21;DevId=0;CanId=1;Baud=1;Timeout=400
+                var kv = portName.Split(';').Skip(1)
+                                 .Select(s => s.Split('='))
+                                 .Where(p => p.Length == 2)
+                                 .ToDictionary(p => p[0].Trim().ToLowerInvariant(), p => p[1].Trim());
+
+                uint devType = uint.Parse(kv["devtype"]);
+                uint devId = uint.Parse(kv["devid"]);
+                uint canId = uint.Parse(kv["canid"]);
+                int baudIdx = int.Parse(kv["baud"]);
+                uint? timeout = kv.TryGetValue("timeout", out var t) ? uint.Parse(t) : (uint?)null;
+
+                opt = new CanConnectOptions { DevType = devType, DevId = devId, CanId = canId, BaudIndex = baudIdx, SendTimeoutMs = timeout };
+            }
+
+            Connect_CAN_Telemetry(opt); // 复用强类型版本
+        }
+
         private async Task SendTLM(bool useCanB, byte dest, int timeoutMs, byte TLMTag)
         {
             EnsureConnected();
@@ -534,7 +595,7 @@ namespace Workbench.Communication
                                     f.SourceData = Math.Round(b2 * a2 + result * a2, 3);
                                 f.ShowResult = f.SourceData.ToString();
                             }
-                            dict[f.Name] = (f.SourceData is double dv) ? dv : result;
+                            //dict[f.Name] = f.SourceData is not double dv ? result : dv;
                             break;
                         case "3":// "YEqAXpmB":
                             if (double.TryParse(f.ParamA, out var a3) && double.TryParse(f.ParamB, out var b3))
@@ -566,7 +627,7 @@ namespace Workbench.Communication
                             break;
                     }
 
-                    Application?.Current.Dispatcher.InvokeAsync(() =>
+                    Application.Current.Dispatcher.InvokeAsync(() =>
                     {
                         f.ShowHexStr = str;
                     });

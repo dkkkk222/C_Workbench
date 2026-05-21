@@ -395,7 +395,7 @@ namespace Workbench.Models
                         case Constants.SERIAL_PORT:
                             return await ConnectTelemetry();
                         case Constants.CAN:
-                            return await ConnectCan();
+                            return await ConnectCan_Telemetry();
                         default:
                             return await ConnectTelemetry();
                     }
@@ -695,7 +695,58 @@ namespace Workbench.Models
                 return false;
             }
         }
+        public async Task<bool> ConnectCan_Telemetry()
+        {
+            try
+            {
+                var opts = new CanConnectOptions
+                {
+                    DevType = 21,   // 例如用户选的 USBCAN-2E-U
+                    DevId = (uint)SelectedDeviceId,
+                    CanId = (uint)SelectedCanId,   // 0 或 1
+                    BaudIndex = SelectedBaudIndex,     // 按你的映射
+                    SendTimeoutMs = 400                // 可选
+                };
+                // 连接：USBCAN-2E-U(21), Dev0, CAN0, 500kbps(index=1)
+                var can = new PcmuCANService();
+                can.Delay = CanDelay;
+                can.Connect_CAN_Telemetry($"CAN:{DeviceType}:{SelectedDeviceId}:{SelectedCanId}:{SelectedBaudIndex}");
+                CommService = can;
+                IsConnecting = true;
+                //can.FrameParser += (VCI_CAN_OBJ data) =>
+                //{
+                //    switch(data.ID)
+                //    {
+                //        case 0:
+                //            break;
+                //    }
+                //    string hex = Utility.ToHexString(data);
 
+                //    byte[] addressBytes = new byte[2];
+                //    Array.Copy(data, 16, addressBytes, 0, 2);
+                //    string addressHex = Utility.ToHexString(addressBytes);
+
+                //    byte[] dataBytes = new byte[4];
+                //    Array.Copy(data, 18, dataBytes, 0, 4);
+                //    string dataStr = Utility.ToHexString(dataBytes);
+                //    var decValue = Utility.ParseHexToUInt(dataStr);
+
+                //    return (addressHex, decValue);
+                //};
+                // 复位（在 CANA 上，目标 A0）
+                //await can.ResetAsync(useCanB: false, dest: 0xA0);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+                IsConnecting = false;
+                return false;
+            }
+
+
+        }
+        
         #region 会话ID
         public RecordingSession ActiveSession { get; private set; }
         public string ActiveSessionId => ActiveSession?.SessionId;

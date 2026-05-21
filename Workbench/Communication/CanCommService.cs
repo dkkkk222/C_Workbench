@@ -389,7 +389,7 @@ namespace Workbench.Communication
         /// <summary>
         /// 初始化并打开指定通道（设置波特率→Init→Start），返回通道句柄。
         /// </summary>
-        private IntPtr StartChannel(uint canIdx, int baudIndex)
+        public IntPtr StartChannel(uint canIdx, int baudIndex)
         {
             if (_devHandle == IntPtr.Zero) return IntPtr.Zero;
 
