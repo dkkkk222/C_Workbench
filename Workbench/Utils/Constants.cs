@@ -49,6 +49,8 @@ namespace Workbench.Utils
         //
         public const string Telemetry = "Telemetry";
 
+        public const string Telemetry_CAN = "Telemetry_CAN";
+
         public const string ConnectIcon = "\uE67e";
         public const string DisConnectIcon = "\uE64d";
         public const string ConnectStr = "连接";

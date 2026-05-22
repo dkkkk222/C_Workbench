@@ -36,7 +36,7 @@ namespace Workbench.Communication
         private const ushort TYPE_REMOTE_CTRL = 0x000A; // 遥控指令
         private const ushort TYPE_REMOTE_CTRL_ACK = 0x000F; // 遥控应答
         private const ushort TYPE_INJECTION = 0x0014; // 注数
-        private const ushort TYPE_INJECTION_ACK = 0x0019; // 注数应答
+        //private const ushort TYPE_INJECTION_ACK = 0x0019; // 注数应答
         private const ushort TYPE_TLM_QUERY = 0x001E; // 遥测查询
         private const ushort TYPE_TLM_RESPONSE = 0x0023; // 遥测数据应答
 
@@ -229,16 +229,28 @@ namespace Workbench.Communication
             if (_devHandle == IntPtr.Zero) throw new InvalidOperationException("设备未打开");
         }
 
+        // 新增：重组状态结构体与容器（放在类内字段区域）
+        private class ReassemblyState
+        {
+            public int ExpectedLength; // 总有效字节数（DL）
+            public MemoryStream Buffer = new MemoryStream();
+            public object Lock = new object();
+        }
+
+        private readonly ConcurrentDictionary<uint, ReassemblyState> _reassemblies = new ConcurrentDictionary<uint, ReassemblyState>();
+
         /// <summary>
-        /// 接收循环：ZCAN_GetReceiveNum + ZCAN_Receive，FrameParser 优先，其次把 CAN 数据按字节追加到接收缓冲并采用 UART 一致的粘包/解析逻辑
-        /// 注意：CAN 每帧最多 8 字节，应用层可能在多个 CAN 帧上承载一条完整应用帧（需在 _rxBuffer 中重组）
+        /// 接收循环：ZCAN_GetReceiveNum + ZCAN_Receive
+        /// 实现多帧重组协议：每帧8字节，data[0]=seq（首帧=0x00，尾帧=0xAA），首帧 data[1] 为 DL（有效字节总数），后续字节为数据。
+        /// 当重组完成时，把拼接结果当作连续字节块交给 HandleCanDataBytes（与 UART 路径统一）。
+        /// 同时保留原先的 FrameParser / 两帧读应答合并逻辑。
         /// </summary>
         private async Task RxLoopAsync(CancellationToken token)
         {
-            // 组装两帧应答：key=完整应答ID(包含扩展ID的29bit)，value=第一帧
+            // 组装两帧应答（旧的两帧寄存器读应答）：key=完整应答ID，value=第一帧
             var halfReplies = new ConcurrentDictionary<uint, ZLGCAN.ZCAN_Receive_Data>();
 
-            // 用于多通道轮询：一般你只开一个通道；若多通道这里会轮询每个句柄
+            // 用于多通道轮询
             var chnIds = new List<uint>();
 
             while (!token.IsCancellationRequested)
@@ -253,10 +265,7 @@ namespace Workbench.Communication
                         if (!_chnHandles.TryGetValue(canId, out var ch) || ch == IntPtr.Zero) continue;
 
                         uint pending = ZLGCAN.ZCAN_GetReceiveNum(ch, 0);
-                        if (pending == 0)
-                        {
-                            continue;
-                        }
+                        if (pending == 0) continue;
 
                         var max = (uint)Math.Min(100, pending);
                         var size = Marshal.SizeOf(typeof(ZLGCAN.ZCAN_Receive_Data));
@@ -271,7 +280,7 @@ namespace Workbench.Communication
                                     pBuf + i * size,
                                     typeof(ZLGCAN.ZCAN_Receive_Data));
 
-                                // 可选：用户自定义解析优先
+                                // 用户自定义解析优先
                                 if (FrameParser != null)
                                 {
                                     var res = FrameParser(rec);
@@ -284,27 +293,27 @@ namespace Workbench.Communication
                                     }
                                 }
 
-                                // 默认“读寄存器应答两帧合并”解析（保持与旧版一致）
+                                // 只处理扩展数据帧（与旧逻辑保持一致）
                                 var isExt = ((rec.frame.can_id & (1u << 31)) != 0);
                                 var isRemote = ((rec.frame.can_id & (1u << 30)) != 0);
-                                if (!isExt || isRemote) continue; // 只处理扩展数据帧
+                                if (!isExt || isRemote) continue;
 
-                                // 取 29bit 原始ID
+                                // 取 29bit 原始ID，用于区分会话/消息流
                                 uint rawId29 = rec.frame.can_id & 0x1FFFFFFF;
                                 var (bus, mt, dt, src, dst) = ArbId.Parse(rawId29);
+
+                                // 保留旧的两帧寄存器读应答合并（与 CanCommService1 保持一致）
                                 if (mt == InfoType.TLM_RESPONSE && dt == DT.TLM_RESPONSE && dst == 0x00)
                                 {
                                     var dlc = rec.frame.can_dlc;
                                     if (dlc == 8 && rec.frame.data[0] == 0x00)
                                     {
-                                        // 第一帧
+                                        // 第一帧（兼容旧实现）
                                         halfReplies[rawId29] = rec;
-                                        // 仍然把数据放入字节流以支持其它协议帧解析（若适用）
-                                        AppendCanFrameDataToRxBuffer(rec);
+                                        // 仍继续下面的多帧重组逻辑（将数据也纳入流）
                                     }
                                     else if (dlc == 8 && rec.frame.data[0] != 0x00)
                                     {
-                                        // 第二帧
                                         if (halfReplies.TryRemove(rawId29, out var f0))
                                         {
                                             try
@@ -320,21 +329,138 @@ namespace Workbench.Communication
                                             }
                                             catch
                                             {
-                                                // 忽略解析错误，继续把第二帧数据加入流以供通用解析
+                                                // 忽略解析错误
                                             }
                                         }
-                                        AppendCanFrameDataToRxBuffer(rec);
+                                    }
+                                }
+
+                                // ---------- 多帧重组协议实现 ----------
+                                // 期望每个 CAN 帧最长 8 字节，布局： [seq][d1][d2]...[d7]
+                                // 首帧 seq==0x00, 首帧的 d1 为 DL（总有效字节数），首帧贡献 d2..d7
+                                // 中间帧贡献 d1..d7
+                                // 末帧 seq==0xAA，贡献 d1..d7（末帧实际有效字节由首帧 DL 决定）
+                                try
+                                {
+                                    int dlc = rec.frame.can_dlc;
+                                    if (dlc <= 0) continue;
+                                    byte seq = rec.frame.data[0];
+
+                                    // 处理首帧
+                                    if (seq == 0x00)
+                                    {
+                                        // 创建或重置会话
+                                        var state = new ReassemblyState();
+                                        byte dl = 0;
+                                        if (dlc >= 2) dl = rec.frame.data[1];
+                                        state.ExpectedLength = dl;
+
+                                        // 追加首帧剩余字节（从 index=2 到 dlc-1）
+                                        if (dlc > 2)
+                                        {
+                                            int start = 2;
+                                            int count = dlc - start;
+                                            lock (state.Lock)
+                                            {
+                                                state.Buffer.Write(rec.frame.data, start, count);
+                                            }
+                                        }
+
+                                        _reassemblies[rawId29] = state;
+
+                                        // 检查是否已完成（当有效长度非常小）
+                                        lock (state.Lock)
+                                        {
+                                            if (state.ExpectedLength > 0 && state.Buffer.Length >= state.ExpectedLength)
+                                            {
+                                                var all = state.Buffer.ToArray();
+                                                var payload = new byte[state.ExpectedLength];
+                                                Array.Copy(all, 0, payload, 0, state.ExpectedLength);
+                                                _reassemblies.TryRemove(rawId29, out _);
+                                                HandleCanDataBytes(payload);
+                                            }
+                                        }
+                                    }
+                                    else if (seq == 0xAA)
+                                    {
+                                        // 终止帧：如果有会话则追加并结束；否则把这帧当作普通字节追加
+                                        if (_reassemblies.TryGetValue(rawId29, out var st))
+                                        {
+                                            if (dlc > 1)
+                                            {
+                                                int start = 1;
+                                                int count = dlc - start;
+                                                lock (st.Lock)
+                                                {
+                                                    st.Buffer.Write(rec.frame.data, start, count);
+                                                }
+                                            }
+
+                                            // 完成并提交（截取到 ExpectedLength）
+                                            lock (st.Lock)
+                                            {
+                                                int expected = st.ExpectedLength > 0 ? st.ExpectedLength : (int)st.Buffer.Length;
+                                                var all = st.Buffer.ToArray();
+                                                int take = Math.Min(expected, all.Length);
+                                                var payload = new byte[take];
+                                                Array.Copy(all, 0, payload, 0, take);
+                                                _reassemblies.TryRemove(rawId29, out _);
+                                                HandleCanDataBytes(payload);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // 无会话，直接把本帧数据（从 index=1）交给解析
+                                            if (dlc > 1)
+                                            {
+                                                var tmp = new byte[dlc - 1];
+                                                Array.Copy(rec.frame.data, 1, tmp, 0, dlc - 1);
+                                                HandleCanDataBytes(tmp);
+                                            }
+                                        }
                                     }
                                     else
                                     {
-                                        // 其他 dlc 长度也加入解析流
-                                        AppendCanFrameDataToRxBuffer(rec);
+                                        // 中间帧
+                                        if (_reassemblies.TryGetValue(rawId29, out var st))
+                                        {
+                                            if (dlc > 1)
+                                            {
+                                                int start = 1;
+                                                int count = dlc - start;
+                                                lock (st.Lock)
+                                                {
+                                                    st.Buffer.Write(rec.frame.data, start, count);
+                                                }
+                                            }
+
+                                            lock (st.Lock)
+                                            {
+                                                if (st.ExpectedLength > 0 && st.Buffer.Length >= st.ExpectedLength)
+                                                {
+                                                    var all = st.Buffer.ToArray();
+                                                    var payload = new byte[st.ExpectedLength];
+                                                    Array.Copy(all, 0, payload, 0, st.ExpectedLength);
+                                                    _reassemblies.TryRemove(rawId29, out _);
+                                                    HandleCanDataBytes(payload);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // 未见到首帧就收到中间帧：按兼容策略直接把本帧数据追加到解析流
+                                            if (dlc > 1)
+                                            {
+                                                var tmp = new byte[dlc - 1];
+                                                Array.Copy(rec.frame.data, 1, tmp, 0, dlc - 1);
+                                                HandleCanDataBytes(tmp);
+                                            }
+                                        }
                                     }
                                 }
-                                else
+                                catch (Exception ex)
                                 {
-                                    // 非两帧遥测应答也应当把 CAN 数据追加到接收缓冲以支持其它应用层帧
-                                    AppendCanFrameDataToRxBuffer(rec);
+                                    _log.Warn("多帧重组出错", ex);
                                 }
                             }
                         }
@@ -344,9 +470,9 @@ namespace Workbench.Communication
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // 忽略瞬时异常，避免杀死接收循环
+                    _log.Warn("RxLoopAsync 瞬时异常", ex);
                 }
 
                 await Task.Delay(1, token);
@@ -453,13 +579,13 @@ namespace Workbench.Communication
                 }
                 switch (typeBe)
                 {
-                    case TYPE_REMOTE_CTRL_ACK: // 000F
-                    case TYPE_INJECTION_ACK:   // 0019
-                        {
-                            if (_waiters.TryRemove(typeBe, out var tcs))
-                                tcs.TrySetResult(payload);
-                            break;
-                        }
+                    //case TYPE_REMOTE_CTRL_ACK: // 000F
+                    //case TYPE_INJECTION_ACK:   // 0019
+                        //{
+                        //    if (_waiters.TryRemove(typeBe, out var tcs))
+                        //        tcs.TrySetResult(payload);
+                        //    break;
+                        //}
                     case TYPE_TLM_RESPONSE:    // 0023
                         {
                             // 解析 → 入队（可配置位切片）
@@ -848,6 +974,16 @@ namespace Workbench.Communication
                 byte dst = (byte)(id & 0xFF);
                 return (b, mt, dt, src, dst);
             }
+        }
+        public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 0xFF)
+        {
+            SelectCount++;
+            if (SelectCount > 255)
+            {
+                SelectCount = 0;
+            }
+            SendAsync([projectTag, 0x0A, 0x04, 0x1E]);
+            return null;
         }
     }
 }

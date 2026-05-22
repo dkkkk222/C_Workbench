@@ -21,8 +21,8 @@ namespace Workbench.Communication
         private static readonly ILog _log = LogManager.GetLogger(typeof(PcmuUartService));
 
         // —— 类型码（大端） ——
-        private const ushort TYPE_REMOTE_CTRL = 0x000A; // 遥控指令
-        private const ushort TYPE_REMOTE_CTRL_ACK = 0x000F; // 遥控应答
+        private const ushort TYPE_REMOTE_CTRL = 0x0005; // 遥控指令
+        private const ushort TYPE_REMOTE_CTRL_ACK = 0x000; // 遥控应答
         private const ushort TYPE_INJECTION = 0x0014; // 注数
         private const ushort TYPE_INJECTION_ACK = 0x0019; // 注数应答
         private const ushort TYPE_TLM_QUERY = 0x001E; // 遥测查询

@@ -390,6 +390,7 @@ namespace Workbench.ViewModels.Telemetry
                         {
                             case Constants.SERIAL_PORT:
                             case Constants.OldSERIAL_PORT:
+                            case Constants.CAN:
                             case Constants.Telemetry:
                                 if (register.Type == ((int)TelemetryCommandType.IndirectCommand).ToString())
                                 {
@@ -433,7 +434,7 @@ namespace Workbench.ViewModels.Telemetry
                                     }
                                 }
                                 break;
-                            case Constants.CAN:
+                            
 
                                 break;
                         }

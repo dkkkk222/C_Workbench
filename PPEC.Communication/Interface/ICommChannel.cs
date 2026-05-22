@@ -18,7 +18,8 @@ namespace PPEC.Communication.Interface
         Task ConnectAsync(CancellationToken token = default);
         Task DisconnectAsync();
 
-        Task SendAsync(byte[] buffer, int offset = 0, int count = -1,
+        Task SendAsync
+            (byte[] buffer, int offset = 0, int count = -1,
                        CancellationToken token = default);
 
         /// <summary>收到原始字节（在 ThreadPool 线程）</summary>
