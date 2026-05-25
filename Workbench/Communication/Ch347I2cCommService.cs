@@ -149,7 +149,7 @@ namespace Workbench.Communication
         {            
             var list = new List<Ch347Device>();          
             for (uint i = 0; i < maxIndex; i++)
-            {
+            {   
                 var h = Ch347Native.CH347OpenDevice(i);
                 if (h != IntPtr.Zero && h != Ch347Native.INVALID_HANDLE_VALUE)
                 {

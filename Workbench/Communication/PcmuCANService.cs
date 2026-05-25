@@ -99,7 +99,7 @@ namespace Workbench.Communication
         private readonly SemaphoreSlim _txLock = new SemaphoreSlim(1, 1);
         private readonly int maxRetry = 10;
         private readonly int backoffMs = 1;
-
+        
         #region 基础工具（端序/CRC）
 
         private static byte[] U16_BE(ushort v) => new byte[] { (byte)(v >> 8), (byte)v };
@@ -118,6 +118,15 @@ namespace Workbench.Communication
                 }
             }
             return crc;
+        }
+        //工具
+        private static byte[] SubArray(byte[] data, int index, int length)
+        {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (index < 0 || length <= 0 || index + length > data.Length) return Array.Empty<byte>();
+            var result = new byte[length];
+            Array.Copy(data, index, result, 0, length);
+            return result;
         }
 
         private static ushort ReadU16_BE(byte[] buf, int off) =>
@@ -975,15 +984,221 @@ namespace Workbench.Communication
                 return (b, mt, dt, src, dst);
             }
         }
-        public Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 0xFF)
+        #region 发送遥控遥测命令
+        public new async Task<ControlAck> SendRemoteControlAsync(byte[] payload, int timeoutMs = 50)
+        {
+            EnsureConnected();
+            if (payload == null) payload = Array.Empty<byte>();
+
+            // 期望 ACK 类型
+            ushort expectedAck = TYPE_REMOTE_CTRL_ACK;
+
+            // 先注册等待者，避免竞态
+            var tcs = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (!_waiters.TryAdd(expectedAck, tcs))
+                throw new InvalidOperationException($"已有等待 0x{expectedAck:X4} 的任务未完成");
+
+            await _sendGate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                // 节流
+                await Task.Delay(MinSendIntervalMs).ConfigureAwait(false);
+
+                // 设置发送 ID（MT = REMOTE_CTRL, DT = DT.REMOTE_CTRL, SRC=0x00, DST=0x0A）
+                uint id = ArbId.Build(InfoType.REMOTE_CTRL, DT.REMOTE_CTRL, 0x00, DEST);
+                _lastTxRawId = id;
+
+                // payload + sum8
+                var withSum = new byte[payload.Length + 1];
+                Array.Copy(payload, 0, withSum, 0, payload.Length);
+                //withSum[withSum.Length - 1] = Sum8(withSum.Length > 1 ? withSum[..(withSum.Length - 1)] : Array.Empty<byte>());
+                withSum[withSum.Length - 1] = Sum8(withSum.Length > 1 ? SubArray(withSum, 0, withSum.Length - 1) : Array.Empty<byte>());
+                // 单帧发送：data[0]=0xAA, data[1..] = withSum (<=7)
+                if (withSum.Length > 7)
+                {
+                    // 若超出 7 字节，则退回到多帧发送（保持兼容）
+                    // 调用多帧逻辑并等待注数ACK（将其视为 injection 风格）
+                    _waiters.TryRemove(expectedAck, out _);
+                    return await SendInjectionAsync(payload, timeoutMs).ConfigureAwait(false);
+                }
+
+                var frame = new byte[1 + withSum.Length];
+                frame[0] = 0xAA;
+                Array.Copy(withSum, 0, frame, 1, withSum.Length);
+
+                var ok = await SendAsync(frame).ConfigureAwait(false);
+                if (!ok)
+                {
+                    _waiters.TryRemove(expectedAck, out _);
+                    throw new IOException("CAN 发送失败");
+                }
+
+                using var cts = new CancellationTokenSource(timeoutMs);
+                using (cts.Token.Register(() => tcs.TrySetCanceled()))
+                {
+                    var resp = await tcs.Task.ConfigureAwait(false);
+                    if (resp == null || resp.Length < 4) return new ControlAck(false, 0, resp ?? Array.Empty<byte>());
+                    ushort code = ReadU16_BE(resp, 2);
+                    bool success = code == 0xAAAA;
+                    return new ControlAck(success, code, resp);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                _log.Warn($"等待 0x{expectedAck:X4} 超时({timeoutMs}ms)");
+                return new ControlAck(false, 0, Array.Empty<byte>());
+            }
+            finally
+            {
+                _waiters.TryRemove(expectedAck, out _);
+                _sendGate.Release();
+            }
+        }
+
+        public new async Task<ControlAck> SendInjectionAsync(byte[] payload, int timeoutMs = 80)
+        {
+            EnsureConnected();
+            if (payload == null) payload = Array.Empty<byte>();
+
+            // 期望 ACK（注数应答通常为 0x0019）
+            ushort expectedAck = 0x0019;
+
+            var tcs = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (!_waiters.TryAdd(expectedAck, tcs))
+                throw new InvalidOperationException($"已有等待 0x{expectedAck:X4} 的任务未完成");
+
+            await _sendGate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                await Task.Delay(MinSendIntervalMs).ConfigureAwait(false);
+
+                // 设置发送 ID（MT = REMOTE_CTRL 用于注数/遥控类消息；根据协议可调整）
+                uint id = ArbId.Build(InfoType.REMOTE_CTRL, DT.REMOTE_CTRL, 0x00, DEST);
+                _lastTxRawId = id;
+
+                // payload + sum8（最后一位为校验）
+                var withSum = new byte[payload.Length + 1];
+                Array.Copy(payload, 0, withSum, 0, payload.Length);
+                //withSum[withSum.Length - 1] = Sum8(withSum.Length > 1 ? withSum[..(withSum.Length - 1)] : Array.Empty<byte>());
+                withSum[withSum.Length - 1] = Sum8(withSum.Length > 1 ? SubArray(withSum, 0, withSum.Length - 1) : Array.Empty<byte>());
+                int total = withSum.Length;
+                int pos = 0;
+
+                // 首帧：data[0]=0x00, data[1]=DL, data[2..7] = 最多6字节
+                {
+                    int take = Math.Min(6, total - pos);
+                    var buf = new byte[1 + 1 + take]; // seq + DL + data
+                    buf[0] = 0x00;
+                    buf[1] = (byte)total;
+                    if (take > 0) Array.Copy(withSum, pos, buf, 2, take);
+                    pos += take;
+                    var ok = await SendAsync(buf).ConfigureAwait(false);
+                    if (!ok) { _waiters.TryRemove(expectedAck, out _); throw new IOException("CAN 发送失败(首帧)"); }
+                    await Task.Delay(MinSendIntervalMs).ConfigureAwait(false);
+                }
+
+                // 中间帧：seq = 1..N, data[1..7] = 最多7字节
+                byte seq = 1;
+                while (total - pos > 7)
+                {
+                    int take = 7;
+                    var buf = new byte[1 + take]; // seq + 7 bytes
+                    buf[0] = seq;
+                    Array.Copy(withSum, pos, buf, 1, take);
+                    pos += take;
+                    seq++;
+                    var ok = await SendAsync(buf).ConfigureAwait(false);
+                    if (!ok) { _waiters.TryRemove(expectedAck, out _); throw new IOException("CAN 发送失败(中间帧)"); }
+                    await Task.Delay(MinSendIntervalMs).ConfigureAwait(false);
+                }
+
+                // 末帧：data[0] = 0xAA, data[1..] = 剩余 (<=7)
+                if (total - pos >= 0)
+                {
+                    int take = total - pos;
+                    var buf = new byte[1 + Math.Max(0, take)];
+                    buf[0] = 0xAA;
+                    if (take > 0) Array.Copy(withSum, pos, buf, 1, take);
+                    var ok = await SendAsync(buf).ConfigureAwait(false);
+                    if (!ok) { _waiters.TryRemove(expectedAck, out _); throw new IOException("CAN 发送失败(末帧)"); }
+                }
+
+                using var cts = new CancellationTokenSource(timeoutMs);
+                using (cts.Token.Register(() => tcs.TrySetCanceled()))
+                {
+                    var resp = await tcs.Task.ConfigureAwait(false);
+                    if (resp == null || resp.Length < 4) return new ControlAck(false, 0, resp ?? Array.Empty<byte>());
+                    ushort code = ReadU16_BE(resp, 2);
+                    bool success = code == 0xAAAA;
+                    return new ControlAck(success, code, resp);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                _log.Warn($"等待 0x{expectedAck:X4} 超时({timeoutMs}ms)");
+                return new ControlAck(false, 0, Array.Empty<byte>());
+            }
+            finally
+            {
+                _waiters.TryRemove(expectedAck, out _);
+                _sendGate.Release();
+            }
+        }
+
+        public new async Task<byte[]> QueryTelemetryOnceAsync(int timeoutMs = 200, byte projectTag = 0xFF)
         {
             SelectCount++;
-            if (SelectCount > 255)
+            if (SelectCount > 255) SelectCount = 0;
+
+            EnsureConnected();
+
+            ushort expectedResp = TYPE_TLM_RESPONSE; // 0x0023
+            var tcs = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (!_waiters.TryAdd(expectedResp, tcs))
+                throw new InvalidOperationException($"已有等待 0x{expectedResp:X4} 的任务未完成");
+
+            await _sendGate.WaitAsync().ConfigureAwait(false);
+            try
             {
-                SelectCount = 0;
+                // 发送节流
+                await Task.Delay(MinSendIntervalMs).ConfigureAwait(false);
+
+                // 设置发送 ID（MT = TLM_QUERY, DT = DT.TLM_QUERY, SRC=0x00, DST=0x0A）
+                uint id = ArbId.Build(InfoType.TLM_QUERY, DT.TLM_QUERY, 0x00, DEST);
+                _lastTxRawId = id;
+
+                // 固定数据：0x03,0x5F,projectTag,0xA1,0xB2
+                var frame = new byte[] { 0x03, 0x5F, projectTag, 0xA1, 0xB2 };
+
+                var ok = await SendAsync(frame).ConfigureAwait(false);
+                if (!ok)
+                {
+                    _waiters.TryRemove(expectedResp, out _);
+                    throw new IOException("CAN 发送失败");
+                }
+
+                using var cts = new CancellationTokenSource(timeoutMs);
+                using (cts.Token.Register(() => tcs.TrySetCanceled()))
+                {
+                    try
+                    {
+                        var resp = await tcs.Task.ConfigureAwait(false);
+                        return resp;
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        _log.Warn($"等待 0x{expectedResp:X4} 超时({timeoutMs}ms)");
+                        return null;
+                    }
+                }
             }
-            SendAsync([projectTag, 0x0A, 0x04, 0x1E]);
-            return null;
+            finally
+            {
+                _waiters.TryRemove(expectedResp, out _);
+                _sendGate.Release();
+            }
         }
+        #endregion
+
     }
 }

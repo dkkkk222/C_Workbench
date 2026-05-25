@@ -134,7 +134,7 @@ namespace Workbench.Communication
             {
                 SelectCount = 0;
             }
-            return SendAndWaitAsync(TYPE_TLM_QUERY, new byte[] { projectTag, 0x0A, 0x04, 0x1E }, TYPE_TLM_RESPONSE, timeoutMs);
+            return SendAndWaitAsync(TYPE_TLM_QUERY, new byte[] { projectTag, DEST, 0x04, 0x1E }, TYPE_TLM_RESPONSE, timeoutMs);
         } 
 
         #endregion
